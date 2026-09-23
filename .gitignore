@@ -1,0 +1,6 @@
+# Course material (slides, previous papers) — not pushed
+CourseFiles/
+
+# OS / editor
+.DS_Store
+.vscode/

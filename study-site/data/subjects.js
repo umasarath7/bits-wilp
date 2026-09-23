@@ -1,0 +1,55 @@
+// Registry of subjects and sessions.
+// To add a session: create data/<subject>/sessionN.js and set `file` below.
+export const subjects = [
+  {
+    id: "aml",
+    code: "AML",
+    name: "Applied Machine Learning",
+    blurb: "Linear/logistic regression, Naive Bayes, SVM, end-to-end ML projects.",
+    sessions: [
+      { n: 1, title: "Introduction to ML", file: "./aml/session1.js" },
+      { n: 2, title: "End-to-End ML: Data & Preprocessing", file: "./aml/session2.js" },
+      { n: 3, title: "Model Selection, Evaluation & MLOps", file: "./aml/session3.js" },
+      { n: 4, title: "Linear Regression", file: "./aml/session4.js" },
+      { n: 5, title: "Logistic Regression", file: "./aml/session5.js" },
+      { n: 6, title: "Naive Bayes", file: "./aml/session6.js" },
+      { n: 7, title: "Support Vector Machines", file: "./aml/session7.js" },
+      { n: 8, title: "Revision (Mid-sem)", file: "./aml/session8.js" },
+      { n: "pyq", icon: "📌", short: "PYQ", group: "Exam practice", title: "Previous Midsem Paper (solved)", file: "./aml/pyq-midsem.js" },
+      { n: "mock", icon: "🧪", short: "Mock", group: "Exam practice", title: "Mock Midsem Paper", file: "./aml/mock-midsem.js" },
+    ],
+  },
+  {
+    id: "dmml",
+    code: "DMML",
+    name: "Data Management for Machine Learning",
+    blurb: "Data models, architectures, pipelines, modern data stack, ML lifecycle, ingestion, data quality & bias.",
+    sessions: [
+      { n: 1, title: "Data Representations", file: "./dmml/l1.js" },
+      { n: 2, title: "Data Management Fundamentals", file: "./dmml/l2.js" },
+      { n: 3, title: "Data Architectures", file: "./dmml/l3.js" },
+      { n: 4, title: "Data Pipelines & Modern Data Stack", file: "./dmml/l4.js" },
+      { n: 5, title: "Modern Data Infrastructure & DataOps", file: "./dmml/l5.js" },
+      { n: 6, title: "ML Lifecycle & Workflow", file: "./dmml/l6.js" },
+      { n: 7, title: "Data Collection & Ingestion", file: "./dmml/l7.js" },
+      { n: 8, title: "Data Profiling & Validation", file: "./dmml/l8.js" },
+      { n: "pyq", icon: "📌", short: "PYQ", group: "Exam practice", title: "Previous Comprehensive Paper (solved)", file: "./dmml/pyq.js" },
+      { n: "mock", icon: "🧪", short: "Mock", group: "Exam practice", title: "Mock Comprehensive Paper", file: "./dmml/mock.js" },
+      { n: "guide", icon: "✍️", short: "Guide", group: "Exam practice", title: "How to Write 5-Mark Answers", file: "./dmml/guide.js" },
+    ],
+  },
+  {
+    id: "ml",
+    code: "ML",
+    name: "Machine Learning",
+    blurb: "Add slides to get started.",
+    sessions: [],
+  },
+  {
+    id: "ism",
+    code: "ISM",
+    name: "Introduction to Statistical Methods",
+    blurb: "Add slides to get started.",
+    sessions: [],
+  },
+];
