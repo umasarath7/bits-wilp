@@ -138,7 +138,7 @@ function Block({ b }) {
       </div>`;
     case "callout":
       return html`<div className=${"callout " + b.kind}>
-        <div className="callout-title">${{ exam: "🎯 ", tip: "💡 ", warn: "⚠️ " }[b.kind] || ""}${b.title}</div>
+        <div className="callout-title">${{ exam: "🎯 ", tip: "💡 ", warn: "⚠️ ", idea: "🧠 ", example: "✏️ ", formula: "📐 ", remember: "📝 " }[b.kind] || ""}${b.title}</div>
         <${Md} text=${b.text} />
       </div>`;
     case "diagram": {

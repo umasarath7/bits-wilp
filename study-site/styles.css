@@ -294,3 +294,21 @@ th { background: var(--bg); font-weight: 650; }
   .flow-arrow { transform: rotate(90deg); align-self: center; line-height: 1; }
   .flow-step { text-align: center; }
 }
+
+/* ---------- teaching blocks ---------- */
+.callout.idea { background: var(--ok-soft); border-color: var(--ok); }
+.callout.example { background: var(--bg); border-color: var(--muted); border: 1px solid var(--border); border-left: 4px solid var(--muted); }
+.callout.formula { background: var(--surface); border: 1px solid var(--accent); border-left: 4px solid var(--accent); }
+.callout.formula .katex-display { margin: 0.4rem 0; }
+.callout.remember { background: var(--exam-soft); border-color: var(--exam); }
+.section-body > .md + .md { margin-top: 0.6rem; }
+.section-body h4, .md h4 { font-size: 0.98rem; margin: 1.1rem 0 0.3rem; color: var(--accent); }
+
+/* Solutions: each "### Step" heading becomes a labelled step */
+.solution .md h3 {
+  font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
+  color: var(--accent); margin: 1.1rem 0 0.35rem; padding-top: 0.7rem; border-top: 1px dashed var(--border);
+}
+.solution .md h3:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+.solution .md blockquote { margin: 0.6rem 0; padding: 8px 12px; border-left: 3px solid var(--ok); background: var(--ok-soft); border-radius: 6px; }
+.solution .md blockquote p { margin: 0.2rem 0; }
