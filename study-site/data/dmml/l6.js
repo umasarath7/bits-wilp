@@ -1,219 +1,445 @@
-// DMML — Lecture 6: ML Lifecycle and Workflow
-// Source: CourseFiles/DMML/L6-ML lifecycle and Workflow (3).pptx (123 slides)
+// DMML — Lecture 6: ML Lifecycle & Workflow
+// Source: CourseFiles/DMML/L6-ML lifecycle and Workflow (3).pptx (121 slides)
+// Teaching style: "Lesson N: Why …?" — the why first, a running example, real-world cases, glossary at the end.
 
 export default {
   title: "ML Lifecycle & Workflow",
-  source: "L6-ML lifecycle and Workflow.pptx · 123 slides",
+  source: "L6-ML lifecycle and Workflow.pptx · 121 slides",
   overview:
-    "The ML lifecycle is a cyclic, iterative process: **business goal → ML problem framing → data processing → model development → deployment → monitoring**, with feedback loops. The lecture details each phase and its architecture (feature store, model registry, feedback loops, alarm manager, scheduler, lineage tracker). It then covers the **three levels of ML software (Data, Model, Code)**: the **data engineering pipeline** (ingestion → exploration & validation → wrangling → splitting), the **ML pipeline** (model engineering → evaluation → packaging/serialisation formats), different **ML workflows** (offline/online training; batch/real-time prediction; forecast, web-service, online-learning and AutoML patterns), **deployment pipelines** (serving patterns, containers, serverless), the **DataOps → ModelOps → DevOps = MLOps** loop, and why deployments fail.",
+    "This is the biggest lecture, and it contains a previous-paper question (**PYQ Q5**: the data engineering pipeline, with a diagram). It follows an ML project from **idea to production and back**. **Why** is ML a *cycle* rather than a straight line? **Why** does everything start with the business goal? **How** is data collected and prepared, **how** is a model trained, evaluated and packaged, and **how** is it released safely and served? **What** are the three levels of ML software: Data, Model, Code? And **why** do so many ML deployments fail? Running example: an online grocery (like BigBasket) that wants to forecast demand for each product so it stocks enough without wasting fresh food.",
 
   summary: [
     {
       id: "lifecycle",
-      heading: "1. The ML lifecycle",
-      slides: "5–15",
+      heading: "Lesson 1: Why is ML a lifecycle and not a one-off project?",
+      slides: "5–8",
       blocks: [
-        { type: "p", text: "```flow\nBusiness goal -> ML problem framing -> Data processing -> Model development -> Deployment -> Monitoring\nMonitoring -> feedback loops back to Data processing / Model development\n```" },
-        { type: "p", text: "Phases are **not strictly sequential**; feedback loops can interrupt the cycle at any phase." },
+        {
+          type: "p",
+          text: "Ordinary software is built, tested and shipped, and it keeps behaving the same way until someone changes the code. An ML model is different: it learnt from **past data**, and the world keeps changing. New products launch, festivals shift demand, customer habits drift. So an ML system must be **watched and refreshed continually**. That's why the slides draw it as a **cycle**:",
+        },
+        {
+          type: "p",
+          text: "```flow\nBusiness goal -> ML problem framing -> Data processing -> Model development -> Deployment -> Monitoring\nMonitoring -> feedback loops back to Data processing / Model development\n```",
+        },
+        {
+          type: "p",
+          text: "**The phases are not strictly sequential** (slide 6). Feedback loops can send you back at any point: monitoring spots drift, so you go back to data processing; evaluation shows the model is weak, so you go back to feature engineering.",
+        },
         {
           type: "table",
-          head: ["Phase", "Key activities"],
+          caption: "The six phases at a glance",
+          head: ["Phase", "The question it answers", "Grocery example"],
           rows: [
-            ["**Business goal** (most important)", "Understand requirements; align stakeholders; form the business question; identify must-have features; consider new processes; define **business metrics** the model should improve; review data feasibility; costs (data acquisition, training, inference, *wrong predictions*); production considerations (handling ML errors, path to production); Definition of Done / acceptance criteria"],
-            ["**ML problem framing**", "What is observed and what is predicted (label/target). Success criteria; an observable **performance metric** (e.g. accuracy); link the technical metric to the business outcome (accuracy → sales); stakeholders agree; formulate inputs, outputs and metric; **ask whether ML is even needed** (simple rules may do, or data may be insufficient); data sourcing and annotation strategy; start with a simple, interpretable model; iterate"],
-            ["**Data processing**", "Collect (label, ingest, aggregate), prepare (pre-process, feature engineering)"],
-            ["**Model development**", "Build, train, tune, evaluate; CI/CD pipeline to staging and production"],
-            ["**Deployment**", "Serve predictions/inferences in production"],
-            ["**Monitoring**", "Verify performance; early detection and mitigation (drift, bias)"],
+            ["**Business goal**", "What outcome do we want?", "Cut fresh-produce waste by 20% without more stock-outs"],
+            ["**ML problem framing**", "What exactly will the model predict, and how will we measure it?", "Predict tomorrow's units sold per product per store; measure the error in units"],
+            ["**Data processing**", "What data, and how do we get it ready?", "Past orders, prices, promotions, weather, holidays → cleaned features"],
+            ["**Model development**", "Which model, trained and tuned how?", "Try regression and gradient boosting; tune; evaluate"],
+            ["**Deployment**", "How does it make real predictions?", "Nightly batch forecasts written to the ordering system"],
+            ["**Monitoring**", "Is it still working?", "Compare forecasts with actual sales; watch for drift"],
           ],
         },
-        { type: "p", text: "**Framing example:** a manufacturer wanting more profit could forecast demand for existing products, forecast input materials to cut locked-up capital, or predict new-product sales. Each is a *different* ML problem." },
+      ],
+    },
+    {
+      id: "goal",
+      heading: "Lesson 2: Why start with the business goal? Framing the problem",
+      slides: "9–15",
+      blocks: [
+        {
+          type: "p",
+          text: "**The business goal is the most important phase** (slide 9). A brilliant model that answers the wrong question is worthless. Before touching data, the team should:",
+        },
+        {
+          type: "list",
+          items: [
+            "**Understand the requirements** and **align all stakeholders** (operations, finance, store managers).",
+            "**Form the business question** and identify the must-have features.",
+            "Consider what **new processes** the model will need (who acts on the forecast?).",
+            "Define the **business metrics** the model should improve (waste %, stock-out rate).",
+            "Review **data feasibility**: do we even have the data?",
+            "Estimate **costs**: acquiring data, training, running inference, and **the cost of wrong predictions** (over-forecast → rotten tomatoes; under-forecast → empty shelves).",
+            "Plan for **production**: how will ML errors be handled, what's the path to production?",
+            "Agree a **Definition of Done** / acceptance criteria.",
+          ],
+        },
+        {
+          type: "p",
+          text: "**ML problem framing (slides 11–14)** turns the business goal into a precise ML task:",
+        },
+        {
+          type: "list",
+          items: [
+            "Decide **what is observed** (inputs) and **what is predicted** (the **label** or **target**).",
+            "Define **success criteria** and an observable **performance metric** (e.g. accuracy, or average error in units).",
+            "**Link the technical metric to the business outcome** (a 10% lower forecast error → X% less waste), and get stakeholders to agree.",
+            "**Ask whether ML is needed at all.** Maybe a simple rule (“order last week's sales + 10%”) is good enough, or the data isn't sufficient.",
+            "Plan **data sourcing and annotation** (labelling).",
+            "**Start with a simple, interpretable model**, then iterate.",
+          ],
+        },
+        {
+          type: "callout",
+          kind: "example",
+          title: "One goal, many ML problems (slide 15)",
+          text: "A manufacturer wants **more profit**. That single goal could be framed as: forecast demand for **existing products**; forecast **input materials** to cut capital locked up in stock; or predict sales of a **new product**. Each is a *different* ML problem, with different data, labels and metrics. Framing is a choice, not a given.",
+        },
       ],
     },
     {
       id: "arch",
-      heading: "2. ML lifecycle architecture components",
+      heading: "Lesson 3: What machinery supports the lifecycle?",
       slides: "16–21",
       blocks: [
         {
+          type: "p",
+          text: "When a company runs many models, the same needs keep recurring: shared features, versioned models, alerts, scheduled retraining. The slides list the standard components of an **ML lifecycle architecture**:",
+        },
+        {
           type: "table",
-          head: ["Component", "Role"],
+          head: ["Component", "What it does", "Why it's needed"],
           rows: [
-            ["**Online / offline feature store**", "Reduces duplicated feature code across teams. Online = low latency for real-time inference; offline = history for training and batch scoring"],
-            ["**Model registry**", "Stores model artifacts + metadata (data, code, model); **lineage** and version control of models"],
-            ["**Performance feedback loop**", "From *development-time evaluation* back to data preparation"],
-            ["**Model drift feedback loop**", "From *production* evaluation back to data preparation"],
-            ["**Alarm manager**", "Receives monitoring alerts and notifies targets, e.g. the model-update retraining pipeline"],
-            ["**Scheduler**", "Triggers retraining at business-defined intervals"],
-            ["**Lineage tracker**", "Re-creates the ML environment at any point in time (versions of resources and environments)"],
+            ["**Online / offline feature store**", "Stores ready-made features. **Online**: low latency for real-time predictions. **Offline**: full history for training and batch scoring", "Teams stop rewriting the same feature code, and training and serving use identical features"],
+            ["**Model registry**", "Stores model artifacts + metadata (which data, which code); version control and **lineage** of models", "You can always answer “which model is live, and how was it made?”"],
+            ["**Performance feedback loop**", "From evaluation **during development** back to data preparation", "A weak model sends you back to fix the data"],
+            ["**Model drift feedback loop**", "From evaluation **in production** back to data preparation", "Drift triggers new data work and retraining"],
+            ["**Alarm manager**", "Receives monitoring alerts and notifies the right target, e.g. the retraining pipeline", "Problems get acted on automatically"],
+            ["**Scheduler**", "Triggers retraining at business-defined intervals", "Models stay fresh"],
+            ["**Lineage tracker**", "Can re-create the ML environment at any point in time (versions of every resource)", "Reproducibility and audit"],
           ],
         },
       ],
     },
     {
       id: "data",
-      heading: "3. Data processing: collection, preparation, feature engineering",
+      heading: "Lesson 4: How is data collected and prepared?",
       slides: "22–36",
       blocks: [
-        { type: "p", text: "**Why data matters in ML:** it defines the system's goal (input-output pairs), trains the algorithm, measures performance against **data drift**, and forms the **baseline dataset** for detecting drift." },
-        { type: "list", items: [
-          "**Collection:** **label** (manual or automated); **ingest & aggregate** from many sources (time series, events, sensors, IoT, social); ingestion is real-time (streaming) or historical (batch); storage in SQL DBs, lakes, warehouses and lakehouses, with ETL automating movement.",
-          "**Pre-processing:** **clean** (the class-age example: a duplicate student entered thrice, age 100 instead of 10, missing students → remove duplicates/outliers, impute); **partition** into train/validation/test randomly (**remove duplicates before splitting** to avoid **data leakage**); **scale** (normalise to [0,1] / standardise to mean 0, sd 1); **unbias & balance**; **augment** (synthesise data to regularise and reduce overfitting).",
-          "**Feature engineering:** **creation** (one-hot, binning, splitting, calculated features); **transformation & imputation** (replace missing/invalid values, Cartesian products, non-linear transforms, domain features); **extraction** (dimensionality reduction: PCA, ICA, LDA); **selection** (subset that minimises error; feature importance, correlation matrix).",
-          "Use EDA and visualisation, data-wrangler tools, low/no-code and GenAI code tools to speed up preparation.",
-        ]},
+        {
+          type: "p",
+          text: "**Why data matters so much in ML (slide 22).** Data **defines the goal** (the input–output pairs the model must learn); it **trains** the algorithm; it's used to **measure performance** as data drifts; and it forms the **baseline dataset** against which future drift is detected.",
+        },
+        {
+          type: "p",
+          text: "**Step 1: Collection (slides 23–25).** **Label** the data (manually or automatically). **Ingest and aggregate** from many sources: time series, events, sensors, IoT, social media. Ingestion is **real-time** (streaming) or **historical** (batch). Store it in SQL databases, lakes, warehouses or lakehouses, with ETL automating the movement.",
+        },
+        {
+          type: "p",
+          text: "**Step 2: Pre-processing (slides 26–31).** The slides use a small example: a class register where **one student was entered three times**, **one age is 100 instead of 10**, and **some students are missing**. Pre-processing fixes such problems:",
+        },
+        {
+          type: "list",
+          items: [
+            "**Clean:** remove duplicates and outliers; impute missing values.",
+            "**Partition:** randomly split into training, validation and test sets. **Remove duplicates *before* splitting**; otherwise the same record can land in both training and test, which is **data leakage**, and the test score looks better than reality.",
+            "**Scale:** normalise to [0, 1] or standardise to mean 0 and standard deviation 1.",
+            "**Unbias and balance:** fix skewed representation (Lecture 8).",
+            "**Augment:** create synthetic variations of the data to regularise the model and reduce overfitting.",
+          ],
+        },
+        {
+          type: "p",
+          text: "**Step 3: Feature engineering (slides 32–36).** Turn cleaned data into inputs the model can learn from:",
+        },
+        {
+          type: "list",
+          items: [
+            "**Creation:** one-hot encoding, binning, splitting fields, calculated features (*grocery:* “is it a festival week?”, “price discount %”).",
+            "**Transformation and imputation:** replace missing or invalid values; Cartesian products of features; non-linear transforms; domain-specific features.",
+            "**Extraction:** dimensionality reduction such as PCA (Principal Component Analysis), ICA (Independent Component Analysis) and LDA (Linear Discriminant Analysis).",
+            "**Selection:** choose the subset of features that minimises error, using feature importance or a correlation matrix.",
+          ],
+        },
+        {
+          type: "p",
+          text: "Exploratory data analysis (EDA), visualisation, data-wrangling tools, low/no-code tools and GenAI code assistants can all speed up preparation.",
+        },
       ],
     },
     {
       id: "model",
-      heading: "4. Model development, deployment & monitoring",
-      slides: "37–58",
+      heading: "Lesson 5: How is a model trained, shipped and watched?",
+      slides: "37–54",
       blocks: [
-        { type: "list", items: [
-          "**Training & tuning:** features; versioned code with CI; **algorithm selection** (success metrics, explainability, compute); distributed training via **data parallelism** (split data into mini-batches across nodes) and **model parallelism** (split the model across nodes); **debugging/profiling** (bottlenecks, overfitting, saturated activations, vanishing gradients); **validation metrics** (confusion matrix, RMSE); **HPO** (learning rate, epochs, layers, units, activations); training **containers**; **model artifacts** (parameters, model definition, metadata).",
-          "**Pre-production pipelines:** data-prepare pipeline, feature pipeline (to/from the feature store), **CI/CD/CT pipeline**.",
-          "**Evaluation:** **offline** (holdout set never used for training/validation) vs **online** (live data).",
-          "**Deployment:** governance and quality gates. The app sends a payload to an endpoint; the model is fetched from the registry, features from the feature store, and code from the container repository.",
-          "**Inference pipeline** (prepare data → predict → post-process; batch or real-time). **Scheduler pipeline** (retrain at intervals to limit data and concept drift).",
-          "**Monitoring:** capture data, compare with training, apply rules, alert. Issues: data quality, model quality, **bias drift**, **feature-attribution drift**. **Explainability**; **drift detection** (**data drift** = input distribution change; **concept drift** = the input→target relationship changes); the alarm manager triggers the **model update pipeline**.",
-        ]},
+        {
+          type: "p",
+          text: "**Training and tuning (slides 37–43).** The ingredients: the features; **versioned code** under CI; **algorithm selection** (based on the success metric, how explainable it must be, and compute cost). Big models are trained in a distributed way:",
+        },
+        {
+          type: "list",
+          items: [
+            "**Data parallelism:** split the **data** into mini-batches spread across machines; each machine has a full copy of the model.",
+            "**Model parallelism:** split the **model itself** across machines, when it's too big for one.",
+          ],
+        },
+        {
+          type: "p",
+          text: "Then **debug and profile** (bottlenecks, overfitting, saturated activations, vanishing gradients), measure **validation metrics** (confusion matrix, RMSE), and run **hyperparameter optimisation** (learning rate, epochs, layers, units, activations). Training runs inside **containers**, and produces **model artifacts**: the learnt parameters, the model definition and metadata.",
+        },
+        {
+          type: "p",
+          text: "**Pre-production pipelines (slide 44):** a **data-prepare pipeline**, a **feature pipeline** (writes to and reads from the feature store), and a **CI/CD/CT pipeline**.",
+        },
+        {
+          type: "p",
+          text: "**Evaluation (slide 45):** **offline**, on a holdout set never used for training or validation; and **online**, on live data after deployment.",
+        },
+        {
+          type: "p",
+          text: "**Deployment (slides 46–48)** passes governance and quality gates. At runtime the app sends a request (payload) to an **endpoint**; the model is fetched from the **registry**, features from the **feature store**, and code from the **container repository**. Two production pipelines follow: an **inference pipeline** (prepare data → predict → post-process; batch or real-time) and a **scheduler pipeline** (retrain at intervals to limit drift).",
+        },
+        {
+          type: "p",
+          text: "**Monitoring (slides 49–54):** capture live data, compare it with the training data, apply rules, raise alerts. What can go wrong: **data quality**, **model quality**, **bias drift** (predictions becoming unfair to a group), and **feature-attribution drift** (the model starts relying on different features). Two kinds of drift to know precisely:",
+        },
+        {
+          type: "callout",
+          kind: "formula",
+          title: "Data drift vs concept drift",
+          text: "- **Data drift:** the **distribution of the inputs** changes. *Grocery:* a new customer segment (office canteens) starts ordering in bulk.\n- **Concept drift:** the **relationship between inputs and target** changes. *Grocery:* after a price war, the same discount now produces far fewer extra sales than before.\n\nWhen either is detected, the alarm manager triggers the **model update (retraining) pipeline**. **Explainability** tools help understand why predictions change.",
+        },
+      ],
+    },
+    {
+      id: "deploy",
+      heading: "Lesson 6: How do we release a new model safely? Deployment strategies",
+      slides: "55–58",
+      blocks: [
+        {
+          type: "p",
+          text: "Replacing a live model is risky: if the new one is worse, customers suffer immediately. Four strategies reduce that risk (slides 55–58):",
+        },
         {
           type: "table",
-          caption: "Deployment strategies",
-          head: ["Strategy", "How it works"],
+          head: ["Strategy", "How it works", "When to use it"],
           rows: [
-            ["**Blue/green**", "Two identical production environments. Test on green, switch live traffic from blue to green, then swap roles. Near-zero downtime, instant rollback"],
-            ["**Canary**", "Release to a **small group of users** first, then gradually roll out"],
-            ["**A/B testing**", "A defined share of traffic goes to the new model, the rest to the old. Larger groups and **longer** (days/weeks) than canary; measures business impact"],
-            ["**Shadow**", "The new model receives the **same inputs** in parallel; only the old model's output serves users; the new one is analysed. Zero user risk"],
+            ["**Blue/green**", "Two identical production environments. The new model is tested on **green**, then live traffic switches from **blue** to green in one go; the roles swap for the next release", "Near-zero downtime and **instant rollback** (switch back to blue)"],
+            ["**Canary**", "Release to a **small group of users** first (like the canary miners took underground), then roll out gradually", "Catch problems while few users are affected"],
+            ["**A/B testing**", "A defined share of traffic goes to the new model, the rest to the old; larger groups and a **longer** run (days or weeks) than canary", "Measure **business impact** (did waste actually fall?)"],
+            ["**Shadow**", "The new model receives the **same inputs** in parallel, but **only the old model's output is used**; the new one's predictions are just recorded and analysed", "**Zero user risk**; compare before exposing anyone"],
           ],
         },
       ],
     },
     {
       id: "three",
-      heading: "5. Three levels of ML software: Data, Model, Code",
+      heading: "Lesson 7: The three levels of ML software, and the data engineering pipeline (PYQ Q5)",
       slides: "59–72",
       blocks: [
-        { type: "p", text: "The goal of an ML project is a statistical model built from collected data using ML algorithms. Every ML-based software manages **three assets: Data, Model, Code**, via three disciplines: **Data engineering** (acquisition + preparation), **ML model engineering** (training + serving) and **Code engineering** (integrating the model into the product)." },
-        { type: "p", text: "```flow\nDATA: Data ingestion -> Exploration & validation -> Data wrangling (cleaning) -> Data splitting -> Training / validation / test sets\nMODEL: Model training (feature eng. + model eng. + HPO) -> Model evaluation -> Model testing -> Model packaging\nCODE: Model serving -> Performance monitoring -> Performance logging\n```" },
         {
-          type: "table",
-          caption: "Data engineering pipeline",
-          head: ["Step", "Key activities"],
-          rows: [
-            ["**1. Data ingestion**", "Collect from internal/external DBs, marts, OLAP cubes, warehouses, OLTP, Spark, HDFS; synthetic data or enrichment. Identify sources + **provenance**; estimate space; create a workspace; obtain and convert data *without changing it*; **back up** (work on a copy); **privacy compliance** (anonymise, GDPR); **metadata catalogue** (size, format, aliases, modified time, ACLs); set a **test set aside and never look at it** (avoid **data-snooping bias**)"],
-            ["**2. Exploration & validation**", "**Profiling** → metadata (max, min, avg). **Validation** = user-defined error-detection routines (e.g. are address components consistent, is the postcode correct, are values missing?). Use notebooks (RAD tools); attribute profiling (name, record count, type, numerical measures, **missing-value ratio**, distribution type); identify label attributes; visualise; correlations; identify extra data needed"],
-            ["**3. Data wrangling (cleaning)**", "Programmatically reformat/restructure (may change the schema). **Write reusable scripts/functions.** Transformations; fix/remove outliers; fill missing values (0, mean, median) or drop rows/columns; drop irrelevant attributes; restructure (reorder, extract, combine fields, filter records, change granularity via aggregation/pivot)"],
-            ["**4. Data splitting**", "Training (≈80%), validation and test sets for the core ML stages"],
+          type: "p",
+          text: "Every ML-based product manages **three assets**, each with its own engineering discipline (slides 59–62):",
+        },
+        {
+          type: "list",
+          items: [
+            "**Data**, handled by **data engineering**: acquiring and preparing data.",
+            "**Model**, handled by **ML model engineering**: training and serving models.",
+            "**Code**, handled by **code engineering**: integrating the model into the product.",
           ],
         },
-        { type: "p", text: "Data preparation (Gartner: an iterative, agile process of exploring, combining, cleaning and transforming raw data into curated datasets) is the **most expensive phase in time and resources**. *Garbage in, garbage out.*" },
+        {
+          type: "p",
+          text: "```flow\nDATA: Data ingestion -> Exploration & validation -> Data wrangling (cleaning) -> Data splitting -> Training / validation / test sets\nMODEL: Model training (feature eng. + model eng. + HPO) -> Model evaluation -> Model testing -> Model packaging\nCODE: Model serving -> Performance monitoring -> Performance logging\n```",
+        },
+        {
+          type: "p",
+          text: "**The data engineering pipeline, step by step.** This is exactly what PYQ Q5 asked, so learn the four steps and the key activities in each.",
+        },
+        {
+          type: "p",
+          text: "**Step 1: Data ingestion (slides 63–65).** Collect data from internal and external sources: databases, data marts, OLAP cubes, warehouses, OLTP systems, Spark, HDFS; possibly synthetic data or enrichment. Key activities: identify the sources and their **provenance** (where the data came from); estimate the storage space needed; create a workspace; obtain the data and convert it to a usable format **without changing its content**; **back it up** (work on a copy); ensure **privacy compliance** (anonymise; GDPR); record a **metadata catalogue** (size, format, aliases, last modified time, access-control lists). And crucially: **set a test set aside now and never look at it**. Peeking at it while choosing models introduces **data-snooping bias**.",
+        },
+        {
+          type: "p",
+          text: "**Step 2: Exploration and validation (slides 66–68).** **Profiling** produces metadata about the content: maximum, minimum, average and so on. **Validation** runs user-defined error-detection routines: are the address components consistent, is the postcode correct, are values missing? Use notebooks (rapid application development tools); profile each attribute (name, record count, data type, numerical measures, **missing-value ratio** = missing values ÷ records, distribution type); identify the label attribute(s); visualise; look at correlations; identify any extra data needed.",
+        },
+        {
+          type: "p",
+          text: "**Step 3: Data wrangling / cleaning (slides 69–71).** Programmatically reformat or restructure the data (which may change the schema). **Write reusable scripts or functions**, because the same cleaning will run again on new data. Typical work: transformations; fix or remove outliers; fill missing values (with 0, the mean or the median) or drop the rows or columns; drop irrelevant attributes; restructure (reorder, extract or combine fields, filter records, change granularity by aggregating or pivoting).",
+        },
+        {
+          type: "p",
+          text: "**Step 4: Data splitting (slide 72).** Split into **training (≈80%)**, **validation** and **test** sets for the model stages that follow.",
+        },
+        {
+          type: "callout",
+          kind: "warn",
+          title: "Why this pipeline deserves so much care",
+          text: "Gartner describes data preparation as *an iterative, agile process of exploring, combining, cleaning and transforming raw data into curated datasets*. It's the **most expensive phase in time and resources**, and *garbage in, garbage out*: no model can recover from bad preparation.",
+        },
       ],
     },
     {
       id: "mlpipe",
-      heading: "6. ML pipeline & model serialisation formats",
+      heading: "Lesson 8: How is a model built and packaged for production?",
       slides: "73–84",
       blocks: [
-        { type: "list", items: [
-          "**Model engineering/training:** feature engineering (discretise, decompose categorical/date features, transforms log/sqrt/x², aggregate, scale) and model engineering (code review + versioning of model specs; train many model families with default parameters; N-fold CV mean ± sd; error analysis; shortlist 3–5 models making *different* errors; HPO via CV, preferring **random search over grid**; **ensembles**: voting, bagging, boosting, stacking).",
-          "**Evaluation & testing:** check the business objective is met; the final **model acceptance test** on the held-back test set estimates generalisation error.",
-          "**Packaging:** export to a format the application consumes (PMML, PFA, ONNX), so the model runs **outside the training environment** (e.g. a scikit-learn model inside a Spark job).",
-        ]},
+        {
+          type: "p",
+          text: "**Model engineering (slides 73–77)** has two halves:",
+        },
+        {
+          type: "list",
+          items: [
+            "**Feature engineering:** discretise continuous features; decompose categorical and date features (a date → day of week, month, is-holiday); transforms such as log, square root or x²; aggregations; scaling.",
+            "**Model engineering:** code review and versioning of model specifications; train **many model families** with default parameters; compare them with N-fold cross-validation (mean ± standard deviation); do **error analysis**; shortlist 3–5 models that make **different kinds** of errors; tune hyperparameters with CV (the slides prefer **random search over grid search**); and consider **ensembles** (voting, bagging, boosting, stacking), which combine models whose errors differ.",
+          ],
+        },
+        {
+          type: "p",
+          text: "**Evaluation and testing (slide 78):** check the model meets the **business objective**; then the final **model acceptance test** on the held-back test set estimates the generalisation error. This is the one and only time the test set is used.",
+        },
+        {
+          type: "p",
+          text: "**Packaging (slides 79–84).** The model must run **outside the environment where it was trained**: a scikit-learn model trained in a notebook might need to run inside a Spark job or a Java service. So it's exported to a portable format:",
+        },
         {
           type: "table",
           caption: "Model serialisation formats",
           head: ["Kind", "Format", "Notes"],
           rows: [
-            ["Language-agnostic", "**Amalgamation**", "Model + code bundled as one package/source file (e.g. SKompiler → SQL, Excel, PFA, SymPy → C/JS/Rust). Portable, compact for simple models; code and parameters managed together"],
-            ["Language-agnostic", "**PMML**", "XML (.pmml), standardised by DMG; not all algorithms; licensing limits open-source use"],
-            ["Language-agnostic", "**PFA**", "JSON scoring engine; replacement for PMML; needs a PFA-enabled runtime"],
-            ["Language-agnostic", "**ONNX**", "Framework-independent; backed by Microsoft, Facebook, Amazon; runs in ONNX runtimes"],
-            ["Vendor-specific", "scikit-learn **.pkl** · H2O **POJO/MOJO** · Spark **MLeap** · TensorFlow **.pb** · PyTorch **.pt** (TorchScript) · Keras **.h5** (HDF) · Apple **.mlmodel** (Core ML)", ""],
+            ["Language-agnostic", "**Amalgamation**", "Model + code bundled into one package or source file (e.g. SKompiler turns a model into SQL, Excel, PFA or SymPy → C/JS/Rust). Portable and compact for simple models"],
+            ["Language-agnostic", "**PMML** (Predictive Model Markup Language)", "XML (.pmml), standardised by the Data Mining Group; not every algorithm is supported; licensing limits open-source use"],
+            ["Language-agnostic", "**PFA** (Portable Format for Analytics)", "A JSON scoring engine, intended to replace PMML; needs a PFA-enabled runtime"],
+            ["Language-agnostic", "**ONNX** (Open Neural Network Exchange)", "Framework-independent; backed by Microsoft, Facebook and Amazon; runs in ONNX runtimes"],
+            ["Vendor-specific", "scikit-learn **.pkl** · H2O **POJO/MOJO** · Spark **MLeap** · TensorFlow **.pb** · PyTorch **.pt** (TorchScript) · Keras **.h5** · Apple **.mlmodel** (Core ML)", "Tied to one framework"],
           ],
         },
       ],
     },
     {
       id: "workflows",
-      heading: "7. ML workflows and deployment (code) pipelines",
+      heading: "Lesson 9: How are models trained and served in production?",
       slides: "85–110",
       blocks: [
         {
+          type: "p",
+          text: "Two independent choices shape any ML system in production (slides 85–88):",
+        },
+        {
           type: "table",
-          head: ["Dimension", "Option A", "Option B"],
+          head: ["Choice", "Option A", "Option B"],
           rows: [
-            ["Training", "**Offline / batch / static**: trained once on collected data, constant until retrained, risk of **model decay**", "**Online / dynamic**: retrained regularly as data streams arrive (time series, sensors, stock trading)"],
-            ["Prediction", "**Batch**: predictions on historical input; fine when not time-critical", "**Real-time / on-demand**: predictions from data available at request time"],
+            ["**How is it trained?**", "**Offline / batch / static:** trained once on collected data and unchanged until retrained. Risk: **model decay**", "**Online / dynamic:** retrained regularly as new data streams in (time series, sensors, stock trading)"],
+            ["**How does it predict?**", "**Batch:** predictions computed on a batch of input in advance. Fine when not time-critical", "**Real-time / on-demand:** predictions made from data available at request time"],
           ],
         },
         {
           type: "table",
-          caption: "Architecture patterns",
+          caption: "Four architecture patterns from combining them (slides 89–93)",
           head: ["Pattern", "Training", "Prediction", "Notes"],
           rows: [
-            ["**Forecast**", "Offline", "Batch", "Academic/Kaggle; easiest; rare in production"],
-            ["**Web service**", "Offline", "Real-time", "Most common: a microservice returns predictions; the model stays constant until retrained"],
-            ["**Online learning** (real-time streaming analytics)", "Online (incremental)", "Real-time", "Learns on the fly; fits **Lambda** architecture; **drawback: bad data degrades the system**"],
-            ["**AutoML**", "Online", "Real-time", "Automatically selects and configures algorithms; minimal ML expertise"],
+            ["**Forecast**", "Offline", "Batch", "Academic/Kaggle-style; the easiest; rare in production. *Grocery nightly forecast fits here*"],
+            ["**Web service**", "Offline", "Real-time", "The most common: a microservice returns predictions; the model stays fixed until retrained"],
+            ["**Online learning** (real-time streaming analytics)", "Online (incremental)", "Real-time", "Learns on the fly; fits the **Lambda** architecture. **Drawback: bad incoming data quickly degrades it**"],
+            ["**AutoML**", "Online", "Real-time", "Automatically selects and configures algorithms; needs minimal ML expertise"],
           ],
         },
-        { type: "p", text: "**Model serving** = deploying the model in production. Inference needs **a model, an interpreter and input data**. Two aspects: the automated retraining + deployment pipeline, and the **prediction API**." },
+        {
+          type: "p",
+          text: "**Model serving (slides 94–95)** means making the model available in production. Making a prediction (inference) needs three things: **a model, an interpreter to run it, and input data**. Two aspects matter: the automated **retraining and deployment pipeline**, and the **prediction API**.",
+        },
         {
           type: "table",
-          caption: "Model serving patterns",
-          head: ["Pattern", "Idea"],
+          caption: "Model serving patterns (slides 96–104)",
+          head: ["Pattern", "Idea", "Example"],
           rows: [
-            ["**Model-as-Service**", "Model + interpreter wrapped in a dedicated web service (REST/gRPC), e.g. Gemini/Copilot APIs"],
-            ["**Model-as-Dependency**", "The packaged model is a library inside the application (like an imported SDK)"],
-            ["**Precompute**", "Predict a batch in advance and store in a DB; requests just look up the result (goes with the Forecast workflow)"],
-            ["**Model-on-Demand**", "Model available at runtime behind a **message broker**: requests go to an input queue, the event processor (serving runtime + model) predicts in batches and writes to an output queue"],
-            ["**Hybrid / Federated learning**", "A server model trained once gives the initial model. **Each device trains its own personalised model**, sends only *model updates* (not personal data) back, and the server aggregates them into a new initial model. Private data never leaves the device; constraints: weak devices, devices not always available. TensorFlow Federated"],
+            ["**Model-as-Service**", "The model + interpreter wrapped in its own web service (REST or gRPC)", "Gemini or Copilot APIs"],
+            ["**Model-as-Dependency**", "The packaged model is a library inside the application", "A model file shipped inside a mobile app"],
+            ["**Precompute**", "Predict a whole batch in advance and store the results in a database; requests just look them up", "Tomorrow's demand for every product, computed at night"],
+            ["**Model-on-Demand**", "Model available at runtime behind a **message broker**: requests go to an input queue, an event processor (runtime + model) predicts in batches and writes to an output queue", "High-throughput scoring"],
+            ["**Hybrid / Federated learning**", "A server model trained once gives the starting model. **Each device trains its own personalised copy** on local data and sends back only **model updates**, not personal data; the server aggregates them into a better starting model", "Phone keyboards learning your typing (TensorFlow Federated)"],
           ],
         },
-        { type: "list", items: [
-          "**Docker containers:** inference is stateless, lightweight and idempotent, so wrap the whole stack + prediction code in a container, orchestrate with **Kubernetes** (or Fargate), and expose a REST API (Flask). This is the de-facto standard.",
-          "**Serverless functions:** package the code + dependencies as a .zip with one entry point on AWS Lambda / Azure Functions / Google Cloud Functions, or use managed ML platforms (SageMaker, Vertex/AI Platform, Azure ML, Watson). Watch the **artifact size limits**.",
-        ]},
+        {
+          type: "p",
+          text: "**Federated learning in one sentence:** *the model travels to the data, not the data to the model*, so private data never leaves the device. Constraints: devices have limited power and aren't always available.",
+        },
+        {
+          type: "p",
+          text: "**How serving is usually built (slides 105–110):** **Docker containers**. Inference is stateless, lightweight and idempotent, so wrap the whole stack plus the prediction code in a container, orchestrate many containers with **Kubernetes** (or AWS Fargate), and expose a REST API (e.g. with Flask). This is the de-facto standard. Alternatively, **serverless functions**: package code and dependencies as a .zip with one entry point on AWS Lambda, Azure Functions or Google Cloud Functions, or use managed ML platforms (SageMaker, Vertex AI, Azure ML, Watson). Watch the **size limits** on deployment artifacts.",
+        },
       ],
     },
     {
       id: "mlops",
-      heading: "8. DataOps → ModelOps → DevOps (MLOps) and deployment failures",
+      heading: "Lesson 10: Why do so many ML deployments fail? The MLOps loop",
       slides: "111–121",
       blocks: [
-        { type: "p", text: "```flow\nDataOps: design/develop/test/deploy the training set -> ModelOps: design/develop/test/deploy the trained model -> DevOps: design/develop/test/deploy the inference API\nDevOps monitoring (drift, bias, accuracy) -> feedback & retraining -> DataOps\n```" },
+        {
+          type: "p",
+          text: "**MLOps (slides 111–113)** chains three “Ops” disciplines, one per asset from Lesson 7, with monitoring feeding back to the start:",
+        },
+        {
+          type: "p",
+          text: "```flow\nDataOps: design/develop/test/deploy the training set -> ModelOps: design/develop/test/deploy the trained model -> DevOps: design/develop/test/deploy the inference API\nDevOps monitoring (drift, bias, accuracy) -> feedback & retraining -> DataOps\n```",
+        },
+        {
+          type: "p",
+          text: "**The reality check (slides 114–121).** A survey found it takes **8–90 days to deploy a single model**, and many deployments fail for lack of expertise, data bias or high costs. The challenges, phase by phase, with real company stories:",
+        },
         {
           type: "table",
-          caption: "Case survey: why deployments fail (8–90 days to deploy one model; many fail from lack of expertise, data bias, high costs)",
-          head: ["Phase", "Challenges"],
+          head: ["Phase", "Challenges and real examples"],
           rows: [
-            ["**Data management**", "Finding what data exists and where (Twitter's single-responsibility services); logs are hard to parse; synthetic data needed; joining datasets with different schemas/conventions (Firebird: 12 datasets); labelling (limited experts, low variance, high volume); few profiling tools"],
-            ["**Model learning**", "Model selection (Airbnb started with a complex DL model: complexity, many dev cycles, heavy hardware); training cost and CO₂ (billion-parameter NLP); HPO grows **exponentially** with each hyperparameter"],
-            ["**Model verification**", "**Requirement encoding** (Booking.com: 150 models deployed, yet business value wasn't guaranteed, so define the right KPIs); formal verification under regulation; test-based verification limited to simulations; continuously validate data (bugs, feedback loops, dependency changes)"],
-            ["**Model deployment**", "**Integration** (Pinterest: three models with similar embeddings maintained separately, so work was tripled); abstraction-boundary erosion, correction cascades, **pipeline jungles**; **monitoring** input data, prediction bias, performance, outliers; **updating** for **concept drift**"],
+            ["**Data management**", "Finding what data exists and where (Twitter's many single-responsibility services scatter it); logs are hard to parse; synthetic data may be needed; joining datasets with different schemas and conventions (Firebird combined 12 datasets); labelling (few experts, low variance, huge volume); few profiling tools"],
+            ["**Model learning**", "Model selection (Airbnb began with a complex deep-learning model: too complex, many development cycles, heavy hardware); training cost and CO₂ emissions (billion-parameter NLP models); hyperparameter search grows **exponentially** with each hyperparameter"],
+            ["**Model verification**", "**Encoding requirements**: Booking.com deployed 150 models, yet that didn't guarantee business value, so the right KPIs must be defined; formal verification under regulation; tests limited to simulations; data must be validated continuously (bugs, feedback loops, dependency changes)"],
+            ["**Model deployment**", "**Integration**: Pinterest maintained three models with similar embeddings separately, tripling the work; abstraction-boundary erosion, correction cascades, **pipeline jungles**; **monitoring** input data, prediction bias, performance and outliers; **updating** for **concept drift**"],
           ],
+        },
+        {
+          type: "callout",
+          kind: "remember",
+          title: "The whole lecture in seven lines",
+          text: "1. ML is a **cycle**: business goal → framing → data → model → deploy → monitor, with feedback loops. The business goal matters most, and ask whether ML is even needed.\n2. Lifecycle machinery: online/offline **feature store**, **model registry**, performance and drift feedback loops, alarm manager, scheduler, lineage tracker.\n3. Data: collect (label, ingest), pre-process (clean, **dedupe before splitting**, scale, balance, augment), feature engineering (create, transform, extract, select).\n4. Model: data vs model parallelism, HPO, offline vs online evaluation, inference and scheduler pipelines; monitor **data drift** (inputs change) vs **concept drift** (input→target changes). Release with blue/green, canary, A/B or shadow.\n5. Three levels: **Data, Model, Code**. Data engineering pipeline = **ingestion → exploration & validation → wrangling → splitting** (set the test set aside; no snooping).\n6. Package with ONNX/PMML/PFA/pickle; patterns: forecast, web service, online learning, AutoML; serving: as-service, as-dependency, precompute, on-demand, **federated**; Docker + Kubernetes or serverless.\n7. MLOps = DataOps → ModelOps → DevOps + feedback. Deployments fail on data, learning, verification and integration (Twitter, Airbnb, Booking.com, Pinterest).",
         },
       ],
     },
   ],
 
-  keyTerms: [
-    ["ML lifecycle", "Business goal → framing → data → model → deploy → monitor (iterative)."],
-    ["Feature store", "Online (low latency) / offline (history) store of features."],
-    ["Model registry", "Versioned store of model artifacts + metadata + lineage."],
-    ["Data drift / concept drift", "Input distribution changes / input→target relationship changes."],
-    ["Data snooping bias", "Choosing models by peeking at the test set."],
-    ["Missing value ratio", "Absent values / number of records."],
-    ["Data vs model parallelism", "Split the data across nodes vs split the model across nodes."],
-    ["Blue/green, canary, A/B, shadow", "Deployment strategies that reduce release risk."],
-    ["ONNX / PMML / PFA", "Portable model exchange formats."],
-    ["Model decay", "Offline models going stale in production."],
-    ["Model-as-service / dependency", "Model behind an API / packaged inside the app."],
-    ["Precompute serving", "Predictions computed in batch and looked up."],
-    ["Federated learning", "Devices train locally; only model updates go to the server."],
-    ["MLOps", "DataOps + ModelOps + DevOps with feedback/retraining."],
+  glossary: [
+    ["ML lifecycle", "—", "Business goal → framing → data → model → deployment → monitoring, looping back"],
+    ["Label / target", "—", "The value the model predicts"],
+    ["Definition of Done", "—", "Agreed acceptance criteria for the project"],
+    ["Feature store (online / offline)", "—", "Shared features: low-latency for serving / full history for training"],
+    ["Model registry", "—", "Versioned store of models with metadata and lineage"],
+    ["Lineage", "—", "The record of which data and code produced a model"],
+    ["Alarm manager", "—", "Routes monitoring alerts to people or pipelines"],
+    ["Data leakage", "—", "Information from the test set sneaking into training"],
+    ["Augmentation", "—", "Creating synthetic variations of data to reduce overfitting"],
+    ["PCA / ICA / LDA", "Principal / Independent Component Analysis, Linear Discriminant Analysis", "Dimensionality-reduction methods"],
+    ["Data / model parallelism", "—", "Split the data across machines / split the model across machines"],
+    ["HPO", "Hyperparameter Optimisation", "Searching for the best hyperparameter values"],
+    ["Model artifact", "—", "The saved model: parameters, definition, metadata"],
+    ["Offline / online evaluation", "—", "On held-out data before release / on live data after"],
+    ["Endpoint", "—", "The address an app calls to get a prediction"],
+    ["Data drift", "—", "The input distribution changes"],
+    ["Concept drift", "—", "The relationship between inputs and target changes"],
+    ["Bias drift / feature-attribution drift", "—", "Predictions becoming unfair / the model relying on different features"],
+    ["Blue/green deployment", "—", "Two identical environments; switch traffic from one to the other"],
+    ["Canary deployment", "—", "Release to a small group of users first"],
+    ["A/B testing", "—", "Split traffic between old and new models to measure impact"],
+    ["Shadow deployment", "—", "The new model runs silently on real inputs; only the old one serves users"],
+    ["Provenance", "—", "Where data originally came from"],
+    ["ACL", "Access Control List", "Who may access a piece of data"],
+    ["Data-snooping bias", "—", "Choosing models after peeking at the test set"],
+    ["Profiling", "—", "Computing summary metadata about data (min, max, missing ratio…)"],
+    ["Missing-value ratio", "—", "Missing values ÷ number of records"],
+    ["Data wrangling", "—", "Programmatically cleaning and restructuring data"],
+    ["Ensemble (voting, bagging, boosting, stacking)", "—", "Combining several models to reduce error"],
+    ["Model acceptance test", "—", "The final check on the untouched test set"],
+    ["PMML / PFA / ONNX", "Predictive Model Markup Language / Portable Format for Analytics / Open Neural Network Exchange", "Portable model formats"],
+    ["Model decay", "—", "A static model's performance falling as the world changes"],
+    ["Model-as-Service / as-Dependency", "—", "Model behind its own API / packaged inside the app"],
+    ["Precompute serving", "—", "Predictions made in batch in advance and looked up later"],
+    ["Model-on-Demand", "—", "Model behind a message broker, predicting from a queue"],
+    ["Federated learning", "—", "Devices train locally; only model updates are shared"],
+    ["Docker / Kubernetes", "—", "Container packaging / container orchestration"],
+    ["Serverless function", "—", "Code run on demand by the cloud, with no servers to manage"],
+    ["MLOps", "—", "DataOps + ModelOps + DevOps with a feedback loop"],
+    ["Pipeline jungle", "—", "A tangled, unmaintainable web of data-preparation code"],
   ],
 
   examTips: [
@@ -230,6 +456,10 @@ export default {
       question:
         "The goal of a machine learning project is to build a statistical model by using collected data and applying machine learning algorithms. Every ML-based software needs to manage three main assets: Data, Model and Code. Describe, with a suitable diagram, the Data Engineering Pipeline.",
       solution: `
+### What the examiner wants
+The question says **with a diagram**, so draw the four-step flow first. Then key activities under each step (ingestion, exploration & validation, wrangling, splitting), and how the output feeds the Model and Code levels. Name the three assets (Data, Model, Code) at the start (Lesson 7).
+
+### Model answer
 **Context: three levels of ML software**
 - **Data → Data engineering** (acquisition + preparation)
 - **Model → ML model engineering** (training + serving)
@@ -275,13 +505,20 @@ Metadata catalogue, backups, privacy compliance and a set-aside test set run alo
 
 **Output and link to Model and Code:** curated datasets feed the **ML pipeline** (feature engineering, training, evaluation, packaging), whose packaged model is delivered by the **deployment pipeline** (serving, monitoring, logging). Monitoring feedback such as drift loops back to the data pipeline.
 
-**Example:** churn prediction. Ingest CRM, billing and call logs → profile (15% missing tenure, skewed charges) → impute tenure, cap outliers, one-hot the plan type → 80/10/10 split.`,
+**Example:** churn prediction. Ingest CRM, billing and call logs → profile (15% missing tenure, skewed charges) → impute tenure, cap outliers, one-hot the plan type → 80/10/10 split.
+
+### Takeaway
+Ingestion → exploration & validation → wrangling → splitting, with the test set locked away at ingestion. It's the most expensive phase, and garbage in means garbage out.`,
     },
     {
       title: "Phases of the ML lifecycle and its architecture",
       marks: 5,
       question: "Explain the phases of the ML lifecycle. Why is business goal identification the most important phase? Describe the supporting architecture components (feature store, model registry, feedback loops, alarm manager, scheduler, lineage tracker).",
       solution: `
+### What the examiner wants
+All six phases with their key activities, the point that they are **not sequential** (feedback loops), and the architecture components that support them (Lessons 1–3).
+
+### Model answer
 \`\`\`flow
 Business goal -> ML problem framing -> Data processing -> Model development -> Deployment -> Monitoring
 Monitoring -> Model drift feedback loop -> Data processing
@@ -305,13 +542,20 @@ The lifecycle is **cyclic and iterative**; the phases are not strictly sequentia
 | Model drift feedback loop | Production evaluation → back to data preparation |
 | Alarm manager | Routes monitoring alerts, e.g. to the retraining pipeline |
 | Scheduler | Periodic retraining at business-defined intervals |
-| Lineage tracker | Re-creates the environment at any past point in time |`,
+| Lineage tracker | Re-creates the environment at any past point in time |
+
+### Takeaway
+The lifecycle is a loop driven by monitoring; the feature store, model registry, alarm manager, scheduler and lineage tracker keep it turning.`,
     },
     {
       title: "Deployment strategies: blue/green, canary, A/B, shadow",
       marks: 5,
       question: "Explain blue/green, canary, A/B and shadow deployment strategies for ML models. Which would you use to validate a new fraud model with zero customer risk, and why?",
       solution: `
+### What the examiner wants
+Each strategy's mechanism, its main benefit or risk, and when to use it, best as a table, with a line on how canary differs from A/B (Lesson 6).
+
+### Model answer
 | Strategy | Mechanism | Pros | Cons |
 |---|---|---|---|
 | **Blue/green** | Two identical prod environments. Test on green, switch all traffic from blue to green, swap roles | Near-zero downtime; instant rollback | Double infrastructure; all users switch at once |
@@ -324,13 +568,20 @@ Request -> Old model (serves response)
 Request (copied) -> New model (shadow: logged, compared, never served)
 \`\`\`
 
-**For the fraud model:** start with **shadow deployment**. Every transaction is scored by both models. We compare alerts, precision/recall against confirmed fraud, and latency, without blocking any real customer. Once it is confidently better, move to a **canary** (e.g. 5% of traffic), then full rollout (or blue/green switch-over) with a quick rollback path.`,
+**For the fraud model:** start with **shadow deployment**. Every transaction is scored by both models. We compare alerts, precision/recall against confirmed fraud, and latency, without blocking any real customer. Once it is confidently better, move to a **canary** (e.g. 5% of traffic), then full rollout (or blue/green switch-over) with a quick rollback path.
+
+### Takeaway
+Blue/green = instant switch and rollback; canary = small group first; A/B = measure business impact over time; shadow = zero user risk.`,
     },
     {
       title: "Model serving patterns and federated learning",
       marks: 5,
       question: "Describe the model serving patterns: model-as-service, model-as-dependency, precompute, model-on-demand and hybrid (federated learning). Give a use case for each.",
       solution: `
+### What the examiner wants
+The serving patterns with an example each, federated learning explained step by step (initial model → local training → updates only → aggregation) with its benefit and constraints, and how serving is usually built (containers or serverless) (Lesson 9).
+
+### Model answer
 Inference needs **a model, an interpreter and input data**. Serving has two aspects: the automated retrain/deploy pipeline, and the prediction API.
 
 | Pattern | How | Use case |
@@ -345,13 +596,20 @@ Inference needs **a model, an interpreter and input data**. Serving has two aspe
 Server model (initial) -> Devices train locally on private data -> Send model updates (not data) -> Server aggregates -> New initial model -> Devices
 \`\`\`
 
-**Federated benefits:** personal data never leaves the device; accurate personalised models without storing huge private datasets centrally. **Constraints:** devices are less powerful and not always available; training data is spread over millions of devices (TensorFlow Federated helps).`,
+**Federated benefits:** personal data never leaves the device; accurate personalised models without storing huge private datasets centrally. **Constraints:** devices are less powerful and not always available; training data is spread over millions of devices (TensorFlow Federated helps).
+
+### Takeaway
+Choose the pattern by latency and where the model runs. Federated learning moves the model to the data, so private data never leaves the device.`,
     },
     {
       title: "Model packaging and serialisation formats",
       marks: 5,
       question: "Why must an ML model be packaged/serialised? Compare language-agnostic formats (amalgamation, PMML, PFA, ONNX) and list vendor-specific formats.",
       solution: `
+### What the examiner wants
+Why packaging is needed (the model must run outside its training environment), the language-agnostic formats with their pros and cons, and the vendor-specific ones (Lesson 8).
+
+### Model answer
 **Why:** the model must run as an **independent asset outside the training environment**, e.g. a scikit-learn model used inside a Spark job, a Java service, or a mobile app. Packaging exports it in a format the business application can consume.
 
 **Language-agnostic**
@@ -371,13 +629,20 @@ Server model (initial) -> Devices train locally on private data -> Send model up
 - Keras **.h5** (HDF5)
 - Apple **.mlmodel** (Core ML; convert with coremltools)
 
-**Choice:** ONNX for cross-framework, cross-platform deployment. Vendor formats when training and serving share a stack.`,
+**Choice:** ONNX for cross-framework, cross-platform deployment. Vendor formats when training and serving share a stack.
+
+### Takeaway
+Portable formats (ONNX, PMML, PFA) let a model trained in one framework run anywhere; vendor formats (.pkl, .pt, .h5) are simpler but tie you to one stack.`,
     },
     {
       title: "ML workflows: training and prediction modes, architecture patterns",
       marks: 5,
       question: "Differentiate offline vs online learning and batch vs real-time prediction. Explain the forecast, web-service, online-learning and AutoML architecture patterns.",
       solution: `
+### What the examiner wants
+The two dimensions (offline vs online training; batch vs real-time prediction), the four resulting patterns with examples, and the risks (model decay; bad data in online learning) (Lesson 9).
+
+### Model answer
 **Training:**
 - **Offline (batch/static):** trained on collected data and constant after deployment until retrained. It sees live data and becomes stale (**model decay**), so monitor it.
 - **Online (dynamic/incremental):** retrained regularly as new data streams arrive (sensor, stock data), capturing temporal effects.
@@ -393,13 +658,20 @@ Server model (initial) -> Devices train locally on private data -> Send model up
 | **Online learning** | Online (incremental) | Real-time | Learns on the fly from event streams; pairs with **Lambda architecture**. Risk: **bad data steadily degrades the model** |
 | **AutoML** | Online | Real-time | Automatically picks and configures algorithms/architectures; minimal ML expertise needed |
 
-**Example:** a credit-card fraud model is often a **web service** (offline-trained, real-time scoring) with scheduled retraining. A stock-signal model may use **online learning**.`,
+**Example:** a credit-card fraud model is often a **web service** (offline-trained, real-time scoring) with scheduled retraining. A stock-signal model may use **online learning**.
+
+### Takeaway
+Training mode × prediction mode gives four patterns: forecast, web service, online learning, AutoML. Web service is the most common in production.`,
     },
     {
       title: "Why ML deployments fail (case survey) and the MLOps loop",
       marks: 5,
       question: "Using the case survey, explain challenges at each phase of ML deployment (data management, model learning, verification, deployment) with industry examples. How does integrating DataOps, ModelOps and DevOps help?",
       solution: `
+### What the examiner wants
+The MLOps loop (DataOps → ModelOps → DevOps + feedback), then challenges grouped by phase, **each with the real company example** from the slides (Lesson 10).
+
+### Model answer
 **Hard reality:** most companies take **8–90 days** to deploy a single model, and many attempts fail due to lack of expertise, data bias and high costs.
 
 | Phase | Challenges | Example |
@@ -414,7 +686,10 @@ Server model (initial) -> Devices train locally on private data -> Send model up
 DataOps (training-set schema, job, test, deploy) -> ModelOps (design, train, test, deploy model) -> DevOps (inference API design, dev, test, deploy)
 DevOps monitoring (drift, bias, accuracy) -> Feedback & retraining -> DataOps
 \`\`\`
-DataOps produces a trustworthy training set, ModelOps turns it into a validated model, and DevOps puts it behind an inference API. Monitoring closes the loop by triggering data fixes and retraining. This addresses the failure points through automation, versioning, monitoring and shared ownership.`,
+DataOps produces a trustworthy training set, ModelOps turns it into a validated model, and DevOps puts it behind an inference API. Monitoring closes the loop by triggering data fixes and retraining. This addresses the failure points through automation, versioning, monitoring and shared ownership.
+
+### Takeaway
+Deployments fail on data (finding, joining, labelling), learning (complexity, cost), verification (wrong KPIs) and integration (duplicated models, pipeline jungles), which is exactly what the MLOps loop is meant to catch.`,
     },
   ],
 
