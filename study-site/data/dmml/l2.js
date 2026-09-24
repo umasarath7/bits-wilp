@@ -1,137 +1,312 @@
 // DMML — Lecture 2: Concepts / Fundamentals of Data Management
-// Source: CourseFiles/DMML/L2-Data Management Fundamentals.pptx (39 slides)
+// Source: CourseFiles/DMML/L2-Data Management Fundamentals.pptx (37 slides)
+// Teaching style: "Lesson N: Why …?" — the why first, a running example, real-world cases, glossary at the end.
 
 export default {
   title: "Data Management Fundamentals",
-  source: "L2-Data Management Fundamentals.pptx · 39 slides",
+  source: "L2-Data Management Fundamentals.pptx · 37 slides",
   overview:
-    "The *principles* of data. Data is an **asset** (the Netflix example) and a **liability** (PII, medical records, compliance, deletion). **ML pipelines are more sensitive** to data than ordinary pipelines, and data must be **reliable** (durable, consistent, versioned, performant, available). The lecture then covers the **components of data management** (integration & processing via ETL/ELT, storage in a warehouse/lake/lakehouse, governance, security), the **data platform**, the **DMBOK-style framework**, the **four phases of the ML data lifecycle** (creation → ingestion → processing → post-processing), and **data roles**.",
+    "Lecture 1 was about how data is *represented*. This one is about how an organisation *looks after* it. We'll ask: **why** is data an asset, and **when** does it turn into a liability? **Why** are ML pipelines more fragile than ordinary data pipelines? **What** does “data management” actually involve (integration, storage, governance, security)? **What** journey does data take on its way to a model? And **who** is responsible for each part? Running example: a hospital chain that wants to use patient records to predict which patients are likely to be readmitted, a case where data is hugely valuable and hugely dangerous at the same time. The asset-and-liability pair was examined directly (**PYQ Q2**).",
 
   summary: [
     {
       id: "asset",
-      heading: "1. Principles of data: asset, liability, sensitivity, reliability",
-      slides: "3–10",
+      heading: "Lesson 1: Why is data called an asset?",
+      slides: "3–4",
       blocks: [
         {
-          type: "table",
-          head: ["Principle", "Key idea", "Example / practice"],
-          rows: [
-            ["**Data as an asset**", "Data is key to a successful business model: transform data into value. But relevant data is *not easy to collect*", "Netflix: data-informed perspectives that improve its service"],
-            ["**Data as a liability**", "“One man's food is another's poison.” Data becomes a liability when exposed or misused, or held without consent, bringing legal, ethical and reputational risk", "Leaked medical records → lawsuits and reputational damage"],
-            ["**Data sensitivity of ML pipelines**", "Normal pipelines are sensitive to **volume and correctness**. ML pipelines are also sensitive to **changes in data distribution**", "Losing one country's data: the data pipeline runs “fine” but year-end sales predictions go wrong"],
-            ["**Data reliability**", "Minimum expected characteristics of data in distributed systems", "Durability, consistency, version control (time travel), performance, availability"],
+          type: "p",
+          text: "An **asset** is something that creates value for its owner, like a factory, a brand or cash. Slide 4 asks: *can you imagine an ML system without data?* You can't. The model is only a way of extracting value from the data.",
+        },
+        {
+          type: "p",
+          text: "**The Netflix case (slide 4).** Netflix's research team says data lets them provide *“efficient and actionable data-informed perspectives that help Netflix think critically and differently about its business and ultimately improve our service”*. Which shows to commission, which thumbnail to show you, how to encode video for your connection: all driven by data. The lessons the slide draws:",
+        },
+        {
+          type: "list",
+          items: [
+            "**Data is an important asset.**",
+            "**For a successful business model, data is key.**",
+            "**Success means transforming data into value.** Raw data sitting in a database is worth nothing until it drives a decision.",
+            "**The “truthful pain”: relevant data is not easy to collect.**",
           ],
         },
-        { type: "p", text: "**Myths:** “more data == better” and “this stuff is easy.”" },
+        {
+          type: "p",
+          text: "*Hospital example:* years of admission records, test results and outcomes are an asset. They could predict which patients will be readmitted within 30 days, so doctors can follow up early.",
+        },
+        {
+          type: "callout",
+          kind: "warn",
+          title: "Two myths (slide 6)",
+          text: "**“More data == better.”** Not if it's irrelevant, unrepresentative, or collected without permission. More data can mean more risk and cost.\n**“This stuff is easy.”** Collecting, storing and deleting data properly is hard, as the next lesson shows.",
+        },
+      ],
+    },
+    {
+      id: "liability",
+      heading: "Lesson 2: When does data become a liability?",
+      slides: "5–8",
+      blocks: [
+        {
+          type: "p",
+          text: "A **liability** is something that can cost you: a debt, a legal risk. Slide 5 opens with a proverb: *“One man's food is another man's poison.”* The same data can be either, depending on circumstances. The hospital's patient records are an asset for predicting readmissions, but if they're leaked or misused, they bring **legal, ethical and reputational** damage: lawsuits, fines and lost trust.",
+        },
+        {
+          type: "p",
+          text: "**Data becomes a liability** through *exposure to unexpected nuances of the collected data*. If you don't think about how it could be exposed or misused, it can harm both the organisation and the people the data describes.",
+        },
+        {
+          type: "p",
+          text: "**Restrictions on collection (slide 6).** Anything that identifies a person, **PII (Personally Identifiable Information)** such as name, phone or Aadhaar number, legally needs **explicit consent plus deletion criteria**. (That's the checkbox you tick when applying for a loan or credit card.) What you must comply with depends on:",
+        },
+        {
+          type: "list",
+          items: [
+            "**Where the organisation is** (an employer may have to store employees' data on servers in its own country).",
+            "**Where the data came from** (EU citizens' data cannot leave the EU).",
+            "**Organisation policies** (confidential company data).",
+          ],
+        },
+        {
+          type: "p",
+          text: "The **sources of these restrictions** are governing laws, industry practices, insurance regulations and corporate governance policies. And you must answer practical questions: how is permission stored, how can it be withdrawn, who can access the data, when, and why?",
+        },
+        {
+          type: "p",
+          text: "**Three ways to reduce the liability (slide 7)**, from least to most protective:",
+        },
+        {
+          type: "list",
+          ordered: true,
+          items: [
+            "**Access restriction.** Restrict access to private data even for employees, external and internal. If someone needs access, grant **granular** permissions and keep **detailed logs** so every access can be traced. *Hospital:* only the treating doctor sees the full record.",
+            "**Anonymisation / pseudonymisation.** Replace private identifiers with substitutes **in a reversible way**, where reversing needs access to additional data or systems. This protects data from *casual inspection* by engineers working on the pipeline, while **preserving the properties the model needs**. The slide's example: for weather prediction, replace a postcode with a **different postcode from the same locality**. *Hospital:* replace patient names with random IDs; keep age band and district.",
+            "**Connection removal (recommended).** Remove the link between the private data (PII) and the model data altogether. This **reduces risk the most**, but it's **harder than it seems**, and doing it without destroying value can be difficult.",
+          ],
+        },
+        {
+          type: "p",
+          text: "**Deletion is harder than it sounds (slide 8).** Pressing Shift+Del doesn't erase the bytes; recovery software can often restore them. Archived copies on tape are even harder to purge. When should data be deleted? **When the user asks** (for a specific period), **when the organisation no longer needs it** (job portals that keep your profile for only 6 months), or **when governing policy sets a cut-off**, such as the EU's **GDPR** (General Data Protection Regulation).",
+        },
+      ],
+    },
+    {
+      id: "sensitive",
+      heading: "Lesson 3: Why are ML pipelines more sensitive than ordinary data pipelines?",
+      slides: "9–10",
+      blocks: [
+        {
+          type: "callout",
+          kind: "example",
+          title: "Slide 9's scenario",
+          text: "An e-commerce company wants to predict **New Year's Eve sales** for every country, region and language, and study trends by language. Due to a technical or human error, it **loses the data from one country**. The **data pipeline keeps running normally**, but the **ML pipeline behaves very differently**. Why?",
+        },
+        {
+          type: "p",
+          text: "Because a data pipeline doesn't *predict* anything. It moves and transforms whatever arrives, so fewer rows still flow through “successfully”. An ML pipeline includes a **model that has learnt what the data normally looks like**. Remove a country and the **distribution** of the data changes: the model's predictions for that region, and even the totals, go wrong. Nothing crashes; the answers are just silently worse, which hurts sales and reputation.",
+        },
         {
           type: "table",
-          caption: "Managing data as a liability",
-          head: ["Topic", "Details"],
+          head: ["Pipeline type", "Sensitive to"],
           rows: [
-            ["**Restrictions on collection**", "PII needs *explicit consent + deletion criteria*. Compliance depends on the organisation's location, the data's origin (EU data can't leave the EU) and company policies. Sources of restriction: laws, industry practice, insurance regulations, corporate governance"],
-            ["**Approach 1: access restriction**", "Restrict even employees; grant granular permissions; keep detailed logs to trace access"],
-            ["**Approach 2: anonymisation / pseudonymisation**", "Replace private identifiers reversibly (reversal needs extra data/systems). Protects against casual inspection along the pipeline and preserves the properties the model needs (e.g. a different postcode from the *same locality*)"],
-            ["**Approach 3 (recommended): connection removal**", "Remove the link between PII and model data. This reduces risk the most, but is harder than it seems"],
-            ["**Deletion is hard**", "Shift+Del doesn't erase data (recovery tools exist); tape archives are hard to purge. Delete when the user asks, when no longer needed (e.g. job-portal profiles kept 6 months), or when policy demands (GDPR)"],
+            ["Normal data pipeline", "**Volume** of input data; **correctness** of input data"],
+            ["ML pipeline", "Volume and correctness, **plus changes in the data's distribution** (which regions, languages or customer types are represented, and in what proportions)"],
+          ],
+        },
+        {
+          type: "p",
+          text: "**Data reliability (slide 10).** Because ML is so sensitive, the data systems underneath must be reliable. The slides list five minimum properties for data in distributed systems:",
+        },
+        {
+          type: "list",
+          items: [
+            "**Durability:** once written, data isn't lost (even if a disk or server fails).",
+            "**Consistency:** everyone reading the data sees the same, correct version.",
+            "**Version control:** you can go back to the data as it was at an earlier time (“time travel”), essential for reproducing how a model was trained.",
+            "**Performance:** data can be read and written fast enough for the workload.",
+            "**Availability:** the data can be reached when it's needed.",
           ],
         },
       ],
     },
     {
       id: "dm",
-      heading: "2. Data management and its components",
+      heading: "Lesson 4: What does data management actually involve?",
       slides: "11–20",
       blocks: [
-        { type: "p", text: "**IBM study:** 72% of top-performing CEOs say competitive advantage depends on having the most advanced GenAI. To exploit AI, organisations must first organise their **information architecture** so data is accessible and usable. **Challenges:** data volume; silos across locations/clouds; many types and formats; complex, inconsistent datasets." },
+        {
+          type: "p",
+          text: "**Why now? (slides 11–12).** An IBM study found **72% of top-performing CEOs** believe competitive advantage depends on having the most advanced generative AI. But to exploit AI, an organisation first needs its **information architecture** in order: data that's accessible and usable. The typical obstacles: huge **volume**; **silos** across locations and clouds; many **types and formats**; and **complex, inconsistent** datasets.",
+        },
+        {
+          type: "p",
+          text: "Data management has **four components**. Think of them as the four jobs the hospital must do before its readmission model can exist:",
+        },
+        { type: "p", text: "#### I. Integration and processing: getting data in and into shape" },
+        {
+          type: "p",
+          text: "Step one is **ingesting raw data** from its sources: web APIs, apps, IoT devices, forms, surveys. The traditional method is **ETL (Extract → Transform → Load)**: pull the data out, clean and reshape it on a separate server, then load it into the target. ETL struggles with **unstructured data**, **high velocity** and **real-time** flows, so **ELT (Extract → Load → Transform)** emerged with the cloud: load the raw data first, then transform it inside the powerful target system. Processing then **filters, merges and aggregates** the data for BI (Business Intelligence) dashboards or ML.",
+        },
+        { type: "p", text: "#### II. Storage: where the data lives" },
         {
           type: "table",
-          head: ["Component", "What it does"],
+          head: ["", "Data warehouse", "Data lake", "Data lakehouse"],
           rows: [
-            ["**I. Integration & processing**", "Step 1: ingest raw data (web APIs, apps, IoT, forms, surveys). **ETL** was the traditional method but struggles with unstructured data, velocity and real-time flows, so **ELT** emerged (cloud + real-time needs). Then *filter, merge, aggregate* for BI dashboards or ML"],
-            ["**II. Storage**", "Before or after processing; chosen by type and purpose. **Warehouse:** defined schema, RDBMS, high-performance analytics on structured data (BI, dashboards). **Lake:** no schema, semi/unstructured data, cost-optimised (AI, analytics at scale, sandboxes). **Lakehouse** = warehouse + lake"],
-            ["**III. Governance**", "**Data governance councils** align taxonomies so **metadata** (data about data) is consistent, and define roles and responsibilities for appropriate access"],
-            ["**IV. Security**", "Guardrails against unauthorised access, corruption and theft: controlled access (can you see a colleague's salary slip?), **encryption, data masking**, disaster recovery"],
+            ["Schema", "**Defined** in advance (schema-on-write)", "**None** needed (schema-on-read)", "Open formats with a table layer on top"],
+            ["Data", "Structured", "Structured, semi-structured and unstructured", "All types"],
+            ["Built on", "RDBMS (relational database)", "Cheap object storage", "Lake storage + warehouse features"],
+            ["Good for", "High-performance analytics, BI dashboards", "AI/ML, analytics at scale, data-science sandboxes", "Both, from one copy of the data"],
+            ["Cost", "Higher", "Cost-optimised", "Low storage cost, warehouse-like reliability"],
           ],
+        },
+        { type: "p", text: "#### III. Governance: agreeing on meaning and responsibility" },
+        {
+          type: "p",
+          text: "**Data governance councils** align the organisation's **taxonomies** (what we call things), so that **metadata**, i.e. *data about data* (what a column means, where it came from, who owns it), is consistent across teams. They also define **roles and responsibilities** so access is appropriate. *Hospital:* everyone agrees what “readmission” means (within 30 days? any reason?), and who owns the definition.",
+        },
+        { type: "p", text: "#### IV. Security: guarding the data" },
+        {
+          type: "p",
+          text: "Guardrails against **unauthorised access, corruption and theft**: **controlled access** (the slide asks: *can you see a colleague's salary slip?* You shouldn't be able to); **encryption** (unreadable without a key); **data masking** (show XXXX-1234 instead of a full card number); and **disaster recovery** (backups and failover).",
         },
       ],
     },
     {
       id: "platform",
-      heading: "3. Data platform & DM framework",
+      heading: "Lesson 5: How do organisations put it all together? The data platform and framework",
       slides: "21–24",
       blocks: [
-        { type: "p", text: "**Data platform:** a software suite, central repository and collection of pipelines that ingest, store, transform and deliver data to different enterprise groups. It needs fast query processing, large storage, elastic compute, in-memory caches, massively parallel processing, columnar storage and compute clusters." },
+        {
+          type: "p",
+          text: "**A data platform (slides 21–22)** is the practical home for all of the above: *a software suite, a central repository and a collection of pipelines that ingest, store, transform and deliver data to different groups in the enterprise*. To serve many teams at once it needs fast query processing, large storage, elastic compute, in-memory caches, massively parallel processing, columnar storage and compute clusters.",
+        },
+        {
+          type: "p",
+          text: "**The data-management framework (slides 23–24)** is a checklist of the areas an organisation must cover, often drawn as a wheel (based on DAMA's DMBOK, the Data Management Body of Knowledge) with **governance at the centre** supporting everything else:",
+        },
         {
           type: "table",
-          caption: "Data-management framework (DMBOK-style)",
-          head: ["Area", "Role"],
+          head: ["Area", "What it ensures"],
           rows: [
             ["**Data governance** (centre)", "Overarching support: stewardship, policies, processes, standards, best practices"],
-            ["Data architecture", "Infrastructure for storage, integration and use of data"],
-            ["Metadata", "Critical information about data attributes, so data is used efficiently"],
-            ["Data quality", "Structure to ensure data fulfils business needs"],
-            ["Data lifecycle", "Integrity from first entry into the company to final deletion"],
-            ["Analytics", "Statistical and visual techniques for insights"],
-            ["Data privacy", "Supports sharing internally and externally, safely"],
+            ["Data architecture", "The infrastructure for storing, integrating and using data"],
+            ["Metadata", "Critical information about data attributes, so data can be found and used efficiently"],
+            ["Data quality", "Data fit for business needs"],
+            ["Data lifecycle", "Integrity from the moment data enters the company until its final deletion"],
+            ["Analytics", "Statistical and visual techniques to get insights"],
+            ["Data privacy", "Safe sharing, internally and externally"],
           ],
         },
       ],
     },
     {
       id: "lifecycle",
-      heading: "4. Phases of the ML data lifecycle",
+      heading: "Lesson 6: What journey does data take on its way to a model?",
       slides: "25–31",
       blocks: [
-        { type: "p", text: "```flow\nPhase 1: Creation (devices, web, curation) -> Phase 2: Ingestion (data lake) -> Phase 3: Processing (validation, cleaning, enrichment) -> Phase 4: Post-processing (storage, management, analysis & visualisation) -> Model training & pipeline\n```" },
         {
-          type: "table",
-          head: ["Phase", "Key points"],
-          rows: [
-            ["**Creation / generation**", "Data is generated or captured *somewhere else* (serving logs, event photos, medical diagnostics). Some datasets can stay static (a photo-recognition set usable for months, if representative); others must be refreshed (winter-only photos → distribution shift)"],
-            ["**Ingestion**", "Receive into the system and write to storage. **Filtering/selection** always happens; **sampling** saves cost but loses detail (measure the quality cost vs the savings; more data usually helps ML). Use APIs/RPCs that confirm **lineage**. Reliability concerns: **correctness and throughput**"],
-            ["**Processing**", "**Validate** (against the schema / last known good feed), **clean** (missing fields, duplicates, misclassification, encoding errors), **normalise / bucket**, **enrich & extend** (join other sources, add labels)"],
-            ["**Post-processing**", "**Storage** chosen by access patterns (model structure, team, training process). **Metadata** about stored features is hugely valuable. **Visualisation** must explain what each record means, how it links to other datasets, and whether it is clean and safe for training. Then **ML**"],
-          ],
+          type: "p",
+          text: "Slides 25–31 describe the **ML data lifecycle** in four phases. Follow one patient record through the hospital's system:",
+        },
+        {
+          type: "p",
+          text: "```flow\nPhase 1: Creation (devices, web, curation) -> Phase 2: Ingestion (into the data lake) -> Phase 3: Processing (validate, clean, enrich) -> Phase 4: Post-processing (store, manage, analyse, visualise) -> Model training\n```",
+        },
+        {
+          type: "p",
+          text: "**Phase 1: Creation / generation.** Data is generated or captured **somewhere else** first: a lab machine records a blood test, a nurse types notes, a monitor streams heart rate. Other examples from the slides: serving logs, photos from events, medical diagnostics. Some datasets can stay **static** for months (a photo-recognition set, if it's representative). Others must be **refreshed**: a model trained only on winter photos will see a **distribution shift** in summer.",
+        },
+        {
+          type: "p",
+          text: "**Phase 2: Ingestion.** Receive the data and write it to storage. Two practical points: **filtering/selection always happens** (you never keep literally everything); and **sampling** saves cost but loses detail. Measure the quality cost against the savings, because *more relevant data usually helps ML*. Use APIs or RPCs (Remote Procedure Calls) that confirm **lineage**: where each record came from. Reliability concerns here: **correctness and throughput**.",
+        },
+        {
+          type: "p",
+          text: "**Phase 3: Processing.** Make the data fit for training: **validate** it (against the schema, or against the last known good feed), **clean** it (missing fields, duplicates, misclassified records, encoding errors), **normalise or bucket** values (ages → age bands), and **enrich and extend** it (join with other sources, add labels such as “readmitted within 30 days: yes/no”).",
+        },
+        {
+          type: "p",
+          text: "**Phase 4: Post-processing.** **Store** the processed data in a form that suits how it will be accessed (which depends on the model's structure, the team and the training process). Record **metadata** about the stored features, which is enormously valuable later. **Visualise** it so people can understand what each record means, how it links to other datasets, and whether it's clean and safe to train on. Then it's ready for **ML**.",
         },
       ],
     },
     {
       id: "roles",
-      heading: "5. Data roles & connecting the dots",
+      heading: "Lesson 7: Who does what? Data roles and how they connect",
       slides: "32–37",
       blocks: [
         {
           type: "table",
-          head: ["Role", "Responsibility"],
+          caption: "Data roles (slides 32–34)",
+          head: ["Role", "What they do"],
           rows: [
-            ["Data analyst", "Collect/clean data, exploratory analysis, reports"],
-            ["Data engineer", "Manage DBMS; develop and maintain **data pipelines**"],
-            ["Data scientist", "Build statistical/ML models; deep insights"],
-            ["Data architect", "Create and maintain the organisation's data **blueprint** and systems"],
-            ["DB admin", "Install and manage DB systems on infrastructure"],
-            ["BI analyst", "Business insights and reporting"],
+            ["**Data analyst**", "Collect and clean data, explore it, produce reports"],
+            ["**Data engineer**", "Manage database systems; build and maintain **data pipelines**"],
+            ["**Data scientist**", "Build statistical and ML models; find deep insights"],
+            ["**Data architect**", "Design and maintain the organisation's **data blueprint** and systems"],
+            ["**Database administrator**", "Install and manage database systems on the infrastructure"],
+            ["**BI analyst**", "Turn data into business insights and reports"],
           ],
         },
-        { type: "p", text: "**Data engineering** = *design, build, maintain* systems to *collect, transform, store* data for *analytics, data science, ML*. **Case study (recommendation engine):** data engineering covers sources, cleaning logic, storage, schedulers, alarms and change requests. What's missing is **architecture** (business acumen, data models, holistic design, orchestration, platform) and **governance** (privacy, security, monitoring/logging, lifecycle)." },
-        { type: "p", text: "```flow\nData Architecture (blueprints, standards, models) -> Data Engineering (pipelines, ETL/ELT, APIs, streaming, orchestration)\nBig Data (volume, velocity, variety) -> Data Governance (quality, compliance, metadata, stewardship, security)\n```" },
+        {
+          type: "p",
+          text: "**Data engineering** is *designing, building and maintaining systems that collect, transform and store data for analytics, data science and ML*. It's the plumbing.",
+        },
+        {
+          type: "p",
+          text: "**Connecting the dots: the recommendation-engine case study (slides 35–37).** A team builds a product-recommendation engine. The data engineering part covers **data sources, cleaning logic, storage, schedulers, alarms and change requests**. But the case study asks: what's **missing**? Two whole layers:",
+        },
+        {
+          type: "list",
+          items: [
+            "**Data architecture:** business acumen, data models, a holistic design, orchestration, the platform. The **blueprint** that engineering builds to.",
+            "**Data governance:** privacy, security, monitoring and logging, lifecycle management. The **rules** that keep the data trustworthy and legal.",
+          ],
+        },
+        {
+          type: "p",
+          text: "```flow\nData Architecture (blueprints, standards, models) -> Data Engineering (pipelines, ETL/ELT, APIs, streaming, orchestration)\nBig Data (volume, velocity, variety) -> Data Governance (quality, compliance, metadata, stewardship, security)\n```",
+        },
+        {
+          type: "callout",
+          kind: "remember",
+          title: "The whole lecture in six lines",
+          text: "1. Data is an **asset** (Netflix: data → value), but relevant data is hard to collect. Myths: more data == better; this stuff is easy.\n2. Data is a **liability** when exposed or misused. PII needs consent and deletion criteria. Reduce risk by access restriction → pseudonymisation → connection removal (recommended). Deletion is hard (tapes, GDPR).\n3. Data pipelines care about volume and correctness; **ML pipelines also care about distribution**. Reliability = durability, consistency, versioning, performance, availability.\n4. Four components: **integration** (ETL → ELT), **storage** (warehouse / lake / lakehouse), **governance** (metadata, roles), **security** (access, encryption, masking, recovery).\n5. Lifecycle: creation → ingestion → processing → post-processing → model.\n6. Roles: analyst, engineer, scientist, architect, DBA, BI analyst. Engineering needs architecture (blueprint) and governance (rules) to be complete.",
+        },
       ],
     },
   ],
 
-  keyTerms: [
-    ["Data as asset", "Data that creates business value when managed and used well."],
-    ["Data as liability", "Data that creates legal/ethical/reputational risk when exposed or misused."],
-    ["PII", "Personally identifiable information: needs consent and deletion criteria."],
-    ["Pseudonymisation", "Reversible replacement of identifiers (reversal needs extra data)."],
-    ["Connection removal", "Cutting the link between PII and model data (recommended)."],
-    ["Data reliability", "Durability, consistency, versioning, performance, availability."],
-    ["ETL vs ELT", "Transform before load vs load raw, then transform in the target."],
-    ["Lakehouse", "Warehouse governance + lake's cheap, flexible storage."],
-    ["Metadata", "Data about data."],
-    ["Data governance council", "Body that sets taxonomy, roles and access policies."],
-    ["Data platform", "Central suite and pipelines to ingest, store, transform and deliver data."],
-    ["Lineage", "Where data came from and how it changed."],
+  glossary: [
+    ["Asset", "—", "Something that creates value (data → decisions → value)"],
+    ["Liability", "—", "Something that creates risk or cost (leaks, misuse, fines)"],
+    ["PII", "Personally Identifiable Information", "Data that identifies a person: name, phone, Aadhaar, address"],
+    ["Consent", "—", "The person's explicit permission to collect and use their data"],
+    ["Pseudonymisation", "—", "Replacing identifiers reversibly; reversal needs extra data"],
+    ["Anonymisation", "—", "Removing identifying information so people can't be identified"],
+    ["Connection removal", "—", "Cutting the link between PII and model data (recommended)"],
+    ["GDPR", "General Data Protection Regulation", "EU law on personal data, including deletion rights"],
+    ["Data distribution", "—", "What the data looks like overall: which groups, in what proportions"],
+    ["Durability / consistency / availability", "—", "Data isn't lost / everyone sees the same version / data is reachable when needed"],
+    ["Version control (time travel)", "—", "Being able to see data as it was at an earlier time"],
+    ["ETL", "Extract, Transform, Load", "Transform before loading into the target"],
+    ["ELT", "Extract, Load, Transform", "Load raw data first, transform inside the target"],
+    ["BI", "Business Intelligence", "Dashboards and reports for decision-makers"],
+    ["Data warehouse", "—", "Schema-defined store for structured analytics"],
+    ["Data lake", "—", "Cheap store for raw data of any type, no schema needed"],
+    ["Data lakehouse", "—", "Lake storage with warehouse-style management"],
+    ["RDBMS", "Relational DataBase Management System", "Software for relational databases"],
+    ["Metadata", "—", "Data about data: meaning, origin, owner, format"],
+    ["Taxonomy", "—", "An agreed classification and naming scheme"],
+    ["Data governance council", "—", "Group that sets data definitions, roles and access policies"],
+    ["Data masking", "—", "Hiding parts of sensitive values (XXXX-1234)"],
+    ["Data platform", "—", "Central suite, repository and pipelines serving the whole enterprise"],
+    ["DAMA / DMBOK", "Data Management Association / Data Management Body of Knowledge", "The standard data-management framework"],
+    ["Lineage", "—", "Where data came from and how it changed along the way"],
+    ["RPC / API", "Remote Procedure Call / Application Programming Interface", "Ways for systems to call each other"],
+    ["Distribution shift", "—", "When new data looks different from the training data"],
+    ["DBA", "Database Administrator", "Installs and manages database systems"],
   ],
 
   examTips: [
@@ -148,6 +323,10 @@ export default {
       question:
         "How can an organization apply the concept of “Data as an Asset” to inform its data management strategy, ensuring that data is properly valued, protected, and leveraged to drive business outcomes, while also mitigating potential risks and liabilities associated with data misuse or mismanagement?",
       solution: `
+### What the examiner wants
+The question has **four verbs** (value, protect, leverage, mitigate liability) and the marks follow them. Give each its own heading with concrete actions, then add a KPI and a real example (Lessons 1–2, 4). Mentioning the asset/liability duality shows you understand the lecture's framing.
+
+### Model answer
 **Idea:** treat data like any balance-sheet asset. It has *value* that must be measured, *owners* accountable for it, *maintenance* to keep it fit for use, and *risk* (a liability side) that must be controlled. (Netflix uses data-informed perspectives to improve its business; the same data exposed carelessly becomes a liability.)
 
 \`\`\`flow
@@ -181,13 +360,20 @@ Mitigate liability: consent -> access control -> anonymisation -> retention & de
 
 **Example:** a hospital values its EMR data (it drives readmission-prediction models), protects it (RBAC, encryption, HIPAA), leverages it (a lakehouse feeding ML), and mitigates liability (pseudonymised patient IDs in training data, audit trails, retention limits).
 
-**Conclusion:** data creates value only when **governed**. Treating it as an asset means investing in its quality and accessibility *and* controlling its liability side.`,
+**Conclusion:** data creates value only when **governed**. Treating it as an asset means investing in its quality and accessibility *and* controlling its liability side.
+
+### Takeaway
+Asset and liability are two sides of the same data: a good strategy **creates value** (inventory, quality, platform, ML) and **limits risk** (consent, pseudonymisation, access control, deletion) at the same time.`,
     },
     {
       title: "Data as a liability: approaches to reduce risk",
       marks: 5,
       question: "Explain how data can become a liability for an organization. Describe the restrictions on data collection and the three approaches to reduce the liability of private data in ML pipelines.",
       solution: `
+### What the examiner wants
+How data becomes a liability (with an example), the collection restrictions (PII consent, location rules), the **three approaches in order** with pros and cons, and why deletion is hard (Lesson 2).
+
+### Model answer
 **How data becomes a liability:** the same data that is an asset can harm the organisation and its users when it is exposed, misused or held without permission. *Example:* medical records in a breach lead to lawsuits, regulatory fines and reputational damage. Data can also be a liability simply because it must be protected, retained correctly and deleted on time.
 
 **Restrictions on collection**
@@ -204,13 +390,20 @@ Mitigate liability: consent -> access control -> anonymisation -> retention & de
 2. **Anonymisation / pseudonymisation:** replace private identifiers reversibly, where reversal needs extra data/systems. This shrinks the access/audit surface, protects against casual inspection by engineers, and **preserves properties the model needs** (e.g. a postcode from the same locality for weather prediction).
 3. **Connection removal (recommended):** remove the connection between PII and model data. This reduces risk the most, since there is no trivial way back, but it is harder than it seems.
 
-**Plus deletion:** Shift+Del doesn't truly erase data, and archives on tape are hard to purge. Delete when the user asks, when the business no longer needs it, or when regulation (GDPR) sets a cut-off.`,
+**Plus deletion:** Shift+Del doesn't truly erase data, and archives on tape are hard to purge. Delete when the user asks, when the business no longer needs it, or when regulation (GDPR) sets a cut-off.
+
+### Takeaway
+Access restriction → pseudonymisation → connection removal: each step protects more but is harder to do. Deletion must be planned, not assumed.`,
     },
     {
       title: "Why ML pipelines are more data-sensitive; data reliability",
       marks: 5,
       question: "Using an example, explain why ML pipelines are more sensitive to data than traditional data pipelines. What characteristics make data reliable in a distributed environment?",
       solution: `
+### What the examiner wants
+Use the slide's New Year's Eve sales scenario to show *why* (data pipelines only care about volume and correctness; ML also depends on distribution), then list the five reliability properties with one line each (Lesson 3).
+
+### Model answer
 **Example (slide 9):** an e-commerce company predicts New Year's Eve sales by country and language. Due to an error, data for one country/language is lost. The **data pipeline keeps running normally** (it just moves fewer rows), but the **ML pipeline behaves abnormally**: predictions for that segment are wrong, hurting sales planning and reputation.
 
 **Why:**
@@ -229,13 +422,20 @@ So ML needs distribution monitoring, validation and drift detection (L8), not ju
 | How fast is it available for accurate answers? | **Performance** |
 | Is it there when needed? | **Availability** |
 
-*(Homework in the slides: why integrity isn't listed separately. It is effectively achieved through consistency + durability + validation.)*`,
+*(Homework in the slides: why integrity isn't listed separately. It is effectively achieved through consistency + durability + validation.)*
+
+### Takeaway
+A data pipeline fails loudly; an ML pipeline fails **silently** when the distribution shifts. That's why reliability and monitoring matter more for ML.`,
     },
     {
       title: "Components of data management: ETL vs ELT, warehouse vs lake",
       marks: 5,
       question: "Describe the four components of a data management strategy. In your answer, contrast ETL with ELT and a data warehouse with a data lake, and explain the lakehouse.",
       solution: `
+### What the examiner wants
+All four components named and explained, with the two comparisons asked for (ETL vs ELT; warehouse vs lake, plus lakehouse) set out in tables (Lesson 4).
+
+### Model answer
 **1. Data integration & processing**
 - Ingest raw data from web APIs, mobile apps, IoT, forms and surveys.
 - **ETL** (Extract → Transform → Load) was the historical standard for integrating datasets. **Problems:** it assumes structured data, can't keep up with velocity, and is poor for real-time flows.
@@ -255,13 +455,20 @@ So ML needs distribution monitoring, validation and drift detection (L8), not ju
 
 **3. Data governance:** governance councils align taxonomies so **metadata** is consistent, and define roles and responsibilities for appropriate access.
 
-**4. Data security:** controlled access (you shouldn't see a colleague's salary slip or another patient's report), encryption, data masking, disaster recovery. It protects against cybercrime; breaches carry financial and brand costs.`,
+**4. Data security:** controlled access (you shouldn't see a colleague's salary slip or another patient's report), encryption, data masking, disaster recovery. It protects against cybercrime; breaches carry financial and brand costs.
+
+### Takeaway
+Integration, storage, governance, security. ELT and lakes exist because data became bigger, faster and less structured.`,
     },
     {
       title: "Phases of the ML data lifecycle",
       marks: 5,
       question: "With a neat diagram, explain the phases of the data lifecycle for ML (creation, ingestion, processing, post-processing). Mention the key concerns at each phase.",
       solution: `
+### What the examiner wants
+The four phases in order with a diagram, the key concerns in each (refresh vs static, sampling, lineage, validate/clean/enrich, metadata and visualisation), and one running example (Lesson 6).
+
+### Model answer
 \`\`\`flow
 Creation (devices, web, curation) -> Ingestion (data lake: logs, web, curated, behavioural) -> Processing (validation, cleaning, enrichment) -> Post-processing (storage, metadata, analysis/visualisation) -> Model training & pipeline -> Models
 \`\`\`
@@ -287,13 +494,20 @@ Creation (devices, web, curation) -> Ingestion (data lake: logs, web, curated, b
 - **Store** processed data according to access patterns (model structure, team structure, training process).
 - Maintain **metadata** about features, which is invaluable when many people reuse the data.
 - **Visualise** meaningfully: what each record means, how it links to other datasets, and whether it is clean and safe for training.
-- Then **ML training**.`,
+- Then **ML training**.
+
+### Takeaway
+Creation → ingestion → processing → post-processing. Most model problems can be traced back to a skipped check in one of these phases.`,
     },
     {
       title: "Data roles and data engineering vs data architecture",
       marks: 5,
       question: "An e-commerce firm wants a personalised recommendation engine. Explain what data engineering would do, what is still missing without data architecture and governance, and which roles are involved.",
       solution: `
+### What the examiner wants
+The main roles in a table, a definition of data engineering, and the recommendation-engine case study showing what architecture and governance add (Lesson 7).
+
+### Model answer
 **Data engineering** (design → build → maintain systems to collect → transform → store data for analytics/DS/ML):
 - identify data sources (clickstream, orders, catalogue); write cleaning logic; choose storage
 - schedulers to collect data regularly and feed the recommendation engine
@@ -313,7 +527,10 @@ Data governance (quality, compliance, metadata, security) spans all layers
 - **data engineer** (pipelines)
 - **data scientist** (recommendation model)
 - **data analyst / BI analyst** (EDA, KPIs such as CTR and conversion)
-- **DBA** (databases)`,
+- **DBA** (databases)
+
+### Takeaway
+Engineering builds the pipes, architecture draws the blueprint, governance sets the rules. A data system needs all three.`,
     },
   ],
 

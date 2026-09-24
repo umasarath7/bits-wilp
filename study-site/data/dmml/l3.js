@@ -1,146 +1,343 @@
 // DMML — Lecture 3: Data Architectures
-// Source: CourseFiles/DMML/L3-Data Architectures.pptx (52 slides)
+// Source: CourseFiles/DMML/L3-Data Architectures.pptx (50 slides)
+// Teaching style: "Lesson N: Why …?" — the why first, a running example, real-world cases, glossary at the end.
 
 export default {
   title: "Data Architectures",
-  source: "L3-Data Architectures.pptx · 52 slides",
+  source: "L3-Data Architectures.pptx · 50 slides",
   overview:
-    "Data architecture is the **blueprint** that supports an enterprise's evolving data needs through **flexible, reversible decisions based on trade-offs**. The lecture classifies architectures four ways: by **centralisation** (centralised / decentralised / hybrid), by **storage** (warehouse with star/snowflake schemas and data marts, lake, lakehouse), by **governance** (data mesh, data fabric) and by **processing** (Lambda, Kappa). It ends with a generalised **big-data architecture** (5 Vs, components, benefits, challenges) and how Lambda and Kappa support ML.",
+    "A data architecture is the **blueprint** for how an organisation's data flows from its sources to the people and models that use it. The slides classify architectures along **four questions**: **who controls** the data (centralisation), **where** it lives (warehouse, mart, lake, lakehouse), **who owns and governs** it in a large organisation (data mesh, data fabric), and **how** it's processed (batch and stream: Lambda, Kappa). We finish with the general big-data architecture. Running example: a **global bank** with subsidiaries in India, the UK and Singapore, which is exactly the situation of the previous paper's architecture question (**PYQ Q3**).",
 
   summary: [
     {
       id: "intro",
-      heading: "1. What is data architecture and why?",
+      heading: "Lesson 1: What is data architecture, and why do we need one?",
       slides: "3–6",
       blocks: [
-        { type: "list", items: [
-          "**TOGAF:** a description of the structure and interaction of the enterprise's major types and sources of data, logical and physical data assets, and data-management resources.",
-          "**DAMA-DMBOK:** identifying the enterprise's data needs and designing and maintaining **master blueprints** to meet them, guiding integration, controlling data assets, and aligning data investments with business strategy.",
-          "**Reis & Housley:** the design of systems to support the **evolving** data needs of an enterprise, achieved by **flexible and reversible decisions** reached through careful evaluation of **trade-offs**.",
-          "**Why:** requirements change fast and new tools arrive almost daily. Good architecture lets you understand the business, translate its needs into designs, and know the trade-offs across source → ingestion → storage → transformation → serving. *Successful data engineering is built on rock-solid architecture.*",
-        ]},
+        {
+          type: "p",
+          text: "Think of building a house. Before anyone lays a brick, an architect draws a **blueprint**: where the rooms go, how the plumbing runs, where you could add a floor later. Data architecture is the same thing for data: it decides **where data comes from, where it's stored, how it moves, who can use it, and how it can grow**, before engineers build the pipelines.",
+        },
+        {
+          type: "p",
+          text: "**Three definitions (slides 3–4)**, each adding something:",
+        },
+        {
+          type: "list",
+          items: [
+            "**TOGAF (The Open Group Architecture Framework):** *a description of the structure and interaction of the enterprise's major types and sources of data, logical data assets, physical data assets, and data-management resources.* The **what exists and how it connects** view.",
+            "**DAMA-DMBOK:** *identifying the data needs of the enterprise and designing and maintaining the master blueprints to meet those needs*, using them to guide integration, control data assets and **align data investments with business strategy**. The **business-alignment** view.",
+            "**Reis & Housley (Fundamentals of Data Engineering):** *the design of systems to support the evolving data needs of an enterprise, achieved by **flexible and reversible decisions** reached through a careful evaluation of **trade-offs**.* The **change** view: needs keep evolving, so don't lock yourself in.",
+          ],
+        },
+        {
+          type: "p",
+          text: "**Why it matters (slide 5).** Requirements change quickly and new tools appear almost daily. A good architecture helps you **understand the business goals**, **translate them into designs**, and **know the trade-offs** at every stage: source → ingestion → storage → transformation → serving. The slides' summary: *successful data engineering is built on a rock-solid architecture.*",
+        },
         {
           type: "table",
-          head: ["Aspect", "Operational architecture", "Technical architecture"],
+          caption: "Two sides of architecture (slide 6)",
+          head: ["", "Operational architecture", "Technical architecture"],
           rows: [
-            ["Describes", "**What** needs to happen (people, processes, technology)", "**How** it will happen"],
-            ["Example question", "Which business processes does the data serve? How is quality managed?", "How will we move 10 TB/hour from the source DB to the lake?"],
+            ["Describes", "**What** needs to happen: people, processes, technology", "**How** it will happen"],
+            ["Example question", "Which business processes does this data serve? How is its quality managed? What latency does the business need?", "How do we move 10 TB an hour from the source database into the lake?"],
           ],
         },
       ],
     },
     {
       id: "central",
-      heading: "2. Categorisation by centralisation",
+      heading: "Lesson 2: Who controls the data? Centralised, decentralised or hybrid",
       slides: "7–12",
       blocks: [
         {
+          type: "p",
+          text: "Our global bank has three subsidiaries, each with its own customers, core banking system and local regulator. The first architectural decision: **should data be controlled from one place, by each unit, or a mix?**",
+        },
+        {
+          type: "p",
+          text: "**Centralised (slides 8–9).** A **single point of control**. Data flows from authoritative sources into **one intelligent landing area**, then **one aggregation layer** across all business units, feeding **simplified enterprise reporting**. Like a head office that insists every branch sends its paperwork to one central registry. **Good for:** governance, auditing, consistent reporting, one version of the truth. **Risks:** the central team becomes a **bottleneck**, it's slower to adapt, and it's a **single point of failure**. **Typical of highly regulated industries: banking and healthcare.**",
+        },
+        {
+          type: "p",
+          text: "**Decentralised (slide 10).** **Each business unit organises its data front to back** in its own silo: its own sources, aggregation and BU-level reporting. Separate platforms then aggregate across units for enterprise reporting. **Good for:** autonomy and fitting each unit's diverse customers and core systems. **Risks:** duplicated data, **inconsistent definitions** (is a “customer” an account or a person?), and a hard-to-assemble enterprise view. **Typical of insurance**, where master data and domain data are decentralised.",
+        },
+        {
+          type: "p",
+          text: "**Hybrid (slides 11–12).** Data and platforms are organised **by data domain** (customers, accounts, payments, risk), with **single golden sources** and **no duplication across domains**. Central standards and master data, plus domain-level agility. **Good for:** balance, and handling rapidly updated data streams. **Cost:** more coordination and design complexity. **Typical of telecom:** centralised master data management plus federated storage by domain.",
+        },
+        {
           type: "table",
+          caption: "Summary",
           head: ["", "Centralised", "Decentralised", "Hybrid"],
           rows: [
-            ["Idea", "Single point of control: authoritative sources → one intelligent landing area → one aggregation layer across business units → simplified enterprise reporting", "Each business unit organises data front to back in its own silo (sources, aggregation, BU reporting); platforms aggregate across BUs for enterprise reporting", "Data and platforms organised **by data domain**, with **single golden sources** and no duplication across domains"],
-            ["Strength", "Governance, auditing, reporting, consistency", "Autonomy; fits diverse customer bases and core systems", "Balance: central standards/MDM + domain agility; suits rapidly updated streams"],
-            ["Weakness", "Bottleneck, less agility, single point of failure", "Duplication, inconsistent definitions, hard enterprise view", "More coordination and design complexity"],
-            ["Typical industry", "**Banking, healthcare** (highly regulated)", "**Insurance** (decentralised MDM and domain data)", "**Telecom** (centralised MDM + federated domain storage)"],
+            ["Idea", "One landing area and aggregation layer for all units", "Each unit runs its own data front to back", "Organise by domain with single golden sources"],
+            ["Strength", "Governance, auditing, consistency", "Autonomy; fits diverse units", "Central standards + domain agility"],
+            ["Weakness", "Bottleneck, less agile, single point of failure", "Duplication, inconsistent definitions", "Coordination and design complexity"],
+            ["Typical industry", "**Banking, healthcare**", "**Insurance**", "**Telecom**"],
           ],
+        },
+        {
+          type: "callout",
+          kind: "exam",
+          title: "For the global bank (PYQ Q3)",
+          text: "A pure central model clashes with **data residency** laws (some countries require citizens' data to stay in the country). A pure decentralised model gives inconsistent customer data and weak group-wide risk reporting. The usual answer is **hybrid**: central governance, master data (one golden customer record) and group reporting, plus **regional stores** that keep data in-country. See the Theory tab for the full model answer.",
         },
       ],
     },
     {
-      id: "storage",
-      heading: "3. Categorisation by storage",
-      slides: "13–24",
+      id: "warehouse",
+      heading: "Lesson 3: Where should analytical data live? Warehouses, schemas and marts",
+      slides: "13–19",
       blocks: [
-        { type: "p", text: "**Data warehouse:** the ETL output is transformed into a defined structure for business analytics. A **schema** (facts = measures; dimensions = context) makes data fast to query, consistent, understandable to business users and efficient for aggregation." },
+        {
+          type: "p",
+          text: "**Data warehouse (slides 13–14).** Data is extracted from operational systems, transformed into a **defined structure** (ETL), and loaded for **business analytics**. The structure is a **schema** built from two kinds of table:",
+        },
+        {
+          type: "list",
+          items: [
+            "**Fact tables** hold the **measures**: the numbers you add up. *Bank:* transaction amount, fee, balance.",
+            "**Dimension tables** hold the **context**: who, what, where, when. *Bank:* customer, branch, product, date.",
+          ],
+        },
+        {
+          type: "p",
+          text: "Why bother? A schema makes data **fast to query, consistent, understandable to business users, and efficient for aggregation** (“total fees by branch by month”).",
+        },
+        {
+          type: "p",
+          text: "**Star vs snowflake (slides 15–17).** Two ways to arrange the dimensions around the fact table:",
+        },
         {
           type: "table",
           head: ["", "Star schema", "Snowflake schema"],
           rows: [
-            ["Shape", "Central **fact** table (sales, revenue) + single-level **dimension** tables around it", "Dimensions split into sub-dimensions (multi-level)"],
-            ["Design", "**Denormalised** (product id, name and category in one table)", "**Normalised**"],
-            ["Pros", "Faster queries; easy for non-technical users", "Less redundancy; storage-efficient; handles complex hierarchies"],
-            ["Cons", "Repeated data, so more storage", "More joins, so slower queries; harder to design and maintain"],
+            ["Shape", "A central fact table with **single-level** dimension tables around it, like the points of a star", "Dimensions **split into sub-dimensions**: branch → city → country, like the arms of a snowflake"],
+            ["Design", "**Denormalised** (product id, name and category all in one table)", "**Normalised** (category in its own table)"],
+            ["Pros", "**Faster queries** (fewer joins); easy for non-technical users", "Less redundancy; **saves storage**; handles complex hierarchies"],
+            ["Cons", "Repeated values use more storage", "More joins → **slower queries**; harder to design and maintain"],
           ],
         },
-        { type: "p", text: "**Data mart:** a refined **subset of the warehouse** for one department or line of business (HR recruitment, IT tickets). It avoids querying the whole warehouse, adds a transformation stage (pre-joined/aggregated data) and greatly improves performance for complex joins and aggregations." },
-        { type: "p", text: "**Data lake:** used with **ELT** for high-velocity, unstructured data whose transformation depends on format. Storage is near-limitless and cheap, holding any size and type, with compute spun up on demand. **Drawbacks:** it becomes a dumping ground or **data swamp**, holds **dark data** (collected but never used) and **WORN** data (write once, read never), and grows unmanageable (even at Facebook and Netflix)." },
-        { type: "p", text: "**Data lakehouse (Databricks):** the controls, data management and structures of a warehouse on top of the lake's object storage, supporting multiple query engines and **ACID** transactions." },
+        {
+          type: "p",
+          text: "**Data mart (slides 18–19).** A **smaller, refined subset of the warehouse** for one department or line of business: HR recruitment, IT tickets, the credit-card division. Why? Querying the whole warehouse for one team's needs is slow and complicated. A mart adds a transformation stage with **pre-joined and pre-aggregated** data, which **greatly speeds up** that team's complex joins and aggregations.",
+        },
+      ],
+    },
+    {
+      id: "lake",
+      heading: "Lesson 4: What about raw, messy data? Lakes and lakehouses",
+      slides: "20–24",
+      blocks: [
+        {
+          type: "p",
+          text: "A warehouse needs you to decide the structure **before** loading. That's hard for fast, messy, unstructured data: app clickstreams, call recordings, scanned KYC documents. So the **data lake** flips the order.",
+        },
+        {
+          type: "p",
+          text: "**Data lake (slides 20–22).** Used with **ELT**: load raw data **as it is**, and transform it later depending on its format and purpose. Storage is **near-limitless and cheap**, holds **any size and type** of data, and compute is spun up only when needed.",
+        },
+        {
+          type: "callout",
+          kind: "warn",
+          title: "How lakes go wrong (slide 23)",
+          text: "Without discipline, a lake becomes a **data swamp**: a dumping ground nobody can navigate. It fills with **dark data** (collected but never used) and **WORN data** (Write Once, Read Never). It grows unmanageable, which has happened even at Facebook and Netflix. The root cause is no schema, no metadata, no ownership.",
+        },
+        {
+          type: "p",
+          text: "**Data lakehouse (slide 24, from Databricks).** Keep the lake's cheap object storage, but add the warehouse's **controls, data management and structures** on top: tables with schemas, **ACID transactions** (Atomicity, Consistency, Isolation, Durability: updates happen fully or not at all, and readers never see half-written data), and support for **multiple query engines**. One copy of the data serves both BI dashboards and ML.",
+        },
+        {
+          type: "table",
+          caption: "Warehouse vs lake vs lakehouse",
+          head: ["", "Warehouse", "Lake", "Lakehouse"],
+          rows: [
+            ["Load style", "ETL (schema-on-write)", "ELT (schema-on-read)", "ELT with managed tables"],
+            ["Data types", "Structured", "Any", "Any"],
+            ["Cost", "Higher", "Low", "Low"],
+            ["Governance / ACID", "Strong", "Weak (swamp risk)", "Strong"],
+            ["Best for", "BI, reporting", "ML, exploration, raw archive", "BI and ML on one copy"],
+          ],
+        },
       ],
     },
     {
       id: "gov",
-      heading: "4. Categorisation by governance: data mesh & data fabric",
+      heading: "Lesson 5: Who owns the data in a big organisation? Data mesh and data fabric",
       slides: "25–28",
       blocks: [
         {
-          type: "table",
-          head: ["", "Data mesh (Zhamak Dehghani)", "Data fabric"],
-          rows: [
-            ["Core idea", "**Decentralise** monolithic platforms: domains host and serve their own data as products, instead of pushing it into a central lake", "A **unified data layer** that integrates lakes, warehouses, DBs and SaaS via APIs, CDC and virtualisation"],
-            ["Principles", "1. Domain-oriented decentralised ownership and architecture 2. **Data as a product** 3. **Self-serve data infrastructure** as a platform 4. **Federated computational governance**", "Unified access; seamless integration and orchestration; security, governance and compliance; scalability; real-time insights; multi-cloud"],
-            ["Example", "E-commerce team exposes order events as a curated dataset with schema, SLAs and usage docs", "360° customer view: Salesforce sales + data-lake transactions + social sentiment via API"],
-            ["Nature", "Organisational/socio-technical (domain-driven design applied to data)", "Technology/integration layer"],
+          type: "p",
+          text: "As organisations grow, one central data team can't understand every domain. The team running the lake doesn't know what a “chargeback” means to the cards business. Two modern answers:",
+        },
+        {
+          type: "p",
+          text: "**Data mesh (Zhamak Dehghani, slides 25–26)** is an **organisational** idea: **decentralise** the monolithic central platform. Instead of every domain pushing its data into a central lake for a central team to clean, **each domain owns, hosts and serves its own data as a product**. Four principles:",
+        },
+        {
+          type: "list",
+          ordered: true,
+          items: [
+            "**Domain-oriented decentralised ownership and architecture:** the payments team owns payments data.",
+            "**Data as a product:** that data is published like a product, with a clear schema, documentation, quality guarantees and SLAs (Service Level Agreements), so other teams can rely on it.",
+            "**Self-serve data infrastructure as a platform:** a central platform team provides the tools so domains don't each reinvent storage and pipelines.",
+            "**Federated computational governance:** global rules (security, privacy, naming) agreed centrally and enforced automatically, while domains keep autonomy.",
           ],
+        },
+        {
+          type: "p",
+          text: "*Example:* the e-commerce team exposes its **order events** as a curated dataset with a schema, SLAs and usage documentation.",
+        },
+        {
+          type: "p",
+          text: "**Data fabric (slides 27–28)** is a **technology** idea: a **unified data layer** that connects all the organisation's stores (lakes, warehouses, databases, SaaS apps) through APIs, CDC (Change Data Capture) and **data virtualisation**, so users can query across them as if they were one. Features: unified access, seamless integration and orchestration, security/governance/compliance, scalability, real-time insight, multi-cloud. *Example:* a **360° customer view** combining Salesforce sales data, data-lake transactions and social-media sentiment via APIs.",
+        },
+        {
+          type: "callout",
+          kind: "idea",
+          title: "The one-line difference",
+          text: "**Mesh** changes **who owns** the data (people and organisation). **Fabric** changes **how data is connected** (a technical integration layer). They can be used together.",
         },
       ],
     },
     {
       id: "proc",
-      heading: "5. Categorisation by processing: Lambda & Kappa",
+      heading: "Lesson 6: How do we process both history and live data? Lambda and Kappa",
       slides: "29–32, 43–50",
       blocks: [
-        { type: "p", text: "**Motivation (bank fraud):** batch analysis to find fraud patterns and reports, *plus* real-time alerts on each transaction. The same data must flow to both batch and stream processing." },
-        { type: "p", text: "```flow\nImmutable, append-only source -> Batch layer (cold path: all raw data, accurate, slow) -> Serving layer (batch views)\nImmutable, append-only source -> Speed layer (hot path: real-time, low latency, less accurate) -> Serving layer (combined view)\n```" },
-        { type: "p", text: "```flow\nEvent stream (unified, immutable, ordered log) -> Stream processing -> Real-time views (replay the log to recompute history)\n```" },
+        {
+          type: "p",
+          text: "**The motivating problem (slide 29): fraud at our bank.** The bank needs two things from the same transactions: **batch analysis** of months of history to discover fraud patterns and produce reports, and **real-time alerts** on each new card swipe within milliseconds. Batch is accurate but slow; streaming is fast but sees only recent data. How do we get both?",
+        },
+        {
+          type: "p",
+          text: "**Lambda architecture (slides 30–31, 43–46).** Send every incoming event, kept in an **immutable, append-only** store, down **two paths**:",
+        },
+        {
+          type: "list",
+          items: [
+            "**Batch layer (the cold path):** periodically recomputes results over **all** the raw data. Accurate and complete, but hours behind.",
+            "**Speed layer (the hot path):** processes events as they arrive. Low latency, but approximate and covering only recent data.",
+            "**Serving layer:** merges the batch views and the real-time views to answer queries.",
+          ],
+        },
+        {
+          type: "p",
+          text: "```flow\nImmutable, append-only source -> Batch layer (cold path: all raw data, accurate, slow) -> Serving layer (batch views)\nImmutable, append-only source -> Speed layer (hot path: real-time, low latency) -> Serving layer (combined view)\n```",
+        },
+        {
+          type: "p",
+          text: "Lambda's big weakness: the same logic is written **twice**, in a batch framework and a streaming framework, so there are two codebases to maintain, results that don't quite match, and more bugs.",
+        },
+        {
+          type: "p",
+          text: "**Kappa architecture (Jay Kreps, slides 32, 47–50)** asks: *why not treat everything as a stream?* Keep one **unified, immutable, ordered log** of events (e.g. in Kafka), and process it with a **single stream-processing** codebase. To recompute history (after fixing a bug, say), simply **replay the log from the start** through the new code.",
+        },
+        {
+          type: "p",
+          text: "```flow\nEvent stream (unified, immutable, ordered log) -> Stream processing -> Real-time views (replay the log to recompute history)\n```",
+        },
         {
           type: "table",
-          head: ["", "Lambda", "Kappa (Jay Kreps)"],
+          head: ["", "Lambda", "Kappa"],
           rows: [
-            ["Paths", "Two: **batch (cold)** + **speed (hot)**, merged in a serving layer", "One: everything is a **stream**"],
-            ["Reprocessing", "Batch layer recomputes over all raw data", "**Replay** the log from the start"],
-            ["Pros", "Accurate historical views + low-latency views", "Single codebase; simpler; a true event-based architecture"],
-            ["Cons", "**Two codebases/frameworks**; duplicate logic; hard to reconcile; error-prone", "Streaming is hard to execute; can be complicated and expensive; batch is still cheaper for enormous history"],
-            ["ML use", "Batch layer → training on full history; speed layer → real-time inference", "Unified pipeline; the same logic for history and live data; supports **online learning**"],
+            ["Paths", "Two: batch (cold) + speed (hot), merged in a serving layer", "One: everything is a stream"],
+            ["Reprocessing history", "Batch layer recomputes over all raw data", "**Replay** the log from the beginning"],
+            ["Pros", "Accurate historical views + low-latency views", "**One codebase**; simpler; truly event-based"],
+            ["Cons", "**Two codebases**; duplicated logic; hard to reconcile", "Streaming is hard to run well; can be complex and expensive; batch is still cheaper for enormous histories"],
+            ["For ML", "Batch layer trains on full history; speed layer serves real-time inference", "Same logic for history and live data; supports **online learning**"],
           ],
         },
       ],
     },
     {
       id: "bigdata",
-      heading: "6. Generalised big-data architecture",
+      heading: "Lesson 7: What does a complete big-data architecture look like?",
       slides: "33–42",
       blocks: [
-        { type: "p", text: "**Big data** = massive, complex datasets that traditional systems can't handle (TB–PB). **Traditional data** is structured, relational, analysed with SQL/statistics, and predictable in size. **Big data** is structured + semi + unstructured, needs ML/data mining and **distributed processing**. **5 Vs:** Volume, Velocity, Variety, Veracity, Value." },
-        { type: "p", text: "```flow\nData sources -> Data storage (distributed files) -> Batch processing -> Analytical data store -> Analysis & reporting\nData sources -> Real-time message ingestion -> Stream processing -> Analytical data store\nOrchestration (Azure Data Factory, Oozie, Sqoop) coordinates all steps\n```" },
         {
-          type: "table",
-          head: ["Benefits", "Challenges"],
-          rows: [
-            ["Many technology choices (open source + vendors)", "**Complexity:** many components, hard to build, test and debug"],
-            ["**Performance through parallelism**", "**Skillset:** specialised frameworks and languages"],
-            ["**Elastic scale**: scale out, pay for what you use", "**Technology maturity:** fast-evolving (Spark releases) vs stable (Hive, Pig)"],
-            ["Interoperability with IoT and enterprise BI", ""],
+          type: "p",
+          text: "**Big data (slides 33–35)** means datasets so large or complex that traditional systems can't handle them: terabytes to petabytes. Compare: **traditional data** is structured, relational, analysed with SQL and statistics, and predictable in size. **Big data** mixes structured, semi-structured and unstructured data, needs ML and data mining, and must be processed in a **distributed** way across many machines. It's described by the **5 Vs**:",
+        },
+        {
+          type: "list",
+          items: [
+            "**Volume:** how much (petabytes of transactions).",
+            "**Velocity:** how fast it arrives (thousands of card swipes per second).",
+            "**Variety:** how many forms (tables, JSON logs, images, voice).",
+            "**Veracity:** how trustworthy it is (noise, errors, fraud).",
+            "**Value:** whether it's worth anything once processed.",
           ],
         },
-        { type: "p", text: "**Workloads:** batch processing of data at rest, real-time processing of data in motion, interactive exploration, predictive analytics/ML. **Use it when:** volumes are too large for a traditional DB, unstructured data must be transformed, or unbounded streams need low-latency processing." },
+        {
+          type: "p",
+          text: "**The generic architecture (slides 36–38)** has these building blocks:",
+        },
+        {
+          type: "p",
+          text: "```flow\nData sources -> Data storage (distributed files) -> Batch processing -> Analytical data store -> Analysis & reporting\nData sources -> Real-time message ingestion -> Stream processing -> Analytical data store\nOrchestration (Azure Data Factory, Oozie, Sqoop) coordinates all steps\n```",
+        },
+        {
+          type: "table",
+          caption: "Benefits and challenges (slides 39–41)",
+          head: ["Benefits", "Challenges"],
+          rows: [
+            ["**Technology choices:** many open-source and vendor options", "**Complexity:** many moving parts, hard to build, test and debug"],
+            ["**Performance through parallelism:** split work across many machines", "**Skillset:** specialised frameworks and languages"],
+            ["**Elastic scale:** add machines when needed, pay for what you use", "**Technology maturity:** some tools evolve fast (Spark), others are stable but ageing (Hive, Pig)"],
+            ["**Interoperability** with IoT and existing enterprise BI", ""],
+          ],
+        },
+        {
+          type: "p",
+          text: "**Workloads it supports (slide 42):** batch processing of **data at rest**, real-time processing of **data in motion**, interactive exploration, and predictive analytics/ML. **Use it when** volumes are too large for a traditional database, unstructured data must be transformed for analysis, or unbounded streams need low-latency processing.",
+        },
+        {
+          type: "callout",
+          kind: "remember",
+          title: "The whole lecture in six lines",
+          text: "1. Data architecture = the blueprint: flexible, reversible decisions driven by trade-offs. Operational = what; technical = how.\n2. **Centralised** (one control point: banks, hospitals) vs **decentralised** (unit silos: insurance) vs **hybrid** (domains with golden sources: telecom).\n3. **Warehouse**: facts + dimensions; **star** (denormalised, fast) vs **snowflake** (normalised, compact); **marts** for departments.\n4. **Lake**: ELT, cheap, any data, but beware swamps, dark data and WORN. **Lakehouse** adds warehouse management and ACID.\n5. **Mesh** = domain ownership, data as a product, self-serve platform, federated governance. **Fabric** = one integration layer over all stores.\n6. **Lambda** = batch + speed + serving (two codebases). **Kappa** = one stream, replay the log. Big data: 5 Vs; sources → storage/ingestion → batch/stream → analytical store → reporting, with orchestration.",
+        },
       ],
     },
   ],
 
-  keyTerms: [
-    ["Data architecture", "Blueprint for data needs; flexible, reversible, trade-off-driven."],
-    ["Centralised / decentralised / hybrid", "One control point / BU silos / domain-based golden sources."],
-    ["MDM", "Master data management: a single authoritative version of core entities."],
-    ["Fact / dimension", "Measures (sales) / context (product, date, region)."],
-    ["Star vs snowflake", "Denormalised, fast / normalised, compact."],
-    ["Data mart", "Department-specific subset of the warehouse."],
-    ["Data swamp / dark data / WORN", "Lake failure modes."],
-    ["Lakehouse", "Lake storage + warehouse management and ACID."],
-    ["Data mesh", "Domain ownership, data as product, self-serve platform, federated governance."],
-    ["Data fabric", "Unified integration layer over heterogeneous stores."],
-    ["Lambda", "Batch (cold) + speed (hot) + serving layers."],
-    ["Kappa", "Stream-only; replay the log for reprocessing."],
-    ["5 Vs", "Volume, velocity, variety, veracity, value."],
+  glossary: [
+    ["Data architecture", "—", "The blueprint for how data flows, is stored and used"],
+    ["TOGAF", "The Open Group Architecture Framework", "A standard enterprise-architecture framework"],
+    ["DAMA-DMBOK", "Data Management Association – Data Management Body of Knowledge", "The standard data-management reference"],
+    ["Operational vs technical architecture", "—", "What must happen / how it will happen"],
+    ["BU", "Business Unit", "A division of the company (e.g. a country subsidiary)"],
+    ["MDM", "Master Data Management", "Maintaining one authoritative (golden) record for core entities"],
+    ["Golden source", "—", "The single trusted source for a piece of data"],
+    ["Data residency", "—", "Laws requiring data to stay within a country or region"],
+    ["Fact table", "—", "Holds measures (amounts, counts)"],
+    ["Dimension table", "—", "Holds context (who, what, where, when)"],
+    ["Star schema", "—", "Fact table + single-level denormalised dimensions"],
+    ["Snowflake schema", "—", "Fact table + normalised, multi-level dimensions"],
+    ["Data mart", "—", "A department-specific subset of the warehouse"],
+    ["ETL / ELT", "Extract-Transform-Load / Extract-Load-Transform", "Transform before loading / load raw, transform later"],
+    ["Schema-on-write / on-read", "—", "Structure enforced when loading / when reading"],
+    ["Data swamp", "—", "An unmanaged, unusable lake"],
+    ["Dark data", "—", "Data collected but never used"],
+    ["WORN", "Write Once, Read Never", "Data stored and never looked at again"],
+    ["Lakehouse", "—", "Lake storage + warehouse management and ACID"],
+    ["ACID", "Atomicity, Consistency, Isolation, Durability", "Guarantees that updates are all-or-nothing and reliable"],
+    ["Data mesh", "—", "Decentralised, domain-owned data served as products"],
+    ["Data as a product", "—", "Data published with schema, docs, quality guarantees and SLAs"],
+    ["SLA", "Service Level Agreement", "A promised level of quality/availability"],
+    ["Federated governance", "—", "Global rules set centrally, applied by autonomous domains"],
+    ["Data fabric", "—", "A unified integration layer across all data stores"],
+    ["Data virtualisation", "—", "Querying data where it lives, without copying it"],
+    ["CDC", "Change Data Capture", "Streaming each change made to a database"],
+    ["SaaS", "Software as a Service", "Cloud applications such as Salesforce"],
+    ["Lambda architecture", "—", "Batch (cold) + speed (hot) + serving layers"],
+    ["Kappa architecture", "—", "A single stream-processing path; replay the log to recompute"],
+    ["Immutable, append-only log", "—", "Events are only added, never changed"],
+    ["Online learning", "—", "Updating a model continuously as new data arrives"],
+    ["5 Vs", "Volume, Velocity, Variety, Veracity, Value", "The dimensions that make data “big”"],
+    ["Orchestration", "—", "Scheduling and coordinating pipeline steps (Data Factory, Oozie)"],
   ],
 
   examTips: [
@@ -157,6 +354,10 @@ export default {
       question:
         "How would you apply the principles of data architecture categorization by centralization to design a data management system for a global organization with multiple subsidiaries, considering the trade-offs between centralized, decentralized, and hybrid approaches in terms of data integration, security, and performance, and taking into account the organization's diverse business needs, regulatory requirements, and technological infrastructure?",
       solution: `
+### What the examiner wants
+It says **apply**, so don't just define the three models. Compare them on the three criteria the question names (**integration, security, performance**), recommend one for *this* organisation with reasons (data residency, group reporting, local agility), and sketch the design with a diagram (Lesson 2).
+
+### Model answer
 **1. The three options (slides 9–12)**
 - **Centralised:** a single point of control. Authoritative sources → one landing area → one aggregation layer → enterprise reporting. Typical in regulated banking and healthcare.
 - **Decentralised:** each subsidiary/BU owns its sources, aggregation and reporting; enterprise platforms aggregate across BUs. Typical in insurance.
@@ -188,13 +389,20 @@ Global governance council: policies, catalogue, metadata, security standards -> 
 
 **4. Example:** a multinational bank. Customer master data and the risk data (BCBS 239 lineage) are centralised. Each country runs its own lakehouse for transactions (regulators require local storage). Group risk reports use aggregated feeds.
 
-**Conclusion:** no single model fits a global group. **Hybrid**, with central governance and MDM plus decentralised domain storage, balances integration, compliance and performance.`,
+**Conclusion:** no single model fits a global group. **Hybrid**, with central governance and MDM plus decentralised domain storage, balances integration, compliance and performance.
+
+### Takeaway
+For a regulated global group the defensible answer is **hybrid**: central governance, MDM and group reporting; regional or domain stores for residency and local speed.`,
     },
     {
       title: "Lambda vs Kappa architecture for ML",
       marks: 5,
       question: "A bank needs both fraud-pattern reports (batch) and real-time fraud alerts. Explain the Lambda architecture with a diagram, its drawbacks, and how Kappa addresses them. How does each support ML workflows?",
       solution: `
+### What the examiner wants
+Both flows drawn, the layers explained, a comparison table (paths, reprocessing, pros, cons), and the **ML angle** (training vs inference, online learning). A scenario such as fraud detection ties it together (Lesson 6).
+
+### Model answer
 **Lambda** runs two paths from an immutable, append-only source:
 
 \`\`\`flow
@@ -221,13 +429,20 @@ Distributed immutable log -> Replay from offset 0 -> Recompute historical views
 - *Lambda:* the batch layer gives the **complete history for training**; the speed layer gives **real-time inference/scoring**.
 - *Kappa:* the **same processing logic** for historical and live data (fewer training/serving mismatches), supporting **online/continuous learning**.
 
-**For the bank:** Lambda is a pragmatic start if a mature warehouse already exists. Kappa is attractive if the team is strong in streaming and wants a single codebase.`,
+**For the bank:** Lambda is a pragmatic start if a mature warehouse already exists. Kappa is attractive if the team is strong in streaming and wants a single codebase.
+
+### Takeaway
+Lambda = two paths, accurate but two codebases. Kappa = one stream, replay the log. Choose Kappa when one team can own a single streaming codebase.`,
     },
     {
       title: "Warehouse schemas: star vs snowflake, and data marts",
       marks: 5,
       question: "Explain the star and snowflake schemas with a retail example. Compare them, and explain when and why data marts are created.",
       solution: `
+### What the examiner wants
+Facts vs dimensions defined, both schemas described (ideally sketched) with pros and cons, and the purpose of a data mart (Lesson 3).
+
+### Model answer
 **Retail example:** fact table **Sales**(date_id, product_id, store_id, customer_id, qty, amount).
 
 **Star schema:** single-level, **denormalised** dimensions directly around the fact.
@@ -254,13 +469,20 @@ Country -> State -> City -> Store -> FACT Sales
 **Data marts:** once the warehouse exists, departments (HR recruitment analytics, IT ticket dashboards) query it heavily, and running every query over the whole warehouse hurts performance. A **data mart** is a refined **subset** focused on one department/line of business:
 - easier access for analysts and report developers
 - an extra transformation stage (pre-joined, pre-aggregated data)
-- much better performance for complex joins and aggregations on large raw data`,
+- much better performance for complex joins and aggregations on large raw data
+
+### Takeaway
+Star = denormalised, fast and simple. Snowflake = normalised, compact but more joins. Marts = department-sized, pre-aggregated slices of the warehouse.`,
     },
     {
       title: "Data lake vs warehouse vs lakehouse",
       marks: 5,
       question: "Compare data warehouses, data lakes and data lakehouses. What are data swamps, dark data and WORN? How does a lakehouse address these issues for ML?",
       solution: `
+### What the examiner wants
+A comparison table (schema, data types, load style, cost, governance, use), the lake's failure modes (swamp, dark data, WORN), and why the lakehouse emerged (Lessons 3–4).
+
+### Model answer
 | | Warehouse | Lake | Lakehouse |
 |---|---|---|---|
 | Pipeline | ETL (transform, then load) | ELT (load raw, transform later) | ELT + managed tables |
@@ -275,13 +497,20 @@ Country -> State -> City -> Store -> FACT Sales
 - **Dark data:** data collected and stored in normal business but never used.
 - **WORN:** *Write Once, Read Never*. Storage grows unmanageable. Even Facebook and Netflix have lots of WORN data.
 
-**Lakehouse (Databricks):** adds warehouse-style **controls, data management and structures** on top of lake storage: schemas, ACID, versioning/time travel, catalogues and governance, plus support for several query engines. For ML this means one copy of the data serves SQL BI *and* Python/Spark training, with reproducible versions of training data and less duplication.`,
+**Lakehouse (Databricks):** adds warehouse-style **controls, data management and structures** on top of lake storage: schemas, ACID, versioning/time travel, catalogues and governance, plus support for several query engines. For ML this means one copy of the data serves SQL BI *and* Python/Spark training, with reproducible versions of training data and less duplication.
+
+### Takeaway
+Warehouses are strict and fast; lakes are cheap and flexible but can rot; lakehouses aim for both on one copy of the data.`,
     },
     {
       title: "Data mesh vs data fabric",
       marks: 5,
       question: "Explain data mesh and its four principles. How is it different from data fabric? Give an example of each.",
       solution: `
+### What the examiner wants
+Mesh's four principles and fabric's features, an example of each, and the crucial distinction: **organisational vs technological** (Lesson 5).
+
+### Model answer
 **Data mesh (Zhamak Dehghani).** A response to monolithic, centralised lakes/warehouses and the divide between operational and analytical data. It applies **domain-driven design** to data: instead of pushing data into a central team's lake, domains **host and serve** their own datasets.
 
 Four principles:
@@ -301,13 +530,20 @@ Four principles:
 | Data location | Distributed across domains by design | Anywhere; unified virtually |
 | Governance | Federated | Centralised policies through the fabric |
 
-They can coexist: a fabric can be the self-serve platform underneath a mesh.`,
+They can coexist: a fabric can be the self-serve platform underneath a mesh.
+
+### Takeaway
+Mesh changes **who owns** data; fabric changes **how data is connected**. They are complementary, not rivals.`,
     },
     {
       title: "Big-data architecture components",
       marks: 5,
       question: "With a diagram, explain the components of a generalised big-data architecture. When should an organisation adopt it, and what are its benefits and challenges?",
       solution: `
+### What the examiner wants
+The 5 Vs, the component diagram (sources, storage, ingestion, batch and stream processing, analytical store, reporting, orchestration), and the benefits and challenges (Lesson 7).
+
+### Model answer
 \`\`\`flow
 Data sources (DBs, files, IoT) -> Data storage (distributed file store) -> Batch processing (filter, aggregate) -> Analytical data store -> Analysis & reporting
 Data sources -> Real-time message ingestion -> Stream processing -> Analytical data store
@@ -329,7 +565,10 @@ Orchestration (Data Factory / Oozie / Sqoop) automates the workflows end to end
 **Benefits:** technology choice, performance through parallelism, elastic scale (pay per use), interoperability with IoT and BI.
 **Challenges:** complexity (build, test, debug), specialised skills, fast-changing technology (e.g. Spark releases).
 
-**5 Vs** drive the need: *volume, velocity, variety, veracity, value*.`,
+**5 Vs** drive the need: *volume, velocity, variety, veracity, value*.
+
+### Takeaway
+Every big-data system is some arrangement of the same blocks: land the data, process it in batch and/or stream, serve it for analysis, and orchestrate the lot.`,
     },
   ],
 
