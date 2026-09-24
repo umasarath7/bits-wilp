@@ -1,235 +1,374 @@
-// DMML — Lecture 7: Data Collection and Ingestion
-// Source: CourseFiles/DMML/L7-Data  Collection and Ingestion.pptx (93 slides)
+// DMML — Lecture 7: Data Collection & Ingestion
+// Source: CourseFiles/DMML/L7-Data  Collection and Ingestion.pptx (91 slides)
+// Teaching style: "Lesson N: Why …?" — the why first, a running example, real-world cases, glossary at the end.
 
 export default {
   title: "Data Collection & Ingestion",
-  source: "L7-Data Collection and Ingestion.pptx · 93 slides",
+  source: "L7-Data Collection and Ingestion.pptx · 91 slides",
   overview:
-    "Where ML data comes from and how it gets in. The lecture opens with the **Netflix recommendation data-source exercise**, then categorises **data sources** (by creation, location: 1st/2nd/3rd party, and creator: user-entered, system-generated, system-generated user data) and **source systems** (RDBMS; NoSQL key-value, document, wide-column, search, time-series; APIs, GraphQL, webhooks, gRPC; data sharing; third-party data; message queues and event streams). It covers **ingestion** (why, challenges, tool types), **data contracts, lineage and governance**, **key engineering considerations**, **batch vs streaming ingestion** concerns (late data, ordering, at-least-once, replay, TTL, dead-letter queue, push/pull), and every **way to ingest** (JDBC/ODBC, CDC, APIs, object storage, SFTP, webhooks, scraping, transfer appliances).",
+    "Every ML system starts by **getting data in**. This lecture asks: **why** must you understand your data sources before building anything? **How** can sources be classified, and **what** kinds of source systems exist (databases of many flavours, APIs, webhooks, queues, event streams)? **What** is ingestion, and **why** is it the part of data engineering that breaks most often? **How** do we keep it trustworthy (data contracts, lineage, governance)? And **what** are the specific headaches of batch and streaming ingestion? This lecture **wasn't examined last time**, so it's a strong candidate this time. Running example: Netflix's recommendation system, which the slides use as an exercise.",
 
   summary: [
     {
       id: "netflix",
-      heading: "1. Exercise: Netflix recommendation data sources",
+      heading: "Lesson 1: Why must you understand your data sources first?",
       slides: "4–7",
       blocks: [
-        { type: "p", text: "Classify each source along four dimensions: **consumption** (batch/real-time), **type** (structured/semi/unstructured), **raw vs derived**, and **internal vs external**." },
+        {
+          type: "p",
+          text: "Think about what Netflix needs to recommend your next show: what you've rated, what you watched and for how long, what's popular, details about every title, what you searched for, maybe what your friends like. Each of these comes from a **different source**, arrives in a **different way**, and needs **different handling**. The slides turn this into an exercise: classify each source along **four dimensions**:",
+        },
+        {
+          type: "list",
+          items: [
+            "**Consumption:** is it used in **batch** (periodically) or **real-time** (as it happens)?",
+            "**Type:** **structured**, **semi-structured** or **unstructured**?",
+            "**Raw or derived:** collected directly, or **computed** from other data?",
+            "**Internal or external:** produced by Netflix, or obtained from outside?",
+          ],
+        },
         {
           type: "table",
+          caption: "The Netflix exercise (slides 4–6)",
           head: ["Data", "Consumption", "Type", "Raw/Derived", "Source"],
           rows: [
-            ["Billions of member ratings (+1M/day)", "Batch", "Structured", "Raw", "Internal"],
+            ["Billions of member ratings (+1 million a day)", "Batch", "Structured", "Raw", "Internal"],
             ["Popularity metrics (hourly/daily/weekly, by cluster)", "Batch", "Structured", "**Derived**", "Internal"],
             ["Stream data (duration, time, device, day)", "**Real-time**", "Semi-structured", "Raw", "Internal"],
             ["Titles added to queues daily", "Batch", "Structured", "Raw", "Internal"],
-            ["Title metadata (director, actor, genre, reviews)", "Batch", "Structured + semi", "Raw", "Internal + external"],
+            ["Title metadata (director, actors, genre, reviews)", "Batch", "Structured + semi", "Raw", "Internal + external"],
             ["Social data of users and friends", "Batch", "Semi-structured", "Raw", "External"],
             ["Search text", "Batch", "**Unstructured**", "Raw", "Internal"],
             ["Box office, critic reviews", "Batch", "Structured + semi", "Raw", "External"],
-            ["Demographics, culture, language, temporal", "Batch", "Structured", "Derived", "Internal + external"],
+            ["Demographics, culture, language, time", "Batch", "Structured", "Derived", "Internal + external"],
           ],
         },
-        { type: "p", text: "**Why know the sources?** Sources differ in characteristics and access patterns, serve different purposes and need different processing. Knowing them lets us **access** and **process** the data efficiently." },
+        {
+          type: "p",
+          text: "**Why bother? (slide 7).** Sources differ in their characteristics and **access patterns**, serve different purposes, and need **different processing**. Real-time viewing data needs a streaming path; external critic reviews need an API and legal checks; derived popularity metrics need a scheduled job. Knowing the sources is what lets you **access and process the data efficiently**.",
+        },
       ],
     },
     {
       id: "sources",
-      heading: "2. Categorising data sources",
+      heading: "Lesson 2: How can data sources be categorised?",
       slides: "8–18",
       blocks: [
         {
-          type: "table",
-          head: ["Axis", "Categories"],
-          rows: [
-            ["**Creation**", "*Analog* (speech, video, handwriting: transient) → *analog + digital* (voice assistants convert speech → text) → *direct digital creation* (transactions)"],
-            ["**Location**", "**First-party:** your own customers' data (purchase history, feedback). **Second-party:** another company's customer data shared with you (MakeMyTrip → hotels). **Third-party:** data about the public, not your customers (traffic, festival behaviour)"],
-            ["**Creator**", "**User-entered:** texts, images, uploads; likely malformed (very long/short names like ‘Llanfairpwll…gogogoch’ or ‘Lb’; text in number fields; wrong file formats), so it needs heavy validation and fast processing. **System-generated:** logs (memory, instances, job results) for visibility/debugging; rarely malformed, can be processed periodically, but volume grows fast and the signal gets lost in noise; store while useful, in low-cost storage. **System-generated user data:** clicks, scrolls, zooms, ignored pop-ups, location, which is **subject to privacy regulation**"],
-            ["**Format**", "Structured / semi-structured / unstructured (L1)"],
+          type: "p",
+          text: "Beyond the Netflix dimensions, the slides give four more ways to classify a source. Each one tells you something practical about how to handle it.",
+        },
+        {
+          type: "p",
+          text: "**1. By how it was created (slides 9–10).** **Analog** data (speech, video, handwriting) is transient: it disappears unless captured. **Analog + digital:** a voice assistant converts your speech into text. **Direct digital creation:** a transaction born digital, like a UPI payment.",
+        },
+        {
+          type: "p",
+          text: "**2. By whose customers it describes (slides 11–13):**",
+        },
+        {
+          type: "list",
+          items: [
+            "**First-party data:** about **your own customers** (their purchase history, feedback). *Netflix: your viewing history.*",
+            "**Second-party data:** another company's customer data, **shared with you** under an agreement. *MakeMyTrip sharing booking patterns with a hotel chain.*",
+            "**Third-party data:** about **the general public**, not your customers (traffic patterns, festival behaviour, census data).",
           ],
+        },
+        {
+          type: "p",
+          text: "**3. By who creates it (slides 14–17)**, which is very practical because it predicts how dirty the data will be:",
+        },
+        {
+          type: "table",
+          head: ["Created by", "Examples", "What to expect", "How to handle it"],
+          rows: [
+            ["**Users (user-entered)**", "Names, reviews, images, uploads", "**Often malformed**: absurdly long or short names (‘Llanfairpwll…gogogoch’, ‘Lb’), text in number fields, wrong file formats", "Heavy validation; process quickly (users expect instant feedback)"],
+            ["**Systems (system-generated)**", "Logs of memory, instances, job results", "Rarely malformed, but **volume grows fast** and the useful signal gets lost in noise", "Process periodically; keep only while useful; use cheap storage"],
+            ["**Systems recording users' behaviour**", "Clicks, scrolls, zooms, ignored pop-ups, location", "Extremely valuable for ML, and **subject to privacy regulation**", "Consent, anonymisation, retention limits (Lecture 2)"],
+          ],
+        },
+        {
+          type: "p",
+          text: "**4. By format (slide 18):** structured, semi-structured or unstructured (Lecture 1).",
         },
       ],
     },
     {
       id: "systems",
-      heading: "3. Source systems",
-      slides: "19–43",
+      heading: "Lesson 3: What kinds of database do we ingest from?",
+      slides: "19–31",
       blocks: [
-        { type: "p", text: "ML systems are usually **downstream** of other systems, so their sources are often other systems' outputs." },
         {
-          type: "table",
-          head: ["System", "Characteristics", "Examples / uses"],
-          rows: [
-            ["**RDBMS (SQL)**", "Tables with PK/FK relationships; **ACID**; normalised; rows stored contiguously. Ideal for rapidly changing app state; challenge: capturing state history over time", "Postgres, MySQL, Oracle"],
-            ["**Key-value**", "Like a hash map but scalable. In-memory caches for sessions (temporary) or durable, replicated persistence", "E-commerce user/cart event state"],
-            ["**Document**", "Nested JSON documents in collections, retrieved by key. **Flexible schema: a blessing and a curse** (inconsistent, bloated). Indexes available; **no joins** (denormalised duplication); often **eventually consistent**, not ACID; analytics needs full scans", "MongoDB"],
-            ["**Wide-column**", "Huge write rates, PB scale, millions of requests/s, <10 ms latency; **single index (row key)**, so no complex queries; extract via scans or CDC for analytics", "DynamoDB, Cassandra, Bigtable (e-commerce, fintech, ad tech, IoT)"],
-            ["**Search**", "Fast search/retrieval on semantic and structural characteristics; **text search** (exact/fuzzy/semantic) and **log analysis** (anomaly detection, monitoring, security)", "Elasticsearch, Solr/Lucene, Algolia"],
-            ["**Time-series**", "Values ordered by time; **measurement** (regular sensors) vs **event-based** (irregular); fast writes with memory buffering; timestamp + few fields; good for operational analytics, not BI; few joins", "InfluxDB, Druid; stocks, IoT, windy.com"],
-          ],
+          type: "p",
+          text: "ML systems usually sit **downstream** of other systems (slide 19): their inputs are the outputs of apps, databases and services built for other purposes. So you must understand the systems you're pulling from, because each has its own strengths and quirks.",
         },
         {
           type: "table",
-          caption: "APIs & other sources",
-          head: ["Source", "Notes"],
+          head: ["System", "What it's like", "What it means for ingestion", "Examples"],
           rows: [
-            ["**REST APIs**", "Stateless calls (IRCTC PNR status used by many sites). Abstraction ranges from a thin wrapper to a full analytics API"],
-            ["Client libraries / open-source connectors", "Remove boilerplate; off-the-shelf SaaS connectors; frameworks for custom connectors"],
-            ["**GraphQL**", "Created at Facebook; retrieve **multiple data models in one request**; JSON-shaped responses"],
-            ["**Webhooks** (reverse APIs)", "The **provider calls the consumer's HTTP endpoint** when an event happens"],
-            ["**RPC / gRPC**", "Google, 2015; Protocol Buffers; efficient bidirectional exchange over HTTP/2 (CPU, battery, bandwidth); stricter standards than REST"],
-            ["**Data sharing**", "Multitenant cloud platforms with fine-grained sharing policies (row/column/sensitive filtering); **data marketplaces**; enables decentralised patterns such as **data mesh**"],
-            ["**Third-party data**", "data.gov.in, US BLS, NASA, Facebook for advertisers. Data is *sticky* (a flywheel of adoption); accessed via APIs, cloud sharing or download; CRM data → scoring model → reverse ETL"],
-            ["**Message queues**", "Asynchronous small messages via **pub/sub**; the subscriber acknowledges and the message is removed; decouples microservices; buffers load spikes; durable through replication"],
-            ["**Event streaming**", "An **ordered log** of records **retained** for a while, with **replay**. **Topics** (related events; zero or more producers and consumers); **partitions** (the lanes of a freeway for parallelism; the same **partition key** always goes to the same partition)"],
+            ["**Relational (RDBMS / SQL)**", "Tables linked by primary/foreign keys; **ACID** guarantees; normalised; rows stored together", "Ideal for rapidly changing application state. The challenge is capturing **history**: a row shows only the current value", "PostgreSQL, MySQL, Oracle"],
+            ["**Key-value**", "Like a hash map, but scalable: in-memory caches (sessions) or durable, replicated stores", "Great for current state (a user's cart); not for analytics queries", "Redis, DynamoDB"],
+            ["**Document**", "Nested JSON documents in collections, retrieved by key", "**Flexible schema: a blessing and a curse** (inconsistent, bloated records). **No joins** (data duplicated), often **eventually consistent**, analytics needs full scans", "MongoDB"],
+            ["**Wide-column**", "Huge write rates, petabyte scale, millions of requests per second, under 10 ms latency; only **one index (the row key)**", "No complex queries; extract with scans or CDC for analytics", "Cassandra, Bigtable, DynamoDB (e-commerce, fintech, ad tech, IoT)"],
+            ["**Search**", "Fast retrieval by meaning and structure: **text search** (exact, fuzzy, semantic) and **log analysis** (anomalies, monitoring, security)", "A source of logs and search behaviour", "Elasticsearch, Solr/Lucene, Algolia"],
+            ["**Time-series**", "Values ordered by time: **measurement** (regular sensor readings) or **event-based** (irregular); fast writes buffered in memory; a timestamp and a few fields", "Good for operational analytics, not BI; few joins", "InfluxDB, Druid; stock ticks, IoT, weather"],
           ],
+        },
+      ],
+    },
+    {
+      id: "apis",
+      heading: "Lesson 4: Beyond databases: APIs, webhooks, sharing, queues and streams",
+      slides: "32–43",
+      blocks: [
+        {
+          type: "table",
+          head: ["Source", "How it works", "Example"],
+          rows: [
+            ["**REST APIs**", "Stateless HTTP calls; the abstraction ranges from a thin wrapper to a full analytics API", "IRCTC's PNR-status API used by many travel sites"],
+            ["**Client libraries / connectors**", "Ready-made code that removes boilerplate; off-the-shelf SaaS connectors; frameworks for building custom ones", "Fivetran/Airbyte connectors"],
+            ["**GraphQL**", "Created at Facebook: fetch **several data models in one request**, with a JSON-shaped response exactly as asked", "One call for a user, their orders and their reviews"],
+            ["**Webhooks** (reverse APIs)", "Instead of you asking repeatedly, **the provider calls your HTTP endpoint** when an event happens", "A payment gateway notifying you that a payment succeeded"],
+            ["**RPC / gRPC**", "Google, 2015: Protocol Buffers over HTTP/2; efficient two-way exchange (saves CPU, battery, bandwidth); stricter than REST", "Internal microservices"],
+            ["**Data sharing platforms**", "Multi-tenant cloud platforms with fine-grained sharing (row, column, sensitive-field filters); **data marketplaces**. Enables decentralised patterns such as **data mesh**", "Snowflake/BigQuery sharing"],
+            ["**Third-party data**", "data.gov.in, US Bureau of Labor Statistics, NASA, Facebook for advertisers; accessed via APIs, cloud sharing or downloads. Data is **sticky**: once integrated, it creates a flywheel of adoption", "Enriching customers with public data"],
+            ["**Message queues**", "Small messages sent asynchronously via **publish/subscribe**; the subscriber **acknowledges** and the message is **removed**. Decouples microservices, buffers load spikes, durable through replication", "RabbitMQ, SQS"],
+            ["**Event-streaming platforms**", "An **ordered log** of records **kept for a while** (retention) that can be **replayed**", "Kafka, Kinesis, Pub/Sub"],
+          ],
+        },
+        {
+          type: "p",
+          text: "**Topics and partitions (slides 41–43).** In an event-streaming platform, a **topic** is a named stream of related events (e.g. “video-plays”), with zero or more producers and consumers. A topic is split into **partitions**, like the **lanes of a freeway**: more lanes means more events processed in parallel. Each event has a **partition key** (e.g. user-id), and events with the same key always go to the same partition, so one user's events stay in order.",
+        },
+        {
+          type: "callout",
+          kind: "idea",
+          title: "Queue vs stream in one line",
+          text: "A **queue** delivers a message and **forgets it** once acknowledged. A **stream** **keeps an ordered log** you can replay: it's a history, not just a mailbox.",
         },
       ],
     },
     {
       id: "ingest",
-      heading: "4. Data ingestion: meaning, challenges, tools",
+      heading: "Lesson 5: What is ingestion, and why does it break so often?",
       slides: "44–51",
       blocks: [
-        { type: "p", text: "**Ingestion** moves data from a source into a landing area or object store for ad-hoc queries and analytics: consume from the origin, clean a bit, write to the destination. It **helps teams go fast** (narrow scope, agility, self-service for analysts and scientists). Examples: Salesforce → DW → Tableau; a Twitter feed → real-time sentiment; data for ML training." },
+        {
+          type: "callout",
+          kind: "formula",
+          title: "Definition",
+          text: "**Data ingestion** moves data from a **source** into a **landing area** (often object storage) where it can be queried and analysed: *consume from the origin → clean it a little → write it to the destination.*",
+        },
+        {
+          type: "p",
+          text: "**Why it matters (slides 45–46):** ingestion **helps teams go fast**. It has a narrow scope, supports agility, and gives analysts and scientists **self-service** access. Examples: Salesforce → data warehouse → Tableau dashboards; a Twitter feed → real-time sentiment analysis; collecting data for ML training.",
+        },
         {
           type: "table",
-          head: ["Challenge", "Detail"],
+          caption: "Why ingestion is hard (slides 47–48)",
+          head: ["Challenge", "What happens"],
           rows: [
-            ["Complexity takes time", "Building pipelines from scratch for every new source or need slows the team"],
-            ["Change takes time", "Each target change costs 10–20 hours; about **90% of time goes on maintenance/break-fix (data drift)**"],
-            ["Maintenance & rework", "Repeated troubleshooting leaves no time for innovation"],
+            ["**Complexity takes time**", "Building a pipeline from scratch for every new source or request slows the team down"],
+            ["**Change takes time**", "Each change to a target costs 10–20 hours; about **90% of engineering time goes on maintenance and break-fix**, mostly caused by **data drift** (sources changing without warning)"],
+            ["**Maintenance and rework**", "Constant troubleshooting leaves no time for new work"],
           ],
         },
         {
           type: "table",
-          head: ["Tool type", "Trade-off"],
+          caption: "Four ways to build ingestion (slides 49–50)",
+          head: ["Approach", "Trade-off"],
           rows: [
-            ["**Manual / hand coding**", "Greatest control; lots of work and rework"],
-            ["**Single-purpose tools**", "Drag-and-drop, prebuilt connectors, quick; cumbersome to manage many, hard to share"],
-            ["**Data integration platforms**", "Features for every step; need domain-specific developers; slow to adapt"],
-            ["**DataOps approach**", "Agile + automation; abstracts the *how*, so engineers focus on the *what* and on business needs"],
+            ["**Hand coding**", "Maximum control, but lots of work and rework"],
+            ["**Single-purpose tools**", "Drag-and-drop with prebuilt connectors, quick to start; cumbersome to manage many, hard to share"],
+            ["**Data integration platforms**", "Features for every step; need specialist developers; slow to adapt"],
+            ["**DataOps approach**", "Agile + automation; abstracts the *how* so engineers focus on the *what* and on business needs"],
           ],
         },
-        { type: "p", text: "**Common sources:** Kafka, JDBC, Oracle CDC, HTTP clients, HDFS. **Common destinations:** Kafka, JDBC, Snowflake, Amazon S3, Databricks. **Cloud migration:** ingestion is essential for moving silos into cloud lakes and warehouses; the more the what-ifs are automated, the better." },
+        {
+          type: "p",
+          text: "**Typical sources (slide 51):** Kafka, JDBC databases, Oracle CDC, HTTP clients, HDFS. **Typical destinations:** Kafka, JDBC databases, Snowflake, Amazon S3, Databricks. Ingestion is also central to **cloud migration**: moving on-prem silos into cloud lakes and warehouses. The more of the “what-ifs” are automated, the better.",
+        },
       ],
     },
     {
       id: "contract",
-      heading: "5. Data contracts, lineage & governance",
-      slides: "52–55",
+      heading: "Lesson 6: How do we keep ingestion trustworthy? Contracts, lineage, governance",
+      slides: "52–59",
       blocks: [
         {
-          type: "table",
-          head: ["Concept", "Meaning"],
-          rows: [
-            ["**Data contract**", "A written agreement between the **source-system owner** and the **ingesting team**: *what* data, *how* (full or incremental), *how often*, and *who* the contacts are on both sides. Stored in a well-known place (GitHub repo, docs), ideally in a standard, machine-queryable form"],
-            ["**Data lineage**", "Documentation and visualisation of data's journey: origin → transformations through pipelines → where it is served (dashboards/reports). Requires identifying assets, tracking them from sources, documenting sources, mapping paths and pinpointing consumption"],
-            ["**Data governance**", "The discipline for **quality, security and availability** of data through policies, standards and procedures for collection, ownership, storage, processing and use. At ingestion it **stops bad data propagating**, ensures **compliance** (GDPR, HIPAA, PII, PCI-DSS, DPDPA) and creates **traceability and trust** in the source"],
-          ],
+          type: "p",
+          text: "Remember the Lecture 4 story: the payments team renamed a column and every dashboard broke silently. The fix isn't more heroics; it's **agreements and visibility**.",
         },
-      ],
-    },
-    {
-      id: "consider",
-      heading: "6. Key engineering considerations",
-      slides: "56–59",
-      blocks: [
+        {
+          type: "p",
+          text: "**Data contract (slides 52–53).** A written agreement between the **owner of the source system** and the **team ingesting from it**, stating: **what** data will be provided; **how** (full extract or incremental); **how often**; and **who** the contacts are on both sides. Keep it in a well-known place (a GitHub repository, internal docs), ideally in a standard, machine-readable format so it can be checked automatically. *Netflix example:* the playback team promises the “video-plays” events will always contain user-id, title-id, start time and duration, with 7 days' notice before any change.",
+        },
+        {
+          type: "p",
+          text: "**Data lineage (slide 54).** Documentation and visualisation of **data's journey**: where it originated, how it was transformed through pipelines, and where it's served (dashboards, reports, models). Building it means identifying data assets, tracking them from their sources, documenting the sources, mapping the paths, and pinpointing where the data is consumed. When a number looks wrong, lineage tells you where to look.",
+        },
+        {
+          type: "p",
+          text: "**Data governance at ingestion (slide 55).** Governance is the discipline of ensuring data **quality, security and availability**, through policies, standards and procedures covering collection, ownership, storage, processing and use. At the ingestion stage it **stops bad data from spreading** downstream, ensures **compliance** with regulations (GDPR, HIPAA, PCI-DSS, India's DPDPA, rules for PII), and builds **traceability and trust** in the source.",
+        },
         {
           type: "table",
-          head: ["Consideration", "Question to ask"],
+          caption: "Questions to ask before ingesting anything (slides 56–59)",
+          head: ["Consideration", "Question"],
           rows: [
-            ["Use case", "What is the data for?"],
-            ["Reusability", "Can we reuse it and avoid ingesting multiple versions of the same dataset?"],
-            ["Lineage", "Where is it going (destination)?"],
-            ["Freshness", "How often should it be updated from the source?"],
-            ["Volume", "What volume is expected?"],
-            ["Format", "What format, and can downstream storage and transformation accept it?"],
-            ["Quality", "Is the source data good enough for immediate downstream use?"],
-            ["Risks", "What post-processing is needed? What are the data-quality risks?"],
-            ["Velocity", "Does streaming data need in-flight processing?"],
+            ["Use case", "What is this data for?"],
+            ["Reusability", "Can we reuse existing data and avoid ingesting several versions of the same dataset?"],
+            ["Lineage", "Where is the data going?"],
+            ["Freshness", "How often must it be refreshed from the source?"],
+            ["Volume", "How much data do we expect?"],
+            ["Format", "What format, and can downstream storage and transformation handle it?"],
+            ["Quality", "Is it good enough to use immediately downstream?"],
+            ["Risks", "What post-processing is needed? What quality risks exist?"],
+            ["Velocity", "Does streaming data need processing in flight?"],
           ],
         },
       ],
     },
     {
       id: "batch",
-      heading: "7. Batch ingestion",
+      heading: "Lesson 7: How does batch ingestion work?",
       slides: "60–65",
       blocks: [
-        { type: "list", items: [
-          "**Time-interval** (e.g. nightly, for daily DW reporting) vs **size-based** (cut a stream into objects by bytes or event count for the lake).",
-          "**Full snapshot** (grab the entire current state each time: simple, very common) vs **differential/incremental** (only changes since the last read: less network and storage).",
-          "**Inserts & updates:** batch/columnar systems perform poorly with many **small** operations. Single-row inserts and many small in-place updates are anti-patterns (each update scans column files). Know your store's pattern: Druid/Pinot handle high insert rates; SingleStore handles hybrid OLTP+OLAP; BigQuery is poor at single-row SQL inserts but excellent through its **streaming buffer**.",
-          "**Data migration:** moving hundreds of TB or whole DBs. **Schema differences** always exist, so test on a sample first. Move in bulk, not row by row. Object storage is a good intermediate stage. Use migration tools. The **AWS Snow family** covers petabyte to exabyte-scale physical transfer and edge workloads.",
-        ]},
+        {
+          type: "p",
+          text: "**Batch ingestion** moves data in chunks. Four decisions shape it:",
+        },
+        {
+          type: "list",
+          items: [
+            "**When to cut a batch.** **Time-interval:** e.g. every night, for daily warehouse reports. **Size-based:** cut a stream into objects once they reach a certain number of bytes or events, useful for writing to a lake.",
+            "**How much to take.** **Full snapshot:** grab the entire current state every time; simple and very common. **Differential (incremental):** take only what changed since the last run; less network and storage, but you must track what changed.",
+            "**Inserts and updates.** Columnar and batch-oriented stores perform **badly with many small operations**: single-row inserts and frequent small in-place updates are anti-patterns (each update may rewrite whole column files). Know your store: Druid and Pinot handle high insert rates; SingleStore handles hybrid OLTP + OLAP; BigQuery is poor at single-row SQL inserts but excellent through its **streaming buffer**.",
+            "**Data migration.** Moving hundreds of terabytes or whole databases: there are **always schema differences**, so test on a sample first; move data in **bulk**, not row by row; use object storage as an intermediate stage; use migration tools. For petabytes to exabytes, the **AWS Snow family** physically ships storage devices.",
+          ],
+        },
       ],
     },
     {
       id: "stream",
-      heading: "8. Streaming ingestion concerns",
+      heading: "Lesson 8: What makes streaming ingestion tricky?",
       slides: "66–75",
       blocks: [
         {
+          type: "p",
+          text: "Streaming means ingesting events **as they happen**, continuously. That brings problems batch never has. Imagine Netflix's “video-plays” stream from millions of phones and TVs:",
+        },
+        {
           type: "table",
-          head: ["Concern", "Explanation", "Mitigation"],
+          head: ["Concern", "What goes wrong", "How to handle it"],
           rows: [
-            ["**Schema evolution**", "Fields added or removed, types changed; breaks downstream", "**Schema registry** to version schemas; talk to upstream teams proactively"],
-            ["**Late-arriving data**", "Events with similar event times arrive at different ingestion times (latency). E.g. a Driver Monitoring System whose camera frames lag", "Set a **cut-off time** (watermark) beyond which late data is not processed"],
-            ["**Ordering & multiple delivery**", "Distributed platforms may deliver **out of order** and **more than once** (**at-least-once**); exactly-once is very hard (e.g. duplicate bank SMS)", "Idempotent consumers, de-duplication keys, event-time ordering"],
-            ["**Replay**", "Re-read a range of history to reprocess", "Kafka, Kinesis, Pub/Sub support retention + replay; RabbitMQ deletes after consumption"],
-            ["**Message size**", "Kinesis max 1 MB; Kafka default 1 MB, configurable to 20 MB+", "Send a pointer/notification, then fetch the payload via API (adds delay)"],
-            ["**TTL / retention**", "How long unacknowledged events live. Too short → messages vanish before processing; too long → backlog", "Pub/Sub up to 7 days; Kinesis up to 365 days; Kafka indefinitely (disk-bound)"],
-            ["**Error handling**", "Non-existent topic, oversized message, expired TTL", "Route failures to a **dead-letter queue** so they don't block good messages; diagnose and reprocess later"],
-            ["**Push vs pull**", "**Pull:** subscribers read and acknowledge (Kafka, Kinesis: pull only; the default choice). **Push:** the service writes to a listener (Pub/Sub, RabbitMQ also support push)", "Add a layer to emulate push on pull systems"],
+            ["**Schema evolution**", "Producers add or remove fields or change types, and consumers break", "A **schema registry** to version schemas; talk to upstream teams proactively"],
+            ["**Late-arriving data**", "Events that happened at the same time arrive at different times (a phone on a train reconnects an hour later; the slides' example is a driver-monitoring camera whose frames lag)", "Set a **cut-off time (watermark)** after which late events for a window are no longer processed"],
+            ["**Ordering and duplicates**", "Distributed platforms can deliver events **out of order** and **more than once** (**at-least-once** delivery); exactly-once is very hard. Think of getting the same bank SMS twice", "**Idempotent** consumers (processing twice has the same effect as once), de-duplication keys, ordering by event time"],
+            ["**Replay**", "You need to reprocess a period of history, e.g. after fixing a bug", "Kafka, Kinesis and Pub/Sub keep data and allow replay; RabbitMQ deletes messages once consumed"],
+            ["**Message size**", "Kinesis allows at most 1 MB; Kafka defaults to 1 MB (configurable to 20 MB+)", "Send a small pointer/notification and fetch the big payload via an API (adds delay)"],
+            ["**TTL (time-to-live) / retention**", "How long unacknowledged events are kept: too short and they vanish before processing; too long and a backlog builds", "Pub/Sub up to 7 days; Kinesis up to 365 days; Kafka indefinitely (limited by disk)"],
+            ["**Error handling**", "An event for a topic that doesn't exist, an oversized message, an expired TTL", "Route failures to a **dead-letter queue (DLQ)** so they don't block good events; diagnose and reprocess later"],
+            ["**Push vs pull**", "**Pull:** consumers read and acknowledge (Kafka and Kinesis are pull-only; the usual default). **Push:** the service writes to a listener (Pub/Sub and RabbitMQ also support push)", "Add a small layer to emulate push on pull-only systems"],
           ],
         },
       ],
     },
     {
       id: "ways",
-      heading: "9. Ways to ingest data",
+      heading: "Lesson 9: All the practical ways to ingest data",
       slides: "76–91",
       blocks: [
         {
+          type: "p",
+          text: "Finally, the toolbox. You'll use several of these in any real project; pick by source type, volume, freshness needed and security.",
+        },
+        {
+          type: "p",
+          text: "**From databases.** A **direct connection (ODBC/JDBC)** uses a driver that translates a standard API into the database's own commands; pull with many small queries or one big one (JDBC is Java-based and very portable). **Change Data Capture (CDC)** captures changes instead of copying everything:",
+        },
+        {
           type: "table",
+          head: ["CDC style", "How it works", "Watch out for"],
+          rows: [
+            ["**Batch CDC**", "Query rows whose `updated_at` is later than the last run", "**Misses intermediate changes**: if a row changed three times, you see only the last. Mitigate with an insert-only schema"],
+            ["**Continuous / log-based CDC**", "Treat every write as an event: read the database's **binary log** and send each change to Kafka with **Debezium**", "Near real-time replication and analytics"],
+            ["**Managed CDC**", "The cloud database triggers a serverless function or event stream for each change", "Vendor-specific"],
+          ],
+        },
+        {
+          type: "p",
+          text: "CDC is not free: it uses the database's memory, disk, CPU and network. Run batch CDC off-hours or against a **read replica** so the production database isn't slowed.",
+        },
+        {
+          type: "table",
+          caption: "Other ways to ingest (slides 80–91)",
           head: ["Way", "Key points"],
           rows: [
-            ["**Direct DB connection (ODBC/JDBC)**", "A driver translates the standard API into DB-native commands; pull via many small queries or one large query. JDBC is Java-based and very portable"],
-            ["**CDC: batch**", "Query rows with updated_at > last run; **misses intermediate changes** (mitigate with an insert-only schema)"],
-            ["**CDC: continuous / log-based**", "Treat every write as an event; read the DB **binary log** (Postgres) and send to Kafka via **Debezium**; near real-time replication/analytics"],
-            ["**CDC: managed**", "Cloud DB triggers a serverless function / event stream per change"],
-            ["CDC considerations", "Consumes DB memory, disk, CPU and network. Run batch CDC off-hours or on a **read replica**"],
-            ["**APIs**", "No standard for data exchange: read docs, talk to owners, maintain code. Trends: vendor client libraries, **connector platforms** (SaaS/open source), **data sharing** platforms (BigQuery, Snowflake, Redshift, S3)"],
-            ["**Message queues / event streams**", "Real-time ingestion from web, mobile, IoT; ingestion can be non-linear (publish → consume → republish)"],
-            ["**Object storage**", "The best and most secure way to exchange files: multitenant, massive, **signed URLs** for temporary access, secure, scalable"],
-            ["**File export**", "Export scans load transactional DBs, so run at safe times, split by key range/partition, or use a read replica. Cloud DWs export directly to object storage"],
-            ["**Shell & SSH**", "Shell scripts glue workflows (read DB → reserialise → upload → trigger load). SSH tunnels via a **bastion host** give secure DB access; SCP over SSH"],
-            ["**SFTP / SCP**", "Still common with partners; needs careful security configuration"],
-            ["**Webhooks**", "Reverse APIs: the provider calls *your* endpoint. E.g. AWS Lambda (receive) → Kinesis (buffer) → stream processing"],
-            ["**Web interface / scraping**", "Manual report download; scraping HTML is ethically and legally murky"],
+            ["**APIs**", "There's no standard for data exchange: read the docs, talk to the owners, maintain the code. Trends: vendor client libraries, **connector platforms** (SaaS/open source), **data-sharing** platforms (BigQuery, Snowflake, Redshift, S3)"],
+            ["**Message queues / event streams**", "Real-time ingestion from web, mobile and IoT; can be non-linear (publish → consume → republish)"],
+            ["**Object storage**", "The best and most secure way to exchange files: multi-tenant, massive, **signed URLs** for temporary access"],
+            ["**File export**", "Exports scan and load the transactional database, so run them at safe times, split by key range/partition, or use a read replica. Cloud warehouses can export straight to object storage"],
+            ["**Shell and SSH**", "Shell scripts glue steps together (read DB → reserialise → upload → trigger load). SSH tunnels through a **bastion host** give secure database access; SCP copies files over SSH"],
+            ["**SFTP / SCP**", "Still common for exchanging files with partners; needs careful security setup"],
+            ["**Webhooks**", "The provider calls *your* endpoint. A typical build: AWS Lambda receives → Kinesis buffers → stream processing"],
+            ["**Web interface / scraping**", "Manually downloading reports; scraping web pages is ethically and legally murky"],
             ["**Data sharing**", "Read-only access to a provider's dataset; you don't own it and can lose access"],
-            ["**Transfer appliances**", "For 100 TB+, ship a physical box of drives (AWS Snow family). One-time migrations only"],
+            ["**Transfer appliances**", "For 100 TB or more, physically ship a box of drives (AWS Snow family). Only for one-time migrations"],
           ],
+        },
+        {
+          type: "callout",
+          kind: "remember",
+          title: "The whole lecture in seven lines",
+          text: "1. Know your sources: classify by consumption (batch/real-time), type, raw vs derived, internal vs external (Netflix exercise).\n2. Also by creation (analog → digital), whose customers (1st/2nd/3rd party), creator (user-entered = messy; system logs = noisy; user behaviour = privacy-regulated), format.\n3. Source databases: relational, key-value, document (flexible schema: blessing and curse), wide-column (one row-key index), search, time-series. Plus REST, GraphQL, webhooks, gRPC, data sharing, third-party data, queues and streams (topics, partitions).\n4. Ingestion = consume → light clean → land. Hard because ~90% of time goes on break-fix from data drift. Hand code vs tools vs platforms vs DataOps.\n5. Trust: **data contracts** (what, how, how often, who), **lineage**, **governance** (quality, security, compliance). Ask about use, reuse, freshness, volume, format, quality, risk, velocity.\n6. Batch: time vs size cut-offs; full snapshot vs incremental; avoid small inserts/updates in columnar stores; migrations in bulk.\n7. Streaming: schema evolution (registry), late data (watermarks), duplicates/order (idempotency), replay, size, TTL, dead-letter queues, push vs pull. CDC batch vs log-based (Debezium); use read replicas.",
         },
       ],
     },
   ],
 
-  keyTerms: [
-    ["1st/2nd/3rd-party data", "Own customers / partner's customers / public data."],
-    ["System-generated user data", "Clicks, scrolls, location: privacy-regulated."],
-    ["Wide-column DB", "Massive write throughput, single row-key index (Cassandra, Bigtable)."],
-    ["GraphQL", "Query language for APIs: many models in one request."],
-    ["Webhook", "Reverse API: the provider calls the consumer's endpoint."],
-    ["Topic / partition", "Stream of related events / parallel lane keyed by partition key."],
-    ["Data contract", "Agreement on what/how/how often/who between source and ingestion teams."],
-    ["Data lineage", "Map of data's journey from origin to consumption."],
-    ["Full snapshot vs differential", "Whole state each time vs only changes."],
-    ["At-least-once delivery", "Messages may be duplicated; consumers must be idempotent."],
-    ["Dead-letter queue", "Holding area for events that fail ingestion."],
-    ["TTL", "Maximum retention of unacknowledged events."],
-    ["Log-based CDC", "Reading DB binary logs to stream changes (Debezium)."],
-    ["Bastion host", "Secure jump server for SSH tunnels to databases."],
+  glossary: [
+    ["Batch / real-time consumption", "—", "Data used periodically / as it happens"],
+    ["Raw / derived data", "—", "Collected directly / computed from other data"],
+    ["First / second / third-party data", "—", "Your customers / a partner's customers shared with you / the general public"],
+    ["User-entered / system-generated data", "—", "Typed or uploaded by people / produced by machines (logs)"],
+    ["Downstream", "—", "Consuming the outputs of other systems"],
+    ["RDBMS", "Relational DataBase Management System", "Tables, keys, SQL, ACID"],
+    ["ACID", "Atomicity, Consistency, Isolation, Durability", "Reliable transaction guarantees"],
+    ["Wide-column database", "—", "Massive write throughput with a single row-key index (Cassandra)"],
+    ["Eventual consistency", "—", "Copies catch up after a short delay"],
+    ["Time-series database", "—", "Stores values ordered by time (InfluxDB)"],
+    ["REST API", "Representational State Transfer Application Programming Interface", "Stateless HTTP interface"],
+    ["GraphQL", "—", "API query language: several data models in one request"],
+    ["Webhook", "Reverse API", "The provider calls your endpoint when an event happens"],
+    ["gRPC", "Google Remote Procedure Call", "Fast binary RPC over HTTP/2"],
+    ["Data marketplace", "—", "A platform for buying, selling or sharing datasets"],
+    ["Publish/subscribe (pub/sub)", "—", "Producers publish to a topic; subscribers receive"],
+    ["Acknowledgement", "—", "The consumer confirming it processed a message"],
+    ["Event streaming", "—", "An ordered, retained, replayable log of events"],
+    ["Topic / partition / partition key", "—", "Named stream / parallel lane / field deciding the lane"],
+    ["Data ingestion", "—", "Moving data from sources into a landing area"],
+    ["Landing area", "—", "Where ingested data first arrives (often object storage)"],
+    ["Data drift (sources)", "—", "Unannounced changes in source data that break pipelines"],
+    ["Data contract", "—", "Agreement on what, how, how often and who between source and ingestion teams"],
+    ["Data lineage", "—", "The documented journey of data from origin to use"],
+    ["HIPAA / PCI-DSS / DPDPA", "US health privacy law / Payment Card Industry Data Security Standard / India's Digital Personal Data Protection Act", "Regulations governing sensitive data"],
+    ["Full snapshot / incremental", "—", "Copy everything each time / copy only changes"],
+    ["Schema registry", "—", "A service storing versioned schemas for streams"],
+    ["Late-arriving data", "—", "Events that arrive long after they happened"],
+    ["Watermark", "—", "A cut-off after which late events are no longer accepted"],
+    ["At-least-once / exactly-once", "—", "Delivered one or more times / delivered exactly once (hard)"],
+    ["Idempotent", "—", "Doing it twice has the same effect as doing it once"],
+    ["TTL", "Time To Live", "How long an unacknowledged event is kept"],
+    ["DLQ", "Dead-Letter Queue", "Where failed events go for later diagnosis"],
+    ["Push / pull", "—", "The service sends to consumers / consumers fetch from the service"],
+    ["ODBC / JDBC", "Open / Java Database Connectivity", "Standard driver APIs for connecting to databases"],
+    ["CDC", "Change Data Capture", "Capturing each insert, update and delete"],
+    ["Debezium", "—", "Open-source tool for log-based CDC into Kafka"],
+    ["Read replica", "—", "A copy of a database used for reads, to protect production"],
+    ["Signed URL", "—", "A temporary link granting access to one object"],
+    ["Bastion host", "—", "A secure “jump” server for SSH access"],
+    ["SFTP / SCP", "SSH File Transfer Protocol / Secure Copy", "Secure file transfer methods"],
   ],
 
   examTips: [
@@ -245,6 +384,10 @@ export default {
       marks: 5,
       question: "Taking Netflix's recommendation system as an example, explain how the data sources of an ML system can be categorised. Classify at least five sources by consumption, type, raw/derived and internal/external, and explain why knowing the source matters.",
       solution: `
+### What the examiner wants
+The four dimensions (consumption, type, raw vs derived, internal vs external) applied to at least 4–5 real sources in a table, plus **why** classification matters (access patterns and processing differ) (Lessons 1–2).
+
+### Model answer
 **Categorisation axes:** consumption (batch vs real-time), type (structured/semi/unstructured), raw vs derived, internal vs external. Also by **creation** (analog/digital), **location** (1st/2nd/3rd party) and **creator** (user-entered, system-generated, system-generated user data).
 
 | Netflix data | Consumption | Type | Raw/Derived | Source |
@@ -261,13 +404,20 @@ export default {
 1. **Access:** batch sources can be pulled nightly via JDBC/files; real-time sources need a stream (Kafka).
 2. **Processing:** unstructured search text needs NLP; derived metrics need upstream jobs and lineage.
 3. **Quality and compliance:** user-entered and social data need validation and **privacy** handling; third-party data needs contracts and licences.
-4. **Freshness:** real-time context must reach the model within seconds, while catalogue metadata can refresh daily.`,
+4. **Freshness:** real-time context must reach the model within seconds, while catalogue metadata can refresh daily.
+
+### Takeaway
+Classifying sources tells you how to ingest each one: streaming vs batch path, parser, legal checks, refresh schedule.`,
     },
     {
       title: "NoSQL source systems compared",
       marks: 5,
       question: "Compare the NoSQL source systems (key-value, document, wide-column, search, time-series) in terms of data model, strengths, limitations and typical use cases. How does a data engineer extract analytics data from them?",
       solution: `
+### What the examiner wants
+Each NoSQL type's structure, strengths and weaknesses **for ingestion** (joins, consistency, indexes), with examples, as a table (Lesson 3).
+
+### Model answer
 | Type | Model | Strengths | Limitations | Use cases / examples |
 |---|---|---|---|---|
 | **Key-value** | key → value (hash map) | Ultra-fast lookups, high concurrency; in-memory or durable | Lookup by key only | Sessions, carts, caching (Redis, DynamoDB) |
@@ -281,13 +431,20 @@ export default {
 - use **CDC / change streams** to capture updates as an event stream into Kafka → lake/warehouse, or
 - use native connectors in ingestion tools.
 
-Then model the data in the warehouse/lakehouse for training.`,
+Then model the data in the warehouse/lakehouse for training.
+
+### Takeaway
+Key-value = current state; document = flexible but inconsistent; wide-column = huge writes, one index; search = text and logs; time-series = ordered measurements.`,
     },
     {
       title: "Streaming ingestion challenges",
       marks: 5,
       question: "What challenges must be handled when ingesting streaming data? Explain schema evolution, late-arriving data, ordering and multiple delivery, replay, message size, TTL, error handling (dead-letter queue) and push vs pull.",
       solution: `
+### What the examiner wants
+Each concern named with **what goes wrong** and **a mitigation**: schema evolution, late data, ordering and duplicates, replay, message size, TTL, error handling, push vs pull (Lesson 8).
+
+### Model answer
 | Challenge | What happens | How to handle |
 |---|---|---|
 | **Schema evolution** | Producers add/remove fields or change types | **Schema registry** (versioned schemas); proactive communication with upstream teams |
@@ -302,13 +459,20 @@ Then model the data in the warehouse/lakehouse for training.`,
 \`\`\`flow
 Producers -> Topic (partitions by key) -> Consumer (idempotent, event-time windows, watermark) -> Sink
 Consumer -> failures -> Dead-letter queue -> Fix & replay
-\`\`\``,
+\`\`\`
+
+### Takeaway
+Streams are unordered, duplicated, late and ever-changing; registries, watermarks, idempotency, replay and dead-letter queues tame them.`,
     },
     {
       title: "Change data capture (CDC)",
       marks: 5,
       question: "What is Change Data Capture? Explain batch, continuous (log-based) and managed CDC with their trade-offs. What precautions must be taken when running CDC on a production database?",
       solution: `
+### What the examiner wants
+What CDC is and why it beats full copies, the three styles (batch, log-based, managed) with their trade-offs, the load it puts on the source, and a use case such as replication or failover (Lessons 7 and 9).
+
+### Model answer
 **CDC** captures changes (insert/update/delete) made to a source database, so they can be ingested periodically or continuously for analytics, replication or ML, without full reloads.
 
 **1. Batch-oriented CDC**
@@ -331,13 +495,20 @@ App writes -> PostgreSQL (WAL / binlog) -> Debezium CDC -> Kafka topic -> Stream
 - Monitor log retention so the CDC reader doesn't fall behind.
 - Handle **schema changes** in the source.
 
-*Use case:* keeping an e-commerce inventory replica and an analytics store current with minimal data loss.`,
+*Use case:* keeping an e-commerce inventory replica and an analytics store current with minimal data loss.
+
+### Takeaway
+Batch CDC (updated_at) is simple but misses intermediate changes; log-based CDC (Debezium) captures every change in near real time. Use a read replica to protect production.`,
     },
     {
       title: "Data contracts, lineage and governance at ingestion",
       marks: 5,
       question: "Explain data contracts, data lineage and data governance. Why are they especially important at the data ingestion stage?",
       solution: `
+### What the examiner wants
+A definition and practical example for each of the three, and how together they stop bad data spreading and build trust. Mention compliance regimes (Lesson 6).
+
+### Model answer
 **Data contract:** a written agreement between the **owner of a source system** and the **team ingesting its data**, stating:
 - **what** data is extracted
 - **how** (full or incremental)
@@ -359,13 +530,20 @@ Store it in a well-known place (Git repo, docs site), ideally in a standard mach
 
 \`\`\`flow
 Source owner + Ingestion team -> Data contract (what/how/when/who) -> Ingestion with validation -> Lineage recorded -> Governed, trusted data downstream
-\`\`\``,
+\`\`\`
+
+### Takeaway
+Contracts prevent surprises, lineage explains problems, governance enforces quality and compliance: three layers of trust at the front door.`,
     },
     {
       title: "Choosing ingestion methods for scenarios",
       marks: 5,
       question: "Recommend and justify an ingestion method for each: (a) nightly load of an on-prem Oracle orders table, (b) near-real-time replication of a PostgreSQL inventory DB to analytics, (c) a SaaS payment provider notifying you of each payment, (d) a partner that drops daily CSVs, (e) migrating 400 TB from an on-prem data centre to the cloud.",
       solution: `
+### What the examiner wants
+For each scenario, a method **and the reason** (volume, freshness, source type, security), with the tool named (Lessons 7–9).
+
+### Model answer
 | Scenario | Method | Why |
 |---|---|---|
 | (a) Nightly Oracle orders | **Batch via JDBC/ODBC** (differential using updated_at), or **file export** to object storage | Time-interval batch fits daily reporting. Run off-hours or on a **read replica** to protect the OLTP DB |
@@ -374,13 +552,20 @@ Source owner + Ingestion team -> Data contract (what/how/when/who) -> Ingestion 
 | (d) Partner daily CSVs | **SFTP / object storage** with **signed URLs**, plus schema validation | Common partner pattern; object storage is secure and scalable; validate against a **data contract** |
 | (e) 400 TB migration | **Transfer appliance** (AWS Snow family), then incremental sync | Over 100 TB, shipping drives is faster and cheaper than the network. One-time only; test schema compatibility on a sample first |
 
-**General considerations** (slide 58): use case, reusability, lineage, freshness, volume, format, quality, risks, velocity.`,
+**General considerations** (slide 58): use case, reusability, lineage, freshness, volume, format, quality, risks, velocity.
+
+### Takeaway
+Pick the ingestion method from four facts: what the source is, how much data, how fresh it must be, and how sensitive it is.`,
     },
     {
       title: "Message queues vs event-streaming platforms",
       marks: 5,
       question: "Differentiate message queues and event-streaming platforms. Explain topics and partitions with the freeway analogy, and state when you'd use each for ML data ingestion.",
       solution: `
+### What the examiner wants
+How each works (delete after acknowledgement vs retained, ordered log), replay, ordering and partitions, typical tools, and when to use each (Lesson 4).
+
+### Model answer
 | | Message queue | Event-streaming platform |
 |---|---|---|
 | Purpose | **Route** small messages between decoupled systems with delivery guarantees | **Ingest and process** data as an **ordered log** of records |
@@ -398,7 +583,10 @@ Producers -> Topic "clicks" -> Partition 0 | Partition 1 | Partition 2 -> Consum
 
 **For ML:**
 - **Queue:** task distribution to microservices, e.g. "score this document" requests (model-on-demand serving).
-- **Streaming platform:** collecting clickstream/IoT events for **real-time features** and **replaying history** to rebuild training sets or backfill features (Kappa-style).`,
+- **Streaming platform:** collecting clickstream/IoT events for **real-time features** and **replaying history** to rebuild training sets or backfill features (Kappa-style).
+
+### Takeaway
+A queue is a mailbox that forgets delivered messages; a stream is a replayable history. ML pipelines usually want the history.`,
     },
   ],
 
