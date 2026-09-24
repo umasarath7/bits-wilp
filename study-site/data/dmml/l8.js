@@ -135,6 +135,7 @@ export default {
             ["**Sampling bias**", "No proper randomisation", "Taking the **first 200 email replies**, who are likely more enthusiastic than average", "Random (or stratified) sampling"],
           ],
         },
+        { type: "diagram", name: "d8-selection" },
         {
           type: "p",
           text: "**Why it matters for ML:** the model looks great in testing (because the test data is biased the same way), then under-performs, or treats groups unfairly, on the real population. *Hospital example:* a model trained only on patients from city hospitals misjudges rural patients whose health patterns differ.",
@@ -173,6 +174,7 @@ export default {
             ["**A feature from the future**", "A loan-default model using “number of late-payment reminders”. At application time this is always 0, because the loan hasn't started", "Understand the business timeline: use only features known **at the moment of prediction**"],
           ],
         },
+        { type: "diagram", name: "d8-leak" },
         {
           type: "p",
           text: "Leakage also happens when duplicates end up in both training and test sets (Lecture 6), or when test data is used to choose features or scaling parameters. **Warning sign:** accuracy that seems too good to be true usually is.",
@@ -218,6 +220,7 @@ export default {
           title: "Worked example",
           text: "A feature's training distribution over 4 bins is 25%, 25%, 25%, 25%. In production this month it's 10%, 20%, 30%, 40%.\n\n| Bin | E | A | A − E | ln(A/E) | (A − E) ln(A/E) |\n|---|---|---|---|---|---|\n| 1 | 0.25 | 0.10 | −0.15 | −0.916 | 0.137 |\n| 2 | 0.25 | 0.20 | −0.05 | −0.223 | 0.011 |\n| 3 | 0.25 | 0.30 | 0.05 | 0.182 | 0.009 |\n| 4 | 0.25 | 0.40 | 0.15 | 0.470 | 0.071 |\n\nPSI = 0.137 + 0.011 + 0.009 + 0.071 = **0.228**: a **moderate shift**. Investigate and consider retraining. (KL(A‖E) = 0.106.) Note that every PSI term is positive: shifts in either direction add to the total.",
         },
+        { type: "diagram", name: "d8-psi" },
       ],
     },
     {

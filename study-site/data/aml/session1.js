@@ -225,6 +225,7 @@ export default {
           type: "p",
           text: "The tumour example shows how simple a learnt classifier can be. Put tumour sizes on a number line. Benign ones cluster on the left, malignant ones on the right. The model learns a single cut-off **T** and the rule: *if size > T, predict malignant; otherwise benign*. “Training” here just means finding the best T from the labelled examples.",
         },
+        { type: "diagram", name: "s1-threshold" },
         {
           type: "p",
           text: "**One measurement is rarely enough (slide 31).** Doctors also look at the patient's age, clump thickness, uniformity of cell size and shape, and more. Each measurement is a **feature**, one dimension of $x$. With two features, the cut-off point becomes a **line** dividing the plane. With three or more, it becomes a flat surface called a **hyperplane**. Same idea, more dimensions. Our fraud model might use 30 features: amount, time, merchant type, distance from home, and so on.",
@@ -256,6 +257,7 @@ export default {
           type: "p",
           text: "The fourth type has no labels at all, only **rewards**. A learner, called the **agent**, observes the situation (the **state**), takes an **action**, and gets a positive or negative **reward**. Over many attempts it learns the best strategy, called a **policy**: a mapping from *state → action* that collects the most reward over time (slide 39). It's how you train a dog with treats, or how you learn to ride a bicycle by falling. Examples: AlphaGo learning Go, a robot finding its way out of a maze, balancing a pole on your hand. This is the Class 2 (“sequence of steps”) problem from Lesson 4.",
         },
+        { type: "diagram", name: "s1-rl" },
         {
           type: "table",
           caption: "Summary: the type of feedback decides the type of learning",
@@ -267,6 +269,7 @@ export default {
             ["**Reinforcement**", "Rewards for actions", "A **policy**: state → best action", "AlphaGo, robot navigation"],
           ],
         },
+        { type: "diagram", name: "s1-types" },
       ],
     },
     {
@@ -374,6 +377,7 @@ export default {
           type: "p",
           text: "Student A is **overfitting**. The model has learnt the training data *including its noise and quirks*, so it looks brilliant on the data it has seen and fails on new data. Student B is **underfitting**. The model is too simple to capture the real pattern, so it does badly everywhere. Student C **generalises**, which is the whole goal of ML: to do well on data it has *never seen*.",
         },
+        { type: "diagram", name: "s1-fits" },
         {
           type: "p",
           text: "**Why overfitting happens (slide 47).** The model is **too complex for the amount and noisiness of the data**. The slides fit a very high-degree polynomial to the life-satisfaction data. The curve wiggles through every single point, so its training error is tiny, but it makes absurd predictions between the points. In our bank, an overfitted model might learn “a ₹2,317 transaction at a petrol pump in Pune at 4:12 p.m. is fraud”, because that one fraud happened to look like that. It's memorised an example, not learnt a pattern.",
@@ -404,6 +408,7 @@ export default {
           type: "p",
           text: "Now look back at the speech-recognition table in Lesson 4. One hidden layer was worse than the baseline: underfitting. Eight layers was the sweet spot. Ten and twelve got slightly worse: overfitting starting. Every time you add complexity, **training error goes down**, but error on new data goes **down, then back up**. The best model sits at the bottom of that curve.",
         },
+        { type: "diagram", name: "s1-ucurve" },
       ],
     },
     {
@@ -431,10 +436,7 @@ export default {
           type: "p",
           text: "**The fix: K-fold cross-validation (CV).** Instead of one split, do several and average. Split the data into **K equal parts** called **folds**. Hold out fold 1, train on the other K−1 folds, and measure on fold 1. Then hold out fold 2, train on the rest, measure on fold 2. Repeat until **every fold has had one turn** as the validation set. Finally, **average the K scores**. **K = 10** is a common choice.",
         },
-        {
-          type: "p",
-          text: "```flow\nSplit data into K folds -> Round 1: train on folds 2..K, validate on fold 1 -> Round 2: train on all but fold 2, validate on fold 2 -> … -> Round K -> Average the K scores\n```",
-        },
+        { type: "diagram", name: "s1-kfold" },
         {
           type: "p",
           text: "Why is this better? Every data point is used for validation **exactly once** and for training **K−1 times**, so no example is wasted, and no single lucky or unlucky split dominates the result. The price is that you train **K models** instead of one.",

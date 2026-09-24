@@ -102,6 +102,7 @@ export default {
             "**Eventual consistency:** writes are confirmed quickly and copies catch up shortly after, so a read **might briefly return a slightly old value**. Fast and scalable, the common choice at large scale. *Example:* a like count on a post, or a restaurant's rating.",
           ],
         },
+        { type: "diagram", name: "d5-consistency" },
       ],
     },
     {
@@ -126,6 +127,7 @@ export default {
             ["**Streaming storage**", "Keeps event streams with **retention** (Kafka can keep data very long, even indefinitely) and allows **replay** of a historical range", "Kafka, Kinesis, Pulsar, Google Pub/Sub"],
           ],
         },
+        { type: "diagram", name: "d5-storage" },
         {
           type: "callout",
           kind: "example",
@@ -147,6 +149,7 @@ export default {
           type: "p",
           text: "**Reverse ETL (slides 46–50).** Normal ETL moves data *from* operational systems *into* the warehouse. **Reverse ETL sends processed data back into operational tools**, where people actually work. The slide's example: CRM (Customer Relationship Management) data → warehouse → a **lead-scoring model** → scores stored in the warehouse. Instead of emailing an Excel file or building yet another dashboard that salespeople won't open, **load the scores straight back into the CRM**, next to each lead. Challenge: transforming and validating data for the target system. Tools: Hightouch, Census, Fivetran, Airbyte, RudderStack. Ad-tech example: compute cost-per-click bids and push them back to the ad platform.",
         },
+        { type: "diagram", name: "d5-reverse" },
         {
           type: "table",
           caption: "Three kinds of analytics (slides 51–58)",
@@ -198,6 +201,7 @@ export default {
             ["**8. Model development**", "Choose and implement the model", "It's only a **tiny part** of the whole stack"],
           ],
         },
+        { type: "diagram", name: "d5-stack" },
         {
           type: "p",
           text: "**How to read the stack.** The foundations (data, compute) don't care what workload runs on them. The middle layers are mostly about **integrating components** into a sound software architecture. The top is where data scientists spend their time, and it evolves fastest. The lesson echoes Session 3 of AML: the model is a small piece of a real ML system.",

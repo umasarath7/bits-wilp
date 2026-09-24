@@ -62,6 +62,7 @@ export default {
           type: "p",
           text: "**One-vs-One (OvO).** Train one classifier for **every pair** of classes: 0 vs 1, 0 vs 2, …, 8 vs 9. For a new image, run all of them and **pick the class that wins the most duels**, like a round-robin tournament. With N classes there are $N(N-1)/2$ pairs, so for 10 digits that's **45 classifiers**.",
         },
+        { type: "diagram", name: "s3-ova" },
         {
           type: "callout",
           kind: "formula",
@@ -112,6 +113,7 @@ export default {
           title: "Our fraud model on 1,000 transactions",
           text: "There are 40 frauds. The model catches 30 of them and misses 10. It also wrongly flags 20 of the 960 genuine transactions.\n\n| | Predicted fraud | Predicted genuine |\n|---|---|---|\n| Actual fraud | TP = 30 | FN = 10 |\n| Actual genuine | FP = 20 | TN = 940 |\n\nAccuracy $= (30 + 940)/1000 = $ **0.97**. Sounds great. But a quarter of the frauds got away, and 20 innocent customers had their cards blocked. Accuracy hides both facts. Lesson 4 gives us numbers for each.",
         },
+        { type: "diagram", name: "s3-confusion" },
       ],
     },
     {
@@ -173,6 +175,7 @@ export default {
           type: "p",
           text: "Most classifiers don't output a hard yes/no. They output a **score**, often a probability like “P(fraud) = 0.73”. We turn it into a decision with a **threshold**: flag the transaction if the score ≥ t. Choose t = 0.9 and you flag only the most suspicious cases (few false alarms, many misses). Choose t = 0.3 and you flag lots (few misses, many false alarms). **Every threshold gives a different confusion matrix.** So which threshold, and how do we compare two models fairly when each could use any threshold?",
         },
+        { type: "diagram", name: "s3-threshold" },
         {
           type: "p",
           text: "**The ROC curve (slides 17–19)** answers this by showing *every* threshold at once. ROC stands for **Receiver Operating Characteristic**; it was invented in the 1950s to analyse radar signals, where operators had to trade off catching real aircraft (hits) against reacting to noise (false alarms). For each threshold, compute two numbers and plot a point:",
@@ -202,6 +205,7 @@ export default {
           type: "p",
           text: "**AUC, the Area Under the ROC Curve (slide 20),** squeezes the whole curve into one number: **1 = ideal**, **0.5 = random guessing**. A nice interpretation: AUC is the probability that the model gives a randomly chosen positive a *higher* score than a randomly chosen negative.",
         },
+        { type: "diagram", name: "s3-roc" },
         {
           type: "p",
           text: "**Comparing two models (slide 20).** If model M1's curve is above M2's everywhere, M1 is better at every threshold. But curves can **cross**: M1 might be better at low FPR and M2 at high FPR. Then no model is best overall; choose the one that's better **in the region you'll operate in**. A bank that can tolerate only 1% false alarms cares about the left end of the curve.",

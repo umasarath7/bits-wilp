@@ -47,6 +47,7 @@ export default {
             "**Discriminative:** don't model the fruits at all; just learn **the boundary between them**, a function $f$ that maps $x$ directly to y. A linear f gives a linear boundary. **Logistic regression (Session 5) and SVMs (Session 7) are discriminative.**",
           ],
         },
+        { type: "diagram", name: "s6-gendisc" },
       ],
     },
     {
@@ -74,6 +75,7 @@ export default {
           title: "Why the prior matters so much: a medical test",
           text: "A disease affects **1%** of people. A test catches it 95% of the time, $P(+ \\mid D) = 0.95$, but also gives a false positive to 5% of healthy people, $P(+ \\mid \\neg D) = 0.05$. You test positive. What's the chance you're actually ill?\n\nMost people guess 95%. Picture 10,000 people:\n- 100 are ill → 95 test positive\n- 9,900 are healthy → 5% of them, **495**, also test positive\n\nOf the 590 positives, only 95 are ill: $P(D \\mid +) = 95/590 = $ **0.161**, about 16%.\n\nThe likelihood was high (95%), but the **prior was tiny** (1%), and the false positives from the huge healthy group swamp the true ones. Bayes' theorem does this weighing automatically.",
         },
+        { type: "diagram", name: "s6-tree" },
         {
           type: "p",
           text: "**Word problems (revision deck Q4).** When a question gives you some probabilities and asks for the reverse, write down what's known first: P(A), P(B), P(A | B). Then flip with $P(B \\mid A) = P(A \\mid B)P(B)/P(A)$. Example: Vijay has a 60% chance of a Google offer (G) and 50% of a Microsoft offer (M), and $P(G \\mid M) = 0.8$. Then $P(M \\mid G) = 0.8 \\times 0.5 / 0.6 = 0.667$.",
@@ -196,6 +198,7 @@ export default {
           title: "Gaussian likelihood",
           text: "$$P(X_i = x \\mid y) = \\frac{1}{\\sqrt{2\\pi\\sigma_y^2}} \\exp\\!\\left( -\\frac{(x - \\mu_y)^2}{2\\sigma_y^2} \\right)$$\n\n$\\mu_y$ and $\\sigma_y^2$ are the mean and variance of attribute $X_i$ within class y. **Watch out** whether a question gives the standard deviation σ or the variance σ².\n\nIt's a *density*, not a probability, so it can exceed 1 for very narrow distributions. That's fine: we only compare classes.",
         },
+        { type: "diagram", name: "s6-gauss" },
         {
           type: "callout",
           kind: "example",

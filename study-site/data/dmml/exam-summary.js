@@ -121,6 +121,7 @@ export default {
             "**Big data:** 5 Vs; sources → storage/ingestion → batch/stream → analytical store → reporting, with orchestration.",
           ],
         },
+        { type: "diagram", name: "d3-lambda" },
         {
           type: "callout",
           kind: "example",
@@ -242,6 +243,7 @@ export default {
           title: "PYQ Q6 skeleton (selection bias)",
           text: "Definition (unrepresentative data chosen because it's easy, convenient or cheap) → **coverage** (only our buyers surveyed) → **non-response** (competitor buyers 80% more likely to refuse) → **sampling** (first 200 email replies) → ML impact (looks good in testing, fails on the real population) → detect (compare with population statistics, skew checks) → mitigate (define the population, stratified random sampling, follow up non-responders, reweight) → contrast with reporting bias.",
         },
+        { type: "diagram", name: "d8-selection" },
       ],
     },
     {

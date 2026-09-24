@@ -155,6 +155,7 @@ export default {
             ["**Ratio**", "+ Meaningful ratios (×, ÷): has a true zero", "Temperature in Kelvin, length, weight, counts, time taken to run a race", "Everything, including “twice as much”"],
           ],
         },
+        { type: "diagram", name: "s2-ladder" },
         {
           type: "p",
           text: "Walk up the ladder with examples. **Nominal:** PIN codes 560001 and 400001 are just different names; saying one is “bigger” means nothing. **Ordinal:** grade A is better than grade B, but the gap between A and B isn't necessarily the same as between B and C. **Interval:** the difference between 10 °C and 20 °C is exactly the same as between 20 °C and 30 °C, so differences work. **Ratio:** a 10 kg bag really is twice as heavy as a 5 kg bag, because 0 kg means “no weight at all”.",
@@ -326,6 +327,7 @@ export default {
           type: "p",
           text: "**An intuition.** Scatter 100 points along a 1-metre ruler: they're packed closely, about 1 cm apart. Now scatter the same 100 points across a 1 m × 1 m floor: much more space between them. Now across a 1 m × 1 m × 1 m room: they're very far apart. **Each new dimension multiplies the space, but you still have the same 100 points**, so the data becomes **sparse**. In very high dimensions, every point is far from every other point, and the distances all look about the same. Methods that depend on “nearby” and “dense”, such as clustering, k-Nearest Neighbours and outlier detection, stop working well.",
         },
+        { type: "diagram", name: "s2-curse" },
         {
           type: "p",
           text: "**Dimensionality reduction (slide 47)** fights this. Its purposes: avoid the curse of dimensionality; **reduce time and memory** needed by algorithms; make data **easier to visualise** (you can plot 2 or 3 dimensions, not 50); and help **remove irrelevant features and noise**. The popular techniques are **Principal Component Analysis (PCA)** and **Singular Value Decomposition (SVD)**.",
@@ -334,6 +336,7 @@ export default {
           type: "p",
           text: "**How PCA works, intuitively.** Imagine a cloud of points shaped like a long, thin cigar tilted in 2-D. Most of the variation is along the length of the cigar. PCA finds that direction and says: *describe each point just by where it lies along the cigar*. You go from 2 numbers per point to 1 and lose very little. In general, PCA **finds new axes (projections) that capture the largest amount of variation** in the data, in decreasing order of importance. Slide 48 shows images rebuilt from more and more PCA components: **more components give a better reconstruction**, but less reduction.",
         },
+        { type: "diagram", name: "s2-pca" },
         {
           type: "p",
           text: "**Feature subset selection (slide 49): keep only the useful columns.** Another way to cut dimensions is to drop features. Two kinds are worth dropping:",
@@ -386,6 +389,7 @@ export default {
           title: "Worked example: why the mean can mislead",
           text: "A small startup's monthly salaries (₹ thousand): 30, 35, 40, 45 and the founder's 250.\n\n- **Mean** $= (30+35+40+45+250)/5 = 400/5 = $ **80**\n- **Median** = the middle value when sorted = **40**\n\nFour of the five people earn 45 or less, yet the “average salary” is 80. One outlier dragged the mean up; the median still describes a typical employee. That's why news reports on incomes and house prices usually quote the **median**, and why the census gives *median* house value and *median* income.",
         },
+        { type: "diagram", name: "s2-meanmedian" },
         {
           type: "p",
           text: "**Spread: range and variance (slide 59).** The **range** is max − min: simple, but it depends only on the two most extreme values, so a single outlier changes it completely. The **variance**, and its square root the **standard deviation** $s$, is the most common measure of spread: roughly, *how far is a typical value from the mean?* Because it squares distances, it too is affected by outliers, so more robust measures are sometimes used: the **Average Absolute Deviation (AAD)**, the **Median Absolute Deviation (MAD)**, and the **Interquartile Range (IQR)**, which is the 75th percentile minus the 25th.",
@@ -432,6 +436,7 @@ export default {
           title: "Worked example",
           text: "Points $P = (1, 2)$ and $Q = (4, 6)$. First, the differences in each attribute: $|1-4| = 3$ and $|2-6| = 4$.\n\n- Manhattan: $3 + 4 = $ **7** (walk 3 blocks east, then 4 blocks north)\n- Euclidean: $\\sqrt{3^2 + 4^2} = \\sqrt{25} = $ **5** (the straight line)\n- Supremum: $\\max(3, 4) = $ **4**\n\nNotice Manhattan ≥ Euclidean ≥ Supremum. That ordering always holds.",
         },
+        { type: "diagram", name: "s2-distance" },
         {
           type: "p",
           text: "**Mahalanobis distance** goes one step further: it accounts for the fact that attributes can be **correlated** and have **different spreads**. Picture height and weight: they rise together. A person who is tall *and* heavy is typical; a person who is tall *and* very light is unusual. Mahalanobis distance treats a step *along* the natural trend of the data as short and a step *against* it as long, even if the straight-line (Euclidean) distances are equal. Formula: $(x - y)^T \\Sigma^{-1} (x - y)$, where $\\Sigma$ (capital sigma) is the **covariance matrix** of the data.",
@@ -441,6 +446,7 @@ export default {
           type: "p",
           text: "**Cosine similarity.** Represent each document as a vector of word counts. Two articles about cricket share words like “wicket” and “over”, but one might be ten times longer, so its counts are ten times bigger and Euclidean distance would call them far apart. Cosine similarity looks only at the **angle** between the two vectors, not their lengths: pointing the same way means similar topics. It also **ignores 0–0 matches**, words absent from both documents, which carry no information (the asymmetric attributes from Lesson 4).",
         },
+        { type: "diagram", name: "s2-cosine" },
         {
           type: "callout",
           kind: "formula",
@@ -458,6 +464,7 @@ export default {
           title: "Drawback of correlation (slide 69)",
           text: "Take $x = (-3, -2, -1, 0, 1, 2, 3)$ and $y = x^2 = (9, 4, 1, 0, 1, 4, 9)$. Here $y$ is **completely determined** by $x$, yet the correlation is exactly **0**. Why? The relationship is a U-shape, not a straight line, and correlation only detects straight lines. On the left half, y falls as x rises; on the right half, it rises. The two halves cancel.\n\n**Lesson: correlation = 0 means “no linear relationship”, not “no relationship”.**",
         },
+        { type: "diagram", name: "s2-corr" },
         {
           type: "p",
           text: "**Choosing a measure (slide 70).** The right measure depends on the kind of data: records, images, graphs, sequences and 3-D protein structures all have their own. Useful properties to look for: **symmetry** (distance from A to B equals B to A), **tolerance to noise and outliers**, and above all, the measure must **fit the data and agree with domain knowledge**.",
@@ -486,6 +493,7 @@ export default {
             ["**Star plots, Chernoff faces** (slides 80–82)", "Each record becomes a star (axes radiating out) or a cartoon face (each attribute controls a feature like eye size)", "Comparing records across many attributes at once, using our skill at recognising shapes and faces"],
           ],
         },
+        { type: "diagram", name: "s2-boxplot" },
       ],
     },
     {

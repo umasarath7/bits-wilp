@@ -99,6 +99,7 @@ export default {
             ["**Actual −**", "FP (false positive: a **false alarm**)", "TN (true negative)"],
           ],
         },
+        { type: "diagram", name: "s3-confusion" },
         {
           type: "callout",
           kind: "formula",
@@ -142,6 +143,7 @@ export default {
             "Interpret the slope in words: “each extra unit of x adds about $b_1$ units of y”.",
           ],
         },
+        { type: "diagram", name: "s4-residuals" },
         {
           type: "p",
           text: "**Also know:** the cost used in GD is $J(\\theta) = \\frac{1}{2m}\\sum(h_\\theta(x) - y)^2$ (half the MSE; it's **convex**, one global minimum). Normal equation $\\theta = (X^TX)^{-1}X^Ty$ (no α, no iterations, but expensive to invert). **Regularisation** adds $\\lambda \\sum_{j \\ge 1} \\theta_j^2$: large λ shrinks the θs toward 0, so the curve becomes simpler and smoother (θ₀ is not penalised).",
@@ -224,6 +226,7 @@ export default {
           type: "p",
           text: "**Linear SVM by hand:** plot the points → the closest opposite-class points are the support vectors → set $w^Tx + b = +1$ at the positive SVs and $-1$ at the negative SVs → solve for w and b → boundary is the line midway → margin $= 2/\\|w\\|$ → check every point is on the correct side.",
         },
+        { type: "diagram", name: "s7-margin" },
         {
           type: "p",
           text: "**Polynomial kernel, degree 2 (PYQ 1d):** $\\phi(x) = (1, \\sqrt2 x_1, \\sqrt2 x_2, x_1^2, x_2^2, \\sqrt2 x_1 x_2)$. Compute φ for both points, take the dot product, and **check** it equals $(1 + x^Tz)^2$ computed directly.",
@@ -232,6 +235,7 @@ export default {
           type: "p",
           text: "**XOR (PYQ 5):** add the feature $z = x_1 x_2$. Now class +1 has z = +1 and class −1 has z = −1 → all 4 points are support vectors → hyperplane $z = 0$ (w₃ = 1, b = 0, margin 2) → in the original space the boundary is $x_1 x_2 = 0$ (the two axes); $f(x) = \\text{sign}(x_1 x_2)$.",
         },
+        { type: "diagram", name: "s7-xor" },
         {
           type: "p",
           text: "**C in one line:** large C → narrow margin, few violations, risk of overfitting; small C → wider margin, more violations, often generalises better. **Kernel trick:** the dual only needs dot products, so replace them with $K(x, z)$ and never compute φ explicitly.",

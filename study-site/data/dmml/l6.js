@@ -20,12 +20,9 @@ export default {
         },
         {
           type: "p",
-          text: "```flow\nBusiness goal -> ML problem framing -> Data processing -> Model development -> Deployment -> Monitoring\nMonitoring -> feedback loops back to Data processing / Model development\n```",
-        },
-        {
-          type: "p",
           text: "**The phases are not strictly sequential** (slide 6). Feedback loops can send you back at any point: monitoring spots drift, so you go back to data processing; evaluation shows the model is weak, so you go back to feature engineering.",
         },
+        { type: "diagram", name: "d6-cycle" },
         {
           type: "table",
           caption: "The six phases at a glance",
@@ -198,6 +195,7 @@ export default {
           title: "Data drift vs concept drift",
           text: "- **Data drift:** the **distribution of the inputs** changes. *Grocery:* a new customer segment (office canteens) starts ordering in bulk.\n- **Concept drift:** the **relationship between inputs and target** changes. *Grocery:* after a price war, the same discount now produces far fewer extra sales than before.\n\nWhen either is detected, the alarm manager triggers the **model update (retraining) pipeline**. **Explainability** tools help understand why predictions change.",
         },
+        { type: "diagram", name: "d6-drift" },
       ],
     },
     {
@@ -219,6 +217,7 @@ export default {
             ["**Shadow**", "The new model receives the **same inputs** in parallel, but **only the old model's output is used**; the new one's predictions are just recorded and analysed", "**Zero user risk**; compare before exposing anyone"],
           ],
         },
+        { type: "diagram", name: "d6-deploy" },
       ],
     },
     {
@@ -356,6 +355,7 @@ export default {
           type: "p",
           text: "**Federated learning in one sentence:** *the model travels to the data, not the data to the model*, so private data never leaves the device. Constraints: devices have limited power and aren't always available.",
         },
+        { type: "diagram", name: "d6-federated" },
         {
           type: "p",
           text: "**How serving is usually built (slides 105–110):** **Docker containers**. Inference is stateless, lightweight and idempotent, so wrap the whole stack plus the prediction code in a container, orchestrate many containers with **Kubernetes** (or AWS Fargate), and expose a REST API (e.g. with Flask). This is the de-facto standard. Alternatively, **serverless functions**: package code and dependencies as a .zip with one entry point on AWS Lambda, Azure Functions or Google Cloud Functions, or use managed ML platforms (SageMaker, Vertex AI, Azure ML, Watson). Watch the **size limits** on deployment artifacts.",

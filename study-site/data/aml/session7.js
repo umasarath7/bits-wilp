@@ -40,6 +40,7 @@ export default {
           type: "p",
           text: "**Support vectors (slides 9–10).** The houses at the very edge of the road, the ones the road's edges touch, are the **support vectors**: the training points that the margin *pushes up against*, i.e. those nearest to the boundary. Here's the remarkable part: **the best line is completely determined by these few points.** Remove a house deep inside a village and the road doesn't move. Remove one of the edge houses and the road can widen or shift. That's the definition on slide 10: support vectors are *the points which, if removed, would alter the position of the dividing hyperplane.*",
         },
+        { type: "diagram", name: "s7-margin" },
         {
           type: "callout",
           kind: "idea",
@@ -144,6 +145,7 @@ export default {
             ["**greater than 1**", "On the **wrong side**: misclassified"],
           ],
         },
+        { type: "diagram", name: "s7-slack" },
         {
           type: "p",
           text: "**What C does (slides 19, 22).** C decides how expensive rule-breaking is compared with a narrow road:",
@@ -177,6 +179,7 @@ export default {
           type: "p",
           text: "**The idea: lift the data into more dimensions.** Add a second coordinate, $x^2$. Now each point x becomes $(x, x^2)$ and sits on a U-shaped parabola. The middle points (small |x|) are low down; the outer points (large |x|) are high up. A **horizontal line** now separates them perfectly. A straight line in the new space corresponds to a non-linear boundary (two cut points) in the original space.",
         },
+        { type: "diagram", name: "s7-lift" },
         {
           type: "p",
           text: "In general (slide 27): the original input space can always be mapped, by some transformation $\\Phi: x \\to \\phi(x)$, into a higher-dimensional **feature space** where the training set is separable. Then run an ordinary linear SVM there.",
@@ -243,6 +246,7 @@ export default {
           title: "Recipe 2: non-separable data (XOR, PYQ Q5)",
           text: "1. **Choose φ** so the classes separate. For XOR, use $z = x_1x_2$: same signs → +1, different signs → −1.\n2. **Transform** every point and tabulate.\n3. **Support vectors** = the transformed points closest to the other class (for XOR, all four, since z = ±1).\n4. **Hyperplane in the new space:** solve $w z + b = +1$ and $-1$ at the support vectors (XOR: w = 1, b = 0, so z = 0; margin 2).\n5. **Map back:** substitute φ. XOR: $x_1x_2 = 0$, i.e. the two axes. Rule: class = sign($x_1x_2$).",
         },
+        { type: "diagram", name: "s7-xor" },
         {
           type: "callout",
           kind: "exam",

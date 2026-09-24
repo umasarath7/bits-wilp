@@ -66,6 +66,7 @@ export default {
           type: "p",
           text: "**Hybrid (slides 11–12).** Data and platforms are organised **by data domain** (customers, accounts, payments, risk), with **single golden sources** and **no duplication across domains**. Central standards and master data, plus domain-level agility. **Good for:** balance, and handling rapidly updated data streams. **Cost:** more coordination and design complexity. **Typical of telecom:** centralised master data management plus federated storage by domain.",
         },
+        { type: "diagram", name: "d3-central" },
         {
           type: "table",
           caption: "Summary",
@@ -119,6 +120,7 @@ export default {
             ["Cons", "Repeated values use more storage", "More joins → **slower queries**; harder to design and maintain"],
           ],
         },
+        { type: "diagram", name: "d3-starsnow" },
         {
           type: "p",
           text: "**Data mart (slides 18–19).** A **smaller, refined subset of the warehouse** for one department or line of business: HR recruitment, IT tickets, the credit-card division. Why? Querying the whole warehouse for one team's needs is slow and complicated. A mart adds a transformation stage with **pre-joined and pre-aggregated** data, which **greatly speeds up** that team's complex joins and aggregations.",
@@ -199,6 +201,7 @@ export default {
           title: "The one-line difference",
           text: "**Mesh** changes **who owns** the data (people and organisation). **Fabric** changes **how data is connected** (a technical integration layer). They can be used together.",
         },
+        { type: "diagram", name: "d3-mesh" },
       ],
     },
     {
@@ -224,20 +227,13 @@ export default {
         },
         {
           type: "p",
-          text: "```flow\nImmutable, append-only source -> Batch layer (cold path: all raw data, accurate, slow) -> Serving layer (batch views)\nImmutable, append-only source -> Speed layer (hot path: real-time, low latency) -> Serving layer (combined view)\n```",
-        },
-        {
-          type: "p",
           text: "Lambda's big weakness: the same logic is written **twice**, in a batch framework and a streaming framework, so there are two codebases to maintain, results that don't quite match, and more bugs.",
         },
         {
           type: "p",
           text: "**Kappa architecture (Jay Kreps, slides 32, 47–50)** asks: *why not treat everything as a stream?* Keep one **unified, immutable, ordered log** of events (e.g. in Kafka), and process it with a **single stream-processing** codebase. To recompute history (after fixing a bug, say), simply **replay the log from the start** through the new code.",
         },
-        {
-          type: "p",
-          text: "```flow\nEvent stream (unified, immutable, ordered log) -> Stream processing -> Real-time views (replay the log to recompute history)\n```",
-        },
+        { type: "diagram", name: "d3-lambda" },
         {
           type: "table",
           head: ["", "Lambda", "Kappa"],

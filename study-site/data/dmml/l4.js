@@ -26,6 +26,7 @@ export default {
           type: "p",
           text: "Before we look at pipelines as a whole, we need to understand the three basic ways data can travel from one process to another (slides 8–9). Each has its own rules.",
         },
+        { type: "diagram", name: "d4-modes" },
       ],
     },
     {
@@ -55,6 +56,7 @@ export default {
           title: "Remember the direction",
           text: "**Backward compatibility:** *newer* code can read *older* data.\n**Forward compatibility:** *older* code can read *newer* data.\nRolling upgrades need **both**.",
         },
+        { type: "diagram", name: "d4-compat" },
         {
           type: "p",
           text: "**Preserve unknown fields (slide 14).** Suppose new code adds a `coupon_code` field to orders. Old code reads an order, updates its status and writes it back. If the old code silently drops the field it didn't recognise, data is lost. Old code must **keep unknown fields intact**.",
@@ -122,6 +124,7 @@ export default {
           title: "Why a retailer loves a broker",
           text: "When you place an order, the order service **publishes one “OrderPlaced” message** to a topic and moves on. The warehouse, payments, SMS notification, analytics and recommendation-model services **each subscribe** and react in their own time. If the SMS service is down for five minutes, its messages wait in the broker and are delivered when it's back. The order service never needed to know who was listening.",
         },
+        { type: "diagram", name: "d4-broker" },
         {
           type: "p",
           text: "**Advantages over calling services directly (slides 32–33):**",
@@ -186,6 +189,7 @@ export default {
             ["Users", "Dependent on IT", "**Self-service** for analysts and business users"],
           ],
         },
+        { type: "diagram", name: "d4-tdsmds" },
         {
           type: "p",
           text: "**Key characteristics (slides 40–43):**",

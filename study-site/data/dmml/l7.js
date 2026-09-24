@@ -140,12 +140,14 @@ export default {
           type: "p",
           text: "**Topics and partitions (slides 41–43).** In an event-streaming platform, a **topic** is a named stream of related events (e.g. “video-plays”), with zero or more producers and consumers. A topic is split into **partitions**, like the **lanes of a freeway**: more lanes means more events processed in parallel. Each event has a **partition key** (e.g. user-id), and events with the same key always go to the same partition, so one user's events stay in order.",
         },
+        { type: "diagram", name: "d7-partitions" },
         {
           type: "callout",
           kind: "idea",
           title: "Queue vs stream in one line",
           text: "A **queue** delivers a message and **forgets it** once acknowledged. A **stream** **keeps an ordered log** you can replay: it's a history, not just a mailbox.",
         },
+        { type: "diagram", name: "d7-queuestream" },
       ],
     },
     {
@@ -272,6 +274,7 @@ export default {
             ["**Push vs pull**", "**Pull:** consumers read and acknowledge (Kafka and Kinesis are pull-only; the usual default). **Push:** the service writes to a listener (Pub/Sub and RabbitMQ also support push)", "Add a small layer to emulate push on pull-only systems"],
           ],
         },
+        { type: "diagram", name: "d7-late" },
       ],
     },
     {

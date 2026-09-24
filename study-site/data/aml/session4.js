@@ -135,6 +135,7 @@ export default {
           title: "Worked example: hours → score",
           text: "**Step 1, the means:** $\\bar x = (1+2+3+4+5)/5 = 3$, $\\bar y = (2+4+5+4+5)/5 = 4$\n\n**Step 2, the table:**\n\n| x | y | $x - \\bar x$ | $y - \\bar y$ | product | $(x - \\bar x)^2$ |\n|---|---|---|---|---|---|\n| 1 | 2 | −2 | −2 | 4 | 4 |\n| 2 | 4 | −1 | 0 | 0 | 1 |\n| 3 | 5 | 0 | 1 | 0 | 0 |\n| 4 | 4 | 1 | 0 | 0 | 1 |\n| 5 | 5 | 2 | 1 | 2 | 4 |\n| | | | **Total** | $S_{xy} = 6$ | $S_{xx} = 10$ |\n\n**Step 3, the slope:** $\\theta_1 = 6/10 = 0.6$\n\n**Step 4, the intercept:** $\\theta_0 = 4 - 0.6 \\times 3 = 2.2$\n\n**The rule:** $\\hat y = 2.2 + 0.6x$. In plain English: *each extra hour of study is linked with about 0.6 more marks, on average.* For the new student: $\\hat y(6) = 2.2 + 0.6 \\times 6 = $ **5.8**.",
         },
+        { type: "diagram", name: "s4-residuals" },
       ],
     },
     {
@@ -187,6 +188,7 @@ export default {
           type: "p",
           text: "A **contour plot** (slide 24) shows the same bowl from above, like a hiking map. Each ellipse connects the $(\\theta_0, \\theta_1)$ pairs that have the **same cost**. The centre of the smallest ellipse is the minimum. Points on the same ellipse are equally good (or bad) lines, even though they look different.",
         },
+        { type: "diagram", name: "s4-bowl" },
         {
           type: "callout",
           kind: "idea",
@@ -242,6 +244,7 @@ export default {
             ["**Getting close to the minimum**", "Steps shrink automatically, even with a fixed α", "The slope gets gentler near the bottom"],
           ],
         },
+        { type: "diagram", name: "s4-lr" },
         {
           type: "p",
           text: "**How much data per step? Three variants (slides 36–45, and the revision deck).**",
@@ -327,6 +330,7 @@ export default {
             ["9 (with 10 points)", "Passes through **every** point exactly (E = 0) but swings wildly between them; coefficients become huge", "**Overfitting**"],
           ],
         },
+        { type: "diagram", name: "s4-poly" },
         {
           type: "p",
           text: "With M = 9 there are 10 coefficients for 10 points, enough to hit every point, including its noise. That's Student A from Session 1 again: perfect on the training data, useless on new data.",
@@ -346,6 +350,7 @@ export default {
           type: "p",
           text: "**An analogy: archery.** Imagine training the same model on many different samples of data, like shooting many arrows. **Bias** is how far the *average* arrow lands from the bullseye: a consistent, systematic miss. **Variance** is how *scattered* the arrows are: how much the result changes from one sample to the next.",
         },
+        { type: "diagram", name: "s4-archery" },
         {
           type: "list",
           items: [

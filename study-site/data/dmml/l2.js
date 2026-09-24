@@ -85,6 +85,7 @@ export default {
             "**Connection removal (recommended).** Remove the link between the private data (PII) and the model data altogether. This **reduces risk the most**, but it's **harder than it seems**, and doing it without destroying value can be difficult.",
           ],
         },
+        { type: "diagram", name: "d2-liability" },
         {
           type: "p",
           text: "**Deletion is harder than it sounds (slide 8).** Pressing Shift+Del doesn't erase the bytes; recovery software can often restore them. Archived copies on tape are even harder to purge. When should data be deleted? **When the user asks** (for a specific period), **when the organisation no longer needs it** (job portals that keep your profile for only 6 months), or **when governing policy sets a cut-off**, such as the EU's **GDPR** (General Data Protection Regulation).",
@@ -170,6 +171,7 @@ export default {
           type: "p",
           text: "Guardrails against **unauthorised access, corruption and theft**: **controlled access** (the slide asks: *can you see a colleague's salary slip?* You shouldn't be able to); **encryption** (unreadable without a key); **data masking** (show XXXX-1234 instead of a full card number); and **disaster recovery** (backups and failover).",
         },
+        { type: "diagram", name: "d2-components" },
       ],
     },
     {

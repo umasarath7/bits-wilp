@@ -27,10 +27,11 @@ export default {
           ordered: true,
           items: [
             "**The output isn't a probability.** For a student who studies 20 hours, the line might predict 1.8, and for 0 hours, −0.4. What does a probability of 1.8 mean? Nothing.",
-            "**One far-away point wrecks it.** Add a student who studied 40 hours and (of course) passed. That point is correct, but it drags the line flatter, which shifts the 0.5 crossing to the right, and now some genuine passes get predicted as fails.",
+            "**One far-away point wrecks it.** Add a student who studied 20 hours and (of course) passed. That point is correct, but it drags the line flatter, which shifts the 0.5 crossing to the right (from 4.5 h to 5.3 h in the figure), and now a genuine pass at 5 hours gets predicted as a fail.",
             "**The cost doesn't fit the question.** Squared error treats “predicted 0.6 when the answer was 1” as a small miss, but the target is only ever 0 or 1.",
           ],
         },
+        { type: "diagram", name: "s5-linearfail" },
         {
           type: "p",
           text: "What we want is a function that takes the same linear score $\\theta^Tx$ (from Session 4) but **squashes it into the range 0 to 1**, so it can be read as a probability. That function is the sigmoid.",
@@ -84,6 +85,7 @@ export default {
           title: "Running example: will the student pass?",
           text: "Suppose training gave $\\theta_0 = -4$ and $\\theta_1 = 1.5$ (x = hours studied). Then $z = -4 + 1.5x$:\n\n| Hours | 1 | 2 | 3 | 4 | 5 |\n|---|---|---|---|---|---|\n| z | −2.5 | −1.0 | 0.5 | 2.0 | 3.5 |\n| P(pass) = σ(z) | 0.076 | 0.269 | 0.622 | 0.881 | 0.971 |\n\nIn plain English: at 1 hour, about an 8% chance of passing; at 4 hours, 88%. The probability rises smoothly with study time, and it can never go below 0 or above 1.",
         },
+        { type: "diagram", name: "s5-sigmoid" },
       ],
     },
     {
@@ -113,6 +115,7 @@ export default {
           type: "p",
           text: "**Curved boundaries (slide 9).** What if the classes sit in a ring, e.g. positives outside a circle and negatives inside? Add **polynomial features** like $x_1^2$ and $x_2^2$. With features $(1, x_1, x_2, x_1^2, x_2^2)$ and $\\theta = (-1, 0, 0, 1, 1)$: predict 1 when $-1 + x_1^2 + x_2^2 \\ge 0$, i.e. **outside the unit circle** $x_1^2 + x_2^2 = 1$. The model is still linear in θ, exactly the Session 4 trick, but the boundary is curved in the original space.",
         },
+        { type: "diagram", name: "s5-boundary" },
         {
           type: "callout",
           kind: "idea",
@@ -161,6 +164,7 @@ export default {
           title: "Feel the numbers (y = 1)",
           text: "- Model says 0.9 → cost $-\\ln 0.9 = $ **0.105** (small: nearly right)\n- Model says 0.5 → cost $-\\ln 0.5 = $ **0.693** (undecided)\n- Model says 0.1 → cost $-\\ln 0.1 = $ **2.303** (big: confidently wrong)\n\nWith squared error, the last case would cost only $(0.1 - 1)^2 = 0.81$. Log-loss cares much more about confident mistakes.",
         },
+        { type: "diagram", name: "s5-logloss" },
         {
           type: "p",
           text: "**Combining the two cases into one formula (slide 13).** Since y is either 0 or 1, we can write both cases at once. When y = 1 the second term vanishes; when y = 0 the first term vanishes:",

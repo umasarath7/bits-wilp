@@ -3,6 +3,7 @@ import { createRoot } from "https://esm.sh/react-dom@18.3.1/client";
 import htm from "https://esm.sh/htm@3.1.1";
 import { marked } from "https://esm.sh/marked@12.0.2";
 import { subjects } from "./data/subjects.js";
+import { figures } from "./figures.js";
 
 const html = htm.bind(React.createElement);
 marked.setOptions({ breaks: true });
@@ -142,6 +143,11 @@ function Block({ b }) {
         <${Md} text=${b.text} />
       </div>`;
     case "diagram": {
+      const F = figures[b.name];
+      if (F) return html`<figure className="figure">
+        <div dangerouslySetInnerHTML=${{ __html: F.svg }} />
+        <figcaption><${Md} text=${b.caption || F.caption} /></figcaption>
+      </figure>`;
       const D = diagrams[b.name];
       return D ? html`<${D} />` : null;
     }

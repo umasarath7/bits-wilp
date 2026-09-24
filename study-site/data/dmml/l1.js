@@ -112,6 +112,7 @@ export default {
           type: "p",
           text: "Built around a **graph**: **nodes** (entities) connected by **edges** (relationships). The key line from slide 19: *“In a document database, the content of each document is the priority. In a graph database, the relationships between data items are the priority.”* Because relationships are stored directly, following them is **fast**. Examples: Neo4j, Amazon Neptune, Gephi. Used by LinkedIn and Facebook (who knows whom), and slide 20 suggests mapping **projects to business objectives** to see which projects align, overlap or duplicate each other. *Food app:* customer → ordered → dish ← ordered ← other customers, for recommendations and for spotting fraud rings sharing phones or addresses.",
         },
+        { type: "diagram", name: "d1-graph" },
         { type: "p", text: "#### 4. Document: self-contained JSON" },
         {
           type: "p",
@@ -134,6 +135,7 @@ export default {
             ["Examples", "MySQL, PostgreSQL, Oracle, SQL Server", "IBM IMS", "Neo4j, Neptune, TigerGraph", "MongoDB, CouchDB, DocumentDB", "Redis, DynamoDB, Riak"],
           ],
         },
+        { type: "diagram", name: "d1-models" },
         {
           type: "p",
           text: "**SQL vs NoSQL (slide 25).** Relational databases are the **SQL** family. The other four are grouped as **NoSQL** (“not only SQL”). A real company usually uses several at once, one per job. This is called **polyglot persistence**.",
@@ -203,6 +205,7 @@ export default {
           title: "Which layout suits which question?",
           text: "The food app's orders table has 40 columns and 100 million rows.\n\n- **“Save this new order.”** One record, all 40 columns. A **row store** writes it in one place.\n- **“What was the total order value per city last month?”** Only 2 columns (amount, city), but all 100 million rows. A **column store** reads just those 2 columns, about 5% of the data. A row store would read everything.\n\nColumn stores also **compress** better, because values in one column are similar (all cities, all amounts).",
         },
+        { type: "diagram", name: "d1-rowcol" },
         {
           type: "table",
           caption: "Slides 32–34 summary",
@@ -294,6 +297,7 @@ export default {
             "**Pivot (rotate):** swap rows and columns for a different view, e.g. Year × Product becomes Product × Year.",
           ],
         },
+        { type: "diagram", name: "d1-cube" },
         {
           type: "callout",
           kind: "example",
