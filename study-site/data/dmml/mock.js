@@ -4,7 +4,7 @@ export default {
   title: "Mock Comprehensive Paper",
   source: "Practice paper · 6 questions × 5 marks · same style as the previous comprehensive",
   overview:
-    "Six application-style questions, one per area, weighted towards topics **not asked last time** (L5 infrastructure/DataOps, L7 ingestion) plus high-probability cross-lecture themes (Lambda/Kappa, leakage/drift). Write each answer on paper in about 15 minutes, with headings, a diagram and an example, then compare with the model answer in the **Theory** tab.",
+    "Six application-style questions, one per area, weighted towards topics **not asked last time** (L5 infrastructure/DataOps, L7 ingestion) plus high-probability cross-lecture themes (Lambda/Kappa, leakage/drift). Write each answer on paper in about 15 minutes, with headings, a diagram and an example, then compare with the model answer in the **Theory** tab. Each model answer starts with **what the examiner wants** (read that first; it's the marking scheme in disguise) and ends with a one-line **takeaway**.",
 
   summary: [
     {
@@ -40,6 +40,10 @@ export default {
       marks: 5,
       question: "A retail company runs its orders on an OLTP database and wants to build daily ML features (e.g. 30-day spend per customer) for thousands of customers and hundreds of features. How should the choice of storage layout (row vs column), serialization format and OLTP/OLAP separation influence the design? Justify with a diagram.",
       solution: `
+### What the examiner wants
+Three design decisions (storage layout, serialization format, OLTP vs OLAP placement), each justified **for this pipeline**, plus a diagram of the flow. It combines Lessons 5–7 of L1.
+
+### Model answer
 **1. Separate OLTP from OLAP**
 - The orders DB is **OLTP**: many small writes, current data, optimised for fast writes and ACID. Heavy analytical scans for features would slow checkout.
 - Move data (CDC/ELT) into an **OLAP** store (warehouse/lakehouse): historical, consolidated, optimised for reads and aggregations.
@@ -60,13 +64,20 @@ Daily feature job -> Online feature store (key-value, row) -> Real-time model se
 \`\`\`
 
 **4. Trade-offs:** more copies of data (governance/consistency needed), CDC lag (eventual consistency), schema evolution handled via a registry.
-**Conclusion:** row + OLTP for transactions; column + OLAP for features and training; key-value for low-latency serving; binary schema-based formats in between.`,
+**Conclusion:** row + OLTP for transactions; column + OLAP for features and training; key-value for low-latency serving; binary schema-based formats in between.
+
+### Takeaway
+Operational writes → row store (OLTP); training scans → columnar Parquet (OLAP); service-to-service messages → compact binary with a schema (Avro/Protobuf).`,
     },
     {
       title: "Q2: Data as a liability in a healthcare ML start-up",
       marks: 5,
       question: "A health-tech start-up wants to train a readmission-prediction model on hospital patient records from several countries. Applying the principles of “data as a liability”, “data sensitivity of ML pipelines” and “data reliability”, explain how it should collect, store and use the data.",
       solution: `
+### What the examiner wants
+How the data becomes a liability here (PII, consent, residency, leaks), the collection restrictions, the **three risk-reduction approaches in order**, and deletion/retention, all tied to the start-up's situation (L2, Lesson 2).
+
+### Model answer
 **Data as liability:** medical records are high-value but high-risk. A breach or misuse means lawsuits, fines and reputational damage. More data isn't automatically better.
 
 **Collection restrictions**
@@ -88,13 +99,20 @@ Plus a **retention and deletion** policy (including backups) and encryption at r
 Hospitals (consent, contracts) -> Regional ingestion (encryption, pseudonymisation) -> Regional lakehouse (versioned) -> De-identified training set -> Model
 Governance: RBAC, audit logs, retention/deletion, drift monitoring per country
 \`\`\`
-**Conclusion:** the data becomes an asset only when privacy, compliance and reliability controls are designed in from ingestion.`,
+**Conclusion:** the data becomes an asset only when privacy, compliance and reliability controls are designed in from ingestion.
+
+### Takeaway
+Treat patient data as an asset only after the liability is controlled: consent, least access, pseudonymise or remove the link to identities, and plan deletion.`,
     },
     {
       title: "Q3: Lambda or Kappa for a ride-hailing platform",
       marks: 5,
       question: "A ride-hailing company needs (a) nightly reports and model training on months of trip history, and (b) real-time surge pricing and ETA predictions. Explain how Lambda and Kappa architectures would serve these needs, compare them, and recommend one.",
       solution: `
+### What the examiner wants
+Both architectures briefly, then a **recommendation with reasons specific to ride-hailing** (surge pricing and ETAs need real-time; demand forecasting needs history), with a diagram and the trade-offs (L3, Lesson 6).
+
+### Model answer
 **Lambda**
 \`\`\`flow
 Trip & GPS events (immutable) -> Batch layer (cold: lake/warehouse, full history) -> Batch views (reports, training data)
@@ -120,13 +138,20 @@ Kafka -> Replay from start -> Recompute history / training sets
 | Consistency train/serve | Risk of skew | Same logic |
 | Ops complexity | Two systems | Streaming expertise |
 
-**Recommendation:** a **Kappa-leaning** design, where Kafka is the backbone and the same stream jobs compute features for serving *and* write them to a feature store/lakehouse for training. Keep cheap object storage for deep history (a pragmatic hybrid, in the spirit of the Dataflow "batch as bounded stream" model). If the team is new to streaming, start with Lambda and converge later.`,
+**Recommendation:** a **Kappa-leaning** design, where Kafka is the backbone and the same stream jobs compute features for serving *and* write them to a feature store/lakehouse for training. Keep cheap object storage for deep history (a pragmatic hybrid, in the spirit of the Dataflow "batch as bounded stream" model). If the team is new to streaming, start with Lambda and converge later.
+
+### Takeaway
+Choose by team and workload: Kappa if one streaming codebase can serve both live and replayed history; Lambda if heavy batch recomputation must stay separate.`,
     },
     {
       title: "Q4: DataOps, CI/CD/CT and observability",
       marks: 5,
       question: "Explain how DataOps extends DevOps, and describe with a diagram a CI/CD/CT pipeline for an ML model. How does data observability prevent “data downtime”? Use an example.",
       solution: `
+### What the examiner wants
+DataOps vs DevOps, the four phases (experiment → CI → CD → CT) with what happens in each, and data observability, illustrated on one concrete ML system (L5, Lessons 7–8).
+
+### Model answer
 **DevOps → DataOps**
 - DevOps unifies development and operations of **code** for fast, reliable releases.
 - **DataOps** applies this to **data**: *dev* = building data pipelines; *ops* = monitoring, troubleshooting and enhancing them. It combines **agile** (governance and analytics development) with **DevOps** automation (builds, tests, delivery).
@@ -145,13 +170,20 @@ Production -> CT: scheduled retraining on fresh data -> registry -> redeploy
 **Observability:** monitoring, tracking and **triaging data incidents** (freshness, volume, schema, distribution, lineage) so missing, late or wrong data is caught *before* it reaches models and dashboards (**data downtime**).
 *Example (DoorDash):* poor observability let data issues produce **wrong delivery ETAs**. Their platform added prediction logs, a feature store and an automated training pipeline, cutting deployments from weeks to days.
 
-**Conclusion:** DataOps + CI/CD/CT + observability turn ML from ad-hoc experiments into a reliable, continuously improving product.`,
+**Conclusion:** DataOps + CI/CD/CT + observability turn ML from ad-hoc experiments into a reliable, continuously improving product.
+
+### Takeaway
+Automate the whole path (test, retrain, register, canary/A-B, recurring retraining) and watch the data, not just the model.`,
     },
     {
       title: "Q5: Streaming ingestion for an IoT fleet",
       marks: 5,
       question: "A logistics firm streams GPS and engine-sensor readings from 50,000 trucks to train predictive-maintenance models. Describe the key engineering considerations and streaming-specific challenges for ingesting this data, and propose an ingestion design.",
       solution: `
+### What the examiner wants
+A design diagram (devices → broker/stream → processing → storage), then each streaming concern (schema evolution, late data, duplicates/order, replay, size, TTL, dead-letter queue, push/pull) **with its mitigation** for this fleet (L7, Lessons 4 and 8).
+
+### Model answer
 **Key engineering considerations (slide 58):**
 - **use case:** predictive maintenance plus live alerts
 - **reusability:** one ingested stream for many consumers
@@ -181,13 +213,20 @@ Kafka -> Stream processor (windows, anomaly alerts) -> Time-series DB / operatio
 Kafka -> Sink to object storage (Parquet, lakehouse) -> Daily feature build -> Predictive-maintenance training
 Kafka -> Dead-letter queue (bad events)
 \`\`\`
-Governance: device data contract, lineage, encryption in transit, and retention policy. A **time-series DB** suits operational analytics; the **lakehouse** suits training.`,
+Governance: device data contract, lineage, encryption in transit, and retention policy. A **time-series DB** suits operational analytics; the **lakehouse** suits training.
+
+### Takeaway
+IoT data is late, duplicated and ever-changing: use a retained stream (Kafka), a schema registry, watermarks, idempotent consumers and a dead-letter queue.`,
     },
     {
       title: "Q6: Why a great offline model fails in production",
       marks: 5,
       question: "A bank's credit-default model showed 95% accuracy offline but performs poorly after deployment. Using the concepts of data leakage, training-serving skew and data/concept drift, explain the possible causes and describe the validation and monitoring you would put in place.",
       solution: `
+### What the examiner wants
+A diagnosis covering **all** the likely causes (leakage, training-serving skew, data drift, concept drift, selection bias), how to confirm each (logs, PSI/KL, comparing feature code), and fixes (L8, Lessons 5–7; L6 monitoring).
+
+### Model answer
 **Possible causes**
 
 1. **Data leakage** (optimistic offline accuracy):
@@ -218,7 +257,10 @@ Production: log features + predictions + outcomes -> PSI / KL per feature, perfo
 - **Safe deployment:** shadow deployment first, then canary/A-B.
 - **CT:** scheduled retraining plus drift-triggered retraining; periodic fairness audits.
 
-**Conclusion:** offline accuracy is meaningless if the data can't be reproduced at prediction time. Validation *before* training and monitoring *after* deployment are both needed.`,
+**Conclusion:** offline accuracy is meaningless if the data can't be reproduced at prediction time. Validation *before* training and monitoring *after* deployment are both needed.
+
+### Takeaway
+Offline-great, online-poor almost always means leakage, skew or drift. Log features and predictions, compare distributions, and share feature code between training and serving.`,
     },
   ],
 

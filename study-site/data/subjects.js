@@ -34,6 +34,7 @@ export const subjects = [
       { n: 6, title: "ML Lifecycle & Workflow", file: "./dmml/l6.js" },
       { n: 7, title: "Data Collection & Ingestion", file: "./dmml/l7.js" },
       { n: 8, title: "Data Profiling & Validation", file: "./dmml/l8.js" },
+      { n: "summary", icon: "📋", short: "Summary", group: "Exam practice", title: "Exam Summary (read before the exam)", file: "./dmml/exam-summary.js" },
       { n: "pyq", icon: "📌", short: "PYQ", group: "Exam practice", title: "Previous Comprehensive Paper (solved)", file: "./dmml/pyq.js" },
       { n: "mock", icon: "🧪", short: "Mock", group: "Exam practice", title: "Mock Comprehensive Paper", file: "./dmml/mock.js" },
       { n: "guide", icon: "✍️", short: "Guide", group: "Exam practice", title: "How to Write 5-Mark Answers", file: "./dmml/guide.js" },
