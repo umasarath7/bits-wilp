@@ -1,19 +1,20 @@
 // AML — Contact Session 1: Introduction to Machine Learning
 // Source: CourseFiles/AML/ContactSession1-Introduction.pptx (51 slides)
 // Text supports **bold**, `code` and KaTeX math ($inline$, $$display$$).
-// Teaching style: big idea → plain explanation → example → summary table → what to remember.
-// Solutions: ### What is asked → ### Idea & why → ### Formula → ### Steps → ### Answer → ### Takeaway.
+// Teaching style: each lesson opens with the "why", builds on one running example,
+// spells out every abbreviation the first time, and only then gives formulas.
+// Solutions: ### What is being asked → ### Why this approach → ### Formula → ### Working → ### Answer → ### Takeaway.
 
 export default {
   title: "Introduction to Machine Learning",
   source: "ContactSession1-Introduction.pptx · 51 slides",
   overview:
-    "This session answers four questions. **What is ML?** A program that gets better at a task by learning from data instead of following hand-written rules. **When should you use it?** When the rules are too many, too hard to write down, or keep changing. **What kinds of ML are there?** Sorted by labels (supervised, unsupervised, semi-supervised, reinforcement), by how data is fed in (batch or online), and by how predictions are made (instance-based or model-based). **What goes wrong?** Bad data, and models that are too complex or too simple. Everything else in the course builds on these ideas.",
+    "We'll build this session up one question at a time, the way I would in a classroom. **Why** do we need machine learning at all? **How** do we describe a learning problem precisely? **What kinds** of learning are there? **Why** do ML systems fail, and **how** do we check whether a model is any good? For each idea I'll first tell you why we need it, then show you how it works on a real example. Every abbreviation is spelled out the first time it appears, and there's a glossary at the end you can keep coming back to.",
 
   summary: [
     {
       id: "course",
-      heading: "Course logistics",
+      heading: "Before we start: course logistics",
       slides: "2",
       blocks: [
         {
@@ -21,50 +22,88 @@ export default {
           head: ["Component", "Weight"],
           rows: [["Mid-semester exam", "30%"], ["Assignments", "30%"], ["Comprehensive exam", "40%"]],
         },
+        {
+          type: "p",
+          text: "**Our running example for this session.** Imagine you've just joined the analytics team at a bank. Your manager says: *“Fraudsters are stealing from our customers' cards. Build something that flags suspicious transactions.”* We'll keep coming back to this bank as we go, because almost every idea in this session shows up in that one problem.",
+        },
       ],
     },
     {
-      id: "what",
-      heading: "1. What is Machine Learning?",
-      slides: "3–5",
+      id: "why",
+      heading: "Lesson 1: Why do we even need machine learning?",
+      slides: "3–8",
       blocks: [
         {
-          type: "callout",
-          kind: "idea",
-          title: "The big idea",
-          text: "In normal programming, **you** write the rules. In machine learning, you give the computer **examples with the right answers**, and it **works out the rules by itself**.",
+          type: "p",
+          text: "Let's try to solve the bank's problem the old-fashioned way first. You sit with the fraud team and write rules: *if a transaction is above ₹50,000 and happens at 3 a.m. in a new city, flag it.* *If there are more than 5 transactions in 10 minutes, flag it.* It works for a while.",
         },
         {
           type: "p",
-          text: "Think about how a child learns what a dog is. Nobody gives the child a rule like “four legs + tail + barks = dog”. We just point at many dogs and say “dog”. After enough examples the child recognises dogs they've never seen before. Machine learning works the same way: show the computer many labelled examples and it learns a pattern it can apply to new cases.",
+          text: "Then three things go wrong. First, the list of rules grows to hundreds, and nobody remembers why rule 147 exists. Second, genuine customers get blocked: a person on holiday in Goa trips half your rules. Third, and worst, the fraudsters **adapt**. They learn your limits and start making transactions of ₹49,000 at 11 p.m. You're back to writing rules, forever.",
+        },
+        {
+          type: "p",
+          text: "Now try a different approach. The bank already has millions of **past transactions**, and for each one it knows the answer: was it fraud or not? Instead of writing rules, you show the computer all these examples and let it **work out the rules for itself**, including patterns no human would think of, like a particular combination of merchant type, time and amount. When fraudsters change tactics, you retrain on the new examples. You write no new rules.",
+        },
+        {
+          type: "p",
+          text: "That second approach is **machine learning (ML)**. The slides tell exactly the same story with **spam filtering** (slides 6–7). A hand-written spam filter looks for words like “4U”, “credit card”, “free” and “amazing”. It becomes a long list of complex rules that is hard to maintain. An ML filter instead learns which words appear **unusually often in spam compared with normal mail** (called “ham”). Its program is shorter, easier to maintain, and usually more accurate.",
         },
         { type: "diagram", name: "tradVsMl" },
         {
           type: "p",
-          text: "Read the diagram left to right. **Traditional programming:** you feed in *data + a program (rules)* and get *output*. **Machine learning:** you feed in *data + the expected output* and get a *program*, which we call a **model**. That model is then used on new data to produce answers.",
+          text: "The diagram sums up the difference. In **traditional programming** you give the computer *data + a program (the rules)* and it produces *output*. In **machine learning** you give it *data + the expected output* and it produces *the program*. We call that learnt program a **model**. Once you have the model, you use it like any program: feed in a new transaction and it outputs “fraud” or “not fraud”.",
         },
         {
           type: "p",
-          text: "The slides give **three definitions**, each more precise than the last:",
+          text: "**Some problems can't be written as rules at all.** Slide 8 shows handwritten digits. Try writing a rule for what makes a “2”: a curve on top, a slanted line, a flat base? Some people's “2” looks like a “3”, others like a “7”. You recognise them instantly, but you can't explain *how*. When humans can do something but can't write down the rules, learning from examples is the only practical option. Face unlock on your phone, Google's voice typing and doctors' X-ray assistants all exist for this reason.",
         },
         {
-          type: "list",
-          ordered: true,
-          items: [
-            "**Informal:** the science (and art) of programming computers so they can *learn from data*.",
-            "**Arthur Samuel:** the field that gives computers the ability to learn *without being explicitly programmed*.",
-            "**Tom Mitchell (the one to write in exams):** a program learns from **experience E** with respect to a **task T** and a **performance measure P** if its performance at T, measured by P, **improves with E**.",
-          ],
+          type: "callout",
+          kind: "idea",
+          title: "In one line",
+          text: "Traditional programming turns **rules into answers**. Machine learning turns **answers (examples) into rules**.",
+        },
+      ],
+    },
+    {
+      id: "tpe",
+      heading: "Lesson 2: How do we describe a learning problem precisely? (T, P, E)",
+      slides: "4–5",
+      blocks: [
+        {
+          type: "p",
+          text: "“Build something that catches fraud” is a wish, not a problem you can solve. Before you write any code, you need to pin down three things: *what exactly should the system do*, *how will we know if it's doing well*, and *what will it learn from*. Without these, two people can build completely different systems and both claim success.",
+        },
+        {
+          type: "p",
+          text: "The slides give three definitions of ML, from informal to precise. The **informal** one: the science (and art) of programming computers so they can *learn from data*. **Arthur Samuel's** (1959): the field of study that gives computers the ability to learn *without being explicitly programmed*. And the one to write in exams, **Tom Mitchell's**:",
         },
         {
           type: "callout",
           kind: "formula",
-          title: "Mitchell's definition as a checklist",
-          text: "A learning problem is fully described by the triple $\\langle T, P, E \\rangle$:\n\n- **T (Task):** what the system has to *do*. Use a verb: classify, predict, play, drive.\n- **P (Performance):** a *number* that tells you how well it does T: accuracy %, error rate, distance.\n- **E (Experience):** the *data it learns from*: labelled emails, past games, recorded driving.\n\nThe word “learns” means **P gets better as E grows**.",
+          title: "Mitchell's definition",
+          text: "A computer program is said to **learn** from **experience E** with respect to some **task T** and **performance measure P**, if its performance at T, as measured by P, **improves with E**.\n\nA well-defined learning problem is the triple $\\langle T, P, E \\rangle$.",
         },
         {
           type: "p",
-          text: "Why does this matter? Many problems sound like AI but are badly defined. “Make email better” is not a learning problem. “Classify emails as spam/ham (T), measured by % correctly classified (P), using emails users have labelled (E)” is. Writing down T, P and E forces you to be precise.",
+          text: "Let's unpack each letter with our bank:",
+        },
+        {
+          type: "list",
+          items: [
+            "**T, the Task:** what the system has to *do*. Always phrase it with a verb. *Classify each card transaction as fraud or genuine.*",
+            "**P, the Performance measure:** a *number* that tells you how well it does T. *The percentage of fraudulent transactions that get caught.* It must be something you can actually compute; “works well” is not a P.",
+            "**E, the Experience:** the *data it learns from*. *Two years of past transactions, each labelled fraud or genuine by the investigations team.*",
+          ],
+        },
+        {
+          type: "p",
+          text: "The word “learns” has a precise meaning here: **as E grows, P gets better**. If feeding the system more past transactions doesn't catch more fraud, it isn't learning.",
+        },
+        {
+          type: "p",
+          text: "**Why P needs care.** Suppose only 1 in 1,000 transactions is fraud. A lazy system that says “genuine” for everything is right 99.9% of the time, but it catches zero fraud. So for the bank, “% of transactions classified correctly” is a poor P. “% of frauds caught” is much better. Choosing P is about asking **which mistake hurts more**. We'll come back to this in Session 3 (precision and recall).",
         },
         {
           type: "table",
@@ -72,411 +111,434 @@ export default {
           head: ["Task T", "Performance P", "Experience E"],
           rows: [
             ["Playing checkers", "% of games won against an arbitrary opponent", "Practice games against itself"],
-            ["Recognising handwritten words", "% of words correctly classified", "Database of human-labelled handwriting images"],
-            ["Driving on 4-lane highways (vision)", "Average distance travelled before a human-judged error", "Images + steering commands recorded from a human driver"],
-            ["Spam vs legitimate email", "% of emails correctly classified", "Emails, some with human-given labels"],
+            ["Recognising handwritten words", "% of words correctly classified", "Database of human-labelled images of handwritten words"],
+            ["Driving on four-lane highways using vision sensors", "Average distance travelled before a human-judged error", "Images and steering commands recorded while watching a human driver"],
+            ["Categorising email as spam or legitimate", "% of emails correctly classified", "Database of emails, some with human-given labels"],
           ],
         },
         {
           type: "callout",
           kind: "example",
-          title: "Worked example: write ⟨T, P, E⟩ for a new scenario",
-          text: "**Scenario:** a hospital wants software that flags pneumonia in chest X-rays.\n\n- **T:** classify each chest X-ray as *pneumonia* or *normal*.\n- **P:** % of X-rays classified correctly. Better still, the **% of pneumonia cases caught**, because missing a sick patient is the costly mistake.\n- **E:** a database of past X-rays labelled by radiologists.\n\nNotice that P is a **number you can measure** and E is **where the data comes from**. Those are the two things examiners check.",
-        },
-        {
-          type: "callout",
-          kind: "remember",
-          title: "Remember",
-          text: "ML = learning rules from examples. Always be able to write ⟨T, P, E⟩, with P measurable and E the actual data source.",
+          title: "Try it yourself: a food-delivery app",
+          text: "Swiggy or Zomato shows you “Arriving in 32 minutes”. What's the ⟨T, P, E⟩?\n\n- **T:** predict the delivery time (in minutes) for a new order.\n- **P:** average number of minutes the prediction is off by, across orders.\n- **E:** millions of past orders with restaurant, distance, time of day, weather, and the actual delivery time.\n\nNotice that P is a number you can compute, and E is data the company really has.",
         },
       ],
     },
     {
-      id: "why",
-      heading: "2. Why ML? The spam filter story",
-      slides: "6–12",
+      id: "when",
+      heading: "Lesson 3: When should we use ML, and when not?",
+      slides: "9–12",
       blocks: [
         {
-          type: "callout",
-          kind: "idea",
-          title: "The big idea",
-          text: "Use ML when writing the rules by hand is **too long, too hard, or goes out of date too quickly**.",
-        },
-        {
           type: "p",
-          text: "The slides use spam filtering to show why. Let's walk through it as if you were the programmer.",
-        },
-        {
-          type: "p",
-          text: "**The traditional way.** You look at spam and notice words like “4U”, “credit card”, “free” and “amazing”. You write a rule for each: *if the email contains “free” and “credit card”, mark it as spam*. You test it, find spam that slips through, and add more rules. After months you have hundreds of rules that are hard to read, conflict with each other, and are hard to maintain. Then spammers start writing “fr33” instead of “free”, and you're back to writing rules.",
-        },
-        {
-          type: "p",
-          text: "**The ML way.** You collect emails that users have already marked as spam or not spam (“ham”). The algorithm counts which words and phrases appear **unusually often in spam compared with ham**, and learns how much each one should count. When spammers switch to “fr33”, users mark those emails as spam, you retrain, and the model learns the new word **without you writing a single rule**.",
-        },
-        {
-          type: "table",
-          caption: "Side by side",
-          head: ["", "Traditional approach", "ML approach"],
-          rows: [
-            ["How it's built", "A person writes rules for known patterns", "The algorithm learns which words predict spam from labelled examples"],
-            ["Result", "A long list of complex rules, hard to maintain", "A shorter program, easier to maintain, usually more accurate"],
-            ["When spammers change tactics", "A person rewrites the rules", "Retrain on new labelled data"],
-          ],
-        },
-        {
-          type: "p",
-          text: "**Some problems can't be written as rules at all.** Slide 8 shows handwritten digits. Try writing a rule for what makes a “2”: a curve at the top, a diagonal, a flat base? Some people's “2” looks like a “3” or a “7”. Nobody can write that rule down, yet a model trained on thousands of labelled digits recognises them very well.",
-        },
-        {
-          type: "p",
-          text: "**When to use ML (slide 11).** Ask yourself these four questions. A “yes” to any of them suggests ML:",
+          text: "ML isn't magic, and it isn't always the right tool. Calculating GST on an invoice needs no ML; the rule is known exactly and never changes. So how do you decide? Slide 11 gives four situations where ML shines. Ask these questions about any problem:",
         },
         {
           type: "list",
           ordered: true,
           items: [
-            "**Would the rule-based solution need lots of hand-tuning or a very long list of rules?** Example: spam filtering.",
-            "**Is it a complex problem with no good traditional solution, because humans can't explain how they do it?** Examples: recognising faces, understanding speech.",
-            "**Does the environment keep changing?** An ML system can adapt by retraining on new data. Example: fraud patterns change every month.",
-            "**Do you want insight from a large amount of data?** This is **data mining**: ML can reveal patterns and correlations humans never suspected, so *ML helps humans learn* too.",
+            "**Does the existing solution need lots of hand-tuning or a long list of rules?** Spam filtering and our fraud rules are classic cases. ML replaces the rule list with learnt patterns.",
+            "**Is it a complex problem where humans can't explain their own reasoning?** Recognising faces, understanding speech, reading handwriting. We can do it but can't write the rules.",
+            "**Does the environment keep changing?** Fraud patterns, customer tastes and news topics shift every month. An ML system adapts by retraining on fresh data; a rule-based system needs a programmer.",
+            "**Do you want insight from a large, complex dataset?** This is **data mining**. When you let ML dig through data, it can reveal patterns nobody suspected. For example, a retailer finds that customers who buy baby products on weekdays tend to switch brands after 3 months. Here **ML helps humans learn** (slide 10).",
           ],
         },
         {
           type: "p",
-          text: "**Typical scenarios (slide 9):** recognising **patterns** (faces, speech, medical images), spotting **anomalies** (unusual credit-card transactions, strange sensor readings in a nuclear plant), **predicting** from time series (stock prices, exchange rates) and **generating** new content (images, motion).",
+          text: "**Typical scenarios (slide 9)** fall into four families: recognising **patterns** (faces, handwriting, medical images), spotting **anomalies** (unusual credit-card transactions, strange sensor readings in a nuclear power plant), **predicting** from time series (stock prices, currency exchange rates), and **generating** new patterns (images, motion sequences).",
         },
         {
           type: "callout",
           kind: "tip",
-          title: "Where ML fits (slide 12)",
-          text: "**AI ⊃ Machine Learning ⊃ Deep Learning.** AI is the broad goal of making machines act intelligently. ML is the part of AI that learns from data. Deep learning is the part of ML that uses many-layered neural networks. ML also overlaps with statistics, data mining, pattern recognition and optimisation.",
-        },
-        {
-          type: "callout",
-          kind: "remember",
-          title: "Remember",
-          text: "Spam story: rules → long, brittle, manual updates. ML → learns from labelled data, adapts by retraining. Use ML for rule-heavy problems, problems humans can't explain, changing environments, and finding insight in data.",
+          title: "Where does ML fit? (slide 12)",
+          text: "Think of nested circles: **Artificial Intelligence (AI) ⊃ Machine Learning (ML) ⊃ Deep Learning (DL)**. AI is the broad goal of making machines behave intelligently (including hand-written rule systems). ML is the part of AI that learns from data. DL is the part of ML that uses neural networks with many layers. ML also overlaps with statistics, data mining, pattern recognition and optimisation.",
         },
       ],
     },
     {
       id: "apps",
-      heading: "3. Applications of ML",
+      heading: "Lesson 4: What kinds of problems does ML solve?",
       slides: "13–24",
       blocks: [
         {
-          type: "callout",
-          kind: "idea",
-          title: "The big idea",
-          text: "Almost every application is one of two things: **put something into a category, or predict a number** (classification/regression), or **choose a sequence of actions to reach a goal** (planning and control).",
+          type: "p",
+          text: "Once you've decided to use ML, the next question is *what shape is the answer?* This matters because it decides which algorithms you can use. Slide 15 says nearly every application falls into one of two classes.",
         },
         {
           type: "p",
-          text: "**Class 1: assign or predict a value (slide 15).** The system looks at an object or event and outputs one answer. What kind of answer decides the name:",
+          text: "**Class 1: assign an object or event to a value.** The system looks at one thing and gives one answer. The *type* of answer gives it a name:",
         },
         {
           type: "list",
           items: [
-            "The answer comes from a **finite set of categories** (spam/ham, digit 0–9, disease/no disease) → **classification**.",
-            "The answer is a **real number** (a price, a temperature, a sales figure) → **regression**.",
+            "If the answer comes from a **fixed set of categories**, it's **classification**. *Fraud or genuine. Spam or ham. Which digit, 0 to 9. Which disease.*",
+            "If the answer is a **real number**, it's **regression**. *Tomorrow's temperature. A flat's price in Bengaluru. Next quarter's sales. The delivery time.*",
           ],
         },
         {
           type: "p",
-          text: "Quick test: *can you list all possible answers?* If yes, it's classification. If the answer could be 23.7 or 23.71, it's regression.",
+          text: "A quick test: **can you list every possible answer in advance?** If yes, it's classification. If the answer could be 31.4 or 31.41 or 31.415, it's regression.",
         },
         {
           type: "p",
-          text: "**Class 2: predict a sequence of steps to reach a goal (slide 18).** Here there's no single answer. The system has to *act* again and again: playing chess, driving a car, flying a drone, controlling a robot or a game character. This is the home of **reinforcement learning** (section 4).",
+          text: "**Class 2: predict a sequence of steps to reach a goal (slide 18).** Here there's no single answer. The system has to keep *acting*: choosing chess moves, steering a car, flying a drone, controlling a robot or a video-game character. Each action changes the situation, and success is only known at the end. This is the territory of **reinforcement learning**, which we meet in Lesson 5.",
         },
         {
           type: "p",
-          text: "**Classification examples (slide 17):** medical diagnosis, credit-card fraud, network worm detection, spam filtering, recommending articles/books/movies, DNA sequences, spoken words, handwritten letters, astronomical images. **Domains (slide 16):** internet, computational biology, finance, e-commerce, space exploration, robotics, information extraction, social networks, software engineering, system management, creative arts.",
+          text: "**Where you see it (slides 16–17, 24).** Classification: medical diagnosis, credit-card fraud, network intrusion (worm) detection, spam filtering, recommending articles, books, movies or music, DNA sequences, spoken words, handwritten letters, astronomical images. Other modern uses: Optical Character Recognition (OCR, reading text from scanned documents), spotting faulty products on a production line, detecting tumours in brain scans, categorising news, flagging offensive comments, summarising documents, chatbots, customer segmentation, recommendation systems and revenue forecasting.",
         },
         {
           type: "p",
-          text: "**A real result: deep learning for speech (slide 20).** Researchers trained networks with different numbers of hidden layers to recognise speech and measured the **word error rate (WER)**, the % of words recognised wrongly (lower is better). The old method (a Gaussian Mixture Model) scored 15.4%.",
+          text: "**A real result worth understanding (slide 20).** Researchers used deep neural networks for speech recognition and measured the **Word Error Rate (WER)**: the percentage of words the system gets wrong, so lower is better. The older method, a **Gaussian Mixture Model (GMM)**, scored 15.4%.",
         },
         {
           type: "table",
-          caption: "Zeiler et al. 2013. Baseline GMM WER = 15.4%",
-          head: ["# Hidden layers", "1", "2", "4", "8", "10", "12"],
+          caption: "Zeiler et al., 2013. Baseline GMM WER = 15.4%",
+          head: ["Number of hidden layers", "1", "2", "4", "8", "10", "12"],
           rows: [["Word error rate %", "16.0", "12.8", "11.4", "**10.9**", "11.0", "11.1"]],
         },
         {
           type: "p",
-          text: "How to read it: **1 layer (16.0%) is worse than the old method**, because the network is too simple. Adding layers helps a lot, down to **10.9% at 8 layers**. After that, 10 and 12 layers are slightly *worse*. More capacity stops helping and starts to hurt. Keep this pattern in mind: it's **underfitting** at the left and the start of **overfitting** at the right (section 5).",
-        },
-        {
-          type: "p",
-          text: "**Other applications in the slides:** visual question answering, self-driving cars (Stanley and Sebastian, with laser terrain mapping, adaptive vision, learning from human drivers and path planning), OCR, product image classification, tumour detection, news categorisation, flagging offensive comments, summarisation, chatbots, customer segmentation, recommendation systems and revenue forecasting.",
-        },
-        {
-          type: "callout",
-          kind: "remember",
-          title: "Remember",
-          text: "Finite categories → classification. Real number → regression. Sequence of actions → planning/control (RL). In the speech table, too few layers underfit and too many start to overfit.",
+          text: "Read it slowly. With **1 layer** the network (16.0%) is actually *worse* than the old method, because it's too simple to capture speech. Adding layers helps a lot, down to **10.9% at 8 layers**. Then something interesting happens: 10 and 12 layers are slightly *worse* again. More complexity stopped helping and started to hurt. Hold on to this pattern. In Lesson 8 you'll see it has a name: **underfitting** on the left, **overfitting** creeping in on the right.",
         },
       ],
     },
     {
-      id: "types",
-      heading: "4. Types of Machine Learning",
-      slides: "25–41",
+      id: "supervision",
+      heading: "Lesson 5: What kind of feedback does the model learn from?",
+      slides: "25–39",
       blocks: [
         {
-          type: "callout",
-          kind: "idea",
-          title: "The big idea",
-          text: "The slides sort ML systems using **three separate questions**. Every system has an answer to each one:\n\n1. **What kind of feedback does it learn from?** (supervised / unsupervised / semi-supervised / reinforcement)\n2. **How is the training data fed in?** (batch / mini-batch / online)\n3. **How does it make a prediction?** (instance-based / model-based)",
+          type: "p",
+          text: "Every learner needs feedback. A student learns faster with an answer key than without one. ML is the same, and the **type of feedback available** is the first way the slides classify ML systems. There are four possibilities.",
         },
-        { type: "p", text: "#### Question 1: What kind of feedback? (level of supervision)" },
+        { type: "p", text: "#### Supervised learning: learning with an answer key" },
         {
           type: "p",
-          text: "**Supervised learning: learning with an answer key.** Every training example comes with the correct answer, called the **label**. It's like studying with a solved question bank: you see a question $x$, you see its answer $y$, and you learn a function $f(x) \\approx y$ so you can answer new questions. Supervised learning has two flavours:",
+          text: "Every training example comes with the correct answer, called its **label**. Our bank's past transactions, each marked fraud or genuine, are exactly this. Formally (slides 28–29): given pairs $(x_1, y_1), (x_2, y_2), \\dots, (x_n, y_n)$, learn a function $f(x)$ that predicts $y$ from $x$. Here $x$ is the **input** (the transaction's details) and $y$ is the **label** (fraud or not).",
+        },
+        {
+          type: "p",
+          text: "It comes in the two flavours from Lesson 4. **Regression** when $y$ is a real number: slide 28 predicts the September Arctic sea-ice extent (in millions of km²) from the year. **Classification** when $y$ is a category: slides 29–30 predict whether a tumour is benign (0) or malignant (1) from its size.",
+        },
+        {
+          type: "p",
+          text: "The tumour example shows how simple a learnt classifier can be. Put tumour sizes on a number line. Benign ones cluster on the left, malignant ones on the right. The model learns a single cut-off **T** and the rule: *if size > T, predict malignant; otherwise benign*. “Training” here just means finding the best T from the labelled examples.",
+        },
+        {
+          type: "p",
+          text: "**One measurement is rarely enough (slide 31).** Doctors also look at the patient's age, clump thickness, uniformity of cell size and shape, and more. Each measurement is a **feature**, one dimension of $x$. With two features, the cut-off point becomes a **line** dividing the plane. With three or more, it becomes a flat surface called a **hyperplane**. Same idea, more dimensions. Our fraud model might use 30 features: amount, time, merchant type, distance from home, and so on.",
+        },
+        {
+          type: "p",
+          text: "**Supervised algorithms you'll study (slide 32):** linear regression, logistic regression, Naïve Bayes, Support Vector Machines (SVMs), decision trees and random forests, neural networks.",
+        },
+        { type: "p", text: "#### Unsupervised learning: no answer key at all" },
+        {
+          type: "p",
+          text: "Now suppose the bank's marketing team hands you 10 lakh customer records and asks, *“What kinds of customers do we have?”* Nobody has labelled anyone. There's no right answer to learn from. The goal is to **discover hidden structure** in the inputs $x_1, \\dots, x_n$ alone (slide 33). The main tasks (slide 34):",
         },
         {
           type: "list",
           items: [
-            "**Regression:** $y$ is a real number. *Slide 28:* predict the September Arctic sea-ice extent (in million km²) from the year.",
-            "**Classification:** $y$ is a category. *Slides 29–30:* predict whether a tumour is benign (0) or malignant (1) from its size.",
+            "**Clustering:** group similar items together. The algorithm might find “young salaried, heavy UPI users”, “retired, fixed-deposit savers” and “small-business owners”. Algorithms: k-Means, Hierarchical Cluster Analysis, Expectation Maximisation. Other uses: grouping people by genetic similarity (slide 36), market segmentation, social-network analysis, organising computing clusters, astronomy.",
+            "**Visualisation and dimensionality reduction:** squeeze many features down to 2 or 3 so you can plot the data, while keeping similar points close together (slide 35). Algorithms: Principal Component Analysis (PCA), Kernel PCA, Locally Linear Embedding (LLE), t-distributed Stochastic Neighbour Embedding (t-SNE). The slide's t-SNE plot of images puts animals in one region and vehicles in another, although it was never told which is which.",
+            "**Association rule learning:** find items that go together. Supermarket data reveals “customers who buy bread and butter often buy milk”, which is why they're shelved near each other. Algorithms: Apriori, Eclat.",
           ],
         },
+        { type: "p", text: "#### Semi-supervised learning: a few answers, lots of unlabelled data" },
         {
           type: "p",
-          text: "The tumour example shows how simple a classifier can be. Plot tumour size on a line. Benign tumours sit mostly on the left and malignant ones on the right. The model learns a **threshold T**: *if size > T predict malignant, else benign*. Training means finding the best T.",
+          text: "Labelling is expensive. The bank's investigators can only review a few thousand transactions a month, but millions happen. So you often have a *little* labelled data and a *lot* of unlabelled data. Semi-supervised learning uses both. Slide 38's example is **Google Photos**: it first *clusters* your photos by face (unsupervised). You name one person once (a label), and it labels every photo in that cluster (supervised).",
         },
+        { type: "p", text: "#### Reinforcement learning: learning by trial and reward" },
         {
           type: "p",
-          text: "**More features (slide 31).** Real systems use more than one measurement: tumour size, patient age, clump thickness, uniformity of cell size and shape. Each one is a **feature**, i.e. one dimension of $x$. With 2 features the threshold becomes a **line** splitting the plane. With 3 or more it becomes a **hyperplane**. Same idea, more dimensions.",
-        },
-        {
-          type: "p",
-          text: "**Unsupervised learning: no answer key.** You only have inputs $x_1, \\dots, x_n$, no labels. The goal is to find **hidden structure**. Imagine being handed 10,000 customer records and asked “what kinds of customers do we have?”. Nobody tells you the groups; the algorithm finds them. Main tasks:",
-        },
-        {
-          type: "list",
-          items: [
-            "**Clustering:** group similar items (k-Means, hierarchical clustering, Expectation Maximisation). *Examples:* customer segmentation, grouping people by genetic similarity (slide 36), organising computing clusters, social network analysis.",
-            "**Visualisation and dimensionality reduction:** squeeze many features down to 2–3 so you can plot them while keeping similar points together (PCA, Kernel PCA, LLE, t-SNE). *Slide 35:* t-SNE of images places animals in one region and vehicles in another, with no labels given.",
-            "**Association rule learning:** find items that occur together (Apriori, Eclat). *Example:* people who buy bread and butter often buy milk.",
-          ],
-        },
-        {
-          type: "p",
-          text: "**Semi-supervised learning: a few answers, lots of unlabelled data.** Labelling is expensive, so often you have a little labelled data and a lot of unlabelled data. *Slide 38 (Google Photos):* the app first **clusters** your photos by face (unsupervised). You name one person once (a label), and it labels every photo in that cluster (supervised).",
-        },
-        {
-          type: "p",
-          text: "**Reinforcement learning: learning by trial and reward.** There are no labels at all. An **agent** observes the **state** of its environment, takes an **action**, and receives a **reward** (positive or negative). Over many tries it learns a **policy**, a rule that maps *state → best action*, to collect the most reward over time. It's like training a dog with treats. *Examples (slide 39):* AlphaGo, a robot finding its way through a maze, balancing a pole on your hand.",
+          text: "The fourth type has no labels at all, only **rewards**. A learner, called the **agent**, observes the situation (the **state**), takes an **action**, and gets a positive or negative **reward**. Over many attempts it learns the best strategy, called a **policy**: a mapping from *state → action* that collects the most reward over time (slide 39). It's how you train a dog with treats, or how you learn to ride a bicycle by falling. Examples: AlphaGo learning Go, a robot finding its way out of a maze, balancing a pole on your hand. This is the Class 2 (“sequence of steps”) problem from Lesson 4.",
         },
         {
           type: "table",
-          caption: "Question 1 summary",
-          head: ["Type", "What you're given", "What it learns", "Example"],
+          caption: "Summary: the type of feedback decides the type of learning",
+          head: ["Type", "What you're given", "What it learns", "Real-world example"],
           rows: [
-            ["**Supervised**", "Inputs **+ labels**", "$f(x) \\approx y$", "House price (regression), spam (classification)"],
-            ["**Unsupervised**", "Inputs only", "Hidden structure", "Customer segments, t-SNE plots"],
-            ["**Semi-supervised**", "Few labels + lots of unlabelled data", "Uses both", "Google Photos face naming"],
-            ["**Reinforcement**", "Rewards for actions", "A **policy**: state → action", "AlphaGo, maze robot"],
+            ["**Supervised**", "Inputs **with labels**", "A function $f(x) \\approx y$", "Fraud detection, house prices, spam"],
+            ["**Unsupervised**", "Inputs only", "Hidden structure (groups, patterns)", "Customer segments, market-basket rules"],
+            ["**Semi-supervised**", "A few labels + many unlabelled inputs", "Uses the structure to spread the labels", "Google Photos face tagging"],
+            ["**Reinforcement**", "Rewards for actions", "A **policy**: state → best action", "AlphaGo, robot navigation"],
           ],
         },
-        {
-          type: "table",
-          caption: "Algorithms you'll meet in this course (slides 32 and 34)",
-          head: ["Supervised", "Unsupervised"],
-          rows: [
-            ["Linear regression", "**Clustering:** k-Means, Hierarchical, Expectation Maximisation"],
-            ["Logistic regression", "**Dimensionality reduction:** PCA, Kernel PCA, LLE, t-SNE"],
-            ["Naïve Bayes", "**Association rules:** Apriori, Eclat"],
-            ["SVMs, decision trees, random forests, neural networks", ""],
-          ],
-        },
-        { type: "p", text: "#### Question 2: How is the training data fed in? (slide 40)" },
+      ],
+    },
+    {
+      id: "batch",
+      heading: "Lesson 6: How is data fed in, and how are predictions made?",
+      slides: "40–41",
+      blocks: [
         {
           type: "p",
-          text: "Picture a teacher marking 1,000 answer sheets and adjusting their teaching.",
+          text: "The type of feedback is only one way to describe an ML system. The slides add two more questions that are **completely separate** from the first. Think of them as two more labels you can stick on any system.",
+        },
+        { type: "p", text: "#### How is the training data fed in? Batch vs online (slide 40)" },
+        {
+          type: "p",
+          text: "Picture a teacher who wants to improve their teaching using students' answer sheets.",
         },
         {
           type: "list",
           items: [
-            "**Batch learning:** read **all 1,000** sheets, then adjust once. The model trains on the entire dataset at once. To include new data you have to **retrain from scratch** on old + new data, which is slow and needs lots of memory.",
-            "**Mini-batch learning:** read **50 sheets**, adjust, read the next 50, adjust again. The model trains on small chunks. This is the practical middle ground most modern systems use.",
-            "**Online (incremental) learning:** adjust after **every single sheet**. The model updates on one example at a time as data arrives. It's ideal when data **streams in continuously** (stock prices, sensor feeds), when things **change quickly**, or when the data is **too big to fit in memory**. The risk: if bad data arrives, the model quietly gets worse, so it has to be monitored.",
+            "**Batch learning:** the teacher reads **all 1,000 sheets**, then adjusts their teaching once. The model trains on **all available data at once**. When new data arrives, it must be **retrained from scratch** on old + new data. That's simple, but slow and memory-hungry, so it's typically done on a schedule (say, every Sunday night).",
+            "**Mini-batch learning:** read **50 sheets**, adjust, read the next 50, adjust again. The model uses **a subset of the data at a time**. This is the practical middle ground most modern systems use.",
+            "**Online (incremental) learning:** adjust after **every single sheet**. The model updates on **one instance at a time**, as it arrives. This suits data that **streams in continuously** (stock prices, sensor readings, clicks), environments that **change quickly**, and datasets **too large to fit in memory**. The risk: if garbage starts arriving (say a broken sensor), the model quietly gets worse, so it must be monitored.",
           ],
         },
-        { type: "p", text: "#### Question 3: How does it make a prediction? (slide 41)" },
+        {
+          type: "p",
+          text: "For our bank: fraud patterns change weekly, and transactions stream in all day. An online (or frequently retrained) model makes sense.",
+        },
+        { type: "p", text: "#### How does it make a prediction? Instance-based vs model-based (slide 41)" },
+        {
+          type: "p",
+          text: "Imagine two property agents estimating the price of a flat.",
+        },
         {
           type: "list",
           items: [
-            "**Instance-based learning: “find similar past cases”.** The system simply **remembers** the training examples. For a new case it finds the most similar stored ones and copies their answer. *Example:* **k-Nearest Neighbours.** To price a house, find the 5 most similar houses sold and average their prices. It's like a doctor who says “this looks just like three patients I saw last year”.",
-            "**Model-based learning: “learn a formula”.** The system studies the data, **builds a model** (e.g. a line $y = \\theta_0 + \\theta_1 x$) and learns its parameters. After training the data can be thrown away; predictions come from the formula. It's like a doctor who has learnt a rule such as “risk rises with blood pressure at this rate”.",
+            "**Agent A says:** *“Let me find the 5 most similar flats sold recently in this area and average their prices.”* That's **instance-based learning**. The system **remembers the training examples themselves** and compares each new case with them using a similarity measure. The classic algorithm is **k-Nearest Neighbours (k-NN)**: find the k most similar stored examples and copy their answer. There's no real training step, but every prediction means searching through all the stored data.",
+            "**Agent B says:** *“From years of data I know price ≈ ₹20 lakh + ₹8,000 per square foot.”* That's **model-based learning**. The system **studies the data, builds a model** (here a straight line, $y = \\theta_0 + \\theta_1 x$) and learns its **parameters** ($\\theta_0$, $\\theta_1$). After training, the data can be thrown away. Predictions just plug into the formula, so they're fast.",
           ],
         },
         {
           type: "callout",
           kind: "warn",
-          title: "The three questions are independent",
-          text: "Students often mix these up. **Supervised/unsupervised** is about *labels*. **Batch/online** is about *how data is fed in*. **Instance/model-based** is about *how predictions are made*. One system has an answer to all three. For example, a spam filter that updates each time you click “Report spam” and learns a weight per word is **supervised + online + model-based**.",
-        },
-        {
-          type: "callout",
-          kind: "remember",
-          title: "Remember",
-          text: "Labels? → supervised. None? → unsupervised. Few? → semi-supervised. Rewards? → RL. All data at once → batch; one at a time → online. Stores examples → instance-based (k-NN); learns parameters → model-based (linear regression).",
+          title: "Students often mix these up",
+          text: "The three questions are **independent**:\n\n1. *Supervised / unsupervised / semi-supervised / reinforcement* is about the **type of feedback** (labels).\n2. *Batch / online* is about **how data is fed in** during training.\n3. *Instance-based / model-based* is about **how predictions are made**.\n\nEvery system has an answer to all three. A spam filter that updates each time you click “Report spam” and learns a weight per word is **supervised + online + model-based**.",
         },
       ],
     },
     {
-      id: "challenges",
-      heading: "5. Challenges of Machine Learning",
-      slides: "42–51",
+      id: "data",
+      heading: "Lesson 7: Why do ML projects fail? Part 1: bad data",
+      slides: "42–47",
       blocks: [
         {
-          type: "callout",
-          kind: "idea",
-          title: "The big idea",
-          text: "An ML system can fail for only two reasons: **the data is bad**, or **the model is wrong for the data** (too complex or too simple). Then there's the practical question: how do we *check* which one is happening? That's what validation is for.",
-        },
-        { type: "p", text: "#### Part A: Bad data" },
-        {
           type: "p",
-          text: "**1. Insufficient data (slide 44).** Humans learn “apple” from a handful of examples. Algorithms usually need **thousands** of examples even for simple problems, and millions for images or speech. A famous finding (“the unreasonable effectiveness of data”) is that with enough data, quite different algorithms end up performing about the same. The slides turn this into a **trade-off: spend your effort on a cleverer algorithm, or on collecting more data?**",
+          text: "You've built your fraud model. It looked great in testing, but in production it misses obvious frauds and blocks genuine customers. What went wrong? There are only **two** broad possibilities: the **data** was bad, or the **model** was wrong for the data. This lesson is about the data. Slide 43 lists four data problems.",
         },
         {
           type: "p",
-          text: "**2. Non-representative data (slide 45).** The training data must look like the cases the model will face later. There are two different ways this goes wrong, and exams love to ask which is which:",
+          text: "**1. Not enough data (slide 44).** A child learns what an apple is from a few examples. Algorithms are far hungrier: they typically need **thousands** of examples even for simple problems, and millions for images or speech. There's a famous finding called *the unreasonable effectiveness of data*: given enough data, quite different algorithms end up performing about the same. The slide turns this into a practical **trade-off**: should you spend time building a cleverer algorithm, or collecting more data?",
+        },
+        {
+          type: "p",
+          text: "**2. Data that doesn't represent reality (slide 45).** Your training data must look like the cases the model will face later. If the bank trained only on transactions from metro cities, the model has never seen normal rural spending patterns and may flag them as fraud. There are two different ways data can be unrepresentative, and exams love to ask which is which:",
         },
         {
           type: "list",
           items: [
-            "**Sampling noise:** the sample is **too small**, so it's unrepresentative *by chance*. Survey 10 random people and you might happen to get 7 cricket fans. **Fix: collect more data.**",
-            "**Sampling bias:** the **method** of collecting is flawed, so the data is unrepresentative *even if it's huge*. Survey 1 million people, but only at cricket stadiums. **More data does not fix bias; only a better sampling method does.**",
+            "**Sampling noise:** the sample is **too small**, so it's unrepresentative *by chance*. Ask 10 random people their favourite sport and you might happen to get 7 cricket fans and conclude everyone loves cricket. **Fix: collect more data.**",
+            "**Sampling bias:** the **way** you collected the data is flawed, so it's unrepresentative *no matter how big it is*. Survey 10 lakh people, but only outside cricket stadiums, and you'll get the same wrong answer, just more confidently. **More data does not fix bias. Only a better collection method does.**",
           ],
         },
         {
           type: "p",
-          text: "The slide's example: a model of *life satisfaction vs GDP* built from some countries suggests money strongly buys happiness. Add the missing countries (some rich but not very happy, some poor but happy) and the effect is much weaker. The missing data **exaggerated the role of wealth**.",
+          text: "The slide's example: a model of **life satisfaction vs Gross Domestic Product (GDP) per person**, built using only some countries, suggests that money strongly buys happiness. Add the missing countries (some rich but not so happy, some poorer but happy) and the relationship becomes much weaker. The missing data **exaggerated the role of wealth**.",
         },
         {
           type: "p",
-          text: "**3. Poor-quality data (slide 46).** Errors, noise, outliers and missing values make the real pattern harder to see. Cleaning is essential and is often most of a data scientist's time. For **outliers**, either discard them or fix them by hand. For **missing values** (e.g. 5% of customers didn't give their age), you have options: **ignore the feature**, **drop those rows**, **fill in the values** (say, with the median age), or **train one model with the feature and one without** and compare.",
+          text: "**3. Poor-quality data (slide 46).** Real data is full of errors, noise, outliers and missing values: a transaction amount typed as ₹5,00,00,000 instead of ₹5,000, a timestamp in the wrong time zone, a missing merchant category. These hide the real pattern. Cleaning is essential, and it's often most of a data scientist's working time. For **outliers**, either discard them or fix them by hand. For **missing values** (the slide's example: 5% of customers didn't give their age), you can **ignore that feature**, **drop those rows**, **fill in** the gaps (e.g. with the median age), or **train one model with the feature and one without** and compare.",
         },
         {
           type: "p",
-          text: "**4. Irrelevant features (slide 47).** “Garbage in, garbage out.” If the features don't relate to what you're predicting, no algorithm can help. **Feature engineering** fixes this in three ways: **feature selection** (keep only useful features), **feature extraction** (combine features into a better one, e.g. mileage + age → wear-and-tear), and **creating new features by gathering new data**.",
+          text: "**4. Irrelevant features (slide 47).** *Garbage in, garbage out.* If the features have nothing to do with what you're predicting, no algorithm can help. The customer's favourite colour won't predict fraud. The fix is **feature engineering**, which has three parts: **feature selection** (keep only the useful features), **feature extraction** (combine existing features into a more useful one, e.g. “amount ÷ customer's average amount” says far more than the raw amount), and **creating new features by gathering new data** (e.g. adding the device ID used for the transaction).",
         },
-        { type: "p", text: "#### Part B: The wrong model" },
+      ],
+    },
+    {
+      id: "fit",
+      heading: "Lesson 8: Why do ML projects fail? Part 2: the wrong model",
+      slides: "47–48",
+      blocks: [
         {
           type: "p",
-          text: "Think of three students preparing for an exam:",
+          text: "Even with perfect data, you can pick a model that's too complex or too simple. The easiest way to understand this is to think about three students preparing for the same exam.",
         },
         {
           type: "list",
           items: [
-            "**Student A memorises every past-paper answer word for word.** They score 100% on past papers but fail when the question changes slightly. That is **overfitting**: the model learnt the training data *including its noise and quirks*, not the real pattern.",
-            "**Student B only reads the chapter titles.** They do badly on past papers *and* on the real exam. That is **underfitting**: the model is too simple to capture the pattern at all.",
-            "**Student C understands the concepts.** They do well on both. That's the goal: a model that **generalises**.",
+            "**Student A memorises every past-paper answer word for word.** On past papers they score 100%. In the real exam, where the questions are slightly different, they fail. They learnt the *specific answers*, not the *method*.",
+            "**Student B only skims the chapter titles.** They do badly on past papers *and* on the real exam. They haven't learnt enough to answer anything.",
+            "**Student C works through the concepts.** They do well on past papers and on the real exam, because what they learnt **carries over** to new questions.",
           ],
         },
         {
           type: "p",
-          text: "**Overfitting (slide 47).** It happens when the model is **too complex for the amount and noisiness of the data**. The slides' example is a high-degree polynomial fitted to life-satisfaction data: it wiggles through every point, so it fits the training data perfectly but makes silly predictions in between. **Fixes:** **regularisation** (put a constraint on the model, e.g. force a smaller slope, so it can't bend to every point), a simpler model with fewer parameters, more training data, or less noise (fix errors, remove outliers).",
+          text: "Student A is **overfitting**. The model has learnt the training data *including its noise and quirks*, so it looks brilliant on the data it has seen and fails on new data. Student B is **underfitting**. The model is too simple to capture the real pattern, so it does badly everywhere. Student C **generalises**, which is the whole goal of ML: to do well on data it has *never seen*.",
         },
         {
           type: "p",
-          text: "**Underfitting (slide 48).** The model is **too simple for the structure in the data**, like fitting a straight line to a curve. **Fixes:** a more powerful model (more parameters), better features, or **less** regularisation.",
+          text: "**Why overfitting happens (slide 47).** The model is **too complex for the amount and noisiness of the data**. The slides fit a very high-degree polynomial to the life-satisfaction data. The curve wiggles through every single point, so its training error is tiny, but it makes absurd predictions between the points. In our bank, an overfitted model might learn “a ₹2,317 transaction at a petrol pump in Pune at 4:12 p.m. is fraud”, because that one fraud happened to look like that. It's memorised an example, not learnt a pattern.",
+        },
+        {
+          type: "p",
+          text: "**How to fix overfitting:** make the model simpler (fewer parameters), get more training data, reduce noise in the data (fix errors, remove outliers), or apply **regularisation**. Regularisation means putting a **constraint** on the model so it can't bend to fit every point; for example, forcing the slope of a line to stay small. You'll see the maths in Session 4.",
+        },
+        {
+          type: "p",
+          text: "**Why underfitting happens (slide 48).** The model is **too simple for the structure in the data**, like fitting a straight line to a clearly curved pattern. **How to fix it:** use a more powerful model (more parameters), give it better features, or **reduce** the regularisation.",
+        },
+        {
+          type: "p",
+          text: "**How do you tell which one you have?** Compare the error on the **training data** with the error on **new data the model hasn't seen** (Lesson 9 explains how to get that). Two things to look at: the **level** of the training error, and the **gap** between the two.",
         },
         {
           type: "table",
-          caption: "How to tell them apart from the errors",
-          head: ["", "Training error", "Validation error", "Diagnosis", "What to do"],
+          caption: "Diagnosing from the two errors",
+          head: ["Training error", "Error on unseen data", "Diagnosis", "What to do"],
           rows: [
-            ["Case 1", "Low", "**Much higher**", "**Overfitting** (big gap)", "Regularise, simplify, more data"],
-            ["Case 2", "**High**", "High (close to training)", "**Underfitting** (both bad)", "More complex model, better features, less regularisation"],
-            ["Case 3", "Low", "Low (close)", "Good fit", "Keep it"],
+            ["Low", "**Much higher** (big gap)", "**Overfitting** (Student A)", "Regularise, simplify, get more data"],
+            ["**High**", "High, close to training (small gap)", "**Underfitting** (Student B)", "More complex model, better features, less regularisation"],
+            ["Low", "Low, close to training", "**Good fit** (Student C)", "Keep it"],
           ],
         },
-        { type: "p", text: "#### Part C: How do we check? Testing and validation" },
         {
           type: "p",
-          text: "**Why not test on the training data?** Student A (the memoriser) scores 100% on past papers, but that tells you nothing about the real exam. In the same way, **training error is always too optimistic**. We need to measure the model on data it has **never seen** (slide 49).",
+          text: "Now look back at the speech-recognition table in Lesson 4. One hidden layer was worse than the baseline: underfitting. Eight layers was the sweet spot. Ten and twelve got slightly worse: overfitting starting. Every time you add complexity, **training error goes down**, but error on new data goes **down, then back up**. The best model sits at the bottom of that curve.",
+        },
+      ],
+    },
+    {
+      id: "validation",
+      heading: "Lesson 9: How do we know if a model is any good? Validation",
+      slides: "49–50",
+      blocks: [
+        {
+          type: "p",
+          text: "Here's the problem. We care about how the model does on **future** data, which we don't have yet. And we've just seen that the error on the **training** data is misleading: Student A scores 100% on past papers. So how do we get an honest estimate?",
         },
         {
           type: "p",
-          text: "**Hold-out validation (slide 50).** Before training, set aside a random **20–30%** of the data as a **validation set** (also called a dev set). Train on the rest, then measure performance on the validation set. A model that does well there is *expected* to do well on new data. This is a statistical estimate, not a guarantee.",
+          text: "**The idea: hide some data from the model.** Before training, set aside a random **20–30%** of your labelled data and don't let the model see it. This held-out part is called the **validation set** (or **development set**, “dev set”). Train on the remaining 70–80%, then measure performance on the validation set. Since the model never saw these examples, its score there is a fair preview of how it will do on new data. It's like a teacher keeping some questions back for a surprise test (slide 50).",
         },
         {
           type: "p",
-          text: "**The problem with a single split:** you might get unlucky (all the hard examples land in validation) or lucky. The score depends on *which* points were held out.",
+          text: "The slides make an important point: this estimate is **statistical, not a guarantee**. It relies on the assumption that the validation data looks like the future data (which is why Lesson 7's “representative data” matters so much).",
         },
         {
           type: "p",
-          text: "**K-fold cross-validation fixes this.** Split the data into **K equal parts (folds)**. Train on K−1 folds and validate on the remaining fold. Repeat **K times**, so each fold gets one turn as the validation set. Then **average the K scores**. Every data point is used for validation exactly once and for training K−1 times. **K = 10** is common.",
+          text: "**The weakness of a single split.** Which 20% you happen to hold out affects the score. If, by bad luck, most of the tricky fraud cases land in the validation set, the model looks worse than it is. If they all land in training, it looks better. One split gives one noisy number.",
+        },
+        {
+          type: "p",
+          text: "**The fix: K-fold cross-validation (CV).** Instead of one split, do several and average. Split the data into **K equal parts** called **folds**. Hold out fold 1, train on the other K−1 folds, and measure on fold 1. Then hold out fold 2, train on the rest, measure on fold 2. Repeat until **every fold has had one turn** as the validation set. Finally, **average the K scores**. **K = 10** is a common choice.",
         },
         {
           type: "p",
           text: "```flow\nSplit data into K folds -> Round 1: train on folds 2..K, validate on fold 1 -> Round 2: train on all but fold 2, validate on fold 2 -> … -> Round K -> Average the K scores\n```",
         },
         {
+          type: "p",
+          text: "Why is this better? Every data point is used for validation **exactly once** and for training **K−1 times**, so no example is wasted, and no single lucky or unlucky split dominates the result. The price is that you train **K models** instead of one.",
+        },
+        {
           type: "callout",
           kind: "formula",
-          title: "K-fold arithmetic",
-          text: "With $n$ samples and $K$ folds:\n\n- fold size $= n / K$\n- each round trains on $n \\cdot \\frac{K-1}{K}$ samples and validates on $n / K$\n- number of models trained $= K$\n- each sample is validated **once** and used for training **K − 1** times",
+          title: "K-fold arithmetic (you'll need this for numericals)",
+          text: "With $n$ samples and $K$ folds:\n\n- each fold has $n / K$ samples\n- each round trains on $n - n/K = n \\cdot \\frac{K-1}{K}$ samples and validates on $n/K$\n- the number of models trained is $K$\n- each sample is validated **once** and trained on **K − 1** times\n\n*Example:* 1,000 samples, 10 folds → 10 models, each trained on 900 and validated on 100.",
         },
         {
           type: "p",
-          text: "**Hyperparameters (slide 51).** A **parameter** is something the model learns *from the data*, like the slope $\\theta_1$ of a line. A **hyperparameter** is a setting you choose *before training*, like the degree of the polynomial, the regularisation strength $\\lambda$, or K in k-NN. How do you choose them? Try different values, measure each with cross-validation, and **pick the one with the best cross-validation score**. The catch: with several hyperparameters, the number of combinations **multiplies** (3 values × 4 values × 5 values = 60 combinations, each needing K training runs). That's why tuning frameworks (grid search, random search, smarter optimisers) exist.",
+          text: "Finally, keep a separate **test set** that you touch **only once**, at the very end, to report the final score. If you keep checking the test set while tuning, you gradually tune *to* it, and it stops being an honest estimate.",
+        },
+      ],
+    },
+    {
+      id: "hyper",
+      heading: "Lesson 10: How do we choose the model's settings? Hyperparameters",
+      slides: "51",
+      blocks: [
+        {
+          type: "p",
+          text: "When you use an ML algorithm, some numbers are learnt from the data and some you have to choose yourself. It's important to keep these apart.",
+        },
+        {
+          type: "list",
+          items: [
+            "**Parameters** are learnt *from the data* during training. The slope $\\theta_1$ and intercept $\\theta_0$ of a line are parameters. So is the weight a spam filter gives the word “free”.",
+            "**Hyperparameters** are settings of the *learning algorithm* that you choose *before* training. The degree of the polynomial, the regularisation strength (written $\\lambda$, “lambda”), and the k in k-NN are hyperparameters.",
+          ],
+        },
+        {
+          type: "p",
+          text: "A cooking analogy: the **recipe settings** you choose (oven temperature, baking time) are hyperparameters. What happens to the cake inside the oven is the learning. You can't know the best oven temperature in advance; you try a few and taste the results.",
+        },
+        {
+          type: "p",
+          text: "**How do we choose hyperparameters? (slide 51)** Try different values, measure each one with cross-validation (Lesson 9), and **pick the combination with the best cross-validation score**. The catch is that the number of combinations **multiplies**. Three hyperparameters with 5, 4 and 3 candidate values give $5 \\times 4 \\times 3 = 60$ combinations, and with 5-fold CV each needs 5 training runs: 300 runs. Add one more hyperparameter with 6 values and it's 1,800 runs. Because this grows exponentially, optimisation frameworks exist to search smartly: grid search (try every combination), random search (try a random sample of combinations) and cleverer methods.",
         },
         {
           type: "callout",
           kind: "formula",
-          title: "Grid-search cost",
-          text: "$$\\text{training runs} = (\\text{values}_1 \\times \\text{values}_2 \\times \\dots) \\times K \\;(+1 \\text{ final refit on all the data})$$",
+          title: "Cost of an exhaustive (grid) search",
+          text: "$$\\text{training runs} = \\underbrace{(v_1 \\times v_2 \\times \\dots)}_{\\text{combinations}} \\times K \\;+\\; 1$$\n\nwhere $v_i$ is the number of candidate values for hyperparameter $i$, $K$ is the number of CV folds, and the $+1$ is the final re-training of the winning combination on all the data.",
         },
         {
           type: "callout",
           kind: "remember",
-          title: "Remember",
-          text: "Bad data: insufficient, non-representative (noise = too small, bias = flawed method), poor quality, irrelevant features. Wrong model: overfit = big train–validation gap; underfit = both errors high. Judge models on unseen data: hold-out or K-fold (average of K). Hyperparameters are picked by cross-validation score.",
+          title: "The whole session in six lines",
+          text: "1. ML learns rules from examples; use it when rules are too many, unknown, or keep changing.\n2. Describe any problem as ⟨T, P, E⟩, with P a number you can compute.\n3. Categories → classification; a number → regression; a sequence of actions → reinforcement learning.\n4. Three independent labels: type of feedback · batch/online · instance/model-based.\n5. Failures come from bad data (too little, unrepresentative, dirty, irrelevant) or the wrong model (overfit = big gap; underfit = both errors high).\n6. Judge models on held-out data (validation / K-fold CV) and choose hyperparameters by CV score.",
         },
       ],
     },
   ],
 
-  keyTerms: [
-    ["⟨T, P, E⟩", "Task, Performance measure, Experience: Mitchell's definition of a learning problem."],
-    ["Label", "The correct answer attached to a training example."],
-    ["Feature", "One measurable input attribute (one dimension of $x$)."],
-    ["Classification", "Predict a category from a finite set."],
-    ["Regression", "Predict a real-valued number."],
-    ["Policy (RL)", "A mapping from states to actions that maximises reward over time."],
-    ["Online learning", "Update the model one instance at a time as data arrives."],
-    ["Instance-based", "Predict by comparing with stored examples (e.g. k-NN)."],
-    ["Model-based", "Learn a model's parameters, then predict with the model."],
-    ["Sampling noise", "Unrepresentative data because the sample is too small (chance)."],
-    ["Sampling bias", "Unrepresentative data because the collection method is flawed; more data doesn't help."],
-    ["Feature engineering", "Feature selection + extraction + creating new features."],
-    ["Overfitting", "Fits training noise: low training error, much higher validation error."],
-    ["Underfitting", "Too simple: training and validation errors both high."],
-    ["Regularisation", "Constraining a model so it can't overfit."],
-    ["Validation / dev set", "Held-out data (20–30%) for evaluating and choosing models."],
-    ["K-fold CV", "K rounds, each fold validated once; average the K scores."],
-    ["Hyperparameter", "A setting of the learning algorithm chosen before training (degree, λ, K)."],
+  glossary: [
+    ["ML", "Machine Learning", "Programs that learn rules from examples instead of being told the rules"],
+    ["AI", "Artificial Intelligence", "The broad goal of making machines behave intelligently; ML is one part of it"],
+    ["DL", "Deep Learning", "ML using neural networks with many layers"],
+    ["T, P, E", "Task, Performance measure, Experience", "What the system does, the number that measures it, and the data it learns from"],
+    ["Model", "—", "The “program” that ML produces from data; used to make predictions"],
+    ["Label ($y$)", "Target / desired output", "The correct answer attached to a training example"],
+    ["Feature ($x$)", "Attribute / input variable", "One measurable property used as input, e.g. transaction amount"],
+    ["Classification", "—", "Predicting a category from a fixed set (fraud / genuine)"],
+    ["Regression", "—", "Predicting a real number (price, temperature)"],
+    ["Hyperplane", "—", "A flat boundary in many dimensions: a point in 1-D, a line in 2-D, a plane in 3-D"],
+    ["Agent, state, action, reward", "Reinforcement-learning terms", "The learner, its situation, what it does, and the feedback it gets"],
+    ["Policy", "—", "A reinforcement learner's strategy: which action to take in each state"],
+    ["k-NN", "k-Nearest Neighbours", "Predict by averaging (or voting among) the k most similar stored examples"],
+    ["$\\theta_0, \\theta_1$", "Theta-zero, theta-one", "Parameters of a line: intercept and slope"],
+    ["PCA", "Principal Component Analysis", "Reduces many features to a few while keeping most of the variation"],
+    ["LLE", "Locally Linear Embedding", "A dimensionality-reduction method that preserves local neighbourhoods"],
+    ["t-SNE", "t-distributed Stochastic Neighbour Embedding", "Squeezes data to 2-D/3-D for plotting, keeping similar points close"],
+    ["WER", "Word Error Rate", "% of words a speech recogniser gets wrong (lower is better)"],
+    ["GMM", "Gaussian Mixture Model", "An older statistical model, the baseline in the speech example"],
+    ["OCR", "Optical Character Recognition", "Reading printed or handwritten text from images"],
+    ["GDP", "Gross Domestic Product", "A country's total economic output; per person, a measure of wealth"],
+    ["Sampling noise", "—", "Unrepresentative data because the sample is too small (chance)"],
+    ["Sampling bias", "—", "Unrepresentative data because the collection method is flawed; more data doesn't help"],
+    ["Feature engineering", "—", "Selecting, combining and creating features so they're useful"],
+    ["Overfitting", "—", "Memorising the training data: low training error, high error on new data"],
+    ["Underfitting", "—", "Too simple: high error on training and new data"],
+    ["Regularisation", "—", "A constraint that stops a model from becoming too complex"],
+    ["Validation / dev set", "Development set", "Held-out data (20–30%) used to evaluate and compare models"],
+    ["CV", "Cross-Validation", "Repeating training/validation on different splits and averaging"],
+    ["K-fold CV", "—", "K rounds; each of K folds is the validation set once; average the K scores"],
+    ["Test set", "—", "Data used only once, at the end, to report the final performance"],
+    ["Hyperparameter", "—", "A setting chosen before training (degree, λ, k), tuned with CV"],
+    ["$\\lambda$", "Lambda", "Regularisation strength"],
   ],
 
   examTips: [
-    "For ⟨T,P,E⟩ questions, make **P a measurable number** and **E the real data source**. Mention which error type matters most if the scenario has costly mistakes.",
-    "“Which type of learning?” → answer **all three questions** (feedback, how data is fed, how predictions are made) with a one-line reason for each.",
-    "Overfit vs underfit questions usually give a train/validation error table. Look at the **gap** (overfit) and the **level** (underfit).",
-    "Noise vs bias: noise → sample too small; bias → method flawed (a bigger sample doesn't fix it).",
-    "K-fold: K models, each trained on (K−1)/K of the data. Grid search runs = combinations × K (+1 final refit).",
+    "For ⟨T, P, E⟩ questions, make **P a number you can compute** and **E the real data source**. If one kind of mistake is costlier (missing fraud, missing a disease), say so and pick P accordingly.",
+    "“Which type of learning is this?” → answer **all three questions** (type of feedback, batch/online, instance/model-based) with a one-line reason each.",
+    "Overfit vs underfit questions usually give a table of training and validation errors. Look at the **gap** (overfitting) and the **level** (underfitting).",
+    "Noise vs bias: noise → sample too small; bias → collection method flawed (a bigger sample doesn't fix it).",
+    "K-fold: K models, each trained on (K−1)/K of the data. Grid-search runs = combinations × K (+1 final refit).",
   ],
 
   problems: [
     {
       title: "Define ⟨T, P, E⟩ for new scenarios",
+      hint: "For each system ask: what must it *do* (T)? What *number* shows it's doing well (P)? What *data* does the company already have (E)? Then: can you list every possible output? If yes, classification.",
       level: "Easy",
       marks: 4,
       question:
@@ -511,6 +573,7 @@ The same business goal can be framed as classification or regression. What decid
     },
     {
       title: "Classify the learning system on all three axes",
+      hint: "Look for key phrases. “Labels / marks as” → supervised. “Reward / penalty” → reinforcement. “Every time / as it arrives” → online. “Most similar” → instance-based. “Learnt weights” → model-based.",
       level: "Medium",
       marks: 6,
       question: `For each system, state: (i) supervised / unsupervised / semi-supervised / reinforcement, (ii) batch or online, (iii) instance-based or model-based. Justify briefly.
@@ -544,6 +607,7 @@ Look for key phrases: “labels / marked as” → supervised; “reward / penal
     },
     {
       title: "Threshold classifier for tumour size",
+      hint: "You only need to test one T between each pair of neighbouring sizes (the midpoints). For each, everything above T is predicted M. Count how many labels disagree.",
       level: "Medium",
       marks: 6,
       question: `Training data (tumour size in cm → label, B = benign, M = malignant):
@@ -595,6 +659,7 @@ Candidates further out (1.25, 4.25) make even more errors.
     },
     {
       title: "K-fold cross-validation arithmetic",
+      hint: "Fold size = n / K. Each round holds out one fold and trains on the rest. How many folds does each sample *not* belong to?",
       level: "Easy",
       marks: 4,
       question:
@@ -632,6 +697,7 @@ Bigger K means each model sees more training data (a more reliable estimate), bu
     },
     {
       title: "Hyperparameter grid search cost",
+      hint: "Multiply the number of values of each hyperparameter to get the combinations. Each combination is trained K times. Don't forget the final refit.",
       level: "Medium",
       marks: 5,
       question: `You tune a model with three hyperparameters:
@@ -674,6 +740,7 @@ Each new hyperparameter **multiplies** the cost, so it grows exponentially (slid
     },
     {
       title: "Diagnose overfitting vs underfitting",
+      hint: "For each degree, look at the *level* of the training error (high → underfit) and the *gap* between validation and training error (big → overfit). Pick the model with the lowest validation error.",
       level: "Medium",
       marks: 6,
       question: `Polynomial regression models of increasing degree were trained. Mean squared errors:
@@ -719,6 +786,7 @@ As complexity rises, training error only goes **down**, but validation error goe
     },
     {
       title: "Instance-based vs model-based prediction",
+      hint: "(a) Find the 3 GDPs closest to 33 and average their y. (b) Build a table with $x-\\bar x$, $y-\\bar y$, their product and $(x-\\bar x)^2$. Slope = sum of products ÷ sum of squares.",
       level: "Hard",
       marks: 8,
       question: `GDP per capita (in thousands of USD) and life satisfaction (0–10):
@@ -786,6 +854,7 @@ The answers differ because k-NN averages *nearby* countries (B at 20 pulls it do
     },
     {
       title: "Batch vs mini-batch vs online: update counts",
+      hint: "Updates per epoch: batch = 1, mini-batch = number of batches (round up!), online = number of samples. Multiply by the epochs.",
       level: "Easy",
       marks: 4,
       question:
@@ -820,6 +889,7 @@ More frequent updates = faster reaction to new data, but each update is based on
     },
     {
       title: "Reading the deep-learning speech results",
+      hint: "Absolute reduction = old − new (in percentage points). Relative reduction = (old − new) ÷ old. Errors = WER × number of words.",
       level: "Medium",
       marks: 5,
       question: `From slide 20 (GMM baseline WER = 15.4%):
@@ -858,6 +928,7 @@ Model complexity has a sweet spot. Too little → underfit; too much → overfit
     },
     {
       title: "Data quality and splitting",
+      hint: "Do the steps in order: remove duplicates first, then the missing rows (the question tells you they don't overlap). Then take 70%, 15%, 15% of what's left.",
       level: "Medium",
       marks: 5,
       question: `A customer dataset has 40,000 rows. 6% of rows are missing *age*, and 1.5% of rows are exact duplicates (none of the duplicates are missing age).
@@ -896,6 +967,7 @@ Cleaning choices change what the model sees. Before dropping data, ask *“are t
     },
     {
       title: "Sampling noise vs sampling bias",
+      hint: "Ask of each poll: is the *method* fair but the sample too small (noise)? Or is the method itself skewed, whatever the size (bias)?",
       level: "Easy",
       marks: 3,
       question:
@@ -916,6 +988,7 @@ More data fixes noise but **not** bias. *(Poll 1 is the famous 1936 Literary Dig
     },
     {
       title: "Features and polynomial model size",
+      hint: "Each term in the polynomial has its own coefficient. List the terms of degree 0, 1 and 2 for (b). For (d), compare the number of parameters with the number of data points.",
       level: "Hard",
       marks: 5,
       question:

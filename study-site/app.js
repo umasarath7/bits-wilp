@@ -162,6 +162,7 @@ function NotesTab({ s }) {
         setClosed((c) => ({ ...c, [sec.id]: false }));
         document.getElementById("sec-" + sec.id)?.scrollIntoView({ behavior: "smooth" });
       }}>${sec.heading.replace(/^\d+\.\s*/, "")}</a>`)}
+      ${s.glossary?.length > 0 && html`<a href="#glossary" onClick=${(e) => { e.preventDefault(); document.getElementById("glossary")?.scrollIntoView({ behavior: "smooth" }); }}>Glossary</a>`}
       ${s.keyTerms?.length > 0 && html`<a href="#terms" onClick=${(e) => { e.preventDefault(); document.getElementById("terms")?.scrollIntoView({ behavior: "smooth" }); }}>Key terms</a>`}
     </nav>
 
@@ -174,6 +175,16 @@ function NotesTab({ s }) {
         </button>
         ${!closed[sec.id] && html`<div className="section-body">${sec.blocks.map((b, i) => html`<${Block} key=${i} b=${b} />`)}</div>`}
       </section>`)}
+
+    ${s.glossary?.length > 0 && html`<section id="glossary" className="card section">
+      <div className="section-head static"><span>📚 Glossary of terms and abbreviations</span></div>
+      <div className="section-body">
+        <div className="table-wrap"><table>
+          <thead><tr><th>Term / symbol</th><th>Full name</th><th>What it means in plain words</th></tr></thead>
+          <tbody>${s.glossary.map((row, i) => html`<tr key=${i}>${row.map((c, j) => html`<td key=${j} dangerouslySetInnerHTML=${{ __html: md(c, true) }} />`)}</tr>`)}</tbody>
+        </table></div>
+      </div>
+    </section>`}
 
     ${s.keyTerms?.length > 0 && html`<section id="terms" className="card section">
       <div className="section-head static"><span>Key terms</span></div>
@@ -194,6 +205,7 @@ function NotesTab({ s }) {
 // Shared by the Problems (numerical) and Theory tabs.
 function QuestionsTab({ items, storeKey, answerLabel }) {
   const [open, setOpen] = useState({});
+  const [hint, setHint] = useState({});
   const [solved, setSolved] = useState(() => store.get(storeKey, {}));
   const [filter, setFilter] = useState("All");
   const levels = ["All", ...new Set(items.map((p) => p.level).filter(Boolean))];
@@ -231,8 +243,10 @@ function QuestionsTab({ items, storeKey, answerLabel }) {
           <button className="btn" onClick=${() => setOpen((o) => ({ ...o, [i]: !o[i] }))}>
             ${open[i] ? `Hide ${answerLabel.toLowerCase()} ▴` : `Show ${answerLabel.toLowerCase()} ▾`}
           </button>
+          ${p.hint && html`<button className="btn ghost" onClick=${() => setHint((h) => ({ ...h, [i]: !h[i] }))}>${hint[i] ? "Hide hint" : "💡 Hint"}</button>`}
           <label className="check"><input type="checkbox" checked=${!!solved[i]} onChange=${() => markSolved(i)} /> Done</label>
         </div>
+        ${hint[i] && p.hint && html`<div className="callout tip hint"><${Md} text=${p.hint} /></div>`}
         ${open[i] && html`<div className="solution"><div className="sol-label">${answerLabel}</div><${Md} text=${p.solution} /></div>`}
       </article>`)}
   </div>`;

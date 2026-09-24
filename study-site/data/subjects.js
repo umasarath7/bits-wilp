@@ -15,6 +15,7 @@ export const subjects = [
       { n: 6, title: "Naive Bayes", file: "./aml/session6.js" },
       { n: 7, title: "Support Vector Machines", file: "./aml/session7.js" },
       { n: 8, title: "Revision (Mid-sem)", file: "./aml/session8.js" },
+      { n: "summary", icon: "📋", short: "Summary", group: "Exam practice", title: "Exam Summary (read before the exam)", file: "./aml/exam-summary.js" },
       { n: "pyq", icon: "📌", short: "PYQ", group: "Exam practice", title: "Previous Midsem Paper (solved)", file: "./aml/pyq-midsem.js" },
       { n: "mock", icon: "🧪", short: "Mock", group: "Exam practice", title: "Mock Midsem Paper", file: "./aml/mock-midsem.js" },
     ],
