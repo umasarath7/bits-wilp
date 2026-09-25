@@ -354,6 +354,93 @@ export default {
     },
   ],
 
+  recap: [
+    {
+      "type": "callout",
+      "kind": "idea",
+      "title": "In one line",
+      "text": "Pipelines move data automatically from where it's made to where it's useful, and they break when sources change."
+    },
+    {
+      "type": "diagram",
+      "name": "d4-modes",
+      "caption": "Three ways data moves between programs."
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Backward** = new code reads old data · **forward** = old code reads new data · rolling upgrades need both.",
+        "Services: **REST** (HTTP philosophy) · SOAP (XML, WSDL) · **gRPC** (fast binary). RPC's “looks local” idea is flawed.",
+        "Brokers (Kafka): buffer, redeliver, decouple, fan-out; async."
+      ]
+    },
+    {
+      "type": "table",
+      "head": [
+        "",
+        "Traditional stack",
+        "Modern stack"
+      ],
+      "rows": [
+        [
+          "Infra",
+          "on-prem",
+          "cloud-native"
+        ],
+        [
+          "Scale",
+          "manual",
+          "elastic"
+        ],
+        [
+          "Integration",
+          "hand-built",
+          "automated connectors"
+        ],
+        [
+          "Design",
+          "monolithic",
+          "modular"
+        ],
+        [
+          "Analytics",
+          "batch",
+          "real-time"
+        ],
+        [
+          "Cost",
+          "upfront",
+          "pay-as-you-go"
+        ],
+        [
+          "Transform",
+          "ETL",
+          "ELT (dbt)"
+        ],
+        [
+          "Users",
+          "IT-dependent",
+          "self-service"
+        ]
+      ],
+      "caption": "PYQ Q4 table"
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Pipeline** = pull → transform → push. Pains: always under construction, **data drift**, tied to platforms.",
+        "Parts: origin, dataflow, storage, processing, destination, workflow, monitoring.",
+        "**ETL** for governed/legacy · **ELT** for cloud/ML · batch vs stream · **CDC** for change-by-change replication."
+      ]
+    },
+    {
+      "type": "callout",
+      "kind": "exam",
+      "title": "Exam hook",
+      "text": "**PYQ Q4:** reproduce the 8-row TDS vs MDS table, add TDS problems and one tool per MDS layer."
+    }
+  ],
+
   glossary: [
     ["Data pipeline", "—", "Steps that pull data, transform it, and push it where it's useful"],
     ["Data flow", "—", "How data moves between systems through processing and storage"],

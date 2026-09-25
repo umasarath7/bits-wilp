@@ -318,6 +318,94 @@ export default {
     },
   ],
 
+  recap: [
+    {
+      "type": "callout",
+      "kind": "idea",
+      "title": "In one line",
+      "text": "How data is **shaped and stored** decides which questions are easy to ask of it."
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Data management** = ingest · process · secure · store → better decisions.",
+        "ML depends on it for **structure, performance, accuracy, reliability**.",
+        "**Formats:** structured (fixed schema) · semi-structured (tags, JSON, email) · unstructured (images, audio)."
+      ]
+    },
+    {
+      "type": "diagram",
+      "name": "d1-models",
+      "caption": "Five data models, each fast at a different question."
+    },
+    {
+      "type": "table",
+      "head": [
+        "Model",
+        "Makes easy",
+        "Example"
+      ],
+      "rows": [
+        [
+          "Relational",
+          "joins, SQL; normalise to cut redundancy",
+          "MySQL"
+        ],
+        [
+          "Hierarchical",
+          "walking a tree",
+          "Windows Registry"
+        ],
+        [
+          "**Graph**",
+          "**following relationships** (Cypher, Gremlin)",
+          "Neo4j"
+        ],
+        [
+          "Document",
+          "whole flexible record",
+          "MongoDB"
+        ],
+        [
+          "Key-value",
+          "fastest lookup by key",
+          "Redis"
+        ]
+      ]
+    },
+    {
+      "type": "table",
+      "head": [
+        "Pair",
+        "Remember"
+      ],
+      "rows": [
+        [
+          "Declarative vs imperative",
+          "say **what** (SQL; optimiser picks how) vs spell out **how**"
+        ],
+        [
+          "Row vs column store",
+          "row → writes, OLTP · column (Parquet) → reads, OLAP, ML"
+        ],
+        [
+          "Text vs binary serialization",
+          "CSV/XML/JSON readable · Protobuf/Avro/BSON compact; same schema both ends"
+        ],
+        [
+          "OLTP vs OLAP",
+          "record transactions · analyse history (roll-up, drill-down, slice/dice, pivot)"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "kind": "exam",
+      "title": "Exam hook",
+      "text": "**PYQ Q1:** graph model → relationship-first languages; a 3-hop fraud-ring query is one Cypher line vs a JOIN per hop in SQL."
+    }
+  ],
+
   glossary: [
     ["DM", "Data Management", "Ingesting, processing, securing and storing data for better decisions"],
     ["Schema", "—", "The blueprint of how data is organised, stored and related"],

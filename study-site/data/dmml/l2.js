@@ -280,6 +280,75 @@ export default {
     },
   ],
 
+  recap: [
+    {
+      "type": "callout",
+      "kind": "idea",
+      "title": "In one line",
+      "text": "Data is an **asset** when managed well and a **liability** when exposed or misused. Manage both sides."
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Asset:** data → value (Netflix). Relevant data is hard to collect.",
+        "**Liability:** leaks, misuse, no consent → legal, ethical, reputational harm. PII needs **consent + deletion criteria**.",
+        "**Myths:** “more data == better”, “this stuff is easy”."
+      ]
+    },
+    {
+      "type": "diagram",
+      "name": "d2-liability",
+      "caption": "Reduce liability: restrict → pseudonymise → remove the link."
+    },
+    {
+      "type": "list",
+      "items": [
+        "**ML pipelines** break on **distribution** changes, not just volume or correctness (lost-country example).",
+        "**Reliability:** durability · consistency · versioning (time travel) · performance · availability."
+      ]
+    },
+    {
+      "type": "diagram",
+      "name": "d2-components",
+      "caption": "Four components around the data."
+    },
+    {
+      "type": "table",
+      "head": [
+        "Component",
+        "Key words"
+      ],
+      "rows": [
+        [
+          "Integration",
+          "ETL → ELT; filter, merge, aggregate"
+        ],
+        [
+          "Storage",
+          "warehouse (schema) · lake (raw, cheap) · lakehouse (both)"
+        ],
+        [
+          "Governance",
+          "councils, metadata, taxonomy, roles"
+        ],
+        [
+          "Security",
+          "access control, encryption, masking, disaster recovery"
+        ]
+      ]
+    },
+    {
+      "type": "p",
+      "text": "**Lifecycle:** creation → ingestion → processing (validate, clean, enrich) → post-processing (store, metadata, visualise) → ML. **Roles:** analyst, engineer, scientist, architect, DBA, BI analyst."
+    },
+    {
+      "type": "callout",
+      "kind": "exam",
+      "title": "Exam hook",
+      "text": "**PYQ Q2:** value → protect → leverage → mitigate liability → KPI → example (hospital or bank)."
+    }
+  ],
+
   glossary: [
     ["Asset", "—", "Something that creates value (data → decisions → value)"],
     ["Liability", "—", "Something that creates risk or cost (leaks, misuse, fines)"],

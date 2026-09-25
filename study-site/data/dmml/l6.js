@@ -399,6 +399,60 @@ export default {
     },
   ],
 
+  recap: [
+    {
+      "type": "callout",
+      "kind": "idea",
+      "title": "In one line",
+      "text": "ML is a **loop**, not a line: business goal → framing → data → model → deploy → monitor → back again."
+    },
+    {
+      "type": "diagram",
+      "name": "d6-cycle",
+      "caption": "The lifecycle loops back on drift."
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Business goal first**; ask whether ML is even needed.",
+        "Machinery: feature store (online/offline), model registry, feedback loops, alarm manager, scheduler, lineage.",
+        "Prep: clean, **dedupe before splitting** (leakage), scale, balance, augment; features: create, transform, extract, select."
+      ]
+    },
+    {
+      "type": "diagram",
+      "name": "d6-drift",
+      "caption": "Data drift: inputs move. Concept drift: the rule moves."
+    },
+    {
+      "type": "diagram",
+      "name": "d6-deploy",
+      "caption": "Four safe ways to release a model."
+    },
+    {
+      "type": "p",
+      "text": "#### Data engineering pipeline (PYQ Q5)"
+    },
+    {
+      "type": "p",
+      "text": "```flow\nIngestion (sources, provenance, backup, privacy, metadata, lock the test set) -> Exploration & validation (profiling, rules, missing ratio) -> Wrangling (reusable scripts, outliers, impute, restructure) -> Splitting (train / validation / test)\n```"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Three levels: **Data · Model · Code**.",
+        "Package: ONNX, PMML, PFA, pickle. Serve: as-service, as-dependency, precompute, on-demand, **federated**.",
+        "MLOps = DataOps → ModelOps → DevOps + feedback. Failures: Twitter, Airbnb, Booking.com, Pinterest."
+      ]
+    },
+    {
+      "type": "callout",
+      "kind": "exam",
+      "title": "Exam hook",
+      "text": "**PYQ Q5:** draw the 4-step pipeline **first**, list activities under each step, then link it to the Model and Code levels."
+    }
+  ],
+
   glossary: [
     ["ML lifecycle", "—", "Business goal → framing → data → model → deployment → monitoring, looping back"],
     ["Label / target", "—", "The value the model predicts"],

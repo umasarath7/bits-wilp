@@ -258,6 +258,13 @@ function QuestionsTab({ items, storeKey, answerLabel }) {
   </div>`;
 }
 
+// One-screen recap of a session: few words, a diagram or two, the exam hook.
+function RecapTab({ s }) {
+  return html`<div className="card recap">
+    <div className="section-body">${s.recap.map((b, i) => html`<${Block} key=${i} b=${b} />`)}</div>
+  </div>`;
+}
+
 function QuizTab({ s }) {
   const [picked, setPicked] = useState({});
   const answered = Object.keys(picked).length;
@@ -336,12 +343,13 @@ function SessionView({ subject, session, tab: requestedTab, done, toggleDone }) 
 
     ${data && html`
       <div className="tabs" role="tablist">
-        ${[["notes", "📖 Notes"], ["problems", `✍️ Numerical (${data.problems?.length || 0})`], ["theory", `📝 Theory (${data.theory?.length || 0})`], ["quiz", `❓ Quiz (${data.quiz?.length || 0})`]]
+        ${[["notes", "📖 Notes"], ["recap", "⚡ Recap"], ["problems", `✍️ Numerical (${data.problems?.length || 0})`], ["theory", `📝 Theory (${data.theory?.length || 0})`], ["quiz", `❓ Quiz (${data.quiz?.length || 0})`]]
           .filter(([id]) => id === "notes" || data[id === "problems" ? "problems" : id]?.length)
           .map(([id, label]) =>
           html`<button key=${id} role="tab" className=${tab === id ? "on" : ""} onClick=${() => changeTab(id)}>${label}</button>`)}
       </div>
       ${tab === "notes" && html`<${NotesTab} s=${data} />`}
+      ${tab === "recap" && html`<${RecapTab} s=${data} />`}
       ${tab === "problems" && html`<${QuestionsTab} key=${key + "p"} items=${data.problems || []} storeKey=${key + ":solved"} answerLabel="Solution" />`}
       ${tab === "theory" && html`<${QuestionsTab} key=${key + "t"} items=${data.theory || []} storeKey=${key + ":theory"} answerLabel="Model answer" />`}
       ${tab === "quiz" && html`<${QuizTab} s=${data} key=${key} />`}
@@ -421,7 +429,7 @@ function App() {
   const [, sid, sn, tab] = hash.split("/");
   const subject = subjects.find((s) => s.id === sid);
   if (!subject) return html`<${Landing} done=${done} />`;
-  return html`<${SubjectView} subject=${subject} sessionN=${sn || null} tab=${["notes", "problems", "theory", "quiz"].includes(tab) ? tab : "notes"} done=${done} toggleDone=${toggleDone} />`;
+  return html`<${SubjectView} subject=${subject} sessionN=${sn || null} tab=${["notes", "recap", "problems", "theory", "quiz"].includes(tab) ? tab : "notes"} done=${done} toggleDone=${toggleDone} />`;
 }
 
 createRoot(document.getElementById("root")).render(html`<${App} />`);

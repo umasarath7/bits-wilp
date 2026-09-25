@@ -386,3 +386,9 @@ th { background: var(--bg); font-weight: 650; }
 .fig .arrk { stroke: var(--text); stroke-width: 2; }
 .fig .ah { fill: var(--muted); }
 .fig .under { fill: var(--surface); stroke: none; }
+
+/* ---------- recap tab ---------- */
+.recap .section-body { border-top: 0; padding-top: 16px; }
+.recap .list li { margin: 0.35rem 0; }
+.recap h4 { margin-top: 1.2rem; }
+.recap h4:first-child { margin-top: 0; }

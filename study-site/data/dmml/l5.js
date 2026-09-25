@@ -316,6 +316,59 @@ export default {
     },
   ],
 
+  recap: [
+    {
+      "type": "callout",
+      "kind": "idea",
+      "title": "In one line",
+      "text": "The machinery under pipelines: how data gets in, where it lives, how it's served back, and how it's kept running."
+    },
+    {
+      "type": "list",
+      "items": [
+        "Lifecycle: source → ingestion → transformation → serving; **storage** underneath.",
+        "Ingest (Fivetran) · model in SQL (**dbt**) · orchestrate dependencies (**Airflow**, Kubeflow)."
+      ]
+    },
+    {
+      "type": "diagram",
+      "name": "d5-storage",
+      "caption": "File tree · rewritable blocks · immutable objects."
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Strong** consistency = always latest (bank balance) · **eventual** = fast, maybe stale (likes).",
+        "Also: cache (Redis), HDFS (3× replication), streaming storage (Kafka retention + replay)."
+      ]
+    },
+    {
+      "type": "diagram",
+      "name": "d5-reverse",
+      "caption": "Reverse ETL puts model output back where people work."
+    },
+    {
+      "type": "list",
+      "items": [
+        "Analytics: business (history) · operational (act now) · embedded (inside the product).",
+        "Serve by files, OLAP tables, streams, **query federation** (Trino), notebooks.",
+        "ML stack: warehouse → compute → scheduler → architecture → versioning → model ops → features → **model (smallest)**.",
+        "Automate: IaC (Terraform), GitOps, retries, self-healing. **DataOps** = DevOps + agile for data.",
+        "Secure data **at rest** (encrypt), **in transit** (TLS), **in use** (RBAC)."
+      ]
+    },
+    {
+      "type": "p",
+      "text": "**Experiment → CI** (tests + retrain + registry) **→ CD** (canary, A/B) **→ CT** (recurring retraining). Observability prevents data downtime. **DoorDash:** feature store, aggregators, prediction logs, single-writer model store."
+    },
+    {
+      "type": "callout",
+      "kind": "exam",
+      "title": "Exam hook",
+      "text": "Not asked last time, so likely: file vs block vs object, strong vs eventual, reverse ETL, CI/CD/CT, DoorDash platform."
+    }
+  ],
+
   glossary: [
     ["Data engineering lifecycle", "—", "Generation → ingestion → transformation → serving, with storage underneath"],
     ["Ingestion", "—", "Getting data from sources into the platform"],

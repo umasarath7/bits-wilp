@@ -330,6 +330,85 @@ export default {
     },
   ],
 
+  recap: [
+    {
+      "type": "callout",
+      "kind": "idea",
+      "title": "In one line",
+      "text": "Know each source before ingesting it; then guard the front door with contracts and checks."
+    },
+    {
+      "type": "list",
+      "items": [
+        "Classify sources: batch/real-time · structured/semi/unstructured · raw/derived · internal/external (**Netflix**).",
+        "1st / 2nd / 3rd-party data · user-entered (messy) vs system logs (noisy) vs user behaviour (privacy).",
+        "Sources: relational, key-value, document, wide-column, search, time-series; REST, GraphQL, **webhooks**, gRPC, sharing, queues, streams."
+      ]
+    },
+    {
+      "type": "diagram",
+      "name": "d7-queuestream",
+      "caption": "Queue forgets; stream keeps and replays."
+    },
+    {
+      "type": "diagram",
+      "name": "d7-partitions",
+      "caption": "Same key → same partition → order kept."
+    },
+    {
+      "type": "list",
+      "items": [
+        "Ingestion = consume → light clean → land. ~90% of time goes on break-fix from **data drift**.",
+        "**Data contract** = what · how · how often · who. Plus **lineage** and **governance** (GDPR, DPDPA…).",
+        "Batch: time vs size cut · full snapshot vs incremental · bulk migration."
+      ]
+    },
+    {
+      "type": "diagram",
+      "name": "d7-late",
+      "caption": "Events past the watermark are dropped."
+    },
+    {
+      "type": "table",
+      "head": [
+        "Streaming concern",
+        "Fix"
+      ],
+      "rows": [
+        [
+          "schema evolution",
+          "schema registry"
+        ],
+        [
+          "late data",
+          "watermark cut-off"
+        ],
+        [
+          "duplicates / order",
+          "idempotent consumers"
+        ],
+        [
+          "reprocess",
+          "replay"
+        ],
+        [
+          "bad events",
+          "dead-letter queue"
+        ],
+        [
+          "big messages",
+          "send a pointer"
+        ]
+      ]
+    },
+    {
+      "type": "callout",
+      "kind": "exam",
+      "title": "Exam hook",
+      "text": "Not asked last time, so likely: streaming concerns + fixes, CDC (batch vs log-based, read replica), data contracts."
+    }
+  ],
+
   glossary: [
     ["Batch / real-time consumption", "—", "Data used periodically / as it happens"],
     ["Raw / derived data", "—", "Collected directly / computed from other data"],

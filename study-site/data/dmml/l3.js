@@ -299,6 +299,93 @@ export default {
     },
   ],
 
+  recap: [
+    {
+      "type": "callout",
+      "kind": "idea",
+      "title": "In one line",
+      "text": "Architecture = the **blueprint**: flexible, reversible decisions made by weighing trade-offs."
+    },
+    {
+      "type": "diagram",
+      "name": "d3-central",
+      "caption": "Who controls the data."
+    },
+    {
+      "type": "table",
+      "head": [
+        "Style",
+        "Strength",
+        "Weakness",
+        "Industry"
+      ],
+      "rows": [
+        [
+          "Centralised",
+          "governance, consistency",
+          "bottleneck, single point of failure",
+          "banks, hospitals"
+        ],
+        [
+          "Decentralised",
+          "unit autonomy",
+          "duplication, inconsistent definitions",
+          "insurance"
+        ],
+        [
+          "**Hybrid**",
+          "central MDM + domain agility",
+          "coordination effort",
+          "telecom"
+        ]
+      ]
+    },
+    {
+      "type": "table",
+      "head": [
+        "Store",
+        "Remember"
+      ],
+      "rows": [
+        [
+          "Warehouse",
+          "facts + dimensions; **star** (fast) vs **snowflake** (compact)"
+        ],
+        [
+          "Mart",
+          "department slice of the warehouse"
+        ],
+        [
+          "Lake",
+          "ELT, cheap, any data; risk: swamp, dark data, WORN"
+        ],
+        [
+          "Lakehouse",
+          "lake + warehouse management + ACID"
+        ]
+      ]
+    },
+    {
+      "type": "diagram",
+      "name": "d3-lambda",
+      "caption": "Lambda = two paths; Kappa = one replayable stream."
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Mesh** = who owns (domains, data as product, self-serve platform, federated governance).",
+        "**Fabric** = how it connects (one integration layer: APIs, CDC, virtualisation).",
+        "**Big data 5 Vs:** volume, velocity, variety, veracity, value."
+      ]
+    },
+    {
+      "type": "callout",
+      "kind": "exam",
+      "title": "Exam hook",
+      "text": "**PYQ Q3:** compare the 3 styles on integration, security, performance → recommend **hybrid** (central governance + regional stores for data residency) → diagram."
+    }
+  ],
+
   glossary: [
     ["Data architecture", "—", "The blueprint for how data flows, is stored and used"],
     ["TOGAF", "The Open Group Architecture Framework", "A standard enterprise-architecture framework"],

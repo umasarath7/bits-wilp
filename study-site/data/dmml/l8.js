@@ -321,6 +321,64 @@ export default {
     },
   ],
 
+  recap: [
+    {
+      "type": "callout",
+      "kind": "idea",
+      "title": "In one line",
+      "text": "Measure data quality, find bias and leakage, watch for drift, and validate before every training run."
+    },
+    {
+      "type": "list",
+      "items": [
+        "**10 dimensions:** accuracy, completeness, consistency, timeliness, validity, uniqueness, integrity, lineage, reliability, accessibility.",
+        "For ML also: informative, covered, realistic, unbiased, no feedback loop, consistent labels, big enough."
+      ]
+    },
+    {
+      "type": "diagram",
+      "name": "d8-selection",
+      "caption": "Coverage · non-response · sampling bias."
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Selection bias** = convenient, unrepresentative data: **coverage · non-response · sampling**.",
+        "Other biases: omitted variable, reporting, labelling, automation, confirmation…"
+      ]
+    },
+    {
+      "type": "diagram",
+      "name": "d8-leak",
+      "caption": "Only use features known at prediction time."
+    },
+    {
+      "type": "list",
+      "items": [
+        "**Leakage causes:** target is a function of a feature (GDP) · feature hides the target (“M18-25”) · feature from the future.",
+        "**Drift:** schema skew · distribution skew · **concept drift** · training-serving skew (share feature code)."
+      ]
+    },
+    {
+      "type": "diagram",
+      "name": "d8-psi",
+      "caption": "PSI 0.228 = moderate shift."
+    },
+    {
+      "type": "list",
+      "items": [
+        "**PSI** = Σ(A − E)·ln(A/E): < 0.1 stable, 0.1–0.25 moderate, > 0.25 drift.",
+        "Profile once at the start; **validate before every training run** (Great Expectations, Soda, Deequ); shift left to ingestion."
+      ]
+    },
+    {
+      "type": "callout",
+      "kind": "exam",
+      "title": "Exam hook",
+      "text": "**PYQ Q6:** define selection bias → 3 sub-types with the survey examples → ML impact → detect → mitigate."
+    }
+  ],
+
   glossary: [
     ["Data-quality dimension", "—", "A measurable attribute of data quality"],
     ["Fitness for use", "—", "Whether data is good enough for a particular purpose"],
