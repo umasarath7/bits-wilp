@@ -1755,6 +1755,91 @@ def i5_pdf():
     g.add(text(p.X(0.12), p.Y(2.0), "f(x) = 2e^(−2x)", "ts", "start"))
     reg("i5-pdf", g, "Continuous random variable (Lec5 slide 36). Probability is an area under the density: P(1 < X < 3) is the shaded region, ∫₁³ 2e^(−2x) dx = 0.133. The probability of any single exact value is 0.")
 
+# ================================================================= ISM Lec 6
+
+def _bars(g, p, xs, ps, cls="bar1", hl=None, w=0.36):
+    for xv, pv in zip(xs, ps):
+        c = "bar2" if hl and hl(xv) else cls
+        g.add(rect(p.X(xv - w), p.Y(pv), p.X(xv + w) - p.X(xv - w), p.Y(0) - p.Y(pv), c, 1))
+
+def i6_binom():
+    g = Fig("i6bn", 200)
+    p = Plot(g, 50, 16, 360, 140, (-0.6, 10.6), (0, 0.3))
+    p.axes(xt=list(range(11)), yt=[0, 0.1, 0.2, 0.3], xl="x = customers asking for water (n = 10, p = 0.6)", yl="P(X = x)", fmt=lambda v: f"{v:g}")
+    ps = [math.comb(10, k) * 0.6 ** k * 0.4 ** (10 - k) for k in range(11)]
+    _bars(g, p, range(11), ps, hl=lambda k: k == 6)
+    g.add(text(p.X(6), p.Y(ps[6]) - 5, "0.251", "tb"))
+    g.add(line(p.X(6), p.Y(0.29), p.X(6), p.Y(0.27), "ax"), text(p.X(1.5), p.Y(0.26), "mean np = 6", "ts", "start"), text(p.X(1.5), p.Y(0.23), "variance npq = 2.4", "ts", "start"))
+    reg("i6-binom", g, "Binomial distribution for the restaurant example (Lec6 slides 15–16): n = 10 customers, p = 0.6. The highlighted bar is P(X = 6) = 0.251; the bars sum to 1 and peak near the mean np = 6.")
+
+def i6_poisson():
+    g = Fig("i6po", 200)
+    p = Plot(g, 50, 16, 360, 140, (-0.6, 15.6), (0, 0.18))
+    p.axes(xt=list(range(0, 16, 2)), yt=[0, 0.05, 0.1, 0.15], xl="x = calls in 9 minutes (λ = 6)", yl="P(X = x)", fmt=lambda v: f"{v:g}")
+    ps = [math.exp(-6) * 6 ** k / math.factorial(k) for k in range(16)]
+    _bars(g, p, range(16), ps, hl=lambda k: k >= 5, w=0.38)
+    g.add(text(p.X(11), p.Y(0.15), "P(X ≥ 5) = 0.715", "tb"), text(p.X(11), p.Y(0.13), "mean = variance = λ = 6", "ts2"))
+    reg("i6-poisson", g, "Poisson distribution for the switchboard example (Lec6 slide 27): 2 calls per 3 minutes gives λ = 6 in 9 minutes. The orange bars are the event “5 or more calls”, found as 1 − P(X ≤ 4).")
+
+def i6_rule():
+    g = Fig("i6ru", 210)
+    p = Plot(g, 20, 20, 400, 130, (-3.6, 3.6), (0, 0.42))
+    for k, cls in [(3, "cell3"), (2, "cell2"), (1, "cell1")]:
+        pts = [p.P(-k, 0)] + [p.P(-k + 2 * k * i / 60, npdf(-k + 2 * k * i / 60, 0, 1)) for i in range(61)] + [p.P(k, 0)]
+        g.add(path(pts, cls, close=True))
+    p.curve(lambda x: npdf(x, 0, 1), -3.6, 3.6, "l1", clip=False)
+    g.add(line(p.X(-3.6), p.Y(0), p.X(3.6), p.Y(0), "ax"))
+    for v, lab in [(-3, "μ−3σ"), (-2, "μ−2σ"), (-1, "μ−σ"), (0, "μ"), (1, "μ+σ"), (2, "μ+2σ"), (3, "μ+3σ")]:
+        g.add(line(p.X(v), p.Y(0), p.X(v), p.Y(0) + 4, "ax"), text(p.X(v), p.Y(0) + 16, lab, "ts"))
+    for k, pct, y in [(1, "68%", 0.22), (2, "95%", 0.06), (3, "99.7%", 0.015)]:
+        g.add(f'<line x1="{f(p.X(-k))}" y1="{f(p.Y(0) + 26 + (k - 1) * 12)}" x2="{f(p.X(k))}" y2="{f(p.Y(0) + 26 + (k - 1) * 12)}" class="arr" marker-end="url(#ah-i6ru)" marker-start="url(#ah-i6ru)"/>')
+        g.add(text(p.X(k) + 6, p.Y(0) + 30 + (k - 1) * 12, pct, "ts", "start"))
+    reg("i6-rule", g, "Areas under the normal curve (Lec6 slides 42–44, 48): about 68% of values lie within 1σ of the mean, 95% within 2σ and 99.7% within 3σ. The curve is symmetric, so each tail beyond 2σ holds 2.5%.")
+
+def i6_z():
+    g = Fig("i6z", 190)
+    for k, (title, mu, sd, lo, hi, tick) in enumerate([("X ~ N(75, 4²)", 75, 4, 70, 80, [63, 67, 71, 75, 79, 83, 87]), ("Z ~ N(0, 1)", 0, 1, -1.25, 1.25, [-3, -2, -1, 0, 1, 2, 3])]):
+        p = Plot(g, 14 + k * 216, 22, 196, 110, (mu - 3.4 * sd, mu + 3.4 * sd), (0, 0.42 / sd))
+        pts = [p.P(lo, 0)] + [p.P(lo + (hi - lo) * i / 50, npdf(lo + (hi - lo) * i / 50, mu, sd)) for i in range(51)] + [p.P(hi, 0)]
+        g.add(path(pts, "area1", close=True))
+        p.curve(lambda x, m=mu, s_=sd: npdf(x, m, s_), mu - 3.4 * sd, mu + 3.4 * sd, "l1", clip=False)
+        g.add(line(p.x, p.Y(0), p.x + 196, p.Y(0), "ax"))
+        for v in tick:
+            g.add(text(p.X(v), p.Y(0) + 14, str(v), "ts"))
+        g.add(text(p.x + 98, 14, title, "tb"))
+        g.add(text(p.x + 98, p.Y(0.2 / sd), "0.7888", "tb"))
+    g.arrow(206, 80, 232, 80)
+    g.add(text(220, 176, "z = (x − μ)/σ: 70 → −1.25, 80 → +1.25; same area", "ts2"))
+    reg("i6-z", g, "Standardising (Lec6 slides 49–55, Problem 14). Subtracting the mean and dividing by σ turns any normal X into the standard normal Z without changing areas, so one table serves every normal distribution.")
+
+def i6_approx():
+    g = Fig("i6ap", 210)
+    p = Plot(g, 50, 16, 360, 150, (4.5, 27.5), (0, 0.13))
+    p.axes(xt=list(range(5, 28, 5)), yt=[0, 0.05, 0.1], xl="x = students planning college (n = 50, p = 0.31)", yl="probability", fmt=lambda v: f"{v:g}")
+    ps = [math.comb(50, k) * 0.31 ** k * 0.69 ** (50 - k) for k in range(5, 28)]
+    _bars(g, p, range(5, 28), ps, cls="bar1", hl=lambda k: k <= 13, w=0.42)
+    mu, sd = 15.5, math.sqrt(50 * 0.31 * 0.69)
+    p.curve(lambda x: npdf(x, mu, sd), 4.5, 27.5, "l3", clip=False)
+    g.add(line(p.X(13.5), p.Y(0), p.X(13.5), p.Y(0.125), "guide2"), text(p.X(13.5) - 4, p.Y(0.12), "13.5", "tb", "end"))
+    g.add(text(p.X(27.4), p.Y(0.11), "normal μ = 15.5, σ = 3.27", "ts", "end"), text(p.X(27.4), p.Y(0.095), "P(X < 14) ≈ P(Z < −0.61) = 0.27", "ts2", "end"))
+    reg("i6-approx", g, "Normal approximation to the binomial (Lec6 Problem 18). Each bar spans x ± 0.5, so “fewer than 14” (bars 0…13, orange) ends at 13.5: that's the continuity correction. The aqua curve is N(np, npq).")
+
+def i6_family():
+    g = Fig("i6fm", 190)
+    p = Plot(g, 14, 22, 196, 120, (-4, 4), (0, 0.42))
+    p.curve(lambda x: npdf(x, 0, 1), -4, 4, "l1", clip=False)
+    tp = lambda x, v: math.gamma((v + 1) / 2) / (math.sqrt(v * math.pi) * math.gamma(v / 2)) * (1 + x * x / v) ** (-(v + 1) / 2)
+    p.curve(lambda x: tp(x, 2), -4, 4, "l2", clip=False)
+    g.add(line(p.x, p.Y(0), p.x + 196, p.Y(0), "ax"), text(p.x + 98, 14, "t (heavier tails) vs Z", "tb"))
+    g.add(line(30, 160, 46, 160, "l1"), text(50, 164, "Z", "ts", "start"), line(80, 160, 96, 160, "l2"), text(100, 164, "t, 2 df", "ts", "start"))
+    q = Plot(g, 230, 22, 196, 120, (0, 16), (0, 0.26))
+    chi = lambda x, v: x ** (v / 2 - 1) * math.exp(-x / 2) / (2 ** (v / 2) * math.gamma(v / 2)) if x > 0 else 0
+    for v, cls in [(3, "l1"), (6, "l2"), (10, "l3")]:
+        q.curve(lambda x, v=v: chi(x, v), 0.05, 16, cls, clip=False)
+    g.add(line(q.x, q.Y(0), q.x + 196, q.Y(0), "ax"), text(q.x + 98, 14, "χ² for 3, 6, 10 df", "tb"))
+    g.add(text(q.x + 98, 164, "χ² ≥ 0, right-skewed; shape set by df", "ts2"))
+    reg("i6-family", g, "The self-study distributions (Lec6 slides 64–71). Left: the t-distribution is bell-shaped like Z but has heavier tails, approaching Z as df grows. Right: χ² lies entirely in the first quadrant and is skewed, with its shape set by its degrees of freedom. (F, a ratio of two sample variances, is also non-negative and skewed.)")
+
 # ---------------------------------------------------------------- build
 
 for fn in [s1_fits, s1_ucurve, s1_kfold, s1_threshold, s1_types, s1_rl,
@@ -1776,7 +1861,8 @@ for fn in [s1_fits, s1_ucurve, s1_kfold, s1_threshold, s1_types, s1_rl,
            i2_venn, i2_scale, i2_dice, i2_exam,
            i3_cond, i3_partition, i3_tree, i3_channel,
            i4_flu, i4_bolt,
-           i5_pmf, i5_cdf, i5_pdf]:
+           i5_pmf, i5_cdf, i5_pdf,
+           i6_binom, i6_poisson, i6_rule, i6_z, i6_approx, i6_family]:
     fn()
 
 out = "// Generated by tools/gen_figures.py. Do not edit by hand; edit the generator and re-run it.\n"

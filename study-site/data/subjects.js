@@ -59,7 +59,7 @@ export const subjects = [
       { n: 3, title: "Conditional Probability & Total Probability", file: "./ism/lec3.js" },
       { n: 4, title: "Bayes' Theorem & Naive Bayes", file: "./ism/lec4.js" },
       { n: 5, title: "Random Variables & Joint Distributions", file: "./ism/lec5.js" },
-      { n: 6, title: "Binomial, Poisson & Normal Distributions" },
+      { n: 6, title: "Binomial, Poisson & Normal Distributions", file: "./ism/lec6.js" },
       { n: 7, title: "Sampling, CLT & Confidence Intervals" },
       { n: 9, title: "Hypothesis Testing: z, t, χ² Tests" },
       { n: 10, title: "MLE, F-test & ANOVA" },
