@@ -1609,6 +1609,85 @@ def i2_exam():
     g.add(text(220, 184, "P(S) = 30/45 · P(M) = 20/45 · P(S ∪ M) = 36/45 = 4/5", "ts2"))
     reg("i2-exam", g, "Example 3 (Lec2 slides 28–29) as a Venn diagram, all in 45ths. The overlap is P(S ∩ M) = 2/3 + 4/9 − 4/5 = 14/45; the four regions add up to 45/45.")
 
+# ================================================================= ISM Lec 3
+
+def i3_cond():
+    g = Fig("i3cd", 190)
+    # left: whole S; right: S shrunk to B
+    for k, (x, title) in enumerate([(10, "Before: P(A) = P(A) / P(S)"), (230, "Given B: P(A | B) = P(A ∩ B) / P(B)")]):
+        g.add(rect(x, 14, 200, 130, "boxn" if k == 0 else "cellx", 4), text(x + 194, 28, "S", "ts2", "end"))
+        ax, bx, cy, r = x + 78, x + 122, 80, 42
+        cid = next_id("i3cd")
+        if k == 0:
+            g.add(f'<circle cx="{ax}" cy="{cy}" r="{r}" class="area1"/>')
+        else:
+            g.add(f'<circle cx="{bx}" cy="{cy}" r="{r}" class="zone2"/>')
+            g.add(f'<clipPath id="{cid}"><circle cx="{bx}" cy="{cy}" r="{r}"/></clipPath><circle cx="{ax}" cy="{cy}" r="{r}" class="area1" clip-path="url(#{cid})"/>')
+        g.add(circle(ax, cy, r, "ring1"), circle(bx, cy, r, "ring2" if k else "ring1"))
+        g.add(text(ax - 18, cy + 4, "A", "tb"), text(bx + 18, cy + 4, "B", "tb"))
+        g.add(text(x + 100, 164, title, "ts"))
+    g.add(text(330, 182, "B becomes the new sample space", "ts2"))
+    reg("i3-cond", g, "Conditioning shrinks the sample space (Lec3 slide 8). Once we know B has occurred, only outcomes inside B are possible, so the chance of A is the share of B that A covers: P(A ∩ B) / P(B).")
+
+def i3_partition():
+    g = Fig("i3pt", 170)
+    x, y, w, h = 20, 14, 400, 120
+    g.add(rect(x, y, w, h, "boxn", 4), text(x + w - 6, y + 14, "S", "ts2", "end"))
+    xs = [x, x + 90, x + 170, x + 260, x + 330, x + w]
+    labs = ["A₁", "A₂", "A₃", "…", "Aₖ"]
+    cid = next_id("i3pt")
+    g.add(f'<clipPath id="{cid}"><ellipse cx="{x + w / 2}" cy="{y + h / 2 + 6}" rx="150" ry="38"/></clipPath>')
+    for i in range(5):
+        cls = ["cell1", "cell2", "cell3", "cell1", "cell2"][i]
+        g.add(f'<rect x="{xs[i] + 2}" y="{y + 2}" width="{xs[i + 1] - xs[i] - 4}" height="{h - 4}" class="{cls}" clip-path="url(#{cid})"/>')
+        if i:
+            g.add(line(xs[i], y, xs[i], y + h, "ax"))
+        g.add(text((xs[i] + xs[i + 1]) / 2, y + 18, labs[i], "tb"))
+    g.add(f'<ellipse cx="{x + w / 2}" cy="{y + h / 2 + 6}" rx="150" ry="38" class="ring1"/>', text(x + w / 2, y + h / 2 + 10, "B", "tb"))
+    g.add(text(220, 156, "B = (B ∩ A₁) ∪ (B ∩ A₂) ∪ … ∪ (B ∩ Aₖ), pieces don't overlap", "ts2"))
+    reg("i3-partition", g, "The idea behind total probability (Lec3 slides 30–31). A₁ … Aₖ are mutually exclusive and exhaustive, so they cut B into non-overlapping pieces. Add the pieces: P(B) = Σ P(Aᵢ) P(B | Aᵢ).")
+
+def _tree(g, root, branches, x0=20, x1=150, x2=290, top=20, dy=None, end=None):
+    """branches: [(label_on_branch, node_name, [(p_label, leaf_name, product_text), ...]), ...]"""
+    n = sum(len(b[2]) for b in branches)
+    dy = dy or (g.h - top - 20) / n
+    ry = top + n * dy / 2
+    g.add(circle(x0, ry, 4, "dk"))
+    k = 0
+    for lab, name, leaves in branches:
+        my = top + (k + len(leaves) / 2) * dy
+        g.add(line(x0, ry, x1, my, "thin"), text((x0 + x1) / 2, (ry + my) / 2 - 6, lab, "ts", "middle"))
+        g.add(circle(x1, my, 4, "d1"), text(x1, my - 10, name, "ts2"))
+        for plab, leaf, prod in leaves:
+            ly = top + (k + 0.5) * dy
+            g.add(line(x1, my, x2, ly, "thin"), text((x1 + x2) / 2 + 6, (my + ly) / 2 - 5, plab, "ts"))
+            g.add(text(x2 + 8, ly + 4, leaf, "ts", "start"))
+            if prod:
+                g.add(text(g.w - 8, ly + 4, prod, "tb" if "✓" in prod else "ts2", "end"))
+            k += 1
+
+def i3_tree():
+    g = Fig("i3tr", 230)
+    _tree(g, "", [("0.40", "regular", [("0.3", "fills", "0.4 × 0.3 = 0.120 ✓"), ("0.7", "doesn't", "")]),
+                  ("0.35", "plus", [("0.6", "fills", "0.35 × 0.6 = 0.210 ✓"), ("0.4", "doesn't", "")]),
+                  ("0.25", "premium", [("0.5", "fills", "0.25 × 0.5 = 0.125 ✓"), ("0.5", "doesn't", "")])],
+          x1=120, x2=230, dy=32)
+    g.add(text(g.w - 8, 222, "P(fills) = sum of ✓ paths = 0.455", "tb", "end"))
+    reg("i3-tree", g, "The gas-station example (Lec3 slides 33–35) as a tree. Multiply along each path (multiplication rule), then add the paths that end in “fills” (total probability).")
+
+def i3_channel():
+    g = Fig("i3ch", 180)
+    g.box(80, 30, 60, 34, "sent 1", "box")
+    g.box(80, 116, 60, 34, "sent 0", "box2")
+    g.box(300, 30, 70, 34, "received 1", "box")
+    g.box(300, 116, 70, 34, "received 0", "box2")
+    g.add(text(40, 51, "0.4", "tb"), text(40, 137, "0.6", "tb"))
+    g.arrow(140, 47, 298, 47); g.arrow(140, 133, 298, 133)
+    g.arrow(140, 52, 298, 128); g.arrow(140, 128, 298, 52)
+    g.add(text(220, 40, "0.95", "ts"), text(220, 150, "0.90", "ts"), text(176, 70, "0.05", "ts"), text(176, 116, "0.10", "ts"))
+    g.add(text(220, 174, "P(receive 1) = 0.4(0.95) + 0.6(0.10) = 0.44", "ts2"))
+    reg("i3-channel", g, "The binary channel (Lec3 slides 36–39). Each arrow carries the probability of what is received given what was sent. A received 1 arrives along two routes: a 1 sent correctly or a 0 flipped.")
+
 # ---------------------------------------------------------------- build
 
 for fn in [s1_fits, s1_ucurve, s1_kfold, s1_threshold, s1_types, s1_rl,
@@ -1627,7 +1706,8 @@ for fn in [s1_fits, s1_ucurve, s1_kfold, s1_threshold, s1_types, s1_rl,
            d7_partitions, d7_late, d7_queuestream,
            d8_selection, d8_psi, d8_leak,
            i1_levels, i1_dev, i1_spread, i1_ipl, i1_skew, i1_boxanat, i1_boxq4, i1_boxq5,
-           i2_venn, i2_scale, i2_dice, i2_exam]:
+           i2_venn, i2_scale, i2_dice, i2_exam,
+           i3_cond, i3_partition, i3_tree, i3_channel]:
     fn()
 
 out = "// Generated by tools/gen_figures.py. Do not edit by hand; edit the generator and re-run it.\n"
