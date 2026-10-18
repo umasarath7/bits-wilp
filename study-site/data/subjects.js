@@ -63,6 +63,11 @@ export const subjects = [
       { n: 7, title: "Sampling, CLT & Confidence Intervals", file: "./ism/lec7.js" },
       { n: 9, title: "Hypothesis Testing: z, t, χ² Tests", file: "./ism/lec9.js" },
       { n: 10, title: "MLE, F-test & ANOVA", file: "./ism/lec10.js" },
+      { n: "summary", icon: "📋", short: "Summary", group: "Exam practice", title: "Exam Summary (read before the exam)", file: "./ism/exam-summary.js" },
+      { n: "formulas", icon: "🔎", short: "Formulas", group: "Exam practice", title: "Formula & Concept Index (searchable)", file: "./ism/formulas.js" },
+      { n: "guide", icon: "✍️", short: "Guide", group: "Exam practice", title: "Open-Book Exam Guide", file: "./ism/guide.js" },
+      { n: "quiz", icon: "🔀", short: "Mixed quiz", group: "Exam practice", title: "Mixed Quiz (all lectures)", file: "./ism/mixed-quiz.js" },
+      { n: "coverage", icon: "✅", short: "Coverage", group: "Exam practice", title: "Coverage Checklist & Slide Checks", file: "./ism/coverage.js" },
     ],
   },
 ];
