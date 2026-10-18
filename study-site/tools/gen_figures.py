@@ -1533,6 +1533,82 @@ def i1_boxq5():
     g.add(text(256, 184, "waiting time (minutes)", "ts2"))
     reg("i1-boxq5", g, "Practice Q5 (Lec1 slide 69): the two bank branches. The commercial branch waits less (median 4.50 vs 6.68 min) and has a long left whisker (left skew); the residential branch waits longer and is more spread out, with its median closer to Q₁ (right skew).")
 
+# ================================================================= ISM Lec 2
+
+def _venn(g, x, y, w, h, mode, title, la="A", lb="B"):
+    """One Venn panel. mode: complement | union | inter | disjoint"""
+    cid = next_id(g.name)
+    g.add(rect(x, y, w, h, "boxn", 4), text(x + w - 6, y + 14, "S", "ts2", "end"))
+    r = h * 0.3
+    if mode == "complement":
+        cx, cy = x + w / 2, y + h / 2 + 4
+        g.add(rect(x + 1, y + 1, w - 2, h - 2, "area1", 3))
+        g.add(f'<circle cx="{f(cx)}" cy="{f(cy)}" r="{f(r)}" class="zone0"/>', circle(cx, cy, r, "ring1"))
+        g.add(text(cx, cy + 4, la, "tb"), text(x + 16, y + h - 10, la + "ᶜ", "tb", "start"))
+    else:
+        gap = r * (2.6 if mode == "disjoint" else 1.15)
+        ax, bx, cy = x + w / 2 - gap / 2, x + w / 2 + gap / 2, y + h / 2 + 4
+        if mode == "union":
+            g.add(f'<circle cx="{f(ax)}" cy="{f(cy)}" r="{f(r)}" class="area1"/><circle cx="{f(bx)}" cy="{f(cy)}" r="{f(r)}" class="area1"/>')
+        elif mode == "inter":
+            g.add(f'<clipPath id="{cid}"><circle cx="{f(ax)}" cy="{f(cy)}" r="{f(r)}"/></clipPath>'
+                  f'<circle cx="{f(bx)}" cy="{f(cy)}" r="{f(r)}" class="area1" clip-path="url(#{cid})"/>')
+        g.add(circle(ax, cy, r, "ring1"), circle(bx, cy, r, "ring1"))
+        off = r * 0.35 if mode != "disjoint" else 0
+        g.add(text(ax - off, cy + 4, la, "tb"), text(bx + off, cy + 4, lb, "tb"))
+    g.add(text(x + w / 2, y + h + 18, title, "ts"))
+
+def i2_venn():
+    g = Fig("i2v", 260)
+    _venn(g, 10, 10, 200, 92, "complement", "Complement Aᶜ: not in A")
+    _venn(g, 230, 10, 200, 92, "union", "Union A ∪ B: in A or B or both")
+    _venn(g, 10, 140, 200, 92, "inter", "Intersection A ∩ B: in both")
+    _venn(g, 230, 140, 200, 92, "disjoint", "Mutually exclusive: A ∩ B = ∅")
+    reg("i2-venn", g, "Operations on events (Lec2 slides 10–13). The shaded region is the event named under each panel; the rectangle is the sample space S.")
+
+def i2_scale():
+    g = Fig("i2sc", 96)
+    x0, x1, y = 40, 400, 46
+    g.add(f'<defs><linearGradient id="i2sc-g" x1="0" x2="1"><stop offset="0" stop-color="var(--f-soft1)"/><stop offset="1" stop-color="var(--f-s1)"/></linearGradient></defs>')
+    g.add(f'<rect x="{x0}" y="{y - 9}" width="{x1 - x0}" height="18" rx="9" fill="url(#i2sc-g)"/>')
+    for v, lab in [(0, "0 impossible"), (0.5, "0.5 as likely as not"), (1, "1 certain")]:
+        xx = x0 + v * (x1 - x0)
+        g.add(line(xx, y - 14, xx, y + 14, "ax2"), text(xx, y + 30, lab, "ts"))
+    g.add(text(220, 20, "increasing likelihood of occurrence →", "ts2"))
+    reg("i2-scale", g, "Probability as a numerical measure of likelihood (Lec2 slide 18): always between 0 and 1. At 0.5 the event is just as likely as it is unlikely.")
+
+def i2_dice():
+    g = Fig("i2dc", 250)
+    cs, x0, y0 = 26, 100, 40
+    g.add(text(x0 + 3 * cs, 14, "second die →", "ts2"))
+    g.add(f'<text x="{x0 - 30}" y="{y0 + 3 * cs}" class="ts2" text-anchor="middle" transform="rotate(-90 {x0 - 30} {y0 + 3 * cs})">first die →</text>')
+    for i in range(6):
+        g.add(text(x0 + i * cs + cs / 2, y0 - 4, str(i + 1), "ts"), text(x0 - 8, y0 + i * cs + cs / 2 + 4, str(i + 1), "ts", "end"))
+        for j in range(6):
+            sm = i + j + 2
+            cls = "cell1" if sm > 8 else ("cell2" if sm < 6 else ("cell3" if sm in (7, 11) else "cellx"))
+            g.add(rect(x0 + j * cs, y0 + i * cs, cs, cs, cls, 2), text(x0 + j * cs + cs / 2, y0 + i * cs + cs / 2 + 4, str(sm), "ts"))
+    lx = 285
+    for k, (cls, lab, n) in enumerate([("cell1", "sum > 8", "10/36"), ("cell2", "sum < 6", "10/36"), ("cell3", "sum = 7 or 11", "8/36")]):
+        g.add(rect(lx, 50 + k * 40, 16, 16, cls, 2), text(lx + 24, 62 + k * 40, lab, "t", "start"), text(lx + 24, 78 + k * 40, n, "ts2", "start"))
+    g.add(text(lx, 190, "neither 7 nor 11:", "t", "start"), text(lx, 206, "1 − 8/36 = 28/36 = 7/9", "tb", "start"))
+    reg("i2-dice", g, "Example 2 (Lec2 slides 24–27): the 36 equally likely outcomes of two dice, labelled by their sum. Count the shaded cells and divide by 36.")
+
+def i2_exam():
+    g = Fig("i2ex", 190)
+    x, y, w, h = 70, 14, 300, 140
+    g.add(rect(x, y, w, h, "boxn", 4), text(x + w - 8, y + 16, "S", "ts2", "end"))
+    r, cy, ax, bx = 52, y + h / 2, x + w / 2 - 36, x + w / 2 + 36
+    cid = next_id("i2ex")
+    g.add(f'<circle cx="{ax}" cy="{cy}" r="{r}" class="area1"/><circle cx="{bx}" cy="{cy}" r="{r}" class="area2"/>')
+    g.add(f'<clipPath id="{cid}"><circle cx="{ax}" cy="{cy}" r="{r}"/></clipPath><circle cx="{bx}" cy="{cy}" r="{r}" class="cell3" clip-path="url(#{cid})"/>')
+    g.add(circle(ax, cy, r, "ring1"), circle(bx, cy, r, "ring2"))
+    g.add(text(ax - 30, cy + 4, "16/45", "tb"), text(x + w / 2, cy + 4, "14/45", "tb"), text(bx + 30, cy + 4, "6/45", "tb"))
+    g.add(text(ax - 30, y + 28, "Statistics", "ts"), text(bx + 30, y + 28, "Maths", "ts"))
+    g.add(text(x + 30, y + h - 26, "9/45", "tb"), text(x + 30, y + h - 10, "neither", "ts2"))
+    g.add(text(220, 184, "P(S) = 30/45 · P(M) = 20/45 · P(S ∪ M) = 36/45 = 4/5", "ts2"))
+    reg("i2-exam", g, "Example 3 (Lec2 slides 28–29) as a Venn diagram, all in 45ths. The overlap is P(S ∩ M) = 2/3 + 4/9 − 4/5 = 14/45; the four regions add up to 45/45.")
+
 # ---------------------------------------------------------------- build
 
 for fn in [s1_fits, s1_ucurve, s1_kfold, s1_threshold, s1_types, s1_rl,
@@ -1550,7 +1626,8 @@ for fn in [s1_fits, s1_ucurve, s1_kfold, s1_threshold, s1_types, s1_rl,
            d6_cycle, d6_deploy, d6_federated, d6_drift,
            d7_partitions, d7_late, d7_queuestream,
            d8_selection, d8_psi, d8_leak,
-           i1_levels, i1_dev, i1_spread, i1_ipl, i1_skew, i1_boxanat, i1_boxq4, i1_boxq5]:
+           i1_levels, i1_dev, i1_spread, i1_ipl, i1_skew, i1_boxanat, i1_boxq4, i1_boxq5,
+           i2_venn, i2_scale, i2_dice, i2_exam]:
     fn()
 
 out = "// Generated by tools/gen_figures.py. Do not edit by hand; edit the generator and re-run it.\n"

@@ -335,7 +335,7 @@ function QuizItem({ q, n, st = {}, set, instant, practice }) {
     </div>`}
     ${done && html`<div className=${"why " + (ok ? "ok" : "no")}>
       ${st.revealed ? "Solution: " : ok ? "✓ Correct. " : "✗ Not quite. "}
-      ${q.type === "num" && !ok && html`<span>The answer is <b>${q.answer}${q.unit ? " " + q.unit : ""}</b>. </span>`}
+      ${q.type === "num" && !ok && html`<span>The answer is <b>${q.display ?? +(+q.answer).toFixed(4)}${q.unit ? " " + q.unit : ""}</b>. </span>`}
       <${Md} inline text=${q.why} />
       ${q.wrong && q.type !== "num" && html`<ul className="list wrong-list">
         ${q.wrong.map((w, j) => w && j !== q.answer ? html`<li key=${j}><b>${"ABCDEF"[j]}</b> is wrong: <span dangerouslySetInnerHTML=${{ __html: md(w, true) }} /></li>` : null)}
