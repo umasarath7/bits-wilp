@@ -57,7 +57,7 @@ export const subjects = [
       { n: 1, title: "Basics of Statistics: Centre, Spread, Outliers", file: "./ism/lec1.js" },
       { n: 2, title: "Basic Probability: Events, Axioms, Independence", file: "./ism/lec2.js" },
       { n: 3, title: "Conditional Probability & Total Probability", file: "./ism/lec3.js" },
-      { n: 4, title: "Bayes' Theorem & Naive Bayes" },
+      { n: 4, title: "Bayes' Theorem & Naive Bayes", file: "./ism/lec4.js" },
       { n: 5, title: "Random Variables & Joint Distributions" },
       { n: 6, title: "Binomial, Poisson & Normal Distributions" },
       { n: 7, title: "Sampling, CLT & Confidence Intervals" },
