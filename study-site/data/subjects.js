@@ -62,7 +62,7 @@ export const subjects = [
       { n: 6, title: "Binomial, Poisson & Normal Distributions", file: "./ism/lec6.js" },
       { n: 7, title: "Sampling, CLT & Confidence Intervals", file: "./ism/lec7.js" },
       { n: 9, title: "Hypothesis Testing: z, t, χ² Tests", file: "./ism/lec9.js" },
-      { n: 10, title: "MLE, F-test & ANOVA" },
+      { n: 10, title: "MLE, F-test & ANOVA", file: "./ism/lec10.js" },
     ],
   },
 ];

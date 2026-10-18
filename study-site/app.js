@@ -35,7 +35,9 @@ function md(text, inline = false) {
   };
   let src = String(text)
     .replace(/\$\$([\s\S]+?)\$\$/g, (_, t) => stash(t, true))
-    .replace(/\$([^$\n]+?)\$/g, (_, t) => stash(t, false));
+    .replace(/\$([^$\n]+?)\$/g, (_, t) => stash(t, false))
+    // A bare "<" (as in "x < 5") can be mistaken for the start of an HTML tag and swallow emphasis.
+    .replace(/<(?=[\s\d=])/g, "&lt;");
   // Dedent by the common indentation only, so nested lists keep their structure.
   const lines = src.split("\n");
   const indent = Math.min(...lines.filter((l) => l.trim()).map((l) => l.match(/^ */)[0].length));
