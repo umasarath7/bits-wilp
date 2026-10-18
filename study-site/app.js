@@ -137,6 +137,8 @@ function Block({ b }) {
           </tbody>
         </table>
       </div>`;
+    case "search":
+      return html`<${SearchTable} b=${b} />`;
     case "callout":
       return html`<div className=${"callout " + b.kind}>
         <div className="callout-title">${{ exam: "🎯 ", tip: "💡 ", warn: "⚠️ ", idea: "🧠 ", example: "✏️ ", formula: "📐 ", remember: "📝 " }[b.kind] || ""}${b.title}</div>
@@ -154,6 +156,28 @@ function Block({ b }) {
     default:
       return null;
   }
+}
+
+// A table with a filter box: rows stay visible when any cell contains every typed word.
+function SearchTable({ b }) {
+  const [q, setQ] = useState("");
+  const words = q.toLowerCase().split(/\s+/).filter(Boolean);
+  const rows = b.rows.filter((r) => {
+    const text = r.join(" ").toLowerCase();
+    return words.every((w) => text.includes(w));
+  });
+  return html`<div className="table-wrap search-table">
+    <input className="search" type="search" value=${q} placeholder=${b.placeholder || "Search…"} onInput=${(e) => setQ(e.target.value)} />
+    <div className="muted small">${rows.length} of ${b.rows.length} shown</div>
+    <table>
+      <thead><tr>${b.head.map((h, i) => html`<th key=${i} dangerouslySetInnerHTML=${{ __html: md(h, true) }} />`)}</tr></thead>
+      <tbody>
+        ${rows.map((r) => html`<tr key=${r[0] + r[1]}>
+          ${r.map((c, j) => html`<td key=${j} dangerouslySetInnerHTML=${{ __html: md(c, true) }} />`)}
+        </tr>`)}
+      </tbody>
+    </table>
+  </div>`;
 }
 
 // ---------- tabs ----------
@@ -241,7 +265,7 @@ function QuestionsTab({ items, storeKey, answerLabel }) {
           <span className="qnum">Q${i + 1}</span>
           <h3>${p.title}</h3>
           ${p.pyq && html`<span className="badge pyq" title=${typeof p.pyq === "string" ? p.pyq : "Same pattern as a previous-year question"}>📌 PYQ</span>`}
-          ${p.level && html`<span className=${"badge " + p.level.toLowerCase()}>${p.level}</span>`}
+          ${p.level && html`<span className=${"badge " + p.level.toLowerCase().replace(/\s+/g, "-")}>${p.level}</span>`}
           ${p.marks && html`<span className="badge marks">${p.marks} marks</span>`}
         </header>
         <${Md} text=${p.question} />
@@ -265,37 +289,127 @@ function RecapTab({ s }) {
   </div>`;
 }
 
-function QuizTab({ s }) {
-  const [picked, setPicked] = useState({});
-  const answered = Object.keys(picked).length;
-  const score = s.quiz.filter((q, i) => picked[i] === q.answer).length;
-  return html`<div>
-    <div className="toolbar">
-      <span><b>Score:</b> ${score} / ${answered} answered (${s.quiz.length} total)</span>
-      <button className="btn ghost" onClick=${() => setPicked({})}>Reset</button>
-    </div>
-    ${s.quiz.map((q, i) => {
-      const p = picked[i];
-      const done = p !== undefined;
-      return html`<div key=${i} className="card quiz">
-        <div className="quiz-q"><span className="qnum">${i + 1}</span> <${Md} inline text=${q.q} /></div>
-        <div className="options">
+// Quiz questions are MCQ ({options, answer: index}) or numeric ({type: "num", answer: number, tol?, unit?}).
+// Optional: topic (for topic quizzes and the score summary), wrong: [why each option is wrong], solution.
+const numOf = (t) => {
+  const m = String(t).trim().replace(/,/g, "").match(/^(-?[\d.]+)\s*(?:\/\s*(-?[\d.]+))?\s*%?$/);
+  if (!m) return NaN;
+  return m[2] !== undefined ? +m[1] / +m[2] : +m[1];
+};
+const isRight = (q, st) => {
+  if (!st?.submitted || st.revealed) return false;
+  if (q.type !== "num") return st.pick === q.answer;
+  const x = numOf(st.num), tol = q.tol ?? Math.max(Math.abs(q.answer) * 0.01, 0.005);
+  return Math.abs(x - q.answer) <= tol;
+};
+
+function QuizItem({ q, n, st = {}, set, instant, practice }) {
+  const done = st.submitted || st.revealed;
+  const ok = isRight(q, st);
+  const canSubmit = q.type === "num" ? String(st.num ?? "").trim() !== "" : st.pick !== undefined;
+  const submit = () => canSubmit && set({ ...st, submitted: true });
+  return html`<div className="card quiz">
+    <div className="quiz-q"><span className="qnum">${n}</span> <${Md} inline text=${q.q} />
+      ${q.topic && html`<span className="badge topic">${q.topic}</span>`}</div>
+    ${q.type === "num"
+      ? html`<div className="num-answer">
+          <input type="text" inputMode="decimal" placeholder="Your answer" value=${st.num ?? ""} disabled=${done}
+            onInput=${(e) => set({ ...st, num: e.target.value })} onKeyDown=${(e) => e.key === "Enter" && submit()} />
+          ${q.unit && html`<span className="muted">${q.unit}</span>`}
+        </div>`
+      : html`<div className="options">
           ${q.options.map((o, j) => {
             let cls = "opt";
             if (done && j === q.answer) cls += " correct";
-            else if (done && j === p) cls += " wrong";
-            return html`<button key=${j} className=${cls} disabled=${done} onClick=${() => setPicked((x) => ({ ...x, [i]: j }))}>
-              <span className="opt-letter">${"ABCD"[j]}</span> <span dangerouslySetInnerHTML=${{ __html: md(o, true) }} />
+            else if (done && j === st.pick) cls += " wrong";
+            else if (!done && j === st.pick) cls += " picked";
+            return html`<button key=${j} className=${cls} disabled=${done}
+              onClick=${() => set(instant ? { ...st, pick: j, submitted: true } : { ...st, pick: j })}>
+              <span className="opt-letter">${"ABCDEF"[j]}</span> <span dangerouslySetInnerHTML=${{ __html: md(o, true) }} />
             </button>`;
           })}
-        </div>
-        ${done && html`<div className=${"why " + (p === q.answer ? "ok" : "no")}>
-          ${p === q.answer ? "✓ Correct. " : "✗ Not quite. "}<${Md} inline text=${q.why} />
         </div>`}
+    ${!done && html`<div className="problem-actions">
+      ${(!instant || q.type === "num") && html`<button className="btn" disabled=${!canSubmit} onClick=${submit}>Submit</button>`}
+      ${practice && html`<button className="btn ghost" onClick=${() => set({ ...st, revealed: true })}>Show solution</button>`}
+    </div>`}
+    ${done && html`<div className=${"why " + (ok ? "ok" : "no")}>
+      ${st.revealed ? "Solution: " : ok ? "✓ Correct. " : "✗ Not quite. "}
+      ${q.type === "num" && !ok && html`<span>The answer is <b>${q.answer}${q.unit ? " " + q.unit : ""}</b>. </span>`}
+      <${Md} inline text=${q.why} />
+      ${q.wrong && q.type !== "num" && html`<ul className="list wrong-list">
+        ${q.wrong.map((w, j) => w && j !== q.answer ? html`<li key=${j}><b>${"ABCDEF"[j]}</b> is wrong: <span dangerouslySetInnerHTML=${{ __html: md(w, true) }} /></li>` : null)}
+      </ul>`}
+      ${q.solution && html`<div className="solution"><${Md} text=${q.solution} /></div>`}
+    </div>`}
+    ${done && !ok && html`<div className="problem-actions"><button className="btn ghost" onClick=${() => set({})}>↺ Retry this question</button></div>`}
+  </div>`;
+}
+
+function QuizTab({ s }) {
+  const [mode, setMode] = useState(s.quizMode || "all");
+  const [practice, setPractice] = useState(true);
+  const [topic, setTopic] = useState("All topics");
+  const [st, setSt] = useState({});
+  const [cur, setCur] = useState(0);
+  const topics = [...new Set(s.quiz.map((q) => q.topic).filter(Boolean))];
+  const list = s.quiz.map((q, i) => ({ q, i })).filter(({ q }) => topic === "All topics" || q.topic === topic);
+  const set = (i) => (v) => setSt((x) => ({ ...x, [i]: v }));
+  const answered = list.filter(({ i }) => st[i]?.submitted || st[i]?.revealed).length;
+  const score = list.filter(({ q, i }) => isRight(q, st[i])).length;
+  const restart = () => { setSt({}); setCur(0); };
+  const retryWrong = () => {
+    setSt((x) => Object.fromEntries(Object.entries(x).filter(([i]) => isRight(s.quiz[i], x[i]))));
+    const first = list.findIndex(({ q, i }) => !isRight(q, st[i]));
+    setCur(Math.max(first, 0));
+  };
+  const finished = answered === list.length && list.length > 0;
+  const byTopic = topics.map((t) => {
+    const qs = list.filter(({ q }) => q.topic === t);
+    return [t, qs.filter(({ q, i }) => isRight(q, st[i])).length, qs.length];
+  }).filter(([, , n]) => n);
+
+  return html`<div>
+    <div className="toolbar">
+      <div className="seg">
+        <button className=${mode === "step" ? "on" : ""} onClick=${() => setMode("step")}>🎯 One at a time</button>
+        <button className=${mode === "all" ? "on" : ""} onClick=${() => setMode("all")}>📋 All questions</button>
+      </div>
+      <label className="check"><input type="checkbox" checked=${practice} onChange=${() => setPractice(!practice)} /> Practice mode</label>
+      <span><b>Score:</b> ${score} / ${answered} answered (${list.length} total)</span>
+      <button className="btn ghost" onClick=${restart}>Reset</button>
+    </div>
+    ${topics.length > 1 && html`<div className="toolbar">
+      <div className="seg wrap">
+        ${["All topics", ...topics].map((t) => html`<button key=${t} className=${topic === t ? "on" : ""} onClick=${() => { setTopic(t); setCur(0); }}>${t === "All topics" ? "🔀 Mixed (all topics)" : t}</button>`)}
+      </div>
+    </div>`}
+
+    ${mode === "all" && list.map(({ q, i }, k) => html`<${QuizItem} key=${i} q=${q} n=${k + 1} st=${st[i]} set=${set(i)} instant=${true} practice=${practice} />`)}
+
+    ${mode === "step" && list.length > 0 && !finished && (() => {
+      const k = Math.min(cur, list.length - 1), { q, i } = list[k];
+      return html`<div>
+        <div className="progress quiz-progress"><div style=${{ width: (answered / list.length) * 100 + "%" }} /></div>
+        <div className="muted small">Question ${k + 1} of ${list.length}</div>
+        <${QuizItem} key=${i} q=${q} n=${k + 1} st=${st[i]} set=${set(i)} instant=${false} practice=${practice} />
+        <div className="pager">
+          <button className="btn ghost" disabled=${k === 0} onClick=${() => setCur(k - 1)}>← Previous</button>
+          <button className="btn" onClick=${() => setCur(k + 1 < list.length ? k + 1 : list.findIndex(({ i: j }) => !(st[j]?.submitted || st[j]?.revealed)))}>Next →</button>
+        </div>
       </div>`;
-    })}
-    ${answered === s.quiz.length && html`<div className="card final">
-      You scored <b>${score}/${s.quiz.length}</b>. ${score === s.quiz.length ? "Excellent! 🎉" : score >= s.quiz.length * 0.7 ? "Good. Review the ones you missed." : "Re-read the notes and try again."}
+    })()}
+
+    ${finished && html`<div className="card final">
+      You scored <b>${score}/${list.length}</b>. ${score === list.length ? "Excellent! 🎉" : score >= list.length * 0.7 ? "Good. Review the ones you missed." : "Re-read the notes and try again."}
+      ${byTopic.length > 0 && html`<div className="table-wrap"><table>
+        <thead><tr><th>Topic</th><th>Correct</th><th></th></tr></thead>
+        <tbody>${byTopic.map(([t, c, n]) => html`<tr key=${t}><td>${t}</td><td>${c} / ${n}</td><td>${c === n ? "✓" : c / n >= 0.5 ? "Revise" : "Re-read the notes"}</td></tr>`)}</tbody>
+      </table></div>`}
+      <div className="problem-actions center">
+        ${score < list.length && html`<button className="btn" onClick=${retryWrong}>↺ Retry the ones I missed</button>`}
+        <button className="btn ghost" onClick=${restart}>Start again</button>
+      </div>
     </div>`}
   </div>`;
 }
@@ -303,10 +417,10 @@ function QuizTab({ s }) {
 // ---------- session view ----------
 
 // "Session 3" / "S3" for numbered sessions; the entry's own label for extras like papers.
-const label = (x, long) => typeof x.n === "number" ? (long ? `Session ${x.n}` : `S${x.n}`) : x.short || x.title;
+const label = (x, long, unit = "Session") => typeof x.n === "number" ? (long ? `${unit} ${x.n}` : `${unit[0]}${x.n}`) : x.short || x.title;
 
 
-function SessionView({ subject, session, tab: requestedTab, done, toggleDone }) {
+function SessionView({ subject, session, tab: requestedTab, done, toggleDone, onData }) {
   const [data, setData] = useState(null);
   const [err, setErr] = useState(null);
   const key = `${subject.id}:${session.n}`;
@@ -315,7 +429,7 @@ function SessionView({ subject, session, tab: requestedTab, done, toggleDone }) 
     setData(null); setErr(null);
     if (!session.file) return;
     import("./data/" + session.file.replace("./", ""))
-      .then((m) => setData(m.default))
+      .then((m) => { setData(m.default); onData?.({ key, sections: (m.default.summary || []).map((x) => [x.id, x.heading]) }); })
       .catch((e) => setErr(String(e)));
     document.querySelector(".main")?.scrollTo(0, 0);
     window.scrollTo(0, 0);
@@ -329,7 +443,7 @@ function SessionView({ subject, session, tab: requestedTab, done, toggleDone }) 
 
   return html`<div className="session">
     <div className="session-head">
-      <div className="eyebrow">${subject.code} · ${label(session, true)}</div>
+      <div className="eyebrow">${subject.code} · ${label(session, true, subject.unit)}</div>
       <h1>${data?.title || session.title}</h1>
       ${data && html`<div className="muted small">Source: ${data.source}</div>`}
     </div>
@@ -358,8 +472,8 @@ function SessionView({ subject, session, tab: requestedTab, done, toggleDone }) 
       </div>`}
 
     <div className="pager">
-      ${prev ? html`<a className="btn ghost" href=${`#/${subject.id}/${prev.n}`}>← ${label(prev)}: ${prev.title}</a>` : html`<span />`}
-      ${next && html`<a className="btn ghost" href=${`#/${subject.id}/${next.n}`}>${label(next)}: ${next.title} →</a>`}
+      ${prev ? html`<a className="btn ghost" href=${`#/${subject.id}/${prev.n}`}>← ${label(prev, false, subject.unit)}: ${prev.title}</a>` : html`<span />`}
+      ${next && html`<a className="btn ghost" href=${`#/${subject.id}/${next.n}`}>${label(next, false, subject.unit)}: ${next.title} →</a>`}
     </div>
   </div>`;
 }
@@ -368,8 +482,17 @@ function SessionView({ subject, session, tab: requestedTab, done, toggleDone }) 
 
 function SubjectView({ subject, sessionN, tab, done, toggleDone }) {
   const [menu, setMenu] = useState(false);
+  const [toc, setToc] = useState(null);
+  const [tocOpen, setTocOpen] = useState(true);
   const session = subject.sessions.find((x) => String(x.n) === sessionN);
   useEffect(() => setMenu(false), [sessionN]);
+  // Sidebar topic link: open the Notes tab, then scroll to that lesson.
+  const goTopic = (e, x, id) => {
+    e.preventDefault();
+    setMenu(false);
+    location.hash = `#/${subject.id}/${x.n}/notes`;
+    setTimeout(() => document.getElementById("sec-" + id)?.scrollIntoView({ behavior: "smooth" }), 120);
+  };
 
   return html`<div className="layout">
     <header className="topbar">
@@ -379,18 +502,23 @@ function SubjectView({ subject, sessionN, tab, done, toggleDone }) {
     </header>
     <div className=${"scrim " + (menu ? "show" : "")} onClick=${() => setMenu(false)} />
     <aside className=${"sidebar " + (menu ? "open" : "")}>
-      <div className="side-title">${subject.code} Sessions</div>
+      <div className="side-title">${subject.code} ${subject.unit ? subject.unit + "s" : "Sessions"}</div>
       ${subject.sessions.length === 0 && html`<p className="muted small pad">No sessions yet.</p>`}
       ${subject.sessions.map((x, i) => html`
         ${x.group && x.group !== subject.sessions[i - 1]?.group && html`<div key=${"g" + i} className="side-title group">${x.group}</div>`}
         <a key=${x.n} href=${`#/${subject.id}/${x.n}`} className=${"side-item " + (String(x.n) === sessionN ? "active " : "") + (x.file ? "" : "pending")}>
           <span className="sn">${done[`${subject.id}:${x.n}`] ? "✓" : x.icon || x.n}</span>
           <span className="st">${x.title}</span>
-        </a>`)}
+          ${String(x.n) === sessionN && toc?.key === `${subject.id}:${x.n}` && toc.sections.length > 1 && html`<button className="toc-toggle" title="Show/hide topics"
+            onClick=${(e) => { e.preventDefault(); e.stopPropagation(); setTocOpen(!tocOpen); }}>${tocOpen ? "▾" : "▸"}</button>`}
+        </a>
+        ${String(x.n) === sessionN && tocOpen && toc?.key === `${subject.id}:${x.n}` && toc.sections.length > 1 && html`<div key=${"toc" + i} className="side-toc">
+          ${toc.sections.map(([id, h]) => html`<a key=${id} href=${`#/${subject.id}/${x.n}/notes`} onClick=${(e) => goTopic(e, x, id)}>${h.replace(/^Lesson \d+:\s*/, "")}</a>`)}
+        </div>`}`)}
     </aside>
     <main className="main">
       ${session
-        ? html`<${SessionView} subject=${subject} session=${session} tab=${tab} done=${done} toggleDone=${toggleDone} />`
+        ? html`<${SessionView} subject=${subject} session=${session} tab=${tab} done=${done} toggleDone=${toggleDone} onData=${setToc} />`
         : html`<div className="session">
             <div className="eyebrow">${subject.code}</div>
             <h1>${subject.name}</h1>

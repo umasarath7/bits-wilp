@@ -1363,6 +1363,176 @@ def d8_leak():
     g.add(text(220, 170, "In training every column is filled in; at prediction time", "ts2"), text(220, 184, "the right-hand ones are always empty.", "ts2"))
     reg("d8-leak", g, "A feature from the future. When a loan application is scored, late-payment reminders don't exist yet (they come after the loan starts). A model trained on them looks brilliant offline and fails in production.")
 
+# ================================================================= ISM Lec 1
+
+def _dotrow(g, p, y, xs, cls, label=None):
+    """Dot plot row: repeated values stack upward."""
+    seen = {}
+    for v in xs:
+        k = seen.get(v, 0); seen[v] = k + 1
+        g.add(circle(p.X(v), y - k * 11, 5, cls, str(v)))
+    if label:
+        g.add(text(p.x - 8, y + 4, label, "tb", "end"))
+
+def _axis(g, p, y, ticks, fmt=str):
+    g.add(line(p.X(ticks[0]), y, p.X(ticks[-1]), y, "ax"))
+    for v in ticks:
+        g.add(line(p.X(v), y - 3, p.X(v), y + 3, "ax"), text(p.X(v), y + 16, fmt(v), "ts"))
+
+def _box(g, p, y, q1, q2, q3, lo, hi, h=28, cls="box", outs=()):
+    g.add(line(p.X(lo), y, p.X(q1), y, "ax2"), line(p.X(q3), y, p.X(hi), y, "ax2"))
+    g.add(line(p.X(lo), y - h / 3, p.X(lo), y + h / 3, "ax2"), line(p.X(hi), y - h / 3, p.X(hi), y + h / 3, "ax2"))
+    g.add(rect(p.X(q1), y - h / 2, p.X(q3) - p.X(q1), h, cls, 3))
+    g.add(line(p.X(q2), y - h / 2, p.X(q2), y + h / 2, "l1" if cls == "box" else "l2"))
+    for v in outs:
+        g.add(circle(p.X(v), y, 4.5, "d2", f"outlier {v}"))
+
+def i1_levels():
+    g = Fig("i1lv", 250)
+    steps = [("Nominal", ["classify,", "count"], "gender, party", "nonparametric"),
+             ("Ordinal", ["+ rank"], "grades, medals", "nonparametric"),
+             ("Interval", ["+ add,", "subtract"], "°C, °F", "parametric"),
+             ("Ratio", ["+ multiply,", "divide"], "weight, age", "parametric")]
+    for i, (n, ops, ex, meth) in enumerate(steps):
+        x = 12 + i * 106
+        h = 62 + i * 30
+        y = 182 - h
+        g.add(rect(x, y, 100, h, ["box", "box", "box3", "box3"][i], 6))
+        g.add(text(x + 50, y + 18, n, "tb"), ml_text(x + 50, y + 42, ops, "ts", lh=14))
+        g.add(text(x + 50, 200, ex, "ts2"), text(x + 50, 216, meth, "ts"))
+    g.add(text(12, 244, "← lowest level", "ts2", "start"), text(428, 244, "highest level →", "ts2", "end"))
+    g.arrow(40, 46, 150, 22)
+    g.add(text(160, 26, "each level allows everything below it, plus more", "ts", "start"))
+    reg("i1-levels", g, "The four levels of measurement (Lec1 slides 11–17). Each level allows the operations of the levels below it plus one more. Nominal and ordinal data call for **nonparametric** methods; interval and ratio data allow **parametric** methods.")
+
+def i1_dev():
+    g = Fig("i1dv", 170)
+    xs = [2, 8, 5, 3, 7, 8, 5, 2, 5]
+    p = Plot(g, 40, 20, 360, 110, (0.5, 9.5), (-4, 4))
+    g.add(line(p.X(0.5), p.Y(0), p.X(9.5), p.Y(0), "guide2"), text(p.X(0.5), p.Y(0) - 8, "mean = 5", "tb", "start"))
+    for i, v in enumerate(xs, 1):
+        d = v - 5
+        g.add(line(p.X(i), p.Y(0), p.X(i), p.Y(d), "l2" if d < 0 else "l1"))
+        g.add(circle(p.X(i), p.Y(d), 5, "d2" if d < 0 else ("d1" if d > 0 else "dk"), f"x = {v}"))
+        g.add(text(p.X(i), p.Y(-4) + 18, f"{v}", "ts"))
+        if d:
+            g.add(text(p.X(i) + 10, p.Y(d) + 4, f"{d:+d}", "ts2", "start"))
+    g.add(text(20, p.Y(-4) + 18, "x:", "ts2", "start"))
+    g.add(text(220, 164, "deviations −3 +3 0 −2 +2 +3 0 −3 0 sum to 0; their squares sum to SS = 44", "ts2"))
+    reg("i1-dev", g, "Group 1 (X₁) from Lec1 slide 46: each bar is a deviation $x - \\bar x$. Positive and negative deviations always cancel (the mean is the balance point), so we **square** them before averaging. Their squares add up to SS = 44.")
+
+def i1_spread():
+    g = Fig("i1sp", 170)
+    p = Plot(g, 80, 10, 330, 140, (0, 16), (0, 1))
+    _axis(g, p, 140, list(range(0, 17, 2)))
+    _dotrow(g, p, 52, [2, 8, 5, 3, 7, 8, 5, 2, 5], "d1", "Group 1")
+    _dotrow(g, p, 112, [1, 15, 5, 5, 6, 3, 5, 2, 3], "d2", "Group 2")
+    g.add(line(p.X(5), 14, p.X(5), 124, "guide"), text(p.X(5), 10, "mean = median = mode = 5", "ts"))
+    g.add(text(p.X(16), 46, "S = 2.345", "tb", "end"), text(p.X(16), 92, "S = 4.093", "tb", "end"))
+    reg("i1-spread", g, "“Why mean is not enough” (Lec1 slides 33–47). Both groups have mean, median and mode 5, but Group 2 is far more spread out. Only a measure of variability, such as the standard deviation, tells them apart.")
+
+def i1_ipl():
+    g = Fig("i1ipl", 170)
+    p = Plot(g, 84, 10, 330, 140, (0, 140), (0, 1))
+    _axis(g, p, 140, list(range(0, 141, 20)))
+    _dotrow(g, p, 52, [45, 62, 86, 28, 44], "d1", "Batsman 1")
+    _dotrow(g, p, 112, [34, 78, 12, 135, 64], "d2", "Batsman 2")
+    g.add(line(p.X(53), 30, p.X(53), 66, "guide"), text(p.X(53), 26, "mean 53", "ts"))
+    g.add(line(p.X(64.6), 90, p.X(64.6), 126, "guide"), text(p.X(64.6), 86, "mean 64.6", "ts"))
+    g.add(text(p.X(135), 100, "135", "ts2"))
+    g.add(text(p.x - 8, 68, "σ ≈ 19.7", "ts2", "end"), text(p.x - 8, 128, "σ ≈ 42.05", "ts2", "end"))
+    reg("i1-ipl", g, "The IPL question (Lec1 slides 7–8, 55). Batsman 2 has the higher average, but Batsman 1's scores sit much closer together: lower standard deviation means **more consistent**.")
+
+def _gpdf(x, k):
+    return x ** (k - 1) * math.exp(-x) / math.gamma(k) if x > 0 else 0.0
+
+def i1_skew():
+    g = Fig("i1sk", 200)
+    k = 2.6
+    # numerical median of gamma(k, 1)
+    xs = [i * 0.005 for i in range(1, 6000)]
+    acc, med = 0.0, None
+    for x in xs:
+        acc += _gpdf(x, k) * 0.005
+        if med is None and acc >= 0.5:
+            med = x
+    mode, mean = k - 1, k
+    panels = [("Negatively (left) skewed", -1), ("Symmetrical", 0), ("Positively (right) skewed", 1)]
+    for j, (title, sgn) in enumerate(panels):
+        p = Plot(g, 12 + j * 143, 30, 130, 110, (0, 1), (0, 1))
+        g.add(text(p.x + 65, 18, title, "ts" if j != 1 else "ts"))
+        if sgn == 0:
+            fn = lambda t: math.exp(-((t - 0.5) / 0.16) ** 2 / 2)
+            marks = [(0.5, "mean = median = mode", "dk")]
+        else:
+            sc = 9.0
+            peak = _gpdf(mode, k)
+            if sgn > 0:
+                fn = lambda t: _gpdf(t * sc, k) / peak
+                tf = lambda v: v / sc
+            else:
+                fn = lambda t: _gpdf((1 - t) * sc, k) / peak
+                tf = lambda v: 1 - v / sc
+            marks = [(tf(mode), "mode", "dk"), (tf(med), "median", "d3"), (tf(mean), "mean", "d1")]
+        p.curve(fn, 0, 1, "l1", clip=False)
+        g.add(line(p.x, p.Y(0), p.x + 130, p.Y(0), "ax"))
+        for t, lab, cls in marks:
+            g.add(line(p.X(t), p.Y(0), p.X(t), p.Y(fn(t)), "guide"))
+            g.add(circle(p.X(t), p.Y(0), 4, cls, lab))
+        if sgn == 0:
+            g.add(text(p.x + 65, 160, "mean = median", "ts"), text(p.x + 65, 176, "= mode", "ts"))
+        elif sgn > 0:
+            g.add(text(p.x + 65, 160, "mode < median < mean", "ts"), text(p.x + 65, 176, "long right tail", "ts2"))
+        else:
+            g.add(text(p.x + 65, 160, "mean < median < mode", "ts"), text(p.x + 65, 176, "long left tail", "ts2"))
+    g.add(circle(130, 194, 4, "d1"), text(138, 197, "mean", "ts2", "start"), circle(190, 194, 4, "d3"), text(198, 197, "median", "ts2", "start"),
+          circle(256, 194, 4, "dk"), text(264, 197, "mode", "ts2", "start"))
+    reg("i1-skew", g, "Shape of a distribution (Lec1 slide 31). The **mean is pulled toward the long tail**: left skew gives mean < median, right skew gives mean > median, and in a symmetrical distribution they coincide.")
+
+def i1_boxanat():
+    g = Fig("i1ba", 190)
+    p = Plot(g, 20, 40, 400, 60, (-1, 13), (0, 1))
+    y = 92
+    q1, q2, q3 = 4, 5.4, 7
+    g.add(line(p.X(1), y, p.X(q1), y, "ax2"), line(p.X(q3), y, p.X(11), y, "ax2"))
+    g.add(line(p.X(1), y - 9, p.X(1), y + 9, "ax2"), line(p.X(11), y - 9, p.X(11), y + 9, "ax2"))
+    g.add(rect(p.X(q1), y - 20, p.X(q3) - p.X(q1), 40, "box", 3), line(p.X(q2), y - 20, p.X(q2), y + 20, "l1"))
+    for v, lab in [(q1, "Q₁"), (q2, "Q₂"), (q3, "Q₃")]:
+        g.add(text(p.X(v), y + 36, lab, "tb"))
+    g.add(text(p.X(1), y + 36, "Min", "ts"), text(p.X(11), y + 36, "Max", "ts"))
+    for v, lab, cls in [(-0.5, "Q₁ − 1.5 IQR", "guide"), (11.5, "Q₃ + 1.5 IQR", "guide")]:
+        g.add(line(p.X(v), y - 34, p.X(v), y + 22, cls), text(p.X(v), y - 40, lab, "ts"))
+    g.arrow(p.X(q1), 40, p.X(q3), 40, "arr", both=True)
+    g.add(text(p.X(5.5), 32, "IQR = Q₃ − Q₁ (middle 50%)", "ts"))
+    g.add(text(220, 160, "Points beyond Q₁ − 1.5 IQR or Q₃ + 1.5 IQR → potential outliers", "ts2"))
+    g.add(text(220, 176, "Points beyond Q₁ − 3 IQR or Q₃ + 3 IQR → major outliers", "ts2"))
+    reg("i1-boxanat", g, "Anatomy of the box-and-whisker plot (Lec1 slides 59–61). The box holds the middle 50% of the data; the fences at 1.5 × IQR beyond the quartiles flag potential outliers, and 3 × IQR flags major outliers.")
+
+def i1_boxq4():
+    g = Fig("i1q4", 170)
+    p = Plot(g, 20, 10, 400, 120, (40, 95), (0, 1))
+    _axis(g, p, 130, list(range(40, 96, 5)))
+    y = 70
+    _box(g, p, y, 73, 79, 80, 64, 82, outs=(45, 48))
+    for v, lab in [(62.5, "lower fence 62.5"), (90.5, "upper fence 90.5")]:
+        g.add(line(p.X(v), 30, p.X(v), 104, "guide"), text(p.X(v), 24, lab, "ts"))
+    g.add(line(p.X(52), 40, p.X(52), 104, "lg"), text(p.X(52) - 4, 100, "Q₁ − 3 IQR = 52", "ts2", "end"))
+    g.add(text(p.X(46.5), y - 14, "45, 48", "ts"))
+    g.add(text(p.X(73), y + 30, "73", "ts2"), text(p.X(79), y - 20, "79", "ts2"), text(p.X(80) + 4, y + 30, "80", "ts2", "start"))
+    g.add(text(220, 164, "Q₁ = 73, median = 79, Q₃ = 80, IQR = 7 · whiskers end at 64 and 82", "ts2"))
+    reg("i1-boxq4", g, "Box plot for Practice Q4 (Lec1 slide 68). The long left whisker side and the two outliers (45, 48, both even beyond Q₁ − 3 IQR) show a **negatively (left) skewed** data set.")
+
+def i1_boxq5():
+    g = Fig("i1q5", 190)
+    p = Plot(g, 96, 10, 320, 140, (0, 11), (0, 1))
+    _axis(g, p, 150, list(range(0, 12)))
+    _box(g, p, 50, 3.20, 4.50, 5.55, 0.38, 6.46, cls="box")
+    _box(g, p, 110, 5.64, 6.68, 8.73, 3.82, 10.49, cls="box2")
+    g.add(text(88, 46, "Commercial", "tb", "end"), text(88, 62, "branch", "ts2", "end"))
+    g.add(text(88, 106, "Residential", "tb", "end"), text(88, 122, "branch", "ts2", "end"))
+    g.add(text(256, 184, "waiting time (minutes)", "ts2"))
+    reg("i1-boxq5", g, "Practice Q5 (Lec1 slide 69): the two bank branches. The commercial branch waits less (median 4.50 vs 6.68 min) and has a long left whisker (left skew); the residential branch waits longer and is more spread out, with its median closer to Q₁ (right skew).")
+
 # ---------------------------------------------------------------- build
 
 for fn in [s1_fits, s1_ucurve, s1_kfold, s1_threshold, s1_types, s1_rl,
@@ -1379,7 +1549,8 @@ for fn in [s1_fits, s1_ucurve, s1_kfold, s1_threshold, s1_types, s1_rl,
            d5_storage, d5_consistency, d5_stack, d5_reverse,
            d6_cycle, d6_deploy, d6_federated, d6_drift,
            d7_partitions, d7_late, d7_queuestream,
-           d8_selection, d8_psi, d8_leak]:
+           d8_selection, d8_psi, d8_leak,
+           i1_levels, i1_dev, i1_spread, i1_ipl, i1_skew, i1_boxanat, i1_boxq4, i1_boxq5]:
     fn()
 
 out = "// Generated by tools/gen_figures.py. Do not edit by hand; edit the generator and re-run it.\n"
