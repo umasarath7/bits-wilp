@@ -306,7 +306,7 @@ export default {
           type: "callout",
           kind: "example",
           title: "Slightly harder: Example 9 (slide 41), committee with a majority of women",
-          text: "Choose 5 from 8 men and 4 women. A majority of women means 4W + 1M or 3W + 2M (5W is impossible, since there are only 4 women).\n\n$P(1M, 4W) = \\frac{^8C_1 \\times {}^4C_4}{^{12}C_5} = \\frac{8 \\times 1}{792} = \\frac{8}{792}$\n\n$P(2M, 3W) = \\frac{^8C_2 \\times {}^4C_3}{^{12}C_5} = \\frac{28 \\times 4}{792} = \\frac{112}{792}$\n\nThese are mutually exclusive, so add: $\\frac{8 + 112}{792} = \\frac{120}{792} = \\frac{5}{33}$.",
+          text: "Choose 5 from 8 men and 4 women. A majority of women means 4W + 1M or 3W + 2M (5W is impossible, since there are only 4 women).\n\n$P(1M, 4W) = \\frac{{}^8C_1 \\times {}^4C_4}{{}^{12}C_5} = \\frac{8 \\times 1}{792} = \\frac{8}{792}$\n\n$P(2M, 3W) = \\frac{{}^8C_2 \\times {}^4C_3}{{}^{12}C_5} = \\frac{28 \\times 4}{792} = \\frac{112}{792}$\n\nThese are mutually exclusive, so add: $\\frac{8 + 112}{792} = \\frac{120}{792} = \\frac{5}{33}$.",
         },
         {
           type: "callout",
@@ -336,7 +336,7 @@ export default {
         ["Addition", "$P(A \\cup B) = P(A) + P(B) - P(A \\cap B)$"],
         ["Mutually exclusive", "$P(A \\cap B) = 0$ (no overlap)"],
         ["Independent", "$P(A \\cap B) = P(A)P(B)$ (overlap)"],
-        ["Random selection", "$\\dfrac{\\text{favourable } ^nC_r \\text{ products}}{^NC_r}$"],
+        ["Random selection", "$\\dfrac{\\text{favourable } ^nC_r \\text{ products}}{{}^NC_r}$"],
       ],
     },
     { type: "diagram", name: "i2-venn" },
