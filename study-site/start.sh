@@ -5,4 +5,4 @@ cd "$(dirname "$0")"
 IP=$(ipconfig getifaddr en0 2>/dev/null)
 echo "Local:  http://localhost:8000"
 [ -n "$IP" ] && echo "Phone:  http://$IP:8000"
-python3 -m http.server 8000 --bind 0.0.0.0
+python3 tools/serve.py 8000
