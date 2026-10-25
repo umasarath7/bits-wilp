@@ -1953,6 +1953,217 @@ def i10_anova():
     g.add(text(230, 202, "between groups: SSTR = 40 · within groups: SSE = 60", "ts2"))
     reg("i10-anova", g, "The idea of one-way ANOVA (Lec10 slides 37–46). If the group means (coloured lines) are far apart compared with the scatter inside each group, the means probably differ. F = MSTR/MSE = 20/5 = 4 > 3.89, so reject H₀.")
 
+# ---------------------------------------------------------------- ML (Machine Learning, DSEZG565) figures
+
+def m2_iqr():
+    g = Fig("m2iq", 170)
+    p = Plot(g, 30, 50, 380, 30, (4, 24), (0, 1))
+    y = p.Y(0.5)
+    data = [10, 11, 11, 11, 12, 12, 13, 14, 14, 15, 17, 22]
+    g.add(rect(p.X(5.75), y - 26, p.X(19.75) - p.X(5.75), 52, "zone1", 3))
+    g.add(rect(p.X(11), y - 14, p.X(14.5) - p.X(11), 28, "box", 3))
+    g.add(line(p.X(12.5), y - 14, p.X(12.5), y + 14, "l1"))
+    g.add(line(p.X(10), y, p.X(11), y, "ax2"), line(p.X(14.5), y, p.X(17), y, "ax2"))
+    for v, c in [(5.75, "guide2"), (19.75, "guide2")]:
+        g.add(line(p.X(v), y - 30, p.X(v), y + 30, c))
+    seen = {}
+    for v in data:
+        k = seen.get(v, 0); seen[v] = k + 1
+        g.add(circle(p.X(v), y + 40 + k * 10, 4, "d2" if v == 22 else "d1", str(v)))
+    g.add(text(p.X(5.75), y - 34, "lower fence 5.75", "ts"), text(p.X(19.75), y - 34, "upper fence 19.75", "ts"))
+    g.add(text(p.X(11), y + 26, "Q1 11", "ts2"), text(p.X(12.5), y - 18, "median 12.5", "ts2"), text(p.X(14.5), y + 26, "Q3 14.5", "ts2"))
+    g.add(text(p.X(22), y + 30, "22 = outlier", "tb"))
+    reg("m2-iqr", g, "The M2 IQR exercise (slide 45). The box covers Q1 = 11 to Q3 = 14.5, so IQR = 3.5. Anything outside the fences Q1 − 1.5·IQR = 5.75 and Q3 + 1.5·IQR = 19.75 is an outlier: only 22.")
+
+def m3_tips():
+    g = Fig("m3tp", 250)
+    xs = [34, 108, 64, 88, 99, 51]; ys = [5, 17, 11, 8, 14, 5]
+    b1, b0 = 615 / 4206, 10 - 615 / 4206 * 74
+    p = Plot(g, 56, 14, 250, 190, (20, 120), (0, 20))
+    p.axes(xt=[20, 40, 60, 80, 100, 120], yt=[0, 5, 10, 15, 20], xl="total bill (dollars)", yl="tip (dollars)")
+    g.add(line(p.X(20), p.Y(10), p.X(120), p.Y(10), "guide"))
+    for x, yv in zip(xs, ys):
+        g.add(line(p.X(x), p.Y(yv), p.X(x), p.Y(b0 + b1 * x), "res"))
+    p.curve(lambda x: b0 + b1 * x, 20, 120, "l1")
+    for x, yv in zip(xs, ys):
+        g.add(circle(*p.P(x, yv), 4.5, "d2", f"bill {x}, tip {yv}"))
+    g.add(text(318, 40, "best-fit line", "tb", "start"), text(318, 58, "ŷ = −0.82 + 0.146x", "ts", "start"),
+          text(318, 100, "dashed: ŷ = 10", "ts2", "start"), text(318, 116, "(mean only)", "ts2", "start"),
+          text(318, 150, "SSE: 120 → 30.1", "ts", "start"), text(318, 166, "R² = 0.75", "ts", "start"))
+    reg("m3-tips", g, "The tips example (M3 slides 12–16). Predicting every tip with the mean (dashed) leaves SSE = 120. The least-squares line through the bills leaves SSE = 30.1 (dotted gaps are the residuals), so it explains 75% of the variation.")
+
+def m3_cost():
+    g = Fig("m3c", 230)
+    p = Plot(g, 40, 22, 160, 150, (0, 3.3), (0, 4.5))
+    p.axes(xt=[0, 1, 2, 3], yt=[0, 1, 2, 3, 4], xl="x")
+    for t, cls in [(0.5, "l2"), (1, "l1"), (1.5, "l3")]:
+        p.curve(lambda x, t=t: t * x, 0, 3.3, cls)
+    for v in [1, 2, 3]:
+        g.add(circle(*p.P(v, v), 4.5, "dk", f"({v}, {v})"))
+    g.add(text(120, 14, "data and three lines h(x) = θ₁x", "ts"))
+    q = Plot(g, 260, 22, 160, 150, (-0.3, 2.3), (0, 2.6))
+    q.axes(xt=[0, 0.5, 1, 1.5, 2], yt=[0, 1, 2], xl="θ₁", yl="J(θ₁)")
+    q.curve(lambda t: 7 / 3 * (t - 1) ** 2, -0.3, 2.3, "l1")
+    for t, cls in [(0, "dk"), (0.5, "d2"), (1, "d1"), (1.5, "d3"), (2, "dk")]:
+        jv = 7 / 3 * (t - 1) ** 2
+        g.add(circle(*q.P(t, jv), 4.5, cls, f"θ₁ = {t}: J = {jv:.3f}"))
+    g.add(text(q.X(0.5) - 4, q.Y(0.583) - 8, "0.58", "ts", "end"), text(q.X(1), q.Y(0) - 8, "0", "ts"), text(q.X(2) - 8, q.Y(2.333) + 4, "2.33", "ts", "end"))
+    g.add(text(340, 14, "cost of each line", "ts"))
+    reg("m3-cost", g, "Cost function intuition (M3 slides 18–23). Each line on the left is one value of θ₁ and becomes one dot on the right. θ₁ = 1 passes through every point (J = 0); 0.5 and 1.5 both give J = 0.58; 0 and 2 give 2.33. J(θ₁) is a convex bowl with one minimum.")
+
+def m4_sigmoid():
+    g = Fig("m4s", 220)
+    p = Plot(g, 50, 16, 250, 160, (-6, 6), (0, 1))
+    p.axes(xt=[-6, -4, -2, 0, 2, 4, 6], yt=[0, 0.5, 1], xl="z = θᵀx", yl="σ(z)")
+    g.add(line(p.X(-6), p.Y(0.5), p.X(6), p.Y(0.5), "guide"), line(p.X(0), p.Y(0), p.X(0), p.Y(1), "guide"))
+    p.curve(lambda z: sig(z), -6, 6, "l1")
+    for z, lab, cls in [(0.833, "sentiment: z = 0.833 → 0.70", "d1"), (-0.8, "job offer (5, 6): z = −0.8 → 0.31", "d2")]:
+        v = sig(z)
+        g.add(circle(*p.P(z, v), 5, cls, lab))
+    g.add(text(p.X(0.833) + 8, p.Y(sig(0.833)) - 6, "0.70 → positive", "ts", "start"),
+          text(p.X(-0.8) - 8, p.Y(sig(-0.8)) + 14, "0.31 → No", "ts", "end"))
+    g.add(text(312, 60, "z ≥ 0 ⇔ σ ≥ 0.5", "ts", "start"), text(312, 76, "→ predict 1", "tb", "start"),
+          text(312, 140, "z < 0 ⇔ σ < 0.5", "ts", "start"), text(312, 156, "→ predict 0", "tb", "start"))
+    reg("m4-sigmoid", g, "The sigmoid squeezes any score z into a probability (M4 slides 12, 29, 35). Two slide examples: the movie review (z = 0.833 → 0.70, positive) and the job candidate with CGPA 5, IQ 6 (z = −0.8 → 0.31, no offer). The threshold 0.5 is exactly z = 0.")
+
+def m4_roc():
+    g = Fig("m4r", 250)
+    p = Plot(g, 60, 16, 190, 190, (0, 1), (0, 1))
+    p.axes(xt=[0, 0.5, 1], yt=[0, 0.5, 1], xl="FPR", yl="TPR")
+    good = [(0, 0), (0, 0.2), (0, 0.4), (0.2, 0.4), (0.6, 0.6), (0.8, 0.6), (0.8, 0.8), (1, 0.8), (1, 1)]
+    slide = [(0, 0), (0, 0.2), (0, 0.4), (0.2, 0.4), (0.2, 0.6), (0.6, 0.6), (0.8, 0.6), (0.8, 0.8), (1, 0.8), (1, 1)]
+    g.add(path([p.P(*q) for q in good] + [p.P(1, 0)], "area1", True))
+    g.add(line(p.X(0), p.Y(0), p.X(1), p.Y(1), "guide"))
+    g.add(path([p.P(*q) for q in slide], "l2").replace('class="l2"', 'class="l2" stroke-dasharray="5 4"'))
+    g.add(path([p.P(*q) for q in good], "l1"))
+    for q in good:
+        g.add(circle(*p.P(*q), 3.5, "d1", f"FPR {q[0]}, TPR {q[1]}"))
+    g.add(text(p.X(0.6), p.Y(0.2), "AUC = 0.56", "tb"))
+    g.add(line(272, 52, 292, 52, "l1"), text(298, 56, "ties at 0.85 handled", "ts", "start"), text(298, 72, "together → AUC 0.56", "ts", "start"),
+          line(272, 102, 292, 102, "l2").replace('class="l2"', 'class="l2" stroke-dasharray="5 4"'), text(298, 106, "slide 56: the + among", "ts", "start"), text(298, 122, "the ties counted first", "ts", "start"), text(298, 138, "→ AUC 0.60", "ts", "start"),
+          text(272, 176, "diagonal = random (0.5)", "ts2", "start"))
+    reg("m4-roc", g, "ROC for the 10 scored instances (M4 slides 52–56). Each threshold gives one (FPR, TPR) point. Three instances tie at score 0.85 (one +, two −); treating the tie as one step gives AUC = 0.56. The slide's 0.60 comes from ranking the + first among the ties (dashed).")
+
+def m5_tree():
+    g = Fig("m5t", 230)
+    g.box(170, 8, 100, 32, "Outlook", "box")
+    g.box(30, 82, 110, 32, "Humidity", "box")
+    g.box(180, 82, 80, 32, "Yes", "cg")
+    g.box(300, 82, 110, 32, "Wind", "box")
+    g.arrow(200, 40, 95, 82); g.arrow(220, 40, 220, 82); g.arrow(240, 40, 345, 82)
+    g.add(text(130, 60, "Sunny", "ts"), text(232, 64, "Overcast", "ts", "start"), text(310, 60, "Rain", "ts"))
+    for x, lab, cls, cnt in [(10, "No", "cb", "D1 D2 D8"), (90, "Yes", "cg", "D9 D11"), (290, "No", "cb", "D6 D14"), (370, "Yes", "cg", "D4 D5 D10")]:
+        g.box(x, 160, 60, 30, lab, cls)
+        g.add(text(x + 30, 206, cnt, "ts2"))
+    g.arrow(70, 114, 40, 160); g.arrow(110, 114, 120, 160); g.arrow(340, 114, 320, 160); g.arrow(370, 114, 400, 160)
+    g.add(text(40, 140, "High", "ts", "end"), text(120, 140, "Normal", "ts", "start"), text(318, 140, "Strong", "ts", "end"), text(392, 140, "Weak", "ts", "start"))
+    g.add(text(220, 128, "[4+, 0−]", "ts2"), text(220, 224, "Gains at the root: Outlook 0.247 · Humidity 0.151 · Wind 0.048 · Temp 0.029", "ts2"))
+    reg("m5-tree", g, "The ID3 tree for PlayTennis (M5 slides 30–50). Outlook has the highest information gain at the root; Overcast is already pure. Under Sunny, Humidity separates perfectly (gain 0.971); under Rain, Wind does (gain 0.971).")
+
+def m5_impurity():
+    g = Fig("m5i", 230)
+    p = Plot(g, 56, 16, 280, 170, (0, 1), (0, 1))
+    p.axes(xt=[0, 0.25, 0.5, 0.75, 1], yt=[0, 0.5, 1], xl="p = fraction of class 1 at the node", yl="impurity", fmt=lambda v: f"{v:g}")
+    H = lambda q: 0 if q <= 0 or q >= 1 else -(q * math.log2(q) + (1 - q) * math.log2(1 - q))
+    p.curve(H, 0, 1, "l1"); p.curve(lambda q: 1 - q * q - (1 - q) ** 2, 0, 1, "l2"); p.curve(lambda q: 1 - max(q, 1 - q), 0, 1, "l3")
+    g.add(circle(*p.P(0.3, H(0.3)), 4, "d1", "loan root: p = 0.3, entropy 0.881"), circle(*p.P(0.3, 0.42), 4, "d2", "loan root: Gini 0.42"))
+    g.add(line(352, 50, 372, 50, "l1"), text(378, 54, "entropy", "ts", "start"), text(378, 70, "max 1", "ts2", "start"),
+          line(352, 96, 372, 96, "l2"), text(378, 100, "Gini", "ts", "start"), text(378, 116, "max 0.5", "ts2", "start"),
+          line(352, 142, 372, 142, "l3"), text(378, 146, "class. error", "ts", "start"), text(378, 162, "max 0.5", "ts2", "start"))
+    reg("m5-impurity", g, "Three impurity measures for a two-class node (M5 slides 26–28, 66–67, 81). All are 0 for a pure node and largest at a 50/50 mix. The dots mark the loan data's root (3 Yes, 7 No): entropy 0.881, Gini 0.42.")
+
+def m5_incsplit():
+    g = Fig("m5s", 210)
+    cuts = [55, 65, 72.5, 80, 87.5, 92.5, 97.5, 110, 122.5, 172.5, 230]
+    gini = [0.42, 0.4, 0.375, 0.343, 0.417, 0.4, 0.3, 0.343, 0.375, 0.4, 0.42]
+    x0, w = 40, 34
+    base = 170
+    for i, (c, v) in enumerate(zip(cuts, gini)):
+        h = (v - 0.25) / 0.2 * 120
+        g.add(rect(x0 + i * w, base - h, w - 8, h, "bar2" if c == 97.5 else "bar1", 2))
+        g.add(text(x0 + i * w + (w - 8) / 2, base - h - 5, f"{v:.3f}".rstrip("0"), "ts"))
+        g.add(text(x0 + i * w + (w - 8) / 2, base + 14, f"{c:g}", "ts2"))
+    g.add(line(x0 - 4, base, x0 + 11 * w, base, "ax"))
+    g.add(text(220, 200, "candidate split on Annual Income (in thousands) · weighted Gini (lower is better)", "ts2"))
+    g.add(text(220, 18, "best: Income ≤ 97.5 → Gini 0.300", "tb"))
+    reg("m5-incsplit", g, "Choosing a threshold for a continuous attribute (M5 slides 77–79). Sort the incomes, try the midpoint between each pair of neighbours, and compute the weighted Gini of the two children. The lowest is at 97.5 (0.300).")
+
+def m6_knn():
+    g = Fig("m6k", 260)
+    p = Plot(g, 60, 14, 220, 220, (-2, 3.5), (-1.75, 3.75))
+    p.axes(xt=[-2, -1, 0, 1, 2, 3], yt=[-1, 0, 1, 2, 3], grid=True)
+    pos = {"X2": (0, 1), "X5": (1, 0), "X6": (1, 2), "X8": (2, 3)}
+    neg = {"X1": (-1, 1), "X3": (0, 2), "X4": (1, -1), "X7": (2, 2)}
+    sx = (p.X(1) - p.X(0))
+    for r, cls in [(1.0, "ring1"), (math.sqrt(2), "grp"), (2.0, "ring2")]:
+        g.add(f'<circle cx="{f(p.X(1))}" cy="{f(p.Y(1))}" r="{f(r * sx + 6)}" class="{cls}"/>')
+    for k, q in pos.items():
+        g.add(circle(*p.P(*q), 5, "d1", f"{k} {q} positive"), text(p.X(q[0]) + 8, p.Y(q[1]) - 6, k, "ts2", "start"))
+    for k, q in neg.items():
+        g.add(square(*p.P(*q), 5, "d2", f"{k} {q} negative"), text(p.X(q[0]) + 8, p.Y(q[1]) - 6, k, "ts2", "start"))
+    g.add(f'<path d="M{f(p.X(1))},{f(p.Y(1) - 8)} L{f(p.X(1) + 7)},{f(p.Y(1) + 6)} L{f(p.X(1) - 7)},{f(p.Y(1) + 6)} Z" class="dk"><title>query (1, 1)</title></path>')
+    g.add(text(300, 40, "query (1, 1)", "tb", "start"),
+          text(300, 70, "K = 3: 3+ 0− → +", "ts", "start"), text(300, 90, "K = 5: 3+ 2− → +", "ts", "start"), text(300, 110, "K = 7: 3+ 4− → −", "ts", "start"),
+          text(300, 140, "rings: d = 1, √2, 2", "ts2", "start"),
+          circle(304, 166, 4.5, "d1"), text(314, 170, "positive", "ts2", "start"), square(304, 186, 4.5, "d2"), text(314, 190, "negative", "ts2", "start"))
+    reg("m6-knn", g, "K-NN Problem Type 1 (M6 slides 49–52). The three positives at distance 1 win for K = 3 and K = 5, but at K = 7 the four negatives at distance √2 and 2 outvote them. The answer depends on K, so K is a hyperparameter.")
+
+def m6_lwr():
+    g = Fig("m6l", 230)
+    S = [10, 5, 2, 3, 5, 15, 30, 20, 6, 2, 10, 13]; Y = [5, 5, 2, 3, 5, 5, 9, 8, 9, 3, 9, 8]
+    p = Plot(g, 50, 16, 250, 170, (0, 16), (0, 10))
+    p.axes(xt=[0, 2, 4, 6, 8, 10, 12, 14, 16], yt=[0, 2, 4, 6, 8, 10], xl="size", yl="price")
+    g.add(line(p.X(7), p.Y(0), p.X(7), p.Y(10), "guide2"), text(p.X(7), p.Y(10) - 3, "query x = 7", "ts"))
+    p.curve(lambda x: math.exp(-(x - 7) ** 2 / 2) * 10, 0, 16, "lg")
+    p.curve(lambda x: 3.5 + 0.8 * x, 0, 16, "l3")
+    p.curve(lambda x: 3.4296 + 0.43285 * x, 0, 16, "l1")
+    near = {(6, 9), (5, 5), (10, 5), (10, 9)}
+    for x, yv in zip(S, Y):
+        if x <= 16:
+            g.add(circle(*p.P(x, yv), 4.5 if (x, yv) in near else 3.5, "d2" if (x, yv) in near else "dn", f"size {x}, price {yv}"))
+    g.add(line(312, 40, 332, 40, "l3"), text(338, 44, "start: 3.5 + 0.8x", "ts", "start"),
+          line(312, 70, 332, 70, "l1"), text(338, 74, "after 1 step:", "ts", "start"), text(338, 90, "3.43 + 0.43x", "ts", "start"),
+          line(312, 120, 332, 120, "lg"), text(338, 124, "kernel weight", "ts", "start"), text(338, 140, "exp(−d²/2)", "ts2", "start"),
+          circle(316, 166, 4.5, "d2"), text(326, 170, "5 nearest", "ts2", "start"))
+    reg("m6-lwr", g, "Locally weighted regression, Problem Type 3 (M6 slides 67–71). Only the 5 nearest points to x = 7 are used, and each is weighted by the kernel (dashed bell): the point at size 6 gets weight 0.61, those at distance 3 only 0.011. One weighted gradient step moves the local line from 3.5 + 0.8x to 3.43 + 0.43x.")
+
+def m7_svm():
+    g = Fig("m7s", 250)
+    p = Plot(g, 50, 14, 260, 210, (-4.5, 7), (-3.5, 4))
+    p.axes(xt=[-4, -2, 0, 2, 4, 6], yt=[-3, -2, -1, 0, 1, 2, 3, 4])
+    g.add(rect(p.X(1), p.Y(4), p.X(3) - p.X(1), p.Y(-3.5) - p.Y(4), "zone1", 0))
+    g.add(line(p.X(2), p.Y(-3.5), p.X(2), p.Y(4), "l2"), line(p.X(1), p.Y(-3.5), p.X(1), p.Y(4), "guide"), line(p.X(3), p.Y(-3.5), p.X(3), p.Y(4), "guide"))
+    neg = [(-3, 1), (-2, 0), (-3, -1), (-1, 0), (0, 1), (0, -1), (-4, -2), (1, 0)]
+    pos = [(3, 1), (3, -1), (4, 2), (5, 1), (6, 2), (4, 0), (5, -1), (6, -2)]
+    for q in neg:
+        g.add(square(*p.P(*q), 4.5, "d2", f"− {q}"))
+    for q in pos:
+        g.add(circle(*p.P(*q), 4.5, "d1", f"+ {q}"))
+    for q in [(1, 0), (3, 1), (3, -1)]:
+        g.add(circle(*p.P(*q), 9, "svring"))
+    g.add(text(p.X(2), p.Y(4) - 3, "x₁ = 2", "tb"), text(p.X(1) - 3, p.Y(3.3), "w·x+b = −1", "ts2", "end"), text(p.X(3) + 3, p.Y(3.3), "+1", "ts2", "start"))
+    g.add(text(326, 40, "w = (1, 0), b = −2", "tb", "start"), text(326, 62, "boundary: x₁ = 2", "ts", "start"),
+          text(326, 84, "margin 2/‖w‖ = 2", "ts", "start"), text(326, 116, "support vectors", "ts", "start"), text(326, 132, "(1, 0), (3, 1), (3, −1)", "ts2", "start"),
+          circle(330, 166, 4.5, "d1"), text(340, 170, "positive", "ts2", "start"), square(330, 186, 4.5, "d2"), text(340, 190, "negative", "ts2", "start"))
+    reg("m7-svm", g, "The SVM numerical example (M7 slides 25–34). Only the three circled points touch the margin, so only they get non-zero α. Solving for α gives w = (1, 0), b = −2: the vertical line x₁ = 2, with the band from x₁ = 1 to x₁ = 3.")
+
+def m7_nonlin():
+    g = Fig("m7n", 230)
+    for k, (title, xr, pts_pos, pts_neg, ln) in enumerate([
+            ("input space: + outside, − inside", (-3, 3), [(2, 2), (2, -2), (-2, -2), (-2, 2)], [(1, 1), (1, -1), (-1, -1), (-1, 1)], None),
+            ("after Φ₁: separable by a line", (-2.5, 11), [(2, 2), (6, 10), (6, 6), (10, 6)], [(1, 1), (1, -1), (-1, -1), (-1, 1)], 3)]):
+        x0 = 20 + k * 215
+        p = Plot(g, x0 + 20, 30, 170, 160, xr, xr)
+        g.add(rect(x0 + 20, 30, 170, 160, "panel", 4), text(x0 + 105, 20, title, "ts"))
+        g.add(line(p.X(xr[0]), p.Y(0), p.X(xr[1]), p.Y(0), "gr"), line(p.X(0), p.Y(xr[0]), p.X(0), p.Y(xr[1]), "gr"))
+        if ln:
+            g.add(line(*p.P(-1, 4), *p.P(4, -1), "l2"), text(p.X(3.2), p.Y(1.6) - 4, "x₁ + x₂ = 3", "ts", "start"))
+        for q in pts_pos:
+            g.add(circle(*p.P(*q), 4.5, "d1", f"+ {q}"))
+        for q in pts_neg:
+            g.add(square(*p.P(*q), 4.5, "d2", f"− {q}"))
+    reg("m7-nonlin", g, "Non-linear SVM example (M7 slides 53–56). No straight line separates the four + points (corners at ±2) from the four − points (at ±1). The mapping Φ₁ moves the + points to (2, 2), (6, 10), (6, 6), (10, 6) and leaves the − points, so the line x₁ + x₂ = 3 (w = (1, 1), b = −3) separates them.")
+
 # ---------------------------------------------------------------- build
 
 for fn in [s1_fits, s1_ucurve, s1_kfold, s1_threshold, s1_types, s1_rl,
@@ -1978,7 +2189,9 @@ for fn in [s1_fits, s1_ucurve, s1_kfold, s1_threshold, s1_types, s1_rl,
            i6_binom, i6_poisson, i6_rule, i6_z, i6_approx, i6_family,
            i7_means, i7_clt, i7_ci,
            i9_tails, i9_chi,
-           i10_lik, i10_anova]:
+           i10_lik, i10_anova,
+           m2_iqr, m3_tips, m3_cost, m4_sigmoid, m4_roc, m5_tree, m5_impurity, m5_incsplit,
+           m6_knn, m6_lwr, m7_svm, m7_nonlin]:
     fn()
 
 out = "// Generated by tools/gen_figures.py. Do not edit by hand; edit the generator and re-run it.\n"
