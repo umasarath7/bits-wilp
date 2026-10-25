@@ -2164,6 +2164,78 @@ def m7_nonlin():
             g.add(square(*p.P(*q), 4.5, "d2", f"− {q}"))
     reg("m7-nonlin", g, "Non-linear SVM example (M7 slides 53–56). No straight line separates the four + points (corners at ±2) from the four − points (at ±1). The mapping Φ₁ moves the + points to (2, 2), (6, 10), (6, 6), (10, 6) and leaves the − points, so the line x₁ + x₂ = 3 (w = (1, 1), b = −3) separates them.")
 
+# ---------------------------------------------------------------- AML sessions 9–12 figures
+
+def a9_jobtree():
+    g = Fig("a9j", 232)
+    g.box(170, 8, 100, 32, "Aptitude", "box")
+    g.box(30, 80, 90, 32, "No", "cb")
+    g.box(250, 80, 130, 32, "Communication", "box")
+    g.arrow(200, 40, 75, 80); g.arrow(240, 40, 315, 80)
+    g.add(text(120, 58, "Low (0Y, 7N)", "ts"), text(300, 58, "High (8Y, 3N)", "ts", "start"))
+    g.box(190, 156, 80, 32, "Yes", "cg")
+    g.box(330, 156, 90, 32, "CGPA", "box")
+    g.arrow(290, 112, 230, 156); g.arrow(340, 112, 375, 156)
+    g.add(text(240, 138, "Good (7Y)", "ts", "end"), text(368, 138, "Bad (1Y, 3N)", "ts", "start"))
+    g.add(text(375, 206, "High → Yes", "ts2"), text(375, 222, "Medium/Low → No", "ts2"))
+    g.add(text(20, 206, "Gains: Apt 0.47 →", "ts2", "start"), text(20, 222, "Comm 0.55 → CGPA 0.81", "ts2", "start"))
+    reg("a9-jobtree", g, "The job-offer tree built level by level (AML S9 slides 16–28). Aptitude has the highest gain at the root and its Low branch is pure; under Aptitude = High, Communication wins; under Communication = Bad, CGPA splits perfectly. The student (CGPA High, Communication Bad, Aptitude High) follows High → Bad → High: offered.")
+
+def a11_kmeans():
+    g = Fig("a11k", 220)
+    X = [2, 3, 4, 10, 11, 12, 20, 25, 30]
+    steps = [(2, 4, "start"), (2.5, 16, "iter 1"), (3, 18, "iter 2"), (4.75, 19.6, "iter 3"), (7, 25, "iter 4 ✓")]
+    for i, (m1, m2, lab) in enumerate(steps):
+        p = Plot(g, 20, 18 + i * 40, 350, 20, (0, 32), (0, 1))
+        y = p.Y(0.5)
+        g.add(line(p.X(0), y, p.X(32), y, "ax"))
+        for v in X:
+            c = "d1" if abs(v - m1) <= abs(v - m2) else "d2"
+            g.add(circle(p.X(v), y, 4.5, c, str(v)))
+        for m, cls in [(m1, "l1"), (m2, "l2")]:
+            g.add(line(p.X(m), y - 11, p.X(m), y + 11, cls))
+        g.add(text(p.X(32) + 4, y + 4, lab, "ts2", "start"), text(p.X(m1) - 3, y - 13, f"μ₁ {m1:g}", "ts", "end"), text(p.X(m2) + 3, y - 13, f"μ₂ {m2:g}", "ts", "start"))
+    reg("a11-kmeans", g, "K-means with K = 2 on 2, 3, 4, 10, 11, 12, 20, 25, 30 (AML S11 slide 21). Each row: points coloured by their nearest centre (E-step), and the centres moved to their cluster means (M-step). It converges at μ₁ = 7, μ₂ = 25.")
+
+def a11_dendro():
+    g = Fig("a11d", 210)
+    order = [3, 6, 2, 5, 4, 1]
+    xs = {p: 60 + i * 46 for i, p in enumerate(order)}
+    base = 180
+    Y = lambda h: base - h / 0.24 * 150
+    for p_ in order:
+        g.add(text(xs[p_], base + 16, f"p{p_}", "ts"))
+    def join(a, b, h, ha=0, hb=0):
+        g.add(line(a, Y(ha), a, Y(h), "l1"), line(b, Y(hb), b, Y(h), "l1"), line(a, Y(h), b, Y(h), "l1"))
+        return (a + b) / 2
+    c36 = join(xs[3], xs[6], 0.11)
+    c25 = join(xs[2], xs[5], 0.14)
+    c2536 = join(c36, c25, 0.15, 0.11, 0.14)
+    c4 = join(c2536, xs[4], 0.15, 0.15, 0)
+    join(c4, xs[1], 0.22, 0.15, 0)
+    g.add(line(30, base, 30, Y(0.24), "ax"))
+    for h in [0, 0.05, 0.1, 0.15, 0.2]:
+        g.add(text(26, Y(h) + 4, f"{h:g}", "ts", "end"))
+    g.add(text(420, 60, "merge heights", "tb", "end"), text(420, 78, "0.11 {3,6}", "ts", "end"), text(420, 94, "0.14 {2,5}", "ts", "end"),
+          text(420, 110, "0.15 both, then p4", "ts", "end"), text(420, 126, "0.22 p1", "ts", "end"))
+    reg("a11-dendro", g, "Single-link (MIN) dendrogram for the six points (AML S11 slides 15–17). The height of each join is the cluster distance: {3,6} at 0.11, {2,5} at 0.14, those two clusters at 0.15 (dist(3,2) = 0.15), p4 at 0.15 (dist(3,4)), and p1 last at 0.22.")
+
+def a12_gates():
+    g = Fig("a12g", 200)
+    for k, (title, w0) in enumerate([("AND: −30 + 20x₁ + 20x₂", -30), ("OR: −10 + 20x₁ + 20x₂", -10)]):
+        x0 = 30 + k * 215
+        p = Plot(g, x0, 30, 150, 140, (-0.3, 1.3), (-0.3, 1.3))
+        g.add(rect(x0, 30, 150, 140, "panel", 4), text(x0 + 75, 20, title, "ts"))
+        c = -w0 / 20
+        g.add(f'<clipPath id="a12g-c{k}"><rect x="{x0}" y="30" width="150" height="140"/></clipPath>')
+        g.add(line(*p.P(c + 0.3, -0.3), *p.P(c - 1.6, 1.6), "l2").replace("/>", f' clip-path="url(#a12g-c{k})"/>'))
+        for a in (0, 1):
+            for b in (0, 1):
+                out = int(w0 + 20 * a + 20 * b >= 0)
+                g.add(circle(*p.P(a, b), 6, "d1" if out else "dn", f"({a},{b}) → {out}"))
+                g.add(text(p.X(a) + 10, p.Y(b) - 8, str(out), "ts", "start"))
+    reg("a12-gates", g, "A single perceptron draws one straight line (AML S12 slide 5). With w = (−30, 20, 20) only (1,1) is on the positive side: AND. Changing the bias to −10 moves the line so three corners are positive: OR. No single line separates XOR's corners, so XOR needs a hidden layer.")
+
 # ---------------------------------------------------------------- build
 
 for fn in [s1_fits, s1_ucurve, s1_kfold, s1_threshold, s1_types, s1_rl,
@@ -2191,7 +2263,8 @@ for fn in [s1_fits, s1_ucurve, s1_kfold, s1_threshold, s1_types, s1_rl,
            i9_tails, i9_chi,
            i10_lik, i10_anova,
            m2_iqr, m3_tips, m3_cost, m4_sigmoid, m4_roc, m5_tree, m5_impurity, m5_incsplit,
-           m6_knn, m6_lwr, m7_svm, m7_nonlin]:
+           m6_knn, m6_lwr, m7_svm, m7_nonlin,
+           a9_jobtree, a11_kmeans, a11_dendro, a12_gates]:
     fn()
 
 out = "// Generated by tools/gen_figures.py. Do not edit by hand; edit the generator and re-run it.\n"

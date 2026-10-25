@@ -1,0 +1,449 @@
+// AML — Contact Session 9: Decision Trees
+// Source: CourseFiles/AML/ContactSession9-DecisionTrees.ppt (44 slides). Every lesson cites its slides.
+
+export default {
+  title: "Decision Trees",
+  source: "ContactSession9-DecisionTrees.ppt · 44 slides",
+  quizMode: "step",
+  overview:
+    "A decision tree answers a question the way a careful interviewer would: ask the **single most informative question** first, then the next most informative question within each answer group, until the answer is obvious. Everything in this session is about two choices: **which question to ask** (pick the split whose children are purest, measured by **Gini, entropy or classification error**) and **when to stop asking** (pure node, no attributes left, or a size/depth limit, plus **pruning** to undo overfitting). The exam favourite is the hand calculation: compute Gini or information gain for each attribute, pick the best, and grow the tree level by level. We do exactly that on the slides' job-offer data, then look at why trees overfit and how pruning fixes it.",
+
+  summary: [
+    {
+      id: "what",
+      heading: "Lesson 1: What a decision tree is and how Hunt's algorithm grows one",
+      slides: "2–6, 15",
+      blocks: [
+        {
+          type: "callout",
+          kind: "idea",
+          title: "What am I learning?",
+          text: "The parts of a tree, the two phases of building one, and the recursive rule that grows it.",
+        },
+        {
+          type: "p",
+          text: "A decision tree is a **flow-chart-like** structure (slide 2): each **internal node** tests an attribute, each **branch** is an outcome of the test, and each **leaf** holds a class label (or class distribution). Building one has two phases: **tree construction** (start with all training examples at the root and partition them recursively on selected attributes) and **tree pruning** (remove branches that reflect noise or outliers). To classify an unknown sample, test its attribute values from the root down to a leaf.",
+        },
+        {
+          type: "callout",
+          kind: "formula",
+          title: "Hunt's algorithm (slide 3)",
+          text: "Let $D_t$ be the training records at node t and $\\{y_1, \\dots, y_c\\}$ the class labels.\n1. If $D_t$ contains records of **one class** $y_t$ → t is a **leaf** labelled $y_t$.\n2. If $D_t$ is **empty** → t is a leaf labelled with the **default class** $y_d$ (the parent's majority).\n3. If $D_t$ contains **more than one class** → choose an attribute test, split $D_t$ into smaller subsets, and apply the procedure recursively to each child.",
+        },
+        {
+          type: "callout",
+          kind: "example",
+          title: "Loan default, step by step (slide 4)",
+          text: "Data: Home owner (binary), Marital status (categorical), Annual income (continuous) → Defaulted borrower.\n(a) Start with one leaf: **Defaulted = No** (the majority).\n(b) Split on **Home owner**: Yes → all No (leaf).\n(c) Home owner = No → split on **Marital status**: Married → No (leaf); Single/Divorced → still mixed.\n(d) Single/Divorced → split on **Annual income**: < 80K → No, ≥ 80K → Yes.",
+        },
+        {
+          type: "table",
+          caption: "Two design decisions (slides 5–6)",
+          head: ["Question", "Answer"],
+          rows: [
+            ["How to split?", "**Binary** attributes: 2 branches (warm-/cold-blooded). **Nominal**: multi-way (one branch per value) or binary groupings ({Married} vs {Single, Divorced}). **Ordinal**: groupings that **keep the order** ({Small, Medium} vs {Large, XL}; {Small, Large} vs {Medium, XL} is not allowed). **Continuous**: a binary test (Income > 80K) or ranges (< 10K, 10–25K, 25–50K, 50–80K, > 80K)."],
+            ["When to stop?", "All (or most) examples at the node share a class; all features are used up; or the tree reaches a pre-defined size/depth limit (slide 15)."],
+          ],
+        },
+        {
+          type: "callout",
+          kind: "remember",
+          title: "Quick revision",
+          text: "Pure → leaf. Empty → leaf with the parent's majority. Mixed → split on the best attribute and recurse. Ordinal groupings must preserve order.",
+        },
+      ],
+    },
+    {
+      id: "impurity",
+      heading: "Lesson 2: Choosing the best split: impurity and gain",
+      slides: "7–10",
+      blocks: [
+        {
+          type: "callout",
+          kind: "idea",
+          title: "What am I learning?",
+          text: "Three ways to score how mixed a node is, and how to turn them into a score for a split.",
+        },
+        {
+          type: "callout",
+          kind: "formula",
+          title: "Impurity measures (slides 7–8)",
+          text: "With $p(i \\mid t)$ = fraction of node t's records in class i:\n$$\\text{Entropy}(t) = -\\sum_i p(i \\mid t)\\log_2 p(i \\mid t) \\qquad \\text{Gini}(t) = 1 - \\sum_i p(i \\mid t)^2 \\qquad \\text{Error}(t) = 1 - \\max_i p(i \\mid t)$$\nDistribution (0, 1) is pure (all three = 0); (0.5, 0.5) is the most impure (entropy 1, Gini 0.5, error 0.5). **Lower impurity = better split.**",
+        },
+        { type: "diagram", name: "m5-impurity" },
+        {
+          type: "callout",
+          kind: "formula",
+          title: "Gain of a test condition (slides 9–10)",
+          text: "$$\\Delta = I(\\text{parent}) - \\sum_{j=1}^{k}\\frac{N(v_j)}{N}I(v_j)$$\nN = records at the parent, k = number of attribute values, $N(v_j)$ = records in child $v_j$. **Maximising the gain = minimising the weighted average impurity of the children.** With I = entropy, Δ is the **information gain**: Gain(S, A) = Entropy before − weighted Entropy after. Gain = 0 means the split doesn't help; the maximum possible gain is the parent's entropy (all children pure).",
+        },
+        {
+          type: "callout",
+          kind: "example",
+          title: "Impurity for three nodes (slide 8: “Gini = ? Entropy = ? Error = ?”)",
+          text: "*Exercise solution prepared for the website.*\n| Node (C1, C2) | Gini | Entropy | Error |\n|---|---|---|---|\n| (0, 6) | 1 − 0 − 1 = **0** | **0** | 1 − 6/6 = **0** |\n| (1, 5) | 1 − (1/6)² − (5/6)² = **0.278** | **0.650** | 1 − 5/6 = **0.167** |\n| (2, 4) | 1 − (2/6)² − (4/6)² = **0.444** | **0.918** | 1 − 4/6 = **0.333** |\n| (3, 3) | **0.5** | **1** | **0.5** |\nAll three agree on the ordering: the measures are generally consistent (slide 9).",
+        },
+        {
+          type: "callout",
+          kind: "remember",
+          title: "Quick revision",
+          text: "Entropy −Σp log₂p · Gini 1 − Σp² · Error 1 − max p · Gain = parent impurity − weighted child impurity. Highest gain (lowest weighted child impurity) wins.",
+        },
+      ],
+    },
+    {
+      id: "gini",
+      heading: "Lesson 3: Gini splits for binary, nominal and continuous attributes",
+      slides: "11–14",
+      blocks: [
+        {
+          type: "callout",
+          kind: "example",
+          title: "Binary attributes A vs B (slides 11–12)",
+          text: "12 records, 6 C0 and 6 C1 (parent Gini = 0.5).\n**Split on A:** A = Y → 7 records (4 C0, 3 C1): Gini = 1 − (4/7)² − (3/7)² = 1 − 16/49 − 9/49 = **0.490**. A = N → 5 records (2 C0, 3 C1): 1 − 4/25 − 9/25 = **0.48**. Weighted = (7/12)(0.490) + (5/12)(0.48) = **0.486**.\n**Split on B:** B = Y → 5 records (1 C0, 4 C1): 1 − 1/25 − 16/25 = **0.32**. B = N → 7 records (5 C0, 2 C1): 1 − 25/49 − 4/49 = **0.408**. Weighted = (5/12)(0.32) + (7/12)(0.408) = **0.371**.\n→ **B** gives the lower weighted Gini, so split on B (gain 0.5 − 0.371 = 0.129 vs 0.014 for A).",
+        },
+        {
+          type: "callout",
+          kind: "warn",
+          title: "Slide check (flagged): rounding",
+          text: "Slides 11–12 print Gini(N1 for A) = 0.489 and the weighted value 0.485; with more decimals they are 0.490 and 0.486. The decision (B) is unchanged.",
+        },
+        {
+          type: "callout",
+          kind: "example",
+          title: "Nominal attribute: Car type (slide 13)",
+          text: "Counts (C0, C1): Family (1, 3), Sports (8, 0), Luxury (1, 7).\n- {Sports, Luxury} (9, 7) vs {Family} (1, 3): (16/20)(1 − 0.316 − 0.191) + (4/20)(0.375) = **0.469** (slide 0.468).\n- {Sports} (8, 0) vs {Family, Luxury} (2, 10): (8/20)(0) + (12/20)(0.278) = **0.167**.\n- **Multi-way** Family / Sports / Luxury: (4/20)(0.375) + 0 + (8/20)(0.219) = **0.163** ← lowest.\nMulti-way splits are never worse than binary groupings of the same attribute, but they fragment the data.",
+        },
+        {
+          type: "callout",
+          kind: "formula",
+          title: "Continuous attributes (slide 14)",
+          text: "```flow\nSort records by the attribute (O(N log N)) -> Candidate splits = midpoints between adjacent values -> Weighted Gini for each candidate -> Choose the lowest\n```\nBrute force (recount for every candidate) is expensive. **Optimisation:** only consider midpoints between adjacent records with **different class labels**.",
+        },
+        { type: "diagram", name: "m5-incsplit" },
+      ],
+    },
+    {
+      id: "job",
+      heading: "Lesson 4: Building a tree by information gain: the job-offer example",
+      slides: "16–28",
+      blocks: [
+        {
+          type: "callout",
+          kind: "idea",
+          title: "What am I learning?",
+          text: "The full exam procedure: entropy of the node → entropy after each split → information gain → choose → repeat on each impure branch.",
+        },
+        {
+          type: "table",
+          caption: "Hiring data (slide 17): 18 candidates, 8 offered (Yes), 10 not",
+          head: ["CGPA", "Communication", "Aptitude", "Programming", "Offered?"],
+          rows: [
+            ["High", "Good", "High", "Good", "Yes"], ["Medium", "Good", "High", "Good", "Yes"], ["Low", "Bad", "Low", "Good", "No"],
+            ["Low", "Good", "Low", "Bad", "No"], ["High", "Good", "High", "Bad", "Yes"], ["High", "Good", "High", "Good", "Yes"],
+            ["Medium", "Bad", "Low", "Bad", "No"], ["Medium", "Bad", "Low", "Good", "No"], ["High", "Bad", "High", "Good", "Yes"],
+            ["Medium", "Good", "High", "Good", "Yes"], ["Low", "Bad", "High", "Bad", "No"], ["Low", "Bad", "High", "Bad", "No"],
+            ["Medium", "Good", "High", "Bad", "Yes"], ["Low", "Good", "Low", "Good", "No"], ["High", "Bad", "Low", "Bad", "No"],
+            ["Medium", "Bad", "High", "Good", "No"], ["High", "Bad", "Low", "Bad", "No"], ["Medium", "Good", "High", "Bad", "Yes"],
+          ],
+        },
+        {
+          type: "callout",
+          kind: "example",
+          title: "Level 1: the root (slides 19–22)",
+          text: "**Before the split:** 8 Yes, 10 No → $-\\frac{8}{18}\\log_2\\frac{8}{18} - \\frac{10}{18}\\log_2\\frac{10}{18} = 0.52 + 0.47 =$ **0.99**.\n\n| Attribute | Branches (Yes, No) → entropy | Weighted entropy | Gain |\n|---|---|---|---|\n| CGPA | High (4, 2) 0.92 · Medium (4, 3) 0.99 · Low (0, 5) 0 | (6/18)(0.92) + (7/18)(0.99) = **0.69** | **0.30** |\n| Communication | Good (7, 2) 0.76 · Bad (1, 8) 0.50 | **0.63** | **0.36** |\n| Aptitude | High (8, 3) 0.85 · Low (0, 7) 0 | (11/18)(0.85) = **0.52** | **0.47** |\n| Programming | Good (5, 4) · Bad (3, 6) | 0.95 | **0.04** |\n\n→ **Aptitude** is the root. Aptitude = Low has entropy 0 (all No), so that branch stops: whatever the other features, the answer is No.",
+        },
+        {
+          type: "callout",
+          kind: "example",
+          title: "Level 2: inside Aptitude = High (slides 23–26)",
+          text: "11 candidates, 8 Yes, 3 No → entropy **0.85**.\n- **CGPA:** High (4, 0) 0 · Medium (4, 1) 0.72 · Low (0, 2) 0 → (5/11)(0.72) = **0.33** → gain **0.52**.\n- **Communication:** Good (7, 0) 0 · Bad (1, 3) 0.81 → (4/11)(0.81) = **0.30** → gain **0.55**.\n- **Programming:** Good (5, 1) 0.65 · Bad (3, 2) 0.97 → **0.80** → gain **0.05**.\n→ **Communication**. Communication = Good is pure (Yes), so only Communication = Bad continues.",
+        },
+        {
+          type: "callout",
+          kind: "example",
+          title: "Level 3: Aptitude = High and Communication = Bad (slides 27–28)",
+          text: "4 candidates: (High, Good, Yes), (Low, Bad, No), (Low, Bad, No), (Medium, Good, No) → 1 Yes, 3 No → entropy **0.81**.\n- **CGPA:** High (1, 0), Medium (0, 1), Low (0, 2), all pure → entropy **0** → gain **0.81**.\n- **Programming:** Good (1, 1) 1.0 · Bad (0, 2) 0 → **0.50** → gain **0.31**.\n→ **CGPA**: High → Yes; Medium, Low → No.",
+        },
+        { type: "diagram", name: "a9-jobtree" },
+        {
+          type: "callout",
+          kind: "example",
+          title: "Prediction (slide 18)",
+          text: "The student: CGPA High, Communication Bad, Aptitude High, Programming Bad. Follow the tree: Aptitude = High → Communication = Bad → CGPA = High → **Job offered = Yes**. Programming skill never appears in the tree; its gain was always tiny.",
+        },
+        {
+          type: "callout",
+          kind: "warn",
+          title: "Slide check (flagged): slide 28's title",
+          text: "Slide 28 is headed “Level 2”, but its numbers (CGPA gain 0.81, Programming gain 0.31, starting entropy 0.81) belong to **Level 3** (the Aptitude = High, Communication = Bad subset of slide 27).",
+        },
+        {
+          type: "callout",
+          kind: "warn",
+          title: "Common mistakes",
+          text: "- Forgetting to **weight** each branch's entropy by its share of records.\n- Recomputing gains on the **whole** dataset at level 2. Use only the records that reached that node.\n- Splitting a pure branch further. Entropy 0 means stop.",
+        },
+      ],
+    },
+    {
+      id: "characteristics",
+      heading: "Lesson 5: Characteristics of decision-tree induction",
+      slides: "29, 44",
+      blocks: [
+        {
+          type: "table",
+          head: ["Property (slide 29)", "What it means"],
+          rows: [
+            ["Non-parametric", "No assumption about the data's distribution"],
+            ["Computationally inexpensive", "Fast to build even on large training sets; classifying a record costs at most the tree's **depth** in tests (worst case: the longest root-to-leaf path)"],
+            ["Easy to interpret", "Rules can be read off the paths"],
+            ["Accuracy comparable to other classifiers", ""],
+            ["Robust to noise (with pruning)", "Pruning prevents fitting noise"],
+            ["Immune to redundant / irrelevant attributes", "Useless attributes never win a split"],
+            ["**Data fragmentation**", "Deep nodes hold too few records to decide reliably. Remedy: stop splitting when a node has fewer than a threshold of records (pre-pruning)"],
+            ["**Rectilinear boundaries**", "One attribute per test → axis-parallel boundaries; hard to model relationships among continuous attributes (e.g. x + y < 1)"],
+            ["Pruning matters more than the impurity measure", "Choice of Gini vs entropy changes little; pruning strategy changes a lot"],
+          ],
+        },
+        {
+          type: "p",
+          text: "**ID3 (slide 44)** uses Hunt's algorithm with **information gain** to pick the attribute at each step. It keeps only one current tree (it can't tell how many alternative trees fit the data) and **never backtracks** (greedy). Its **inductive bias**: shorter trees are preferred, and trees that put high-gain attributes near the root are preferred (Mitchell).",
+        },
+      ],
+    },
+    {
+      id: "overfit",
+      heading: "Lesson 6: Overfitting in decision trees",
+      slides: "30–40",
+      blocks: [
+        {
+          type: "callout",
+          kind: "idea",
+          title: "What am I learning?",
+          text: "Why a tree that is perfect on its training data can be bad on new data, the three causes, and how to measure it.",
+        },
+        {
+          type: "p",
+          text: "**Training error** (resubstitution or apparent error) is the error on the training data; **generalisation error** is the expected error on unseen data. A good model has both low. **Low training error with high generalisation error = overfitting** (slide 31). Causes: **noise**, **lack of representative samples**, **model complexity**. **Underfitting:** model too simple, both errors large. **Overfitting:** model too complex, training error small but test error large (slide 37).",
+        },
+        {
+          type: "p",
+          text: "**Experiment (slides 32–36).** + class: 5000 points from a Gaussian centred at (10, 10) plus 200 noise points; o class: 5200 uniform points; 10% used for training. As nodes are added the **training error falls** steadily to 0 (around 150 nodes). A **4-node** tree (splits x₁ < 6.46, x₁ < 13.11, x₂ < 7.04, x₂ < 14.31) already drops training error to about 0.1 and draws a box around the central cluster. A **50-node** tree carves extra regions around noise points. Which is better? Only the **test** error can say; the extra nodes mostly fit noise.",
+        },
+        { type: "diagram", name: "s1-ucurve" },
+        {
+          type: "callout",
+          kind: "example",
+          title: "Overfitting due to noise (slide 38)",
+          text: "Training set: 10 animals; **bat and whale are mislabelled** as non-mammals. Test set: human, pigeon, elephant, leopard shark, turtle, penguin, eel, dolphin, spiny anteater, gila monster.\n- **Tree 1** (fits the noise): Body temp → Gives birth → **Four-legged** (Yes → mammal). It misclassifies **human** and **dolphin** (not four-legged) and **spiny anteater** (doesn't give birth) → **test error 3/10 = 30%**.\n- **Tree 2** (simpler): Body temp → Gives birth (Yes → mammal). Only **spiny anteater** is wrong → **10%**.\nThe extra Four-legged test exists only to explain the two noisy labels; it hurts on new data.",
+        },
+        {
+          type: "callout",
+          kind: "example",
+          title: "Overfitting due to lack of representative samples (slide 39)",
+          text: "Only 5 training animals (salamander, guppy, eagle, poorwill, platypus). The learned tree: Body temp (cold → non-mammal) → Hibernates (No → non-mammal) → Four-legged (Yes → mammal). On the test set, **human, elephant and dolphin** are warm-blooded but don't hibernate → predicted non-mammal → **test error 3/10 = 30%**. The training data never showed a non-hibernating mammal, so the tree learned a rule that happens to fit 5 animals.",
+        },
+        {
+          type: "callout",
+          kind: "formula",
+          title: "Model complexity (slide 40)",
+          text: "The chance of overfitting grows with complexity. **Occam's razor (principle of parsimony):** given two models with the same generalisation error, prefer the simpler one. The ideal complexity gives the lowest generalisation error, but we only have training data, so we must **estimate** generalisation error (validation set, cross-validation).",
+        },
+      ],
+    },
+    {
+      id: "pruning",
+      heading: "Lesson 7: Handling overfitting: pre-pruning and post-pruning",
+      slides: "41–43",
+      blocks: [
+        {
+          type: "table",
+          head: ["", "Pre-pruning (early stopping)", "Post-pruning"],
+          rows: [
+            ["Idea", "Stop growing before the tree classifies the training data perfectly", "Let the tree overfit, then trim it"],
+            ["Typical conditions", "Stop if all instances share a class, or all attribute values are equal. More restrictive: stop if the node has fewer than a user-specified number of instances; if splitting doesn't improve Gini/information gain; if the estimated generalisation error falls below a threshold", "**Subtree replacement:** trim nodes **bottom-up**; if the generalisation error improves after trimming, replace the subtree by a leaf labelled with the **majority class** of the instances in the subtree"],
+            ["Strength", "Cheap", "Usually more accurate: decisions use the fully grown tree"],
+            ["Weakness", "Hard to know when to stop (may stop too early)", "Wastes the work of growing the full tree"],
+          ],
+        },
+        {
+          type: "callout",
+          kind: "remember",
+          title: "Quick revision",
+          text: "Overfit = low train, high test error. Causes: noise, unrepresentative samples, complexity. Fixes: pre-prune (stop early) or post-prune (grow, then replace subtrees by majority leaves if validation error improves). Prefer the simpler model (Occam).",
+        },
+      ],
+    },
+  ],
+
+  recap: [
+    {
+      type: "callout",
+      kind: "formula",
+      title: "Formulas",
+      text: "Entropy $-\\sum p\\log_2 p$ · Gini $1 - \\sum p^2$ · Error $1 - \\max p$ · Gain $= I(\\text{parent}) - \\sum\\frac{N_j}{N}I(j)$",
+    },
+    { type: "diagram", name: "a9-jobtree" },
+    {
+      type: "table",
+      head: ["Topic", "Remember"],
+      rows: [
+        ["Hunt", "pure → leaf · empty → default class · mixed → split & recurse"],
+        ["Best split", "highest gain = lowest weighted child impurity"],
+        ["Continuous", "sort → midpoints (where the class changes) → lowest Gini"],
+        ["Job example", "Aptitude (0.47) → Communication (0.55) → CGPA (0.81)"],
+        ["Overfitting", "noise · unrepresentative samples · complexity"],
+        ["Pruning", "pre: stop early · post: replace subtree by majority leaf"],
+      ],
+    },
+    {
+      type: "callout",
+      kind: "exam",
+      title: "Don't lose marks",
+      text: "Table per attribute: branch counts → entropy → weight → sum → gain · stop on pure branches · use only the records that reach a node · state the predicted class by tracing the path.",
+    },
+  ],
+
+  glossary: [
+    ["Decision tree", "", "Flow-chart of attribute tests ending in class labels"],
+    ["Hunt's algorithm", "", "Recursive partitioning: leaf if pure/empty, else split"],
+    ["Impurity", "", "How mixed the classes at a node are"],
+    ["Entropy", "", "−Σ p log₂ p"],
+    ["Gini index", "", "1 − Σ p²"],
+    ["Classification error", "", "1 − max p"],
+    ["Information gain", "", "Entropy before − weighted entropy after a split"],
+    ["Multi-way split", "", "One branch per attribute value"],
+    ["Data fragmentation", "", "Too few records at deep nodes to decide reliably"],
+    ["Rectilinear boundary", "", "Axis-parallel boundary from single-attribute tests"],
+    ["Training error", "resubstitution error", "Error on the training data"],
+    ["Generalisation error", "", "Expected error on unseen data"],
+    ["Overfitting", "", "Low training error, high generalisation error"],
+    ["Occam's razor", "parsimony", "Prefer the simpler of equally good models"],
+    ["Pre-pruning", "early stopping", "Stop growing on a condition"],
+    ["Post-pruning", "subtree replacement", "Trim a grown tree bottom-up"],
+    ["ID3", "", "Greedy, no backtracking, information gain; prefers short trees"],
+  ],
+
+  examTips: [
+    "Write the parent entropy first, then one row per attribute: branch counts, branch entropies, weighted sum, gain.",
+    "Memorise: E(8,10) = 0.99, E(8,3) = 0.85, E(1,3) = 0.81, E(4,2) = 0.92, E(4,1) = 0.72.",
+    "For Gini questions say “lowest weighted Gini wins”; for entropy say “highest information gain wins”.",
+    "For overfitting questions, name the cause (noise / unrepresentative data / complexity) and the fix (pruning, more data, simpler tree).",
+  ],
+
+  problems: [
+    {
+      title: "Gini for binary attributes A and B (slides 11–12)",
+      level: "Easy",
+      hint: "Count C0 and C1 for A = Y, A = N, B = Y, B = N.",
+      question: "12 records (ID, A, B, Class): 1 Y Y C0, 2 Y Y C1, 3 N Y C1, 4 Y Y C1, 5 N Y C1, 6 N N C1, 7 Y N C0, 8 Y N C0, 9 Y N C1, 10 N N C0, 11 N N C0, 12 Y N C0. Which attribute should be split on, by Gini?",
+      solution: "### A\nA = Y: 7 records (4 C0, 3 C1) → 1 − 16/49 − 9/49 = 0.490. A = N: 5 records (2 C0, 3 C1) → 0.48. Weighted = **0.486**.\n### B\nB = Y: 5 records (1 C0, 4 C1) → 0.32. B = N: 7 records (5 C0, 2 C1) → 0.408. Weighted = **0.371**.\n### Answer\n**B** (lower weighted Gini; gain 0.129 vs 0.014).",
+    },
+    {
+      title: "Gini for Car type groupings (slide 13)",
+      level: "Easy",
+      question: "Car type counts (C0, C1): Family (1, 3), Sports (8, 0), Luxury (1, 7). Compute the weighted Gini for {Sports, Luxury} | {Family}, {Sports} | {Family, Luxury}, and the 3-way split.",
+      solution: "{Sports, Luxury} (9, 7): 1 − (9/16)² − (7/16)² = 0.492; {Family} (1, 3): 0.375 → (16/20)(0.492) + (4/20)(0.375) = **0.469**.\n{Sports} (8, 0): 0; {Family, Luxury} (2, 10): 0.278 → (12/20)(0.278) = **0.167**.\nMulti-way: (4/20)(0.375) + 0 + (8/20)(0.219) = **0.163**: the best.",
+    },
+    {
+      title: "Root attribute for the job-offer data (slides 19–22)",
+      level: "Medium",
+      hint: "Parent entropy E(8 Yes, 10 No) = 0.99.",
+      question: "Using the 18-candidate hiring table, compute the information gain of CGPA, Communication, Aptitude and Programming skill. Which is the root?",
+      solution: "Parent: E(8, 10) = **0.99**.\nCGPA: High (4, 2) 0.92, Medium (4, 3) 0.99, Low (0, 5) 0 → 0.69 → gain **0.30**.\nCommunication: Good (7, 2) 0.76, Bad (1, 8) 0.50 → 0.63 → gain **0.36**.\nAptitude: High (8, 3) 0.85, Low (0, 7) 0 → 0.52 → gain **0.47**.\nProgramming: Good (5, 4) 0.99, Bad (3, 6) 0.92 → 0.95 → gain **0.04**.\nRoot = **Aptitude**.",
+    },
+    {
+      title: "Complete the tree and predict (slides 23–28, 18)",
+      level: "Hard",
+      hint: "Work only with the 11 Aptitude = High records, then with the 4 that also have Communication = Bad.",
+      question: "Grow the job-offer tree to the end and predict for CGPA High, Communication Bad, Aptitude High, Programming Bad.",
+      solution: "### Level 2 (Aptitude = High: 8 Yes, 3 No, E = 0.85)\nGains: CGPA 0.52, **Communication 0.55**, Programming 0.05 → split on Communication. Good → all Yes (leaf).\n### Level 3 (Communication = Bad: 1 Yes, 3 No, E = 0.81)\nGains: **CGPA 0.81** (all pure), Programming 0.31 → split on CGPA: High → Yes; Medium → No; Low → No.\n### Tree\nAptitude: Low → No; High → Communication: Good → Yes; Bad → CGPA: High → Yes, else No.\n### Prediction\nHigh → Bad → High → **Offered (Yes)**.",
+    },
+    {
+      title: "Impurity of a node (slide 8)",
+      level: "Easy",
+      question: "A node has 2 records of C1 and 4 of C2. Compute Gini, entropy and classification error.",
+      solution: "*Exercise solution prepared for the website.*\np = 1/3, 2/3. Gini = 1 − 1/9 − 4/9 = **0.444**. Entropy = −(1/3)log₂(1/3) − (2/3)log₂(2/3) = 0.528 + 0.390 = **0.918**. Error = 1 − 2/3 = **0.333**.",
+    },
+    {
+      title: "Error rates of the two mammal trees (slide 38)",
+      level: "Medium",
+      hint: "Tree 1 tests Body temp → Gives birth → Four-legged; Tree 2 stops at Gives birth.",
+      question: "Classify the 10 test animals with both trees and compute the test error of each. Explain the difference.",
+      solution: "*Exercise solution prepared for the website.*\n**Tree 1:** warm + gives birth + four-legged → mammal. Errors: human (not four-legged), dolphin (not four-legged), spiny anteater (doesn't give birth) → **30%**.\n**Tree 2:** warm + gives birth → mammal. Error: spiny anteater only → **10%**.\nTree 1 added the Four-legged test to fit the mislabelled bat and whale (noise). It is more complex, perfect on training data, but worse on test data: overfitting due to noise.",
+    },
+    {
+      title: "Error rate with unrepresentative training data (slide 39)",
+      level: "Medium",
+      question: "The tree trained on 5 animals tests Body temp → Hibernates → Four-legged. What is its error on the 10-animal test set, and why?",
+      solution: "*Exercise solution prepared for the website.*\nWarm-blooded animals that don't hibernate are predicted non-mammals, so **human, elephant and dolphin** are misclassified → **30%**. The 5 training animals contained no non-hibernating mammal, so the tree learned an accidental rule: overfitting from lack of representative samples.",
+    },
+    {
+      title: "Ordinal splits",
+      level: "Easy",
+      question: "Shirt size has values Small < Medium < Large < Extra Large. Which binary groupings are valid? Is {Small, Large} | {Medium, XL} valid?",
+      solution: "*Exercise solution prepared for the website.*\nValid (order kept): {S} | {M, L, XL}, {S, M} | {L, XL}, {S, M, L} | {XL}. **{Small, Large} | {Medium, XL} is not valid**: it breaks the order (slide 6 circles it).",
+    },
+    {
+      title: "Continuous split by Gini",
+      level: "Hard",
+      hint: "Sort, place midpoints where the class changes, compute weighted Gini.",
+      question: "Annual income (K) with class: 60 N, 70 N, 75 N, 85 Y, 90 Y, 95 Y, 100 N, 120 N, 125 N, 220 N. Find the best split.",
+      solution: "*Exercise solution prepared for the website.*\nClass changes between 75 and 85 (midpoint 80) and between 95 and 100 (97.5).\n≤ 80: left (0Y, 3N) 0, right (3Y, 4N) 0.490 → (7/10)(0.490) = **0.343**.\n≤ 97.5: left (3Y, 3N) 0.5, right (0Y, 4N) 0 → (6/10)(0.5) = **0.300** ← best.\nSplit at **Income ≤ 97.5K**.",
+    },
+  ],
+
+  theory: [
+    {
+      title: "Hunt's algorithm",
+      level: "Easy",
+      question: "Describe Hunt's algorithm for growing a decision tree.",
+      solution: "For node t with training records Dₜ: (1) if all records belong to one class, t is a leaf with that class; (2) if Dₜ is empty, t is a leaf with the default (parent-majority) class; (3) otherwise choose the best attribute test, split Dₜ into subsets and apply the procedure recursively to each child (slide 3).",
+    },
+    {
+      title: "Impurity measures and information gain",
+      level: "Medium",
+      question: "Define entropy, Gini and classification error. How is the best split chosen?",
+      solution: "Entropy = −Σp log₂p, Gini = 1 − Σp², Error = 1 − max p; all are 0 for a pure node and maximal for an even mix. The gain of a split is Δ = I(parent) − Σ(Nⱼ/N)I(childⱼ); choose the split with the largest gain, i.e. the smallest weighted child impurity. With entropy, Δ is the information gain (slides 7–10).",
+    },
+    {
+      title: "Characteristics of decision trees",
+      level: "Medium",
+      question: "List the characteristics of decision-tree induction, including two weaknesses.",
+      solution: "Non-parametric; cheap to build and classify; interpretable; accuracy comparable to other classifiers; robust to noise with pruning; immune to redundant/irrelevant attributes. Weaknesses: **data fragmentation** (deep nodes have too few records) and **rectilinear boundaries** (one attribute per test can't model relationships among continuous attributes). Pruning strategy matters more than the impurity measure (slide 29).",
+    },
+    {
+      title: "Overfitting: causes and remedies",
+      level: "Medium",
+      question: "What is overfitting in decision trees? Give its causes and two remedies.",
+      solution: "Low training error but high generalisation error. Causes: noise (tree fits mislabelled records), lack of representative samples (rules learned from too few cases), and model complexity (slide 31). Remedies: **pre-pruning** (stop early: minimum records, no impurity improvement, error threshold) and **post-pruning** (grow fully, then replace subtrees with majority-class leaves when generalisation error improves) (slides 41–43). Prefer simpler models (Occam's razor).",
+    },
+    {
+      title: "ID3 and its inductive bias",
+      level: "Hard",
+      question: "Describe ID3 and its inductive bias.",
+      solution: "ID3 grows a tree with Hunt's algorithm, choosing at each step the attribute with the highest information gain. It keeps a single hypothesis, can't enumerate the alternative consistent trees, and never backtracks (greedy). Inductive bias: prefer shorter trees, and trees with high-gain attributes near the root (slide 44).",
+    },
+  ],
+
+  quiz: [
+    { topic: "Hunt", q: "In Hunt's algorithm, if the node's record set is empty, the node becomes…", options: ["Deleted", "A leaf labelled with the default (parent majority) class", "A test on a random attribute", "The root"], answer: 1, why: "Step 2 of slide 3.", wrong: ["Every branch needs an answer.", null, "There's nothing to split.", "No."] },
+    { topic: "Splitting", q: "Which grouping of Shirt Size (S < M < L < XL) is NOT valid for an ordinal split?", options: ["{S} | {M, L, XL}", "{S, M} | {L, XL}", "{S, L} | {M, XL}", "{S, M, L} | {XL}"], answer: 2, why: "It breaks the order.", wrong: ["Order kept.", "Order kept.", null, "Order kept."] },
+    { topic: "Impurity", type: "num", q: "Gini of a node with 4 C0 and 3 C1? (3 decimals)", answer: 0.49, display: "0.490", tol: 0.002, why: "1 − 16/49 − 9/49 = 24/49." },
+    { topic: "Impurity", type: "num", q: "Entropy of a node with 8 Yes and 10 No? (2 decimals)", answer: 0.99, tol: 0.005, why: "0.52 + 0.47." },
+    { topic: "Impurity", type: "num", q: "Classification error of a node with 1 C1 and 5 C2? (3 decimals)", answer: 0.167, tol: 0.002, why: "1 − 5/6." },
+    { topic: "Impurity", q: "The most impure two-class distribution is…", options: ["(0, 1)", "(0.25, 0.75)", "(0.5, 0.5)", "(1, 0)"], answer: 2, why: "Even mix (slide 7).", wrong: ["Pure.", "Less impure than 50/50.", null, "Pure."] },
+    { topic: "Gain", q: "Maximising the gain is the same as…", options: ["Maximising the parent impurity", "Minimising the weighted average impurity of the children", "Maximising the number of branches", "Minimising tree depth"], answer: 1, why: "The parent impurity is fixed (slide 9).", wrong: ["It's a constant.", null, "Not the criterion.", "Not directly."] },
+    { topic: "Gini splits", type: "num", q: "Weighted Gini of splitting on B (B=Y: 1 C0, 4 C1; B=N: 5 C0, 2 C1)? (2 decimals)", answer: 0.37, tol: 0.005, why: "(5/12)(0.32) + (7/12)(0.408) = 0.371." },
+    { topic: "Gini splits", q: "For Car type, which split had the lowest Gini on slide 13?", options: ["{Sports, Luxury} | {Family}", "{Sports} | {Family, Luxury}", "Multi-way Family / Sports / Luxury", "All equal"], answer: 2, why: "0.163 vs 0.167 vs 0.468.", wrong: ["0.468.", "0.167, close but higher.", null, "No."] },
+    { topic: "Job example", type: "num", q: "Information gain of Aptitude at the root? (2 decimals)", answer: 0.47, tol: 0.01, why: "0.99 − (11/18)(0.85)." },
+    { topic: "Job example", q: "At level 2 (Aptitude = High), which attribute is chosen?", options: ["CGPA (0.52)", "Communication (0.55)", "Programming (0.05)", "Aptitude again"], answer: 1, why: "Highest gain.", wrong: ["Slightly lower.", null, "Far lower.", "Already used."] },
+    { topic: "Job example", q: "CGPA High, Communication Bad, Aptitude High, Programming Bad is predicted…", options: ["Offered", "Not offered", "Undecided", "Needs Programming"], answer: 0, why: "High → Bad → CGPA High → Yes.", wrong: [null, "The CGPA = High leaf is Yes.", "Every path ends in a leaf.", "Programming isn't in the tree."] },
+    { topic: "Characteristics", q: "Why do decision trees produce rectilinear boundaries?", options: ["They use Gini", "Each test uses a single attribute", "They are pruned", "They use entropy"], answer: 1, why: "Axis-parallel splits (slide 29).", wrong: ["Measure doesn't matter.", null, "Pruning doesn't change shape.", "Same as Gini."] },
+    { topic: "Overfitting", q: "Low training error and high generalisation error indicate…", options: ["Underfitting", "Overfitting", "A perfect model", "Data fragmentation only"], answer: 1, why: "Slide 31.", wrong: ["Both errors high.", null, "Test error is high.", "Fragmentation can cause it, but the name is overfitting."] },
+    { topic: "Overfitting", type: "num", q: "Mammal Tree 1 (with Four-legged) misclassifies how many of the 10 test animals?", answer: 3, tol: 0, why: "Human, dolphin, spiny anteater." },
+    { topic: "Pruning", q: "In post-pruning by subtree replacement, the new leaf's label is…", options: ["Always 'No'", "The majority class of the instances in the subtree", "Chosen at random", "The root's label"], answer: 1, why: "Slide 43.", wrong: ["No.", null, "No.", "No."] },
+    { topic: "Pruning", q: "Stopping when a node has fewer instances than a threshold is…", options: ["Post-pruning", "Pre-pruning", "Bagging", "Boosting"], answer: 1, why: "An early-stopping condition (slide 42).", wrong: ["That trims a grown tree.", null, "Ensemble method.", "Ensemble method."] },
+  ],
+};
