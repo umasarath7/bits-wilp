@@ -14,6 +14,7 @@ export default {
       heading: "Lesson 1: Linear classifiers and the maximum margin",
       slides: "4–13",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Picture two groups of houses on either side of a **road** you have to build. Many roads would separate them. The SVM's rule: **build the widest possible road**, as far as possible from the houses on both sides. A wide road leaves room for error, so a new house placed a little off still lands on the correct side.\n\nThe houses touching the edges of the road are the **support vectors**. They alone decide where the road goes; move any other house and the road doesn't change. That's where the name comes from: these points “support” the road."},
         {
           type: "callout",
           kind: "idea",
@@ -34,6 +35,7 @@ export default {
           title: "Quick revision",
           text: "Many separators exist; the SVM picks the widest margin. Only the support vectors (points on the margin) define it.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**SVM = widest road between the classes.** Support vectors = the houses touching the road's edges; only they matter."},
       ],
     },
     {
@@ -41,6 +43,8 @@ export default {
       heading: "Lesson 2: The margin is 2/‖w‖, and the optimisation problem",
       slides: "16–24",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Let's turn “widest road” into maths, one small step at a time.\n1. The **centre line** of the road is $w \\cdot x + b = 0$. Here w is an arrow pointing **across** the road (perpendicular to it), and b slides the road sideways.\n2. We agree, by convention, that the two **edges** of the road are where $w \\cdot x + b = +1$ and $-1$. Every house must be on or beyond its edge.\n3. With that convention, the road's width works out to **2 ÷ (length of w)**. So a **shorter w means a wider road**.\n4. Therefore: “make the road as wide as possible” = “make w as short as possible” while keeping every house outside the road. That's the whole SVM optimisation problem.\n\nThe **Lagrange multipliers α** (the dual form) are a standard trick for solving “minimise something subject to rules”. You don't need to derive them. Just know: each training point gets an α, and **only support vectors end up with α ≠ 0**."},
+        {"type": "callout", "kind": "tip", "title": "Read the symbols aloud", "text": "- $w \\cdot x$ or $w^Tx$ “w dot x” = $w_1x_1 + w_2x_2 + \\dots$\n- $\\|w\\|$ “the norm (length) of w” = $\\sqrt{w_1^2 + w_2^2 + \\dots}$. E.g. w = (3, 4) has length 5.\n- $y_i \\in \\{+1, -1\\}$ = the class of house i.\n- $y_i(w^Tx_i + b) \\ge 1$ = “house i is on its own side, at or beyond its edge”. Multiplying by $y_i$ handles both sides in one line.\n- $\\min \\frac{1}{2}\\|w\\|^2$ = “make w as short as possible” (squared and halved only to make the algebra neat).\n- $\\alpha_i$ “alpha-i” = the multiplier (importance) of point i; non-zero only for support vectors."},
         {
           type: "callout",
           kind: "formula",
@@ -71,6 +75,7 @@ export default {
           title: "Lagrangian and dual (slides 22–24)",
           text: "Attach a multiplier $\\alpha_i \\ge 0$ to each constraint:\n$$L(w, b, \\alpha) = \\frac{1}{2}\\|w\\|^2 - \\sum_i\\alpha_i\\left[y_i(w^Tx_i + b) - 1\\right]$$\n$\\partial L/\\partial w = 0 \\Rightarrow w = \\sum_i\\alpha_iy_ix_i$; $\\partial L/\\partial b = 0 \\Rightarrow \\sum_i\\alpha_iy_i = 0$.\nOnly support vectors have $\\alpha_i \\ne 0$. Then $b = y_k - w \\cdot x_k$ for any support vector $x_k$, and the classifier is\n$$f(x) = \\text{sign}\\left(\\sum_i\\alpha_iy_i\\,x_i \\cdot x + b\\right)$$\n(f(x) < 0 → negative, otherwise positive). Both training and prediction need only **inner products** $x_i \\cdot x_j$, which is what makes kernels possible.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Width = 2/‖w‖ → shorter w = wider road.** Problem: minimise ½‖w‖² subject to every point being on its side (yᵢ(w·xᵢ + b) ≥ 1). Solution: w = Σ αᵢyᵢxᵢ, with only support vectors counting."},
       ],
     },
     {
@@ -78,6 +83,7 @@ export default {
       heading: "Lesson 3: SVM numerical example, step by step",
       slides: "25–38",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "The exam recipe for SVM numericals, as a cooking procedure (no theory needed):\n1. **Pick the support vectors**: the points of each class closest to the other class.\n2. **Add a 1** at the end of each (this extra slot will carry b).\n3. Write **one equation per support vector**: Σ αⱼ (s̃ⱼ · s̃ᵢ) = that point's label (−1 or +1).\n4. **Solve** for the α's (usually symmetry makes two of them equal).\n5. **w̃ = Σ αᵢ s̃ᵢ.** Its last number is **b**; the rest is **w**.\n6. Write the line w·x + b = 0 and the margin 2/‖w‖."},
         {
           type: "callout",
           kind: "idea",
@@ -109,6 +115,7 @@ export default {
           title: "Common mistakes",
           text: "- Forgetting to augment with the 1, so b never appears.\n- Mixing the two conventions: either α absorbs the label (equations equal yᵢ, w̃ = Σαᵢs̃ᵢ), **or** use αᵢ ≥ 0 with yᵢ written explicitly (w = Σαᵢyᵢxᵢ). Don't combine them.\n- Reading b from the wrong component: it's the **last** entry of w̃.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Pick SVs → add 1 → one dot-product equation per SV (= its label) → solve α → w̃ = Σαs̃ → last entry = b.** Then line and margin 2/‖w‖."},
       ],
     },
     {
@@ -116,6 +123,7 @@ export default {
       heading: "Lesson 4: Soft margin: slack variables and C",
       slides: "39–47",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Real data has a few troublemakers: points on the wrong side or inside the road. A **hard-margin** SVM refuses to allow any, so either it can't be solved or the road gets squeezed to fit one odd point.\n\n**Soft margin** = allow some rule-breaking, **but charge a fee**. Each violating point pays a **slack ξ** (how far it intrudes), and the total fee is multiplied by **C**:\n- **Big C** = strict, expensive fines → a narrow road that bends to avoid every violation (can overfit).\n- **Small C** = cheap fines → a wide road that tolerates a few intruders (more robust to noise)."},
         {
           type: "p",
           text: "So far we required **every** point to be classified correctly (**hard margin**: no training error). With noisy data (measurement errors, mislabelled samples, outliers) no separating hyperplane may exist, or a single noisy point drags the boundary and hurts generalisation (slide 39).",
@@ -142,6 +150,7 @@ export default {
           type: "p",
           text: "**C controls overfitting** (slide 43). Soft-margin SVMs are robust to noisy datasets and outliers (slide 42). **Linear SVM overview (slide 47):** the classifier is a separating hyperplane; the support vectors (the points with non-zero αᵢ found by quadratic optimisation) define it; $f(x) = \\sum\\alpha_iy_ix_i^Tx + b$.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Soft margin = road with fines.** ξ = how far a point intrudes (0 fine · 0–1 inside the road · > 1 wrong side). **Big C = strict (narrow road, may overfit); small C = lenient (wide road).**"},
       ],
     },
     {
@@ -149,6 +158,8 @@ export default {
       heading: "Lesson 5: Non-linear SVMs and the kernel trick",
       slides: "48–63",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Some data can't be split by any straight line. Classic picture: red dots in the **middle** of a table, blue dots all **around** them. No ruler can separate them.\n\nTrick: **lift the data into another dimension.** Imagine hitting the table from below so the middle red dots fly **up** into the air while the blue ones stay low. Now a flat sheet of paper (a plane) slides between them easily. Looking back down at the table, that flat sheet appears as a **circle**.\n\nThe **kernel trick** is the clever shortcut: the SVM only ever needs **dot products** between points, and a kernel function computes the dot product *in the lifted space* directly from the original points, **without actually lifting them**. That makes even infinite-dimensional lifts (the RBF kernel) cheap."},
+        {"type": "callout", "kind": "tip", "title": "Read the symbols aloud", "text": "- $\\varphi(x)$ “phi of x” = the lifted version of point x (e.g. $(x_1^2, \\sqrt2x_1x_2, x_2^2)$).\n- $K(x, z) = \\varphi(x)^T\\varphi(z)$ = kernel = the dot product after lifting, computed directly.\n- Polynomial: $(1 + x^Tz)^p$ · RBF: $e^{-\\|x - z\\|^2/2\\sigma^2}$ (1 when the points coincide, near 0 when far apart: a similarity score)."},
         {
           type: "callout",
           kind: "idea",
@@ -194,6 +205,7 @@ export default {
           type: "p",
           text: "**Non-linear SVM overview (slide 62):** the SVM finds a separating hyperplane in the feature space and classifies there; it doesn't need to represent that space explicitly, only to define a kernel, which plays the role of the dot product.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Can't split it flat? Lift it.** Kernel = dot product in the lifted space, computed without lifting. Quick calc: work out xᵀz first, then apply the kernel: (1 + xᵀz)² etc."},
       ],
     },
     {
@@ -201,6 +213,7 @@ export default {
       heading: "Lesson 6: Multi-class SVMs, pros and cons",
       slides: "64–66",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "SVMs are yes/no machines. For several classes, run a contest: **one-vs-all** (each class vs everyone else; the most confident wins) or **one-vs-one** (every pair of classes plays a match; the class with the most wins takes it)."},
         {
           type: "callout",
           kind: "example",
@@ -218,6 +231,7 @@ export default {
             ["A quadratic programme; many packages (LIBSVM, LIBLINEAR, SVMLight)", ""],
           ],
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**OvA: C models, highest score wins. OvO: C(C − 1)/2 matches, most votes wins.** SVM pros: powerful kernels, few support vectors. Cons: choosing the kernel, slow on huge data."},
       ],
     },
   ],

@@ -14,6 +14,7 @@ export default {
       heading: "Lesson 1: Why combine learners?",
       slides: "3–8",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Would you rather trust **one** doctor's opinion or a **panel** of doctors? Each doctor has blind spots, but different doctors have *different* blind spots, so a panel's combined verdict is usually better than any single member's. That's an **ensemble**.\n\nThe panel only helps if the doctors are **different** (five copies of the same doctor add nothing) and each is **reasonably competent**. So we make models different on purpose: different algorithms, different settings, different inputs, or different samples of the data."},
         {
           type: "callout",
           kind: "idea",
@@ -41,6 +42,7 @@ export default {
           title: "Diversity vs accuracy (slides 5, 8)",
           text: "It does not help if all learners are good or bad at roughly the same things: we need **diverse** learners. Each must be **reasonably accurate** to begin with, but base learners are chosen for **simplicity**, not for their individual accuracy.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Ensemble = panel of experts.** Works when members are **diverse** and **decent**. No single algorithm always wins (No Free Lunch), so combine several."},
       ],
     },
     {
@@ -48,6 +50,7 @@ export default {
       heading: "Lesson 2: Combining the outputs: voting and fusion rules",
       slides: "9–11, 25–30",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "How does the panel reach a verdict? Several voting styles:\n- **Average (sum):** everyone's scores are averaged. Fair and smooth.\n- **Weighted average:** trust the better experts more.\n- **Median:** ignore the extremists.\n- **Max / min:** follow the most / least enthusiastic member.\n- **Product:** multiply scores, so **any one member saying 0 vetoes** that class.\n\nWhy averaging helps: each wiggly, over-excited model is wrong in its own random direction; averaging cancels the random wiggles (variance) while keeping the shared correct trend."},
         {
           type: "callout",
           kind: "formula",
@@ -73,6 +76,7 @@ export default {
           text: "Fit f(x) = 2 sin(1.5x) from noisy samples (noise N(0, 1)). An order-1 polynomial is too simple (high bias). Order-3 and order-5 polynomials fit each sample well but each fit wiggles differently (high variance). **Averaging** many order-5 fits gives a curve close to the true function.\n**Idea for voting:** vote over models with **high variance and low bias**. After combining, the bias stays small and averaging reduces the variance. Even if the individual models are biased, the drop in variance may outweigh the bias, so the error still decreases.",
         },
         { type: "diagram", name: "s4-archery" },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Average cancels individual wobbles (reduces variance).** Product rule = veto power (a single 0 kills that class). Know all five rules: sum, weighted, median, min, max, product."},
       ],
     },
     {
@@ -80,6 +84,7 @@ export default {
       heading: "Lesson 3: Bagging (bootstrap aggregating)",
       slides: "12–14",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "**Bagging** = make many slightly different training sets out of one, train a model on each, and let them vote.\n\nHow do you make “different” datasets from one? **Bootstrapping**: draw rows **with replacement**, like pulling names from a hat and putting each name back before the next draw. Some rows get picked twice, some not at all. Each bootstrap sample therefore contains about **63%** of the original rows (the rest, about 37%, are “out-of-bag”).\n\nBagging helps most with **jumpy** models (deep trees), whose predictions change a lot when the data changes slightly: their votes average out the jumpiness."},
         {
           type: "callout",
           kind: "idea",
@@ -106,6 +111,7 @@ export default {
             ["Noisy data", "Less prone to overfitting: no particular instance gets extra focus"],
           ],
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Bagging = Bootstrap (draw with replacement) + AGGregate (vote/average).** ~63% unique rows per sample, because 1 − (1 − 1/N)ᴺ ≈ 1 − 1/e. Reduces **variance** of unstable models; runs in **parallel**."},
       ],
     },
     {
@@ -113,6 +119,7 @@ export default {
       heading: "Lesson 4: Random forests",
       slides: "15",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "A **random forest** is bagging with decision trees, plus one more twist: at every split, each tree may only look at a **random handful of columns**. Why? If one column is very strong, every bagged tree would ask it first and they'd all look alike (a panel of clones). Forcing different columns makes the trees **disagree more**, and a panel that disagrees in random ways averages out better."},
         {
           type: "callout",
           kind: "formula",
@@ -125,6 +132,7 @@ export default {
           title: "In code (from the AML webinar)",
           text: "`RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42)`: 100 trees, each limited to depth 5. On the loan data it reached test accuracy 0.83 with recall 0.93 for approved loans (see the Webinar 1 page).",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Random forest = many unpruned trees on bootstrap samples + a random subset of features at each split → vote.** More trees = more stable."},
       ],
     },
     {
@@ -132,6 +140,8 @@ export default {
       heading: "Lesson 5: Boosting and AdaBoost",
       slides: "16–23, 31–42",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Bagging trains its experts **independently, in parallel**. **Boosting** trains them **one after another, each one studying the previous ones' mistakes**, like a coaching session: after each mock test, the coach makes the next practice set focus on the questions you got wrong.\n\n**AdaBoost** does this with weights:\n1. Start with every example equally important.\n2. Train a simple model (often a one-question tree, a “stump”). Measure its **weighted error ε**.\n3. Give the model a **say α**: lower error → bigger say.\n4. **Increase** the weights of the examples it got wrong and **decrease** the ones it got right, so the next model focuses on the hard cases.\n5. Repeat. Final answer = **weighted vote** of all the models, each counting α times.\n\nIf a model is worse than coin-flipping (ε > 0.5), stop; it's no use."},
+        {"type": "callout", "kind": "tip", "title": "Read the symbols aloud", "text": "- $\\epsilon_j$ “epsilon-j” = weighted error of model j (sum of the weights of the examples it got wrong).\n- $\\alpha_j = \\frac{1}{2}\\ln\\frac{1 - \\epsilon_j}{\\epsilon_j}$ = model j's say. ε = 0.3 → α = 0.42; ε = 0.1 → α = 1.1.\n- $p^t$ = weight (importance) of example t. Wrong: $\\times e^{\\alpha}$ (up); right: $\\times e^{-\\alpha}$ (down); then divide by the total so the weights sum to 1.\n- $H(x) = \\text{sign}(\\sum\\alpha_jh_j(x))$ = the weighted vote: add up ±1 votes times their α, then take the sign."},
         {
           type: "callout",
           kind: "idea",
@@ -173,6 +183,7 @@ export default {
             ["Noise", "Robust", "Can overfit noisy labels (they keep gaining weight)"],
           ],
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Boosting = coach who focuses on your mistakes. AdaBoost: error ε → say α = ½ln((1 − ε)/ε) → up-weight mistakes, down-weight successes, normalise → next model → weighted vote.** Stop if ε > 0.5. Bagging = parallel, cuts variance; boosting = sequential, cuts bias."},
       ],
     },
   ],

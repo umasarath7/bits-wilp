@@ -14,6 +14,8 @@ export default {
       heading: "Lesson 1: The regression problem and the hypothesis",
       slides: "6–10",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Imagine you sell second-hand houses. Every time a house sells you write down its **size** and its **price**. After 50 sales you notice: bigger houses cost more, roughly in a straight-line way. **Regression** is simply writing that pattern down as a formula, so that tomorrow, when someone tells you only the size, you can **guess the price**.\n\nThe formula has a few **knobs** (numbers we can turn). For a straight line there are two: where the line starts (the *intercept*) and how steep it is (the *slope*). **Learning = finding the best positions for these knobs.** Everything in this module is about *how* to find them."},
+        {"type": "callout", "kind": "tip", "title": "Read the symbols aloud", "text": "- $x$ = the input you know (house size). $y$ = the answer you want (price).\n- $\\theta$ (“theta”) = a knob/parameter. $\\theta_0$ “theta-zero” = intercept, $\\theta_1$ “theta-one” = slope.\n- $h_\\theta(x)$ “h-theta of x” = the model's **guess** for input x. Also written $\\hat y$ (“y-hat”: the hat means *estimate*).\n- $\\theta^Tx$ “theta-transpose x” = a shorthand for $\\theta_0 + \\theta_1x_1 + \\theta_2x_2 + \\dots$ (multiply each knob by its feature and add). See the 📐 Maths You Need page."},
         {
           type: "callout",
           kind: "idea",
@@ -34,6 +36,7 @@ export default {
           type: "p",
           text: "**When not to use linear regression (slide 10):** when the relationship is non-linear (unless you add basis functions, Lesson 7), when outliers strongly affect the result, when features are highly correlated, and when you are predicting a class or category (use classification, Module 4).",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Regression = a formula with knobs. Learning = turning the knobs until the guesses fit the data.** Simple regression: 1 input, 2 knobs. Multiple regression: many inputs, one knob each + the intercept."},
       ],
     },
     {
@@ -41,6 +44,8 @@ export default {
       heading: "Lesson 2: The cost function: measuring how wrong a line is",
       slides: "11–23",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Before we can find the *best* line we need a way to **score** a line. Think of an archery target: each data point is where an arrow *should* land; the line is where we *aimed*. The **gap** between them is the **error** (also called the residual).\n\nWe add up all the gaps to get one number: the **cost**. Small cost = good line. But plain gaps can cancel (+5 and −5 add to 0, which looks perfect but isn't!), so we **square** each gap first. Squaring also makes big misses hurt a lot more than small ones, which is usually what we want.\n\nThe best line is the one with the **smallest total squared error**. That's why it's called **least squares**."},
+        {"type": "callout", "kind": "tip", "title": "Read the symbols aloud", "text": "- $\\sum_{i=1}^{n}$ “sum from i equals 1 to n” = add the thing up for every data point.\n- $y^{(i)}$ = the *real* answer for point number i (the (i) is a label, not a power).\n- $(h_\\theta(x^{(i)}) - y^{(i)})^2$ = (guess − real)², the squared miss for point i.\n- $J(\\theta)$ “J of theta” = the **cost**: one number that scores the whole line. Our job: make J as small as possible.\n- $\\bar x$ “x-bar” = the average of x."},
         {
           type: "callout",
           kind: "idea",
@@ -91,6 +96,7 @@ export default {
           title: "Quick revision",
           text: "Residual = y − ŷ. SSE = Σ residual². J = SSE/(2n). θ₁ = Sxy/Sxx, θ₀ = ȳ − θ₁x̄. J is convex: one global minimum.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Error → square → add up → that's the cost J.** Squared so misses can't cancel and big misses hurt more. The cost curve is a **bowl** (convex): it has exactly one bottom, and the bottom is the best line."},
       ],
     },
     {
@@ -98,6 +104,8 @@ export default {
       heading: "Lesson 3: The closed-form solution (normal equation)",
       slides: "28–36",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "There are two ways to find the bottom of the cost bowl. This lesson is the **shortcut**: a single formula that jumps straight to the answer, like solving an equation in school instead of guessing-and-checking.\n\nThe idea: at the very bottom of a bowl the ground is **flat** (slope = 0). So we write the slope of J, set it equal to zero, and solve. With matrices the answer comes out as one tidy formula, the **normal equation**.\n\nThe catch: the formula needs a **matrix inverse**, which gets very slow when there are thousands of features, and impossible if some features are copies of each other."},
+        {"type": "callout", "kind": "tip", "title": "Read the symbols aloud", "text": "- $X$ = the data table as a matrix: one row per example, one column per feature, **plus a first column of 1s** (that 1 multiplies the intercept θ₀).\n- $X^T$ “X-transpose” = the table flipped (rows become columns).\n- $(X^TX)^{-1}$ “inverse of X-transpose-X” = the matrix version of “divide by”.\n- So $\\theta = (X^TX)^{-1}X^Ty$ reads: “knobs = (inverse of XᵀX) times (Xᵀ times answers)”."},
         {
           type: "callout",
           kind: "idea",
@@ -132,6 +140,7 @@ export default {
           title: "Quick revision",
           text: "θ = (XᵀX)⁻¹Xᵀy. Non-iterative, no learning rate, but inverting is roughly O(n³), so it is slow when there are many features.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Bottom of the bowl = slope zero → solve → θ = (XᵀX)⁻¹Xᵀy.** One shot, no learning rate, but slow (≈ n³) with many features. *Mnemonic:* “**X-T-X inverse, X-T-y**”."},
       ],
     },
     {
@@ -139,6 +148,8 @@ export default {
       heading: "Lesson 4: Gradient descent: walking downhill",
       slides: "37–62",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Now the **other** way to reach the bottom of the bowl: **walk downhill**.\n\nImagine you're standing on a foggy hillside and want to reach the valley floor. You can't see far, but you can feel which way the ground slopes under your feet. So you take a step **downhill**, feel again, take another step, and so on. Eventually you reach the bottom. That's **gradient descent**.\n\n- The **gradient** = which way is uphill, and how steep.\n- We step the **opposite** way (downhill), hence the minus sign.\n- The **learning rate α** = how big each step is. Tiny steps: safe but slow. Huge steps: you leap over the valley and may end up higher than before (the loss *grows*: that's divergence).\n\nThe update rule looks scary but is just: **new knob = old knob − step size × slope**."},
+        {"type": "callout", "kind": "tip", "title": "Read the symbols aloud", "text": "- $\\alpha$ “alpha” = learning rate (step size), e.g. 0.01.\n- $\\frac{\\partial J}{\\partial \\theta_j}$ “partial J by partial theta-j” = how much the cost changes if we nudge only knob j (the slope in that one direction).\n- $:=$ “becomes” (update), not “equals”.\n- $\\frac{1}{n}\\sum(h - y)x_j$ = the average of (error × that feature): the slope for knob j.\n- For θ₀ the “feature” is just 1, so its slope is the average error."},
         {
           type: "callout",
           kind: "idea",
@@ -204,6 +215,7 @@ export default {
           title: "Quick revision",
           text: "θⱼ := θⱼ − (α/n) Σ(ŷ − y)xⱼ, all at once. Small α: slow; large α: diverges. Scale features for round contours and fast convergence.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**New = Old − α × slope.** Slope for knob j = average of (guess − real) × feature j. Update **all knobs together** using the old values. Loss going up? α is too big (or features aren't scaled). *Picture:* foggy hill, small steps downhill."},
       ],
     },
     {
@@ -211,6 +223,7 @@ export default {
       heading: "Lesson 5: Closed form vs gradient descent, and the three GD variants",
       slides: "75–82",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "How much data do you look at before taking each downhill step?\n- **Batch:** read the *whole* textbook, then answer one question. Accurate steps, but each one is slow.\n- **Stochastic (SGD):** look at *one* example, step immediately. Very fast, but the path wobbles like a drunk walker; it still trends downhill.\n- **Mini-batch:** look at a handful (say 32), then step. The practical middle ground, used everywhere in deep learning."},
         {
           type: "table",
           caption: "Closed form vs gradient descent (slide 75)",
@@ -236,6 +249,7 @@ export default {
           type: "p",
           text: "Batch GD computes the derivative from **all** training data before an update; mini-batch from small groups; stochastic GD from **each single instance**, updating immediately (slide 77). SGD's noisy path can escape shallow regions but jitters around the minimum; batch GD moves smoothly but each step is expensive.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Batch = all, SGD = one, Mini-batch = a few.** Closed form = one jump, no α, slow for many features. GD = many small steps, needs α, scales well."},
       ],
     },
     {
@@ -243,6 +257,7 @@ export default {
       heading: "Lesson 6: Evaluating a regression model: MSE, RMSE, R²",
       slides: "83–87",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Once the line is fitted, how good is it? Three everyday questions:\n- **MSE:** “On average, how big is the squared miss?” (in squared units, hard to feel).\n- **RMSE:** take the square root to get back to normal units: “typically my guesses are off by about this much.” If RMSE = 1.58 lakh, the house-price guesses are usually about 1.58 lakh off.\n- **R²:** “Compared with just guessing the average every time, how much better am I?” R² = 0.75 means the model explains 75% of the ups and downs in y."},
         {
           type: "callout",
           kind: "formula",
@@ -259,6 +274,7 @@ export default {
           type: "p",
           text: "**Comparing models on unseen data (slides 84–85).** Two models are fitted to mileage → car price: Model 1 = 8.5 + 0.5·Mileage − 1.5·Mileage², Model 2 = −5.5 + 1.5·Mileage. The right one is chosen by its error on **unseen** data (mileage 7.5 → 9.25, 10 → 6.5), not on the training data.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**MSE = average squared miss · RMSE = typical miss in real units · R² = how much better than guessing the mean** (1 = perfect, 0 = useless)."},
       ],
     },
     {
@@ -266,6 +282,7 @@ export default {
       heading: "Lesson 7: Non-linear relationships: linear basis function models",
       slides: "88–93",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "What if the data curves, like a banana, not a stick? We can still use “linear” regression by giving it **curved ingredients**: instead of feeding just x, we also feed x², x³, and so on. The model is still a simple weighted sum (linear **in the knobs**), but the ingredients bend, so the result can bend too.\n\nThink of LEGO: the bricks are straight, but by combining x, x², x³ bricks you can build a curve."},
         {
           type: "callout",
           kind: "idea",
@@ -279,6 +296,7 @@ export default {
           text: "$$y(x, w) = \\sum_{j=0}^{M} w_j\\,\\phi_j(x), \\qquad \\phi_0(x) = 1$$\nExample: an M-th order polynomial in one feature uses $\\phi_j(x) = x^j$: $y = w_0 + w_1x + w_2x^2 + \\dots + w_Mx^M$. The model is still called **linear** because it is linear **in the weights w**, even though it is curved in x. Other basis functions include Gaussians and sigmoids (slide 93).",
         },
         { type: "diagram", name: "s4-poly" },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**“Linear” means linear in the weights, not in x.** Add x², x³ … (basis functions) to fit curves with the same machinery."},
       ],
     },
     {
@@ -286,6 +304,7 @@ export default {
       heading: "Lesson 8: Bias, variance, underfitting and overfitting",
       slides: "94–102",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Two ways a student can fail an exam:\n- **Underfitting (high bias):** they learned too little, maybe only one rule of thumb. They do badly on practice papers **and** on the real exam.\n- **Overfitting (high variance):** they **memorised** the practice papers word for word. Perfect on practice, lost on the real exam with new questions.\n\nModels behave the same way. A straight line through curved data underfits. A wiggly 10th-degree curve through 10 points memorises them, noise included, and overfits. The goal is the **sweet spot** in between: learn the pattern, not the noise.\n\nThree cures for overfitting: **more data** (harder to memorise), a **simpler model**, or **regularisation** (next lesson)."},
         {
           type: "callout",
           kind: "idea",
@@ -321,6 +340,7 @@ export default {
           title: "Quick revision",
           text: "Underfit = high bias = both errors high. Overfit = high variance = low train, high test error. Fix overfitting: more data, simpler model, regularise.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Bias = too simple (both errors high). Variance = memorising (train low, test high).** Cures for overfitting: more data · simpler model · regularise."},
       ],
     },
     {
@@ -328,6 +348,8 @@ export default {
       heading: "Lesson 9: Regularisation: ridge, lasso and elastic net",
       slides: "103–114",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Regularisation is a **fine for big knobs**. An overfitting model usually has huge, wild weights (it bends hard to pass through every noisy point). So we change the scoring rule: cost = (how badly you fit) **+ λ × (how big your weights are)**.\n\nNow the model must balance two goals: fit the data **and** keep the weights small. The **λ (lambda)** dial sets how strict the fine is:\n- λ = 0: no fine, the model can overfit.\n- λ huge: weights are crushed to almost zero, a flat line, underfitting.\n\nTwo kinds of fine:\n- **Ridge (L2)** fines the *square* of each weight: it shrinks all weights a bit, like a tax.\n- **Lasso (L1)** fines the *size* of each weight: it pushes unimportant weights all the way to **zero**, like firing useless employees. That gives automatic feature selection.\n\nWe never fine θ₀ (the intercept): it just sets the baseline level and doesn't cause wiggles."},
+        {"type": "callout", "kind": "tip", "title": "Read the symbols aloud", "text": "- $\\lambda$ “lambda” = strength of the fine.\n- $\\sum_{j=1}^{d}\\theta_j^2$ = sum of squared weights (ridge). Starts at j = 1, so θ₀ is skipped.\n- $\\sum|\\theta_j|$ = sum of absolute weights (lasso).\n- $(1 - \\alpha\\lambda)$ = the ridge “shrink factor”: each step first multiplies the weight by, e.g., 0.9 (10% shrink), then does the usual gradient step.\n- $\\text{sign}(\\theta)$ = −1, 0 or +1 depending on whether θ is negative, zero or positive."},
         {
           type: "callout",
           kind: "idea",
@@ -386,6 +408,7 @@ export default {
           title: "Quick revision",
           text: "Ridge: +(λ/2)Σθ², shrink factor (1 − αλ), weights small but non-zero. Lasso: +λΣ|θ|, step −αλ·sign(θ), weights can hit 0 (feature selection). Never regularise θ₀. Large λ underfits, small λ overfits.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Regularisation = fine on big weights.** Ridge (L2, squares) = shrink all · Lasso (L1, absolute) = zero some out → feature selection · Elastic net = both. Big λ → underfit, small λ → overfit. Never regularise θ₀. *Mnemonic:* **L1 = “Lose” features, L2 = “Lower” them.**"},
       ],
     },
     {

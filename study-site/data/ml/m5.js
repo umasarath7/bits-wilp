@@ -15,6 +15,7 @@ export default {
       heading: "Lesson 1: What a decision tree is",
       slides: "5–13, 21",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "A decision tree is the game **“20 Questions”**. To guess an animal you ask “Does it fly?”, then “Is it bigger than a cat?”, narrowing down until you're sure. A tree does the same with data: each question splits the examples into smaller groups until each group is (nearly) one class.\n\nIt's also exactly how a doctor or bank officer might reason: “Is the outlook sunny? Then is humidity high? Then don't play tennis.” That's why trees are the **easiest model to explain** to anyone."},
         {
           type: "callout",
           kind: "idea",
@@ -38,6 +39,7 @@ export default {
           title: "Trees as rules (slide 21)",
           text: "A tree is a **disjunction (OR) of conjunctions (AND)** of attribute tests, one conjunction per path to a “Yes” leaf:\n(Outlook = Sunny ∧ Humidity = Normal) ∨ (Outlook = Overcast) ∨ (Outlook = Rain ∧ Wind = Weak).",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Tree = 20 Questions.** Root = first question, internal nodes = more questions, leaves = answers. Each path from root to leaf is an **IF … AND … THEN** rule."},
       ],
     },
     {
@@ -45,6 +47,7 @@ export default {
       heading: "Lesson 2: Growing a tree: Hunt's algorithm and a manual example",
       slides: "11, 14–20, 22–24",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Hunt's algorithm is the recipe for growing the tree. It is really just one rule, repeated:\n- If everyone in this group has the **same answer**, stop: make a leaf.\n- Otherwise, ask the **best question** to split the group, and repeat the rule on each smaller group.\n\nLike sorting a mixed bag of coins: if a pile is all ₹5 coins, it's done; if not, split it by size, then by colour… until every pile is pure."},
         {
           type: "callout",
           kind: "formula",
@@ -66,6 +69,7 @@ export default {
             ["When to stop?", "All records in one class; all records have identical attribute values; or early stopping (max depth, min records per node) to avoid overfitting"],
           ],
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Pure → stop. Mixed → best question → repeat on each part.** Stop also when no questions are left (take a majority vote) or the group is empty."},
       ],
     },
     {
@@ -73,6 +77,8 @@ export default {
       heading: "Lesson 3: Impurity, entropy and information gain",
       slides: "25–29",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Which question is “best”? The one that makes the groups **least mixed**.\n\n**Entropy measures messiness** (surprise). A bag of 10 red balls: no surprise when you draw one, entropy **0**. A bag of 5 red and 5 blue: maximum surprise, entropy **1**. Anything in between is between 0 and 1.\n\n**Information gain** = messiness before the question − (average) messiness after it. A question that splits a 50/50 mess into two pure piles gains the full 1 bit; a useless question gains 0. **We always ask the question with the biggest gain.**\n\nThe “average messiness after” is **weighted**: a pile holding 8 of 10 examples counts four times as much as a pile holding 2."},
+        {"type": "callout", "kind": "tip", "title": "Read the symbols aloud", "text": "- $p_+, p_-$ = fraction of Yes and No in the group.\n- $\\log_2$ = log base 2 (on a calculator: $\\log_2 x = \\ln x / \\ln 2$). $\\log_2$ of a fraction is negative, which is why there's a minus sign in front.\n- $\\frac{|S_v|}{|S|}$ = the share of examples that go down branch v (the weight).\n- Handy values: E(1,1) = 1 · E(3,1) = 0.811 · E(2,1) = 0.918 · E(3,2) = 0.971 · E(9,5) = 0.940 · pure = 0."},
         {
           type: "callout",
           kind: "idea",
@@ -108,6 +114,7 @@ export default {
           title: "Common mistakes",
           text: "- Forgetting to **weight** each child's entropy by its share of records.\n- Using natural log instead of log₂ (on a calculator: log₂x = ln x / ln 2).\n- Leaving out a pure child (entropy 0); it still counts in the weights.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Entropy = messiness (0 pure, 1 = 50/50). Gain = messiness before − weighted messiness after. Ask the highest-gain question.** Always weight each branch by its size."},
       ],
     },
     {
@@ -115,6 +122,7 @@ export default {
       heading: "Lesson 4: ID3 on PlayTennis, step by step",
       slides: "30–52",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "ID3 is just “entropy + Hunt” done by hand. The rhythm for every node:\n1. Messiness of this node.\n2. For each candidate question: split, measure each piece's messiness, take the weighted average.\n3. Gain = step 1 − step 2. Pick the biggest.\n4. Repeat inside each impure branch **using only the rows that reached it**.\n\nOn PlayTennis: Outlook wins at the top (gain 0.247); Overcast is already pure; under Sunny, Humidity splits perfectly; under Rain, Wind does."},
         {
           type: "table",
           caption: "PlayTennis data (slide 30): 14 days, 9 Yes / 5 No",
@@ -164,6 +172,7 @@ export default {
             ["Handles redundant or irrelevant attributes (unless they interact)", "Each decision boundary involves a single attribute (axis-parallel splits)"],
           ],
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**ID3 rhythm: messiness → split each way → weighted messiness → gain → pick the max → recurse on that branch's rows only.** PlayTennis: Outlook → (Sunny: Humidity, Rain: Wind)."},
       ],
     },
     {
@@ -171,6 +180,7 @@ export default {
       heading: "Lesson 5: Exam problem types 1–4: build, converge, predict, evaluate",
       slides: "53–65",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Exam “problem types” are just the life cycle of a tree: **build** it (pick the root by gain), **know when to stop**, **use** it to predict (follow the branches like a flowchart), and **grade** it (confusion matrix on test data). Practise these four on the tiny EnjoySport table until they feel automatic."},
         {
           type: "table",
           caption: "EnjoySport data (slides 53–57)",
@@ -210,6 +220,7 @@ export default {
           title: "Slide check (flagged): slide 63",
           text: "Slide 63 says the new row would be predicted **Yes** (TP = 1). The tree built on slide 60 sends Sky = Rainy to **No**, so for the test row the result is **FN = 1** (actual Yes, predicted No), consistent with slide 62.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Build → stop → predict → evaluate.** E(3 Yes, 1 No) = 0.811 (the slides' 0.94 is a typo)."},
       ],
     },
     {
@@ -217,6 +228,7 @@ export default {
       heading: "Lesson 6: Gini index and binary splits",
       slides: "66–72",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Gini is a second messiness meter, slightly simpler to compute (no logs). Story: pick two balls from the group at random, with replacement. **Gini = the chance they are different colours.** Pure group: 0 (they can never differ). 50/50 group: 0.5.\n\nSame game as before: compute the weighted Gini of the pieces for each question and pick the **lowest**."},
         {
           type: "callout",
           kind: "formula",
@@ -241,6 +253,7 @@ export default {
           title: "Note: two versions of the loan table",
           text: "Slides 14–17 and practice slide 121 list Tid 6 as **Married**; slides 68–72 list it as **Single**. Each slide's answer is right for its own table. Check which table a question gives.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Gini = 1 − Σp² = chance two random picks disagree.** 0 pure, 0.5 max (two classes). **Lowest weighted Gini wins.** Used by CART / scikit-learn by default."},
       ],
     },
     {
@@ -248,6 +261,7 @@ export default {
       heading: "Lesson 7: Continuous attributes: choosing thresholds (Problem type 5)",
       slides: "73–80",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "For a number column (income, temperature) the question is “is it **below c**?”. Which c? Line the values up in order and try the **midpoint between each neighbouring pair**, especially where the class changes. Score each cut with Gini or entropy and keep the best, just like trying different places to cut a cake."},
         {
           type: "callout",
           kind: "formula",
@@ -267,6 +281,7 @@ export default {
           text: "Sorted incomes (K): 60, 70, 75, 85, 90, 95, 100, 120, 125, 220 with classes No, No, No, Yes, Yes, Yes, No, No, No, No. Candidate splits: 55, 65, 72.5, 80, 87.5, 92.5, **97.5**, 110, 122.5, 172.5, 230.\nAt **97.5**: left = 6 records (3 Yes, 3 No) → Gini 0.5; right = 4 records (all No) → 0. Weighted = (6/10)(0.5) = **0.300**, the minimum. (At 80: (3/10)(0) + (7/10)(0.49) = 0.343.)",
         },
         { type: "diagram", name: "m5-incsplit" },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Sort → try midpoints (where the class flips) → lowest weighted impurity wins.** Loan data: best cut Income ≤ 97.5K."},
       ],
     },
     {
@@ -274,6 +289,7 @@ export default {
       heading: "Lesson 8: Classification error and the gain ratio (Problem type 6)",
       slides: "81–87",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Information gain has a weakness: it loves questions with **many answers**. Asking “What is your customer ID?” splits 20 customers into 20 piles of one, each perfectly pure, so the gain is maximal. Yet the question is useless for any new customer!\n\nThe **gain ratio** fixes this by dividing by **split information**, a penalty for chopping data into many small pieces. Customer ID gets a huge penalty (log₂20 = 4.3); a sensible yes/no question gets a penalty of about 1."},
         {
           type: "callout",
           kind: "formula",
@@ -292,6 +308,7 @@ export default {
           title: "Gender vs car type vs customer ID (slides 85–87)",
           text: "20 customers, 10 C0 and 10 C1 → parent entropy **1**.\n- **Gender:** M (6 C0, 4 C1) and F (4 C0, 6 C1) → each 0.971 → gain 0.029; split info 1 → **gain ratio 0.029**.\n- **Car type:** Family (1 C0, 3 C1) 0.811, Sports (8, 0) 0, Luxury (1, 7) 0.544 → children = (4/20)(0.811) + (8/20)(0.544) = 0.380 → gain **0.620**; split info = −[0.2 log₂0.2 + 0.4 log₂0.4 + 0.4 log₂0.4] = 1.52 → **gain ratio 0.41**.\n- **Customer ID:** 20 pure singletons → gain **1** (the highest!) but split info log₂20 = 4.32 → **gain ratio 0.23**.\n**Inference:** Customer ID has the largest information gain but a lower gain ratio than Car type, because it fragments the data. Gain ratio picks **Car type**.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Gain ratio = gain ÷ split-info.** Split-info punishes fragmenting splits (IDs, dates). *Picture:* “What's your ID?” is perfectly pure and perfectly useless."},
       ],
     },
     {
@@ -299,6 +316,7 @@ export default {
       heading: "Lesson 9: Overfitting and pruning (Problem types 7–9)",
       slides: "88–109",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Left alone, a tree keeps asking questions until every training example is in its own pure leaf, including the **noisy, mislabelled** ones. It then has rules like “IF Sunny AND Normal AND Strong wind THEN No”, built to explain one odd day. That's memorising, not learning.\n\n**Pruning** is like a gardener trimming a bush:\n- **Pre-pruning:** stop growing early (“don't split if the gain is tiny or the group is small”).\n- **Post-pruning:** let it grow fully, then cut back any branch whose removal **doesn't hurt** accuracy on a separate validation set."},
         {
           type: "p",
           text: "**Experiment (slides 88–95):** two classes, 5200 + points (5000 from a Gaussian centred at (10, 10) plus 200 noise points) and 5200 o points from a uniform distribution; 10% for training, 90% for testing. As the number of nodes grows, **training error keeps falling**. A **4-node** tree (splits x₁ < 6.46, x₁ < 13.11, x₂ < 7.04, x₂ < 14.31) captures only coarse patterns: **underfitting** (high bias). A **50-node** tree follows the central cluster closely but also carves out noise.\n\n**Problem type 7: which tree is better? (slides 93–94).** It depends on the bias–variance trade-off: the 50-node tree is better **if** it generalises (validated by test or cross-validation error); the 4-node tree is preferable when interpretability or real-time speed matters more than accuracy. **Underfitting:** both errors large. **Overfitting:** training error small, test error large (slide 95).",
@@ -335,6 +353,7 @@ export default {
           title: "Problem type 9: post-pruning (slides 105–109)",
           text: "Tree: Shape → Round: Reject; Square: Size (Big → Allow, Small → Reject); Oval: Colour (Green → Reject, Brown/others → Allow). Prune set: ⟨Oval, Black, Small, **Allow**⟩, ⟨Round, Brown, Big, **Reject**⟩, ⟨Square, Brown, Big, **Allow**⟩, ⟨Oval, Green, Small, **Reject**⟩.\n- Full tree: Allow ✓, Reject ✓, Allow ✓, Reject ✓ → 4/4.\n- **Prune Size** (Square → leaf Allow): predictions unchanged on this set (the only Square row is Big → Allow) → **no extra error → prune**.\n- **Prune Colour** (Oval → leaf Reject): row 1 ⟨Oval, Black, Small⟩ becomes Reject ✗ → accuracy 3/4 = 75% → **don't prune**.\nFinal: Shape → Round: Reject; Square: Allow; Oval: Colour.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Overgrown tree = memorised noise.** Pre-prune = stop early; post-prune = grow, then cut branches that don't help on validation data (replace with the majority leaf)."},
       ],
     },
     {
@@ -342,6 +361,7 @@ export default {
       heading: "Lesson 10: Minimum description length (Problem type 10)",
       slides: "110–119",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "MDL = **“the shortest explanation wins”.** Imagine sending the training data to a friend by text message. You can send (a) a tree, plus (b) a list of the examples the tree gets wrong. A huge tree has few exceptions but costs many bits; a tiny tree is cheap but has many exceptions. **Pick the tree with the smallest total message.** This is Occam's razor turned into arithmetic."},
         {
           type: "callout",
           kind: "formula",
@@ -358,6 +378,7 @@ export default {
           type: "p",
           text: "**Applications (slide 120):** instances described by attribute–value pairs, discrete target values, disjunctive descriptions needed, possibly missing attribute values; e.g. biomedical, manufacturing, banking, make-or-buy decisions.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**MDL: total bits = bits for the tree + bits for its mistakes → choose the smallest.** Internal node = log₂(#attributes), leaf = ⌈log₂(#classes)⌉, each error = log₂(n)."},
       ],
     },
   ],

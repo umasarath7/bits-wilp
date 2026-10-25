@@ -533,7 +533,7 @@ function SubjectView({ subject, sessionN, tab, done, toggleDone }) {
 
 function Landing({ done }) {
   return html`<div className="landing">
-    <h1>M.Tech Sem 2: Study Notes</h1>
+    <h1>BITS-WILP-DSE</h1>
     <p className="muted">Session-by-session summaries, exam-style problems and quick quizzes.</p>
     <div className="grid">
       ${subjects.map((s) => {
@@ -563,3 +563,24 @@ function App() {
 }
 
 createRoot(document.getElementById("root")).render(html`<${App} />`);
+
+// ---------- installable app + offline ----------
+// Register the service worker, then (when idle and online) save every page's data and the libraries
+// this visit loaded into the cache, so the whole site works offline after one visit.
+if ("serviceWorker" in navigator) {
+  addEventListener("load", async () => {
+    try {
+      await navigator.serviceWorker.register("./sw.js");
+      if (!navigator.onLine || !("caches" in window)) return;
+      const cache = await caches.open("bits-wilp-dse-v2");
+      const files = subjects.flatMap((s) => s.sessions.map((x) => new URL("./data/" + x.file.replace("./", ""), location.href).href));
+      const loaded = performance.getEntriesByType("resource").map((r) => r.name).filter((u) => /^https:\/\/(esm\.sh|cdn\.jsdelivr\.net)\//.test(u));
+      const katex = "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_";
+      loaded.push(...["Main-Regular", "Main-Bold", "Main-Italic", "Math-Italic", "Math-BoldItalic", "AMS-Regular", "Size1-Regular",
+        "Size2-Regular", "Size3-Regular", "Size4-Regular", "Caligraphic-Regular", "SansSerif-Regular", "Typewriter-Regular"].map((f) => katex + f + ".woff2"));
+      const warm = () => [...new Set([...files, ...loaded])].forEach((u) =>
+        cache.match(u).then((hit) => hit || fetch(u, { mode: u.startsWith(location.origin) ? "same-origin" : "cors" }).then((r) => r.ok && cache.put(u, r)).catch(() => {})));
+      setTimeout(warm, 2000);
+    } catch {}
+  });
+}

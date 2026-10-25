@@ -14,6 +14,7 @@ export default {
       heading: "Lesson 1: Instance-based vs model-based learning",
       slides: "5–9",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "k-NN is how you'd guess a new neighbour's income: look at the **few houses most similar** to theirs and go with what those people earn. No formula is learned in advance; you just **keep all the examples** and, when a question comes, find the closest ones and copy their answer (vote for a class, average for a number).\n\nThat's why it's called **lazy**: no work at training time, all the work at question time. Regression and trees are **eager**: they do the hard work up front."},
         {
           type: "table",
           caption: "Two families (slides 5–6)",
@@ -37,6 +38,7 @@ export default {
           title: "k-NN regression (slide 9)",
           text: "Houses (size, price in thousands): (2104, 460), (1416, 232), (1534, 315), (1852, 178). With k = 3, a new house's price is the **average** of the 3 houses nearest in size; on the slide's plot the three neighbours have prices 50, 55, 51 → prediction (50 + 55 + 51)/3 = **52**.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**k-NN = “birds of a feather”: find the k most similar stored examples → vote (class) or average (number).** Lazy = stores, works at query time."},
       ],
     },
     {
@@ -44,6 +46,7 @@ export default {
       heading: "Lesson 2: Data matrix, dissimilarity matrix and nominal attributes",
       slides: "10–15",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Everything in k-NN depends on **how we measure “similar”**. For yes/no-style categories (colour, city), the simplest measure is **simple matching**: count how many attributes differ, as a fraction. Two cars that differ only in model (1 of 3 attributes) have distance 1/3."},
         {
           type: "p",
           text: "A **data matrix** stores n points × p dimensions. A **dissimilarity (distance) matrix** stores only the n × n distances d(i, j); it's **triangular** because d(i, j) = d(j, i) and d(i, i) = 0 (slide 10).",
@@ -54,6 +57,7 @@ export default {
           title: "Nominal attributes (slides 11–15)",
           text: "**Method 1: simple matching.** With p nominal attributes and m matches:\n$$d(i, j) = \\frac{p - m}{p} \\qquad \\text{(similarity } m/p\\text{)}$$\nBest when the states have no order. *Example:* two cars match on Colour (both Blue) and Make (both Honda) but not Model → m = 2, p = 3 → similarity 2/3, distance 1/3.\n**Method 2: one-hot.** Replace an attribute with M states by M binary attributes (Colour = Red → Red 1, Yellow 0, Blue 0), then use binary measures (Jaccard, SMC). Integrates nicely with other attribute types but raises the dimensionality when M is large.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Nominal distance = mismatches / total attributes.** A dissimilarity matrix is triangular because d(a, b) = d(b, a)."},
       ],
     },
     {
@@ -61,6 +65,7 @@ export default {
       heading: "Lesson 3: Binary attributes and the Jaccard coefficient",
       slides: "16–23",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "For yes/no attributes where **only “yes” is interesting** (has a rare disease, bought caviar), two people who both lack something are **not** really similar: almost everyone lacks caviar! So **Jaccard** ignores the both-zero matches and only looks at attributes where at least one of them has a “yes”.\n\nShopping baskets: A bought {milk, eggs, butter}, B bought {milk, bread, butter}. Shared: 2 items. Items in either basket: 4. Similarity = 2/4 = 0.5."},
         {
           type: "callout",
           kind: "formula",
@@ -79,6 +84,7 @@ export default {
           title: "Market basket (slide 23)",
           text: "A buys {Milk, Eggs, Butter}, B buys {Milk, Bread, Butter}. q = 2 (Milk, Butter), r = 1 (Eggs, only A), s = 1 (Bread, only B), t = 0 shared absences (ignored). **Jaccard similarity = 2/(2 + 1 + 1) = 0.5**, distance 0.5.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Jaccard = shared yeses ÷ (anything with a yes).** Ignore 0–0 matches for asymmetric data. Distance = 1 − Jaccard."},
       ],
     },
     {
@@ -86,6 +92,7 @@ export default {
       heading: "Lesson 4: Numeric distances: Minkowski, Manhattan, Euclidean, supremum",
       slides: "24–28",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "For numbers, there are three ways to measure the distance between two points on a city map:\n- **Manhattan (L1):** walk along the streets, blocks across + blocks up.\n- **Euclidean (L2):** fly straight like a crow (Pythagoras).\n- **Supremum (L∞):** only the single biggest difference counts (like a chess king, who needs as many moves as the larger of the two gaps).\n\nAll three are members of one family (Minkowski) with a dial h = 1, 2, ∞.\n\nAlways **scale features first**: otherwise income (in lakhs) swamps age (in years), and “nearest” really means “nearest in income”."},
         {
           type: "callout",
           kind: "formula",
@@ -105,6 +112,7 @@ export default {
           title: "Standardising numeric data first (slide 28)",
           text: "Distances are dominated by large-scale attributes, so scale first. **Z-score:** $z = (x - \\mu)/\\sigma$ (negative below the mean). **Min-max:** $x' = \\frac{x - \\min}{\\max - \\min}$ to [0, 1], or to [A, B]: $x' = A + \\frac{(x - \\min)(B - A)}{\\max - \\min}$.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Manhattan = taxi (add the gaps), Euclidean = crow (√ sum of squares), Supremum = biggest gap.** Scale features before measuring distance!"},
       ],
     },
     {
@@ -112,6 +120,7 @@ export default {
       heading: "Lesson 5: Ordinal and mixed attributes: the Gower distance",
       slides: "29–38",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Real records mix types: department (category), satisfaction (ordered), age (number). **Gower's trick:** turn every attribute's difference into a score from 0 to 1, then take a (weighted) average:\n- category: 0 if same, 1 if different;\n- ordered levels: rank → (rank − 1)/(levels − 1), then the gap;\n- number: gap ÷ range.\nNow apples and oranges are on the same 0–1 scale and can be added."},
         {
           type: "callout",
           kind: "formula",
@@ -146,6 +155,7 @@ export default {
           type: "p",
           text: "**Curse of dimensionality (slide 39).** k-NN uses **all** attributes. If the target depends on only a few of many attributes, truly similar instances can be far apart; nearest neighbour is easily misled in high dimensions. Solution 1: **weight attributes differently** (stretch relevant axes, shrink irrelevant ones), choosing weights by cross-validation. Solution 2: **eliminate the least relevant attributes**.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Gower = make every attribute's difference a 0–1 score, then average (with weights).** Ordinal: (r − 1)/(M − 1). Numeric: |gap|/range."},
       ],
     },
     {
@@ -153,6 +163,7 @@ export default {
       heading: "Lesson 6: The k-NN algorithm and choosing k",
       slides: "40–47",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Choosing k is like choosing how many friends to ask for a restaurant tip:\n- **k = 1:** you trust one friend completely, so one odd opinion decides (overfits noise).\n- **k very large:** you ask the whole city, and the answer is just “whatever's most popular overall” (underfits).\n- **Moderate k:** a few trusted opinions, the sensible middle.\n\nRule of thumb k ≈ √N (and odd, to avoid ties), but the honest way is to try several and pick by validation error."},
         {
           type: "callout",
           kind: "formula",
@@ -180,6 +191,7 @@ export default {
           text: "Training: X1 (−1, 1) −, X2 (0, 1) +, X3 (0, 2) −, X4 (1, −1) −, X5 (1, 0) +, X6 (1, 2) +, X7 (2, 2) −, X8 (2, 3) +.\nEuclidean distances from (1, 1): X2, X5, X6 = **1**; X3, X7 = **√2 = 1.414**; X1, X4 = **2**; X8 = **√5 = 2.236**.\n- **K = 3:** X2, X5, X6 → 3+, 0− → **Positive**.\n- **K = 5:** + X3, X7 → 3+, 2− → **Positive**.\n- **K = 7:** + X1, X4 → 3+, 4− → **Negative**.\nSo the class **does change** when K is reduced from 7 to 5 or 3. Majority over the three K values: Positive 2, Negative 1 → **final class Positive**.",
         },
         { type: "diagram", name: "m6-knn" },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Small k = jumpy (overfit), big k = bland (underfit).** Start with k ≈ √N, odd; choose by validation (elbow). Trace it: distance table → sort → take k → vote."},
       ],
     },
     {
@@ -187,6 +199,7 @@ export default {
       heading: "Lesson 7: Distance-weighted k-NN (Problem type 2)",
       slides: "48, 53–56",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "In plain k-NN a neighbour 10 km away gets the same vote as one 10 m away. That's silly. **Distance-weighted** k-NN gives **closer neighbours a louder voice**, e.g. weight = 1/distance². Then you add up the weights for each class, and the class with the bigger total wins."},
         {
           type: "callout",
           kind: "formula",
@@ -199,6 +212,7 @@ export default {
           title: "Problem type 2 (slides 53–56): customer category of C4",
           text: "C4 = (50000, Data Scientist, Hindi, Small Town). Income min-max over 50k–80k; Locality ordinal (Village 1, Small Town 2, Suburban 3, Metropolitan 4) scaled to (r − 1)/3; distance = Euclidean on (income, locality) + mismatches/2 on (profession, region); weight = 1/d².\n\n| Customer | Income′ | Locality′ | Euclid | Mismatch | d | w = 1/d² | Class |\n|---|---|---|---|---|---|---|---|\n| C0 | 0.33 | 0 | 0.47 | 1/2 | 0.97 | **1.06** | L1 |\n| C1 | 0.67 | 0 | 0.75 | 2/2 | 1.75 | **0.33** | L2 |\n| C2 | 0.33 | 0.67 | 0.47 | 1/2 | 0.97 | **1.06** | L2 |\n| C3 | 1 | 1 | 1.20 | 2/2 | 2.20 | **0.21** | L2 |\n| C5 | 1 | 0.33 | 1.00 | 0/2 | 1.00 | **1.00** | L1 |\n\nC4 itself: income′ 0, locality′ 0.33.\nUnweighted vote: L2 has 3 of 5 → L2. **Weighted:** L1 = 1.06 + 1.00 = **2.06**; L2 = 0.33 + 1.06 + 0.21 = **1.60** → **L1**. The L1 customers are closer to C4, so weighting changes the answer.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Closer = louder: weight = 1/d².** Sum weights per class; biggest sum wins. It can overturn the plain majority (C4 → L1)."},
       ],
     },
     {
@@ -206,6 +220,7 @@ export default {
       heading: "Lesson 8: Locally weighted regression (Problem type 3)",
       slides: "57–71",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Locally weighted regression: the whole curve is too twisty for one straight line, but **any small stretch of it looks almost straight** (like how the Earth looks flat from where you stand).\n\nSo for each question point we fit a **fresh little straight line using only nearby points**, giving the closest points the most say (through a kernel weight, a bell-shaped curve that is 1 at the query and fades to 0 far away). Then we read the prediction off that local line. A new question means a new little line."},
         {
           type: "callout",
           kind: "idea",
@@ -229,6 +244,7 @@ export default {
           text: "Data (size, price): (10, 5), (5, 5), (2, 2), (3, 3), (5, 5), (15, 5), (30, 9), (20, 8), (6, 9), (2, 3), (10, 9), (13, 8). Kernel $K = e^{-d^2/2}$ (b = 1), model y = 3.5 + 0.8x, η = 0.2.\n**5 nearest to 7:** (6, 9) d = 1, K = **0.6065**; (5, 5) and (5, 5) d = 2, K = **0.1353**; (10, 5) and (10, 9) d = 3, K = **0.0111**.\n**Kernel-weighted average:** $\\hat y(7) = \\frac{9(0.6065) + 5(0.1353) + 5(0.1353) + 5(0.0111) + 9(0.0111)}{0.6065 + 0.1353 + 0.1353 + 0.0111 + 0.0111} =$ **7.747**.\n**One GD step** on $J = \\frac{1}{2}\\sum K_i(w_0 + w_1x_i - y_i)^2$ with errors $e_i = \\hat y_i - y_i$ = −0.7, 2.5, 2.5, 6.5, 2.5:\n$\\partial J/\\partial w_0 = \\sum K_ie_i = 0.3521$; $\\partial J/\\partial w_1 = \\sum K_ix_ie_i = 1.8358$.\n$w_0 = 3.5 - 0.2(0.3521) =$ **3.43**; $w_1 = 0.8 - 0.2(1.8358) =$ **0.43**.",
         },
         { type: "diagram", name: "m6-lwr" },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**LWR = a fresh, local straight line for every query, fitted mostly to nearby points (bell-curve weights).** Flexible but slow: one regression per prediction."},
       ],
     },
     {
@@ -236,6 +252,7 @@ export default {
       heading: "Lesson 9: When to use nearest neighbours, and their challenges",
       slides: "72–75",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "k-NN shines when there are few features and lots of data, and you want something that adapts to any shape. It struggles when there are many features (everything looks far away: the curse of dimensionality), when features aren't scaled, and when predictions must be fast (it compares with every stored point)."},
         {
           type: "table",
           head: ["Use k-NN when… (slide 72)", "Challenges (slide 73)"],
@@ -251,6 +268,7 @@ export default {
           type: "p",
           text: "**Lab practice (slide 75):** tune k; try weighted k-NN; apply k-NN to regression; implement Hamming, Manhattan and Minkowski distances; compare results with and without standardisation, because distance measures are strongly affected by the input scale.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Good: low dimensions, lots of data, any shape. Bad: many features, unscaled data, slow queries, big memory.**"},
       ],
     },
     {
@@ -258,6 +276,7 @@ export default {
       heading: "Lesson 10: Evaluating classifiers: validation and cross-validation",
       slides: "76–84",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "You must never mark your own homework with the **final exam paper**. If you keep checking models against the test set and picking the best, you've secretly trained on the test, so your reported score is too rosy.\n\nSo split three ways: **train** (learn), **validation** (choose k, λ, etc.), **test** (one final, honest grade). Too little data for that? **k-fold cross-validation**: cut the data into k slices; each slice takes a turn as the validation set; average the k scores. Every example gets used for both training and checking."},
         {
           type: "callout",
           kind: "idea",
@@ -296,6 +315,7 @@ export default {
           type: "p",
           text: "**Cross-validation for hyperparameter tuning (slides 83–84):** set aside the test set, split the rest into k folds, compute the cross-validated metric for each hyperparameter combination, choose the best, retrain on all training data, and compute the test metric once. In scikit-learn, `cross_val_score()` (default metric: accuracy) splits, fits and scores automatically; with 10 folds it returns 10 scores, and you average them. Training-set performance is **not** a good indicator of generalisation.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Train to learn, validate to choose, test once to report.** k-fold CV = rotate the validation slice, average the scores. Use **stratified** folds for imbalanced classes."},
       ],
     },
   ],

@@ -14,6 +14,7 @@ export default {
       heading: "Lesson 1: Unsupervised learning and clustering",
       slides: "3, 19–20",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Until now every example came with an answer key (labels). Now there's **no answer key**: just a pile of customers, songs or photos, and the job is to **discover natural groups** in them. Like sorting a drawer of mixed socks without being told the categories: you group them by what looks similar."},
         {
           type: "p",
           text: "**Supervised vs unsupervised (slide 3).** Supervised data has (x, y) pairs and we learn to predict y. Unsupervised data has only x; the objective is to find **patterns or sub-groups** using **data similarity**. **Clustering** (slides 19–20): given X, find K groups such that points inside a cluster are closer to each other than to points in other clusters, e.g. height–weight data split into K = 2 groups.",
@@ -27,6 +28,7 @@ export default {
             ["EM / Gaussian mixture", "K soft clusters (membership probabilities) with means and variances", "K and initial parameters"],
           ],
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Unsupervised = no labels; find groups by similarity.** Three tools: hierarchical (a family tree of groups), k-means (K hard groups), EM (K soft groups)."},
       ],
     },
     {
@@ -34,6 +36,7 @@ export default {
       heading: "Lesson 2: Agglomerative hierarchical clustering",
       slides: "4–14, 18",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "**Agglomerative clustering = making friends at a party.** At first everyone stands alone. Then the two people who are **closest** pair up. Then the next closest pair (people or small groups) merge, and so on, until the whole party is one big group. Write down who merged when, and at what distance, and you get a family tree of groups called a **dendrogram**. Cut the tree at any height to get that many groups.\n\nThe one decision: how far apart are two *groups*?\n- **Single link (MIN):** the distance between their **closest** members (one friendly pair is enough).\n- **Complete link (MAX):** the distance between their **farthest** members (everyone must be fairly close).\n- **Group average:** the average over all pairs."},
         {
           type: "callout",
           kind: "idea",
@@ -69,6 +72,7 @@ export default {
           title: "Similarity matrix I1–I5 (slides 12–13)",
           text: "sim(I1, I2) = 0.90, sim(I4, I5) = 0.80, sim(I2, I3) = 0.70, sim(I1, I4) = 0.65…\n*Merges prepared for the website:*\n- **Single link:** {1,2} at 0.90 → {4,5} at 0.80 → {1,2}+3 at 0.70 (sim(2,3)) → all at 0.65.\n- **Complete link:** {1,2} 0.90 → {4,5} 0.80 → 3 + {4,5} at min(0.40, 0.30) = **0.30** → all at 0.10.\n- **Group average:** {1,2} 0.90 → {4,5} 0.80 → {1,2}+{4,5} at (0.65 + 0.20 + 0.60 + 0.50)/4 = **0.4875** → + 3 at 0.375.\nSame data, different linkage, different hierarchy.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Start alone → merge the closest two → update distances → repeat.** Single = closest pair (makes long chains), complete = farthest pair (makes compact blobs), average = in between. Dendrogram height = merge distance. Similarity matrix? Merge the **largest** value."},
       ],
     },
     {
@@ -76,6 +80,7 @@ export default {
       heading: "Lesson 3: Worked example: six points, single link",
       slides: "15–17",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Exam routine: find the **smallest number** in the distance table → merge those two → rewrite the table with the new group's row (using MIN, MAX or average of the old rows) → repeat. Keep a list of “merged A + B at height h”; that list *is* the dendrogram."},
         {
           type: "table",
           caption: "Distance matrix of p1…p6 (slide 15)",
@@ -102,6 +107,7 @@ export default {
           title: "Same data, other linkages",
           text: "*Prepared for the website.* **Complete link:** {3,6} 0.11 → {2,5} 0.14 → {3,6}+4 at max(0.15, 0.22) = **0.22** → 1+{2,5} at max(0.24, 0.34) = **0.34** → all at **0.39**. **Group average:** {3,6} 0.11 → {2,5} 0.14 → {3,6}+4 at (0.15 + 0.22)/2 = **0.185** → {2,5}+{3,4,6} at **0.26** → + p1 at **0.28**.\nSingle link merges p4 into the big group early (chaining through p3); complete link keeps {1, 2, 5} and {3, 4, 6} as two compact groups.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Smallest entry → merge → new row by the linkage rule → repeat.** Six points, single link: {3,6} 0.11 → {2,5} 0.14 → join at 0.15 → p4 0.15 → p1 0.22."},
       ],
     },
     {
@@ -109,6 +115,8 @@ export default {
       heading: "Lesson 4: K-means: the objective and the two steps",
       slides: "21–39",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "**k-means = placing K pizza shops in a city.** You want each customer to be close to *their* shop.\n1. Drop K shops anywhere.\n2. **Assign:** every customer goes to their **nearest** shop (the E-step).\n3. **Move:** each shop relocates to the **centre (average location)** of its customers (the M-step).\n4. Repeat steps 2–3 until no shop moves.\n\nEach round can only make the total travel distance smaller (never larger), so it always settles down. But where you drop the shops at the start can change the final answer, so in practice you try a few different starts."},
+        {"type": "callout", "kind": "tip", "title": "Read the symbols aloud", "text": "- $\\mu_k$ “mu-k” = the centre (mean) of cluster k: the pizza shop.\n- $r_{nk}$ = 1 if point n belongs to cluster k, otherwise 0.\n- $\\|x_n - \\mu_k\\|^2$ = squared distance from point n to its centre.\n- $J = \\sum_n\\sum_k r_{nk}\\|x_n - \\mu_k\\|^2$ = total squared distance from points to their own centres. k-means makes J as small as it can.\n- $\\arg\\min_j$ “the j that gives the minimum” = the nearest centre."},
         {
           type: "callout",
           kind: "idea",
@@ -150,6 +158,7 @@ export default {
           title: "Common mistakes",
           text: "- Recomputing a centre before all points are assigned: do **all** E-step assignments first, then all M-step means.\n- Ties: state a rule (e.g. assign to the lower-index cluster).\n- Thinking k-means finds the global minimum: it depends on the initial centres.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**k-means = Assign to nearest centre (E) → Move centre to the average (M) → repeat until nothing moves.** J only goes down. Different starts can give different answers. 1-D example: (2, 4) → … → (7, 25)."},
       ],
     },
     {
@@ -157,6 +166,7 @@ export default {
       heading: "Lesson 5: Mixture models and the EM algorithm",
       slides: "40–44",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "k-means makes **hard** decisions: each point belongs 100% to one group. But a point halfway between two groups is honestly **uncertain**.\n\n**EM with Gaussian mixtures** makes **soft** decisions: “this point is 70% group A, 30% group B”. Each group is a bell curve with its own centre and width.\n- **E-step:** for every point, work out the probability it belongs to each bell curve.\n- **M-step:** move and resize each bell curve using those probabilities as partial votes.\n- Repeat until the curves stop changing.\n\nIt's k-means with **probabilities instead of yes/no**, and with groups allowed to be wide or narrow."},
         {
           type: "p",
           text: "**Multimodal data (slides 40–41).** A Gaussian is intrinsically **unimodal**, so one Gaussian can't fit data with several peaks, such as the Old Faithful geyser data (eruption length vs waiting time), which has two clear groups. **Mixture distributions (slide 42)** are linear combinations of basic distributions: $p(x) = \\sum_k \\pi_k\\,\\mathcal N(x \\mid \\mu_k, \\sigma_k^2)$, with mixing weights $\\pi_k$ summing to 1.",
@@ -183,6 +193,7 @@ export default {
             ["Both", "Iterative E/M steps; sensitive to initialisation; need K", ""],
           ],
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**EM = soft k-means.** E: “how likely does each point belong to each bell curve?” M: “re-fit each curve using those probabilities.” Handles groups of different widths (multimodal data)."},
       ],
     },
   ],

@@ -14,6 +14,7 @@ export default {
       heading: "Lesson 1: What a decision tree is and how Hunt's algorithm grows one",
       slides: "2–6, 15",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "A decision tree is the game **“20 Questions”**, or a doctor's checklist. To decide whether to give a loan, a bank officer might ask: “Do you own a home?” If yes → approve. If no → “Are you married?” … and so on, until the answer is clear.\n\nBuilding the tree from data is like **sorting a mixed bag of coins**: if a pile is all one kind, you're done with it; if not, you split it by some property and look at each smaller pile again. That repeated rule is **Hunt's algorithm**."},
         {
           type: "callout",
           kind: "idea",
@@ -51,6 +52,7 @@ export default {
           title: "Quick revision",
           text: "Pure → leaf. Empty → leaf with the parent's majority. Mixed → split on the best attribute and recurse. Ordinal groupings must preserve order.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Tree = 20 Questions. Hunt's rule: pure pile → leaf; empty pile → parent's majority; mixed pile → split on the best question and repeat.** Ordinal splits must keep the order (Small, Medium | Large, XL)."},
       ],
     },
     {
@@ -58,6 +60,8 @@ export default {
       heading: "Lesson 2: Choosing the best split: impurity and gain",
       slides: "7–10",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Which question is “best”? The one whose answers produce the **cleanest piles**.\n\nWe need a meter for “how mixed is this pile?”. Picture a bag of red and blue balls:\n- all red → perfectly clean (impurity 0);\n- half and half → as mixed as it gets (impurity at its maximum).\n\nThree meters, all agreeing on that idea:\n- **Entropy:** “how surprised am I when I draw a ball?” (0 to 1 for two classes).\n- **Gini:** “if I draw two balls, what's the chance they differ?” (0 to 0.5).\n- **Classification error:** “if I always guess the majority colour, how often am I wrong?” (0 to 0.5).\n\n**Gain** = mess before the question − (weighted) mess after it. Pick the question with the **biggest gain**."},
+        {"type": "callout", "kind": "tip", "title": "Read the symbols aloud", "text": "- $p(i \\mid t)$ “p of i given t” = the fraction of the pile at node t that is class i.\n- $\\log_2$ = log base 2 ($\\ln x / \\ln 2$ on a calculator).\n- $\\frac{N(v_j)}{N}$ = the share of examples that go down branch j (the weight).\n- $\\Delta$ “delta” = the gain (the drop in mess)."},
         {
           type: "callout",
           kind: "idea",
@@ -89,6 +93,7 @@ export default {
           title: "Quick revision",
           text: "Entropy −Σp log₂p · Gini 1 − Σp² · Error 1 − max p · Gain = parent impurity − weighted child impurity. Highest gain (lowest weighted child impurity) wins.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Impurity = how mixed. Gini = chance two draws differ; entropy = surprise; error = 1 − majority share. Gain = before − weighted after; biggest gain wins.**"},
       ],
     },
     {
@@ -96,6 +101,7 @@ export default {
       heading: "Lesson 3: Gini splits for binary, nominal and continuous attributes",
       slides: "11–14",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "For each candidate question: (1) split the data, (2) compute Gini for each piece, (3) **weight each piece by its size** and add up. The question with the **lowest weighted Gini** wins, which is the same as the biggest gain. For number columns, line the values up in order and try cutting between neighbours, mostly where the class changes."},
         {
           type: "callout",
           kind: "example",
@@ -121,6 +127,7 @@ export default {
           text: "```flow\nSort records by the attribute (O(N log N)) -> Candidate splits = midpoints between adjacent values -> Weighted Gini for each candidate -> Choose the lowest\n```\nBrute force (recount for every candidate) is expensive. **Optimisation:** only consider midpoints between adjacent records with **different class labels**.",
         },
         { type: "diagram", name: "m5-incsplit" },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Split → Gini per piece → weight by size → add → lowest wins.** Numbers: sort, try midpoints where the class flips."},
       ],
     },
     {
@@ -128,6 +135,7 @@ export default {
       heading: "Lesson 4: Building a tree by information gain: the job-offer example",
       slides: "16–28",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "This is the full exam routine on one story: 18 candidates, will each get a job offer?\n\nAt each step, ask: “**Which single question best separates the offered from the rejected?**”\n- At the top, **Aptitude** wins: everyone with Low aptitude was rejected (a perfectly clean pile, so that branch is finished).\n- Among the High-aptitude candidates, **Communication** wins: Good communicators were all offered.\n- Among High aptitude + Bad communication, **CGPA** settles it.\n\nNotice what never gets asked: Programming skill. Its gain was always tiny, so the tree simply ignores it. Trees pick their own important features."},
         {
           type: "callout",
           kind: "idea",
@@ -184,6 +192,7 @@ export default {
           title: "Common mistakes",
           text: "- Forgetting to **weight** each branch's entropy by its share of records.\n- Recomputing gains on the **whole** dataset at level 2. Use only the records that reached that node.\n- Splitting a pure branch further. Entropy 0 means stop.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Job tree: Aptitude → Communication → CGPA** (gains 0.47 → 0.55 → 0.81). At each level use **only the rows that reached that branch**, and stop on clean branches."},
       ],
     },
     {
@@ -191,6 +200,7 @@ export default {
       heading: "Lesson 5: Characteristics of decision-tree induction",
       slides: "29, 44",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Trees are **cheap, fast and explainable**, and they ignore useless columns on their own. Two weaknesses to remember:\n- **Data fragmentation:** after many questions, the piles at the bottom are tiny, too small to trust.\n- **Box-shaped boundaries:** each question looks at one column at a time, so the boundaries are always straight horizontal/vertical cuts, like a staircase. A diagonal border needs many steps."},
         {
           type: "table",
           head: ["Property (slide 29)", "What it means"],
@@ -210,6 +220,7 @@ export default {
           type: "p",
           text: "**ID3 (slide 44)** uses Hunt's algorithm with **information gain** to pick the attribute at each step. It keeps only one current tree (it can't tell how many alternative trees fit the data) and **never backtracks** (greedy). Its **inductive bias**: shorter trees are preferred, and trees that put high-gain attributes near the root are preferred (Mitchell).",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Pros: cheap, fast, readable, ignores junk features. Cons: tiny piles at depth, staircase (axis-parallel) boundaries.** ID3 = greedy, never backtracks, prefers short trees."},
       ],
     },
     {
@@ -217,6 +228,7 @@ export default {
       heading: "Lesson 6: Overfitting in decision trees",
       slides: "30–40",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "A tree allowed to grow forever will create a special rule for every odd example, including **mistakes in the data**. It's like a student who memorises that “question 7 on last year's paper had answer C”: perfect on old papers, useless on new ones.\n\nThe mammal example shows it clearly: two animals were mislabelled in training, the big tree added a “four-legged?” question just to explain them, and then it got humans and dolphins wrong. The smaller tree did better on new animals."},
         {
           type: "callout",
           kind: "idea",
@@ -250,6 +262,7 @@ export default {
           title: "Model complexity (slide 40)",
           text: "The chance of overfitting grows with complexity. **Occam's razor (principle of parsimony):** given two models with the same generalisation error, prefer the simpler one. The ideal complexity gives the lowest generalisation error, but we only have training data, so we must **estimate** generalisation error (validation set, cross-validation).",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Overfitting = memorising noise: great on training, poor on new data.** Causes: noise · too few/unrepresentative examples · too complex a model. Prefer the simpler tree (Occam's razor)."},
       ],
     },
     {
@@ -257,6 +270,7 @@ export default {
       heading: "Lesson 7: Handling overfitting: pre-pruning and post-pruning",
       slides: "41–43",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Pruning = **gardening**. Either you stop the plant growing in the wrong places early (**pre-pruning**: “don't split tiny groups, don't split if it barely helps”), or you let it grow and then **cut back** the branches that don't help on fresh validation data (**post-pruning**), replacing the cut branch with a single leaf holding its majority answer."},
         {
           type: "table",
           head: ["", "Pre-pruning (early stopping)", "Post-pruning"],
@@ -273,6 +287,7 @@ export default {
           title: "Quick revision",
           text: "Overfit = low train, high test error. Causes: noise, unrepresentative samples, complexity. Fixes: pre-prune (stop early) or post-prune (grow, then replace subtrees by majority leaves if validation error improves). Prefer the simpler model (Occam).",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Pre-prune = stop early. Post-prune = grow fully, then cut branches that don't improve validation accuracy (leaf = majority class).**"},
       ],
     },
   ],

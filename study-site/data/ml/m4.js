@@ -14,6 +14,7 @@ export default {
       heading: "Lesson 1: Classification and why a straight line fails",
       slides: "4, 7–13",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Now the answer is a **category** (Yes/No, spam/not spam), not a number. Why not just reuse the straight line and say “above 0.5 means Yes”?\n\nPicture a see-saw. You balance a straight line through your Yes (1) and No (0) points. Now one student with an extremely high CGPA joins (correctly a “Yes”). Because the line tries to get close to *every* point, that one far-away student **tilts the whole see-saw**, and the 0.5 crossing point shifts, so some ordinary students flip to the wrong side. Also, a line happily predicts 1.7 or −0.4, which makes no sense as a probability.\n\nSo we need a different shape, one that stays between 0 and 1 and isn't bullied by far-away points. That shape is the **S-curve (sigmoid)**, next lesson."},
         {
           type: "callout",
           kind: "idea",
@@ -42,6 +43,7 @@ export default {
           title: "Quick revision",
           text: "Generative: P(X, Y). Discriminative: the boundary. Least squares for classification fails because of outliers and outputs outside [0, 1].",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Classification = predict a category.** A straight line fails because one far point tilts it, and it predicts values outside 0–1. *Generative* = learn what each class looks like; *discriminative* = learn the border between them."},
       ],
     },
     {
@@ -49,6 +51,8 @@ export default {
       heading: "Lesson 2: The logistic (sigmoid) model and the decision boundary",
       slides: "7, 12, 14–15, 67",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "**Logistic regression** = linear regression + a **squasher**.\n1. First compute an ordinary score, exactly like regression: z = θ₀ + θ₁x₁ + θ₂x₂ … (it can be any number, −50 or +50).\n2. Then push z through the **sigmoid**, an S-shaped curve that squashes any number into the range **0 to 1**. Very negative → close to 0. Very positive → close to 1. Zero → exactly 0.5.\n3. Read the result as a **probability of Yes**.\n\nThink of the sigmoid as a **dimmer switch**: the score z is how far you turn the knob, and the light (probability) smoothly goes from off (0) to fully on (1).\n\nDecision: probability ≥ 0.5 means Yes. And because sigmoid(0) = 0.5, that's the same as **z ≥ 0**. So the **decision boundary** is the line where the score is exactly zero."},
+        {"type": "callout", "kind": "tip", "title": "Read the symbols aloud", "text": "- $z = \\theta^Tx$ = the raw score (weighted sum).\n- $\\sigma(z) = \\frac{1}{1 + e^{-z}}$ “sigma of z” = the sigmoid squasher. $e \\approx 2.718$.\n- $h_\\theta(x)$ = the predicted probability that y = 1.\n- **Odds** = p/(1 − p), e.g. p = 0.8 → odds 4 (“4 to 1”). **Log-odds (logit)** = ln(odds) = z. So the weights act on the *log-odds*."},
         {
           type: "callout",
           kind: "formula",
@@ -67,6 +71,7 @@ export default {
           text: "**Non-linear boundaries (slide 15).** With CGPA and IQ as raw features the boundary is a straight line. By adding higher-order and interaction terms (CGPA², IQ², CGPA·IQ), logistic regression can draw circles and other curves. This is feature engineering: transform the input space so a linear boundary in the new space separates the classes.",
         },
         { type: "diagram", name: "s5-boundary" },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Score → squash → probability.** z = θᵀx, p = 1/(1 + e⁻ᶻ). **Yes if z ≥ 0** (p ≥ 0.5). Each weight θⱼ: one more unit of xⱼ multiplies the **odds** by e^θⱼ."},
       ],
     },
     {
@@ -74,6 +79,8 @@ export default {
       heading: "Lesson 3: The cost function: cross-entropy (log-loss)",
       slides: "16–26",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "How do we score a probability guess? Use the **“confidently wrong” penalty**.\n\nImagine a weather forecaster. If they say “90% rain” and it rains, small penalty. If they say “90% rain” and it's sunny, big penalty. If they say “99.99% rain” and it's sunny, **enormous** penalty, because they were confidently wrong.\n\nThat's **cross-entropy (log-loss)**: cost = −log(probability you gave to what actually happened). If you gave the truth probability 1, −log(1) = 0, no cost. If you gave it 0.01, −log(0.01) = 4.6, ouch. As it approaches 0, the cost shoots to infinity.\n\nWhy not squared error? With the S-curve inside, squared error makes a **bumpy** landscape with many false valleys where gradient descent gets stuck. Log-loss keeps it a nice single **bowl**."},
+        {"type": "callout", "kind": "tip", "title": "Read the symbols aloud", "text": "- For a “Yes” example (y = 1): cost = $-\\log h$ (punish small h).\n- For a “No” example (y = 0): cost = $-\\log(1 - h)$ (punish large h).\n- The single formula $-[y\\log h + (1 - y)\\log(1 - h)]$ just switches between the two: when y = 1 the second part vanishes; when y = 0 the first part vanishes."},
         {
           type: "callout",
           kind: "idea",
@@ -103,6 +110,7 @@ export default {
           title: "Quick revision",
           text: "Squared error + sigmoid = non-convex. Use cross-entropy: −log h for y = 1, −log(1 − h) for y = 0. Same-looking GD update with h = σ(θᵀx).",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Log-loss = penalty for being confidently wrong**: −log(probability given to the truth). Bowl-shaped, so gradient descent works. The update rule *looks* identical to linear regression: θ − α·avg((h − y)·x), with h = sigmoid."},
       ],
     },
     {
@@ -110,6 +118,7 @@ export default {
       heading: "Lesson 4: Worked problems: sentiment, gradient descent, inference",
       slides: "27–35",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Recipe for every logistic numerical, same four steps every time:\n1. **Score:** z = bias + Σ weight × feature.\n2. **Squash:** h = 1/(1 + e⁻ᶻ).\n3. **Decide:** h ≥ 0.5 → class 1.\n4. **(If training)** error = h − y; multiply by each feature; average; new weight = old − α × that average.\n\nKeep a table with columns z, h, h − y, (h − y)·x₁, (h − y)·x₂ and you can't get lost."},
         {
           type: "callout",
           kind: "example",
@@ -134,6 +143,7 @@ export default {
           title: "Common mistakes",
           text: "- Saying “the probability increases by 0.3 per CGPA point”. The weight acts on the **log-odds**; the odds multiply by $e^{0.3}$.\n- Forgetting the bias term when computing z.\n- Using h − y in one table column and y − h in the update (slide 31 lists y − h; slide 32 switches to h − y). Pick one and match the sign in the update.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Score → squash → decide → (update).** To interpret a weight, say: “one more unit of this feature multiplies the **odds** of Yes by e^weight.”"},
       ],
     },
     {
@@ -141,10 +151,12 @@ export default {
       heading: "Lesson 5: Regularisation in logistic regression",
       slides: "36–37",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Same fine-on-big-weights idea as Module 3. One trap: in scikit-learn's `LogisticRegression` the dial is **C = 1/λ**, the *opposite* direction. Big C = small fine = more freedom (risk of overfitting)."},
         {
           type: "p",
           text: "Regularisation works exactly as in Module 3: add $\\frac{\\lambda}{2}\\sum\\theta_j^2$ (L2) or $\\lambda\\sum|\\theta_j|$ (L1) to the cross-entropy, and don't regularise θ₀. The one new point (slide 37): in scikit-learn's `LogisticRegression` the strength is set by **C = 1/λ**, not by alpha. **The higher C, the less the model is regularised.**",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**C is the inverse of λ.** Big C → weak regularisation; small C → strong regularisation."},
       ],
     },
     {
@@ -152,6 +164,7 @@ export default {
       heading: "Lesson 6: Evaluating classifiers: the confusion matrix and its metrics",
       slides: "38–48",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "A **confusion matrix** is just a 2 × 2 scoreboard of a classifier's guesses. Use a **COVID test** as the mental picture (positive = has COVID):\n- **TP** (true positive): sick, test says sick ✅\n- **TN** (true negative): healthy, test says healthy ✅\n- **FP** (false positive, a false alarm): healthy, but test says sick ❌\n- **FN** (false negative, a miss): sick, but test says healthy ❌ (the dangerous one here)\n\nFrom this scoreboard come all the metrics:\n- **Precision:** “When the test says *sick*, how often is it right?” → TP/(TP + FP). Look at the **predicted-sick column**.\n- **Recall (sensitivity):** “Of all the people who *are* sick, how many did we catch?” → TP/(TP + FN). Look at the **actually-sick row**.\n- **Accuracy** can lie: if only 1 in 100 people is sick, a test that always says “healthy” is 99% accurate and catches nobody."},
         {
           type: "callout",
           kind: "idea",
@@ -203,6 +216,7 @@ export default {
           title: "Quick revision",
           text: "Precision: of predicted positives, how many are right. Recall: of actual positives, how many we caught. Specificity: of actual negatives, how many we cleared. On imbalanced data use recall, precision, F, not accuracy.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Precision = “Pure predictions?” (of predicted positives, how many correct) · Recall = “Remembered them all?” (of real positives, how many caught).** Rows = actual, columns = predicted. Rare class? Don't trust accuracy. Disease screening wants high **recall**; a spam filter wants high **precision**."},
       ],
     },
     {
@@ -210,6 +224,7 @@ export default {
       heading: "Lesson 7: ROC curves and AUC",
       slides: "49–57",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Most classifiers give a **score**, and *we* choose the cut-off. Lower the cut-off and you catch more positives (recall ↑) but raise more false alarms (FPR ↑). The **ROC curve** shows this whole trade-off at once: slide the threshold from strict to lenient and plot (false-alarm rate, catch rate) at each step.\n\nLike tuning a smoke detector: too sensitive → it beeps at toast (false alarms); too dull → it misses real fires. The ROC curve is every possible sensitivity setting drawn as one line.\n\n**AUC** (area under the curve) is one number for the whole curve: 1.0 = perfect, 0.5 = coin-flipping. Handy reading: AUC = the chance that a random positive gets a higher score than a random negative."},
         {
           type: "callout",
           kind: "idea",
@@ -245,6 +260,7 @@ export default {
           title: "Second example (slide 57)",
           text: "Ten tuples sorted by probability 0.90 P, 0.80 P, 0.70 N, 0.60 P, 0.55 P, 0.54 N, 0.53 N, 0.51 N, 0.50 P, 0.40 N. TPR/FPR after each tuple: (0.2, 0), (0.4, 0), (0.4, 0.2), (0.6, 0.2), (0.8, 0.2), (0.8, 0.4), (0.8, 0.6), (0.8, 0.8), (1.0, 0.8), (1.0, 1.0). *Website extension:* AUC = **0.76**.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**ROC = catch-rate (TPR) vs false-alarm rate (FPR) over all thresholds.** Top-left corner = ideal, diagonal = random. **AUC: 1 perfect, 0.5 coin flip.** Build it: sort by score → step through thresholds → count TP/FP → trapezoids."},
       ],
     },
     {
@@ -252,6 +268,7 @@ export default {
       heading: "Lesson 8: Class imbalance and multi-class classification",
       slides: "58–67",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "When one class is rare (fraud, cancer), a lazy model can predict the common class every time and look great on accuracy. Fixes: give the rare class more weight in the data (**over-sample** it, e.g. SMOTE creates synthetic look-alikes), measure with **recall/precision/AUC**, or use algorithms that cope better (trees, SVMs).\n\nFor more than two classes, re-use yes/no classifiers: **one-vs-all** (“Is it a cat? Is it a dog? Is it a bird?”, then pick the most confident) or **one-vs-one** (a mini-tournament: every pair plays once, and the class with the most wins takes it)."},
         {
           type: "p",
           text: "**Class imbalance (slide 59):** the class of interest is rare (fraud, cancer), so accuracy is a poor measure. **Solutions (slide 60):** generate synthetic minority samples from the distances to nearest neighbours (**SMOTE**, sklearn); **change the metric** (recall, precision, ROC); **try different algorithms** (SVMs and tree-based methods often cope better).",
@@ -273,6 +290,7 @@ export default {
           text: "**One-vs-all (one-vs-rest):** train **K** classifiers, each “class i vs everything else”; predict the class whose classifier is most confident.\n**One-vs-one:** train one classifier per pair, **K(K − 1)/2** of them; each votes, and the majority wins.\nScikit-learn runs OvA automatically for binary algorithms, **except SVMs, which use OvO**.",
         },
         { type: "diagram", name: "s3-ova" },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Imbalance → change the data (SMOTE), the metric (recall/F1/AUC) or the algorithm.** OvA = K classifiers; OvO = K(K − 1)/2 pairwise “matches”."},
       ],
     },
   ],

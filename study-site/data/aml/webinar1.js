@@ -15,6 +15,7 @@ export default {
       heading: "Lesson 1: Business understanding: framing the problem",
       slides: "2–4",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Before writing code, a data scientist asks: **“What decision are we trying to make better?”** Here: a bank wants to decide faster whether to approve home loans. Past applications with their outcomes are our teacher. The output is Yes/No, so it's a **classification** problem."},
         {
           type: "callout",
           kind: "idea",
@@ -31,6 +32,7 @@ export default {
           title: "The project lifecycle (slide 2)",
           text: "```flow\nBusiness understanding -> Data acquisition -> Data preparation -> Exploratory data analysis -> Feature engineering -> Model building & selection -> Deployment (Streamlit)\n```",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Start from the decision, not the data.** Loan approval = predict Yes/No from application details = binary classification."},
       ],
     },
     {
@@ -38,6 +40,7 @@ export default {
       heading: "Lesson 2: Data acquisition: reading three inconsistent files",
       slides: "5–8",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Three branch offices each kept their own spreadsheet, and each **named and coded things differently** (Married = Yes/No in one, 1/−1 in another; Gender = M/F vs 1/0). Before you can combine them, you must translate everything into **one common language**, exactly like converting three currencies into rupees before adding them up."},
         {
           type: "p",
           text: "**Libraries (slide 6):** **pandas** (data frames: load, clean, analyse), **NumPy** (fast arrays and maths), **Seaborn** (statistical plots, built on Matplotlib, works with pandas), **Matplotlib** (static/interactive plots).",
@@ -71,6 +74,7 @@ export default {
           title: "Lesson",
           text: "Real data from several sources rarely agrees on names **or** codes. Before merging, list every column (`set(a.columns.append(b.columns)...)`) and every column's `unique()` values.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Look before you merge:** `.shape`, `.columns`, `.unique()` on every file. Same meaning, different names/codes = translate first."},
       ],
     },
     {
@@ -78,6 +82,7 @@ export default {
       heading: "Lesson 3: Data preparation: standardise and merge",
       slides: "9–16",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Data preparation = **rename, recode, then stack**.\n1. Rename columns to one standard (LID → Loan_ID).\n2. Recode values to one standard (G → Grad, 1 → Yes).\n3. Add a column remembering where each row came from (Property_Location).\n4. Stack the three tables on top of each other (`pd.concat`).\n\nGolden rule: **never invent data**. The rural file simply had no credit-history column; writing “No” for all of them made up facts and later misled every model."},
         {
           type: "p",
           text: "**Target schema (slide 11):** Loan_ID, Gender, Married, Tenure, Education, Self_Employed, Income, CoapplicantIncome, Credit_History, Dependents, Loan_Amt, **Approved** (target), plus a new **Property_Location** column (URBAN / SEMI_URBAN / RURAL) so the area isn't lost when the files are combined.",
@@ -102,6 +107,7 @@ export default {
           type: "p",
           text: "Final merged data: **114 rows × 13 columns**: 12 independent variables (incl. Loan_ID) and the target (slide 16).",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Rename → recode → tag the source → concat (stack rows).** Missing column? Mark it “Unknown”, don't invent values."},
       ],
     },
     {
@@ -109,6 +115,7 @@ export default {
       heading: "Lesson 4: Exploratory data analysis",
       slides: "17–30",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "**EDA = getting to know your data before trusting it**, like reading a patient's history before treatment.\n- **One column at a time (univariate):** what values appear and how often? Any strange outliers? Is it lopsided (skewed)?\n- **Each column against the answer (bivariate):** do married applicants get approved more often? Use row percentages, not raw counts.\n- **Numbers against numbers:** a correlation heat map.\n\nAlways read the numbers off the output itself; the notebook's mistakes (56% vs the real 65%, “left skew” for a right tail) came from retyping or eyeballing."},
         {
           type: "callout",
           kind: "idea",
@@ -157,6 +164,7 @@ export default {
           type: "p",
           text: "**Hypotheses to test (slide 28):** high income → approval; good credit history → approval; smaller loan → approval; shorter tenure → approval; lower **EMI** → approval. **Correlation heat map (slides 29–30):** `sns.heatmap(df_num.corr(), annot=True, cmap='OrRd')` on the numeric columns; darker = stronger correlation. Loan amount correlates with applicant and co-applicant income.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Univariate (each column alone) → bivariate (each column vs the target) → correlations.** Mean ≫ median means a long right tail (right skew)."},
       ],
     },
     {
@@ -164,6 +172,7 @@ export default {
       heading: "Lesson 5: Feature engineering: missing values, skew and new features",
       slides: "(notebook §5)",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Feature engineering = **cooking the raw ingredients into something the model can digest**.\n- **Fill the holes:** categories → the most common value (mode); numbers → the middle value (median), which isn't dragged around by millionaires.\n- **Tame the giants:** take the log of very skewed money columns so one huge income doesn't dominate.\n- **Create meaningful features** a loan officer would think of: total household income, monthly instalment (EMI), money left after paying the EMI."},
         {
           type: "callout",
           kind: "example",
@@ -203,6 +212,7 @@ export default {
           title: "Notebook check (flagged): imputation undone",
           text: "Cell 159 runs `loan_data = loan_data_old.astype({...'category'})`. That **re-copies the raw data**, discarding the imputations and log columns made just before; the NaNs come back (`info()` shows Gender 109 non-null again). The notebook rescues it later with `fillna(median)` on the dummy-encoded frame and `replace([np.inf, -np.inf], np.nan)` for logs of non-positive values. Lesson: convert types on the **working** frame (`loan_data.astype(...)`), and keep a raw copy only for EDA.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Fill gaps (mode/median) → log the skewed → build business features (Total income, EMI, Balance) → drop IDs.**"},
       ],
     },
     {
@@ -210,6 +220,7 @@ export default {
       heading: "Lesson 6: Model building: six classifiers",
       slides: "31–36",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Now we let several different “students” sit the same exam: logistic regression, a decision tree, a random forest, Naïve Bayes, an SVM and XGBoost. Before that: turn categories into 0/1 columns (`get_dummies`), split the data into a **practice set** (train) and an **exam set** (test) with the same Yes/No mix (`stratify`), and scale the numbers using **only the practice set**."},
         {
           type: "p",
           text: "```python\nloan_data = pd.get_dummies(loan_data)                     # one-hot encode (Approved → Approved_N / Approved_Y)\nX = loan_data.drop(['Approved_Y', 'Approved_N'], axis=1)\n# 19 columns: Self_Employed, Total_Income_log, EMI_log, Balance_Income_log,\n# Gender_F/M, Married_No/Yes, Education_Grad/NonGrad, Dependents_0/1/2/3+,\n# Credit_History_No/Yes, Property_Location_RURAL/SEMI_URBAN/URBAN\ny = loan_data['Approved_Y']\n\nfrom sklearn.model_selection import train_test_split\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)\n\nfrom sklearn.preprocessing import MinMaxScaler\nscaler = MinMaxScaler()\nX_train = scaler.fit_transform(X_train)   # fit on train only\nX_test  = scaler.transform(X_test)        # reuse train min/max\n```\n`stratify=y` keeps the 65/35 class ratio in both parts; `random_state` makes the split reproducible. 20% of 114 → **23 test rows**. (In the notebook, logistic regression used a separate 30% split, unstratified and without random_state, with the MinMaxScaler; the other five models used the stratified 80/20 split **without** scaling.)",
@@ -237,6 +248,7 @@ export default {
           type: "p",
           text: "**Decision tree:** train accuracy 0.835, test accuracy **0.826**; rejected: precision 1.00, recall 0.50; approved: precision 0.79, recall 1.00. Top feature importances: Property_Location_RURAL 0.256, Credit_History_No 0.249, Married_No 0.158, Gender_M 0.109. Train ≈ test accuracy, so with depth 4 it isn't overfitting.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**get_dummies → stratified train/test split → scale (fit on train only) → fit several models.** Same data, many algorithms, fair comparison."},
       ],
     },
     {
@@ -244,6 +256,7 @@ export default {
       heading: "Lesson 7: Evaluating and comparing the models",
       slides: "37–38",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Choosing a model is like hiring: the best candidate depends on **which mistakes hurt your business most**. For a bank, approving a bad loan (false positive) is costly, so **precision** for “Approved” matters. And with only 23 test applicants, one lucky guess changes accuracy by 4%, so use **cross-validation** before declaring a winner."},
         {
           type: "p",
           text: "```python\nfrom sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix\nresults = []\nfor name, model in models.items():\n    y_pred = model.predict(X_test)\n    results.append({'Model': name,\n                    'Accuracy':  accuracy_score(y_test, y_pred),\n                    'Precision': precision_score(y_test, y_pred, zero_division=0),\n                    'Recall':    recall_score(y_test, y_pred, zero_division=0),\n                    'F1 Score':  f1_score(y_test, y_pred, zero_division=0)})\nprint(pd.DataFrame(results).sort_values(by='Accuracy', ascending=False))\n```",
@@ -272,6 +285,7 @@ export default {
           title: "How to read this comparison (important)",
           text: "- **23 test rows** is tiny: one prediction changes accuracy by 4.3 points. Use **stratified k-fold cross-validation** (`cross_val_score`) before declaring a winner.\n- **Which metric?** For a bank, approving a bad loan (FP, “approved” predicted for a rejected case) is costly, so **precision** for “Approved” matters, and XGBoost (0.917) makes the fewest such mistakes (1 FP). SVM approves everyone who deserved it (recall 1.0) but lets 3 bad cases through.\n- Naïve Bayes underperforms because GaussianNB treats 0/1 dummy columns as Gaussian and its independence assumption is violated (e.g. Gender_F = 1 − Gender_M).",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Pick the metric that matches the costly mistake (here: precision for Approved).** Tiny test set → cross-validate. Read the confusion matrix, not just accuracy."},
       ],
     },
     {
@@ -279,6 +293,7 @@ export default {
       heading: "Lesson 8: Deployment: a Streamlit app",
       slides: "39–47 + loan_streamlit_app.py",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Deployment = **putting the model behind a shop counter** so anyone can use it. Streamlit turns a Python script into a web page: the sidebar is the application form, the button sends it to the model, and the page shows Approved/Rejected with a probability.\n\nThe golden rule: the app must prepare each new applicant **exactly the way training data was prepared** (same features, same order, same scaling). Otherwise the model is reading a form in a language it never learned, and it will give wrong answers **without any error message**."},
         {
           type: "callout",
           kind: "idea",
@@ -317,6 +332,7 @@ export default {
           title: "The #1 deployment bug: training–serving skew",
           text: "The app must produce **the same features, in the same order and scale**, as training. Here it works because the saved decision tree was trained on **unscaled** features (cell 225 re-split X without the MinMaxScaler). If you deploy the scaled logistic regression or SVM instead, you must also `joblib.dump` the **scaler** and call `scaler.transform` in the app; otherwise predictions will be wrong without any error message.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Save the model (joblib) → load once (@st.cache_resource) → rebuild the same features → predict → show.** Same pipeline in training and serving; no exceptions."},
       ],
     },
     {
@@ -324,6 +340,7 @@ export default {
       heading: "Lesson 9: Run it yourself: step by step",
       slides: "41–42 + run instructions",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Order matters: **install → run the notebook (it creates loan_model.pkl) → start the app**. The app only *reads* the model file; it never trains one."},
         {
           type: "p",
           text: "```bash\n# 1) put the CSVs, notebook and app in one folder; open a terminal there\ncd \"Webinar 1\"\n\n# 2) install the requirements (numpy, pandas, scikit-learn, matplotlib, streamlit, joblib)\npython3 -m pip install -r rqmnts.txt\n#   if scikit-learn/numpy complain:  pip install -U scipy scikit-learn  and  pip install \"numpy>=2.0,<2.8\"\n\n# 3) run the notebook top to bottom; its last cell writes loan_model.pkl\n\n# 4) start the app\npython3 -m streamlit run loan_streamlit_app.py\n#   opens http://localhost:8501 ; keep the terminal open (it's a live server)\n```",
@@ -340,6 +357,7 @@ export default {
           title: "Try these inputs in the app",
           text: "1. Credit history **No**, location URBAN, other fields default, then switch only the location to RURAL. The tree's top features are Property_Location_RURAL and Credit_History_No, so see whether location alone flips the answer (the imputation artefact made visible).\n2. Credit history **Yes**, Married Yes, Semi-urban, income 5000, loan 150, tenure 360: a typical approved profile; note the probability.\n3. Raise the loan amount to 700 and cut tenure to 60: EMI rises, Balance_Income falls. Watch whether the prediction flips; a depth-4 tree may ignore these features entirely, which is itself a useful finding.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**pip install -r rqmnts.txt → run the notebook → python3 -m streamlit run loan_streamlit_app.py → open localhost:8501.**"},
       ],
     },
   ],

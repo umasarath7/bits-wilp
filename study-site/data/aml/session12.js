@@ -14,6 +14,7 @@ export default {
       heading: "Lesson 1: Linear classification and the perceptron",
       slides: "2–6",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "A **perceptron** is a tiny decision-maker that works like a **voting committee with a threshold**. Each input gets a weight (how much its vote counts); the perceptron adds up input × weight, adds a bias (its starting mood), and if the total is above zero it says **Yes**, otherwise **No**.\n\nGeometrically, that's just **one straight line**: one side Yes, the other side No. So a perceptron can do AND, OR and NOT (each needs only one line), but **not XOR**, where the Yes corners sit diagonally opposite each other and no single line can separate them."},
         {
           type: "callout",
           kind: "idea",
@@ -51,6 +52,7 @@ export default {
           title: "Slide check (flagged): slide 6's final line",
           text: "The slide's working gives w₀ = −1, w₂ = −1, w₁ = 1.5, but it writes the answer as (w₀, w₁, w₂) = (−1, **−1, 1.5**). That order computes “NOT x₁ AND x₂” ((0,1) → 1). The correct vector for this table is **(−1, 1.5, −1)**.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Perceptron = weighted vote + bias → above 0? Yes.** One line only, so AND/OR/NOT are possible and **XOR is not**. AND: (−30, 20, 20); OR: (−10, 20, 20); NOT: (10, −20)."},
       ],
     },
     {
@@ -58,6 +60,8 @@ export default {
       heading: "Lesson 2: Learning the weights: perceptron rule and delta rule",
       slides: "4, 7–8",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "How does a perceptron learn its weights? **Learn from mistakes, like a child learning to throw a ball at a target:**\n- If the throw is right, change nothing.\n- If it said “No” but the answer was “Yes”, nudge the weights **towards** that example.\n- If it said “Yes” but the answer was “No”, nudge them **away**.\nThat is exactly: **w ← w + η × (target − output) × input.**\n\nThe **delta rule** is the gentler, smarter version: instead of reacting only to outright mistakes, it measures *how far off* the raw score was on every example and uses gradient descent to reduce the total squared error. It settles on the best line even when no perfect line exists."},
+        {"type": "callout", "kind": "tip", "title": "Read the symbols aloud", "text": "- $t$ = target (correct answer), $o$ = output (the perceptron's answer).\n- $\\eta$ “eta” = learning rate (nudge size).\n- $(t - o)$ = 0 when correct (no change), +2 or −2 (±1 with 0/1 outputs) when wrong.\n- $E = \\frac{1}{2}\\sum(t - o)^2$ = total squared error used by the delta rule."},
         {
           type: "callout",
           kind: "formula",
@@ -85,6 +89,7 @@ export default {
             ["Converges", "Only if linearly separable", "Always, to the least-squared-error weights (small η)"],
           ],
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Perceptron rule: wrong? w += η(t − o)x. Right? Do nothing.** Works only if a perfect line exists. **Delta rule:** gradient descent on squared error of the raw score; always settles on the best-fit line."},
       ],
     },
     {
@@ -92,6 +97,7 @@ export default {
       heading: "Lesson 3: Neurons, activation functions and networks",
       slides: "9–12, 30",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "One perceptron = one straight line. To draw curves, use **teams of neurons in layers**. Each hidden neuron draws its own line, and the next layer **combines** those lines into shapes. XOR, for example, is “OR but not AND”: two hidden neurons (one OR, one AND) plus one output neuron.\n\nTwo ingredients are essential:\n- **Smooth activation functions** (sigmoid, tanh, ReLU) instead of a hard yes/no, so the network can be trained with gradients.\n- They must be **non-linear**. Stacking purely linear layers is pointless: a straight line of straight lines is still a straight line."},
         {
           type: "callout",
           kind: "formula",
@@ -119,6 +125,7 @@ export default {
           type: "p",
           text: "**When are neural networks appropriate? (slide 12)** Many attribute–value pairs (lots of data); output may be discrete, real or a vector; training data may contain errors; **long training times are acceptable**; **fast evaluation** is needed; and humans don't need to understand the learned function.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Neurons in layers combine simple lines into complex shapes.** Non-linear activations are what make the extra layers useful. Sigmoid 0→1, tanh −1→1, ReLU = max(0, x). Two layers can represent any Boolean function (XOR included)."},
       ],
     },
     {
@@ -126,6 +133,8 @@ export default {
       heading: "Lesson 4: Backpropagation",
       slides: "14–24",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "**Backpropagation = sharing the blame.** A team loses a match (the output is wrong). Who's responsible? The coach starts at the final result and works **backwards**: the players who passed directly to the scorer get blamed in proportion to how much they influenced the play, then the players who passed to *them*, and so on. Each player then adjusts in proportion to their share of the blame.\n\nIn a network:\n1. **Forward pass:** push the input through every layer and get the output.\n2. **Output error:** δ = (output − target) × (the activation's slope).\n3. **Pass the blame back:** a hidden neuron's error = Σ (the errors of the neurons it feeds × the connecting weight) × its own activation slope. Strong connections get more blame.\n4. **Update every weight:** weight −= η × (blame at its destination) × (signal at its source)."},
+        {"type": "callout", "kind": "tip", "title": "Read the symbols aloud", "text": "- $a$ = a neuron's output (activation); $z$ = its input sum before the activation.\n- $\\delta$ “delta” = a neuron's share of the blame (error term).\n- For sigmoid neurons the slope is $a(1 - a)$, e.g. a = 0.6 → 0.24.\n- $\\Theta_{ji}$ “theta-j-i” = weight from neuron i into neuron j.\n- Update: $\\Theta_{ji} \\leftarrow \\Theta_{ji} - \\eta\\,\\delta_j\\,a_i$."},
         {
           type: "callout",
           kind: "idea",
@@ -158,6 +167,7 @@ export default {
             ["Smooth path", "Noisy path"],
           ],
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Forward to get the output → blame at the output → pass the blame backwards through the weights → every weight moves by η × blame × input.** *Mnemonic:* “Forward to guess, backward to blame.”"},
       ],
     },
     {
@@ -165,6 +175,7 @@ export default {
       heading: "Lesson 5: Introduction to deep learning",
       slides: "25–30",
       blocks: [
+        {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Deep learning = big, many-layered networks that **learn their own features**. Instead of a human hand-crafting “edge detectors”, the first layers discover edges by themselves, the middle layers discover shapes, and the deep layers discover objects. It took off only recently because we finally have **lots of data, GPUs and good software**."},
         {
           type: "list",
           items: [
@@ -181,6 +192,7 @@ export default {
           title: "Hyperparameters (slide 29)",
           text: "How many layers? How many units per layer? What learning rate? Which activation function? These are hard to answer up front, so tuning is **iterative**: try, validate, adjust. Experiment at playground.tensorflow.org.",
         },
+        {"type": "callout", "kind": "remember", "title": "Remember it", "text": "**Deep learning learns a hierarchy of features (edges → shapes → objects) from data.** Driven by data + GPUs + software. Hyperparameters (layers, units, learning rate, activation) are tuned by trial and validation."},
       ],
     },
   ],
