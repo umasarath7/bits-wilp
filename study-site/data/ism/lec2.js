@@ -6,7 +6,329 @@ export default {
   source: "Lec2.pdf (CS-2) · 51 slides",
   quizMode: "step",
   overview:
-    "Lecture 1 described data that has already happened. Lecture 2 asks the forward question: **how likely is something that hasn't happened yet?** We set up the language first: a **random experiment**, its **sample space** and **events**, and the operations on events (complement, union, intersection), drawn as Venn diagrams. Then come three ways to define probability (**classical, empirical, axiomatic**), the **addition rule** P(A ∪ B) = P(A) + P(B) − P(A ∩ B), and the difference between **mutually exclusive** and **independent** events, the most commonly confused pair in the course. The slides' nine worked examples (dice, exam passes, investors, cables, computers, committees) teach the main problem-solving tricks: count equally likely outcomes, use the complement for “at least one”, and use the addition rule to find an overlap.",
+    "Lecture 1 described data that has already happened. Lecture 2 asks the forward question: **how likely is something that hasn't happened yet?** We set up the language first: a **random experiment**, its **sample space** and **events**, and the operations on events (complement, union, intersection), drawn as Venn diagrams. Then come three ways to define probability (**classical, empirical, axiomatic**), the **addition rule** P(A ∪ B) = $P(A) + P(B)$ − P(A ∩ B), and the difference between **mutually exclusive** and **independent** events, the most commonly confused pair in the course. The slides' nine worked examples (dice, exam passes, investors, cables, computers, committees) teach the main problem-solving tricks: count equally likely outcomes, use the complement for “at least one”, and use the addition rule to find an overlap.",
+
+  simpleIntro: "Probability is a number from 0 (impossible) to 1 (certain) that measures how likely something is. This lecture gives you the vocabulary (experiments, outcomes, events), three ways to get a probability, and the two rules you'll use in every later lecture: the **addition rule** for “A or B” and the **complement rule** for “not A” / “at least one”. All examples are the lecturer's own.",
+
+  simple: [
+    {
+      "id": "s-big",
+      "heading": "1. The big picture",
+      "slides": "",
+      "blocks": [
+        {
+          "type": "cards",
+          "items": [
+            {
+              "title": "Sample space",
+              "text": "The list of **every** possible outcome of an experiment, written S.",
+              "tag": "All that can happen",
+              "example": "Two dice: 36 outcomes, (1,1) to (6,6).",
+              "figure": "i2-dice"
+            },
+            {
+              "title": "Event",
+              "text": "A **set of outcomes** you care about, written A, B, ….",
+              "tag": "What you're asking about",
+              "example": "“The sum is more than 8.”"
+            },
+            {
+              "title": "Combining events",
+              "text": "**Or** (union ∪), **and** (intersection ∩), **not** (complement $A^c$). Draw a Venn diagram!",
+              "tag": "And / or / not",
+              "figure": "i2-venn"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s-vocab",
+      "heading": "2. Experiments, outcomes and events",
+      "slides": "6–14",
+      "blocks": [
+        {
+          "type": "table",
+          "head": [
+            "Word",
+            "Meaning",
+            "Example (one die)"
+          ],
+          "rows": [
+            [
+              "Random experiment",
+              "An action with an uncertain result",
+              "Roll a die"
+            ],
+            [
+              "Sample space S",
+              "All possible outcomes",
+              "{1, 2, 3, 4, 5, 6}"
+            ],
+            [
+              "Event",
+              "Some of the outcomes",
+              "Even = {2, 4, 6}"
+            ],
+            [
+              "Complement $A^c$",
+              "Everything **not** in A",
+              "Odd = {1, 3, 5}"
+            ],
+            [
+              "Union $A \\cup B$",
+              "A **or** B (or both)",
+              "Even or > 4 = {2, 4, 5, 6}"
+            ],
+            [
+              "Intersection $A \\cap B$",
+              "A **and** B",
+              "Even and > 4 = {6}"
+            ],
+            [
+              "Mutually exclusive",
+              "Can't happen together: $A \\cap B = \\emptyset$",
+              "“1” and “6” on one roll"
+            ],
+            [
+              "Exhaustive",
+              "Together they cover all of S",
+              "Even, odd"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s-define",
+      "heading": "3. Three ways to get a probability",
+      "slides": "15–23",
+      "blocks": [
+        {
+          "type": "table",
+          "head": [
+            "Approach",
+            "Formula / idea",
+            "Use when"
+          ],
+          "rows": [
+            [
+              "**Classical**",
+              "$P(A) = \\frac{\\text{favourable outcomes}}{\\text{total outcomes}}$",
+              "Outcomes are equally likely (fair coin, die, random pick)"
+            ],
+            [
+              "**Empirical**",
+              "$P(A) = \\frac{\\text{times it happened}}{\\text{total trials}}$",
+              "You have past data"
+            ],
+            [
+              "**Axiomatic**",
+              "Rules every probability must obey (below)",
+              "Checking whether numbers are valid"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "formula",
+          "title": "The three axioms",
+          "text": "1. $P(S) = 1$ (something must happen).\n2. $0 \\le P(A) \\le 1$.\n3. If A and B can't happen together: $P(A \\cup B) = P(A) + P(B)$."
+        },
+        {
+          "type": "check",
+          "q": "Four outcomes are assigned 0.31, 0.27, 0.28, 0.16. Is this a valid probability assignment?",
+          "options": [
+            "Yes",
+            "No, the sum is 1.02",
+            "No, one is negative",
+            "Only if they're independent"
+          ],
+          "answer": 1,
+          "why": "They must add to exactly 1; these add to 1.02 (lecturer's Example 1b)."
+        }
+      ]
+    },
+    {
+      "id": "s-add",
+      "heading": "4. “A or B”: the addition rule",
+      "slides": "19–34",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Adding $P(A) + P(B)$ counts the overlap (outcomes in **both**) twice, so subtract it once."
+        },
+        {
+          "type": "callout",
+          "kind": "formula",
+          "title": "Addition rule",
+          "text": "$$P(A \\cup B) = P(A) + P(B) - P(A \\cap B)$$ If A and B are mutually exclusive (no overlap): $P(A \\cup B) = P(A) + P(B)$."
+        },
+        {
+          "type": "callout",
+          "kind": "formula",
+          "title": "Complement rule",
+          "text": "$$P(\\text{not } A) = 1 - P(A)$$ Use it whenever the question says **“at least one”**, **“neither”** or **“not”**: the opposite event is often much shorter to count."
+        },
+        {
+          "type": "callout",
+          "kind": "example",
+          "title": "Solved example (lecturer's Example 2): two dice",
+          "text": "Throw two dice (36 equally likely outcomes). What is the probability the sum is **neither 7 nor 11**?\n\nSum 7 happens 6 ways, sum 11 happens 2 ways, and they can't both happen → $P(7 \\text{ or } 11) = \\frac{6 + 2}{36} = \\frac{8}{36}$.\nComplement: $P(\\text{neither}) = 1 - \\frac{8}{36} = \\frac{28}{36}$."
+        },
+        {
+          "type": "answer",
+          "value": "7/9 ≈ 0.778",
+          "text": "Far quicker than counting the 28 remaining outcomes one by one."
+        },
+        {
+          "type": "callout",
+          "kind": "example",
+          "title": "Lecturer's Example 3: run the rule backwards",
+          "text": "P(pass Statistics) = 2/3, P(**not** pass Maths) = 5/9, P(pass at least one) = 4/5. Find P(pass both).\nP(pass Maths) $= 1 - 5/9 = 4/9$. Addition rule: $\\frac{4}{5} = \\frac{2}{3} + \\frac{4}{9} - P(\\text{both})$ → $P(\\text{both}) = \\frac{14}{45}$."
+        },
+        {
+          "type": "diagram",
+          "name": "i2-exam"
+        },
+        {
+          "type": "check",
+          "q": "75% hold annuities, 45% hold stocks, 85% hold at least one. What % hold both?",
+          "options": [
+            "30%",
+            "35%",
+            "40%",
+            "120%"
+          ],
+          "answer": 1,
+          "why": "$0.75 + 0.45 - 0.85 = 0.35$ (lecturer's Example 4)."
+        }
+      ]
+    },
+    {
+      "id": "s-indep",
+      "heading": "5. Independent vs mutually exclusive (the classic trap)",
+      "slides": "21–22, 35",
+      "blocks": [
+        {
+          "type": "table",
+          "head": [
+            "",
+            "Mutually exclusive",
+            "Independent"
+          ],
+          "rows": [
+            [
+              "Meaning",
+              "**Can't both happen**",
+              "One happening **doesn't change** the chance of the other"
+            ],
+            [
+              "Test",
+              "$P(A \\cap B) = 0$",
+              "$P(A \\cap B) = P(A)\\,P(B)$"
+            ],
+            [
+              "Example",
+              "One die shows 1 and shows 6",
+              "Coin heads and die shows 6"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "kind": "warn",
+          "title": "They are NOT the same",
+          "text": "If two events are mutually exclusive (and both possible), they are **dependent**: knowing one happened tells you the other **didn't**."
+        },
+        {
+          "type": "callout",
+          "kind": "example",
+          "title": "Lecturer's Example 7",
+          "text": "Throw a die twice. A = {max is 2}: 3 outcomes; B = {min is 2}: 9 outcomes; A and B = {(2,2)}: 1 outcome. $P(A)P(B) = \\frac{3}{36} \\cdot \\frac{9}{36} = \\frac{27}{1296} \\ne \\frac{1}{36}$ → **dependent**."
+        }
+      ]
+    },
+    {
+      "id": "s-count",
+      "heading": "6. Counting equally likely outcomes",
+      "slides": "36–41",
+      "blocks": [
+        {
+          "type": "callout",
+          "kind": "formula",
+          "title": "Combinations",
+          "text": "$$^nC_r = \\frac{n!}{r!\\,(n - r)!} \\qquad \\text{(ways to choose r items from n when order doesn't matter)}$$"
+        },
+        {
+          "type": "callout",
+          "kind": "example",
+          "title": "Lecturer's Example 9: a committee",
+          "text": "Choose 5 people from 8 men and 4 women. P(majority are women)? Majority = 4W + 1M or 3W + 2M.\n$P = \\frac{^8C_1 \\cdot {}^4C_4 + {}^8C_2 \\cdot {}^4C_3}{^{12}C_5} = \\frac{8 + 112}{792} = \\frac{120}{792}$"
+        },
+        {
+          "type": "answer",
+          "value": "5/33 ≈ 0.152"
+        }
+      ]
+    },
+    {
+      "id": "s-test",
+      "heading": "7. Test your understanding",
+      "slides": "",
+      "blocks": [
+        {
+          "type": "check",
+          "q": "P(A) = 0.5, P(B) = 0.4, P(A and B) = 0.2. P(A or B)?",
+          "options": [
+            "0.9",
+            "0.7",
+            "0.2",
+            "0.1"
+          ],
+          "answer": 1,
+          "why": "$0.5 + 0.4 - 0.2 = 0.7$."
+        },
+        {
+          "type": "check",
+          "q": "A and B are independent with P(A) = 0.6, P(B) = 0.5. P(A and B)?",
+          "options": [
+            "1.1",
+            "0.3",
+            "0.1",
+            "0.5"
+          ],
+          "answer": 1,
+          "why": "Independent → multiply: 0.3."
+        },
+        {
+          "type": "check",
+          "q": "P(at least one head in 3 coin tosses)?",
+          "options": [
+            "1/8",
+            "3/8",
+            "7/8",
+            "1/2"
+          ],
+          "answer": 2,
+          "why": "Complement: $1 - P(\\text{no heads}) = 1 - \\frac{1}{8} = \\frac{7}{8}$."
+        }
+      ]
+    },
+    {
+      "id": "s-remember",
+      "heading": "8. What to remember for your exam",
+      "slides": "",
+      "blocks": [
+        {
+          "type": "callout",
+          "kind": "remember",
+          "title": "Remember",
+          "text": "- Probabilities live in [0, 1] and all outcomes sum to 1.\n- **Or:** $P(A) + P(B) - P(A \\cap B)$. **Not / at least one:** $1 - P(\\text{opposite})$.\n- **Independent:** $P(A \\cap B) = P(A)P(B)$. **Mutually exclusive:** $P(A \\cap B) = 0$. Not the same thing!\n- Equally likely + choosing groups → combinations $^nC_r$."
+        }
+      ]
+    }
+  ],
 
   summary: [
     {
@@ -26,7 +348,7 @@ export default {
         },
         {
           type: "p",
-          text: "**Sample space S (slide 8):** the set of **all possible outcomes**. Throw a die: S = {1, 2, 3, 4, 5, 6}. Manufacture and test an integrated circuit: S = {a, r} (accepted, rejected). For the three phone calls, S has 2 × 2 × 2 = 8 outcomes: vvv, vvd, vdv, …, ddd.",
+          text: "**Sample space S (slide 8):** the set of **all possible outcomes**. Throw a die: S = {1, 2, 3, 4, 5, 6}. Manufacture and test an integrated circuit: S = {a, r} (accepted, rejected). For the three phone calls, S has $2 \\times 2 \\times 2 = 8$ outcomes: vvv, vvd, vdv, …, ddd.",
         },
         {
           type: "p",
@@ -87,7 +409,7 @@ export default {
           type: "callout",
           kind: "remember",
           title: "Quick revision",
-          text: "Aᶜ = not A · A ∪ B = or (incl. both) · A ∩ B = and · ME: A ∩ B = ∅ · Exhaustive: union = S.",
+          text: "$A^c$ = not $A \\cdot A$ ∪ B = or (incl. both) · A ∩ B = and · ME: A ∩ B = ∅ · Exhaustive: union = S.",
         },
       ],
     },
@@ -129,19 +451,19 @@ export default {
           type: "callout",
           kind: "example",
           title: "Simple example: Example 1 (slide 23), permissible assignments",
-          text: "Four mutually exclusive outcomes A, B, C, D (one of them must happen). Permissible means each $P \\in [0, 1]$ **and** they sum to 1.\n\n(a) 0.38 + 0.16 + 0.11 + 0.35 = 1.00 → **permissible**.\n(b) 0.31 + 0.27 + 0.28 + 0.16 = 1.02 → **not** (sum > 1).\n(c) P(C) = −0.06 → **not** (negative probability).\n(e) 5/8 + 1/6 + 1/3 + 2/9 = 97/72 > 1 → **not**.",
+          text: "Four mutually exclusive outcomes A, B, C, D (one of them must happen). Permissible means each $P \\in [0, 1]$ **and** they sum to 1.\n\n(a) $0.38 + 0.16 + 0.11 + 0.35 = 1.00$ → **permissible**.\n(b) $0.31 + 0.27 + 0.28 + 0.16 = 1.02$ → **not** (sum > 1).\n$(c) P(C)$ = −0.06 → **not** (negative probability).\n(e) 5/8 + 1/6 + 1/3 + 2/9 = 97/72 > 1 → **not**.",
         },
         {
           type: "callout",
           kind: "warn",
           title: "Slide check (flagged): Example 1(d)",
-          text: "The slide marks (d) P = 1/2, 1/4, 1/8, 1/16 as **Permissible**. But 1/2 + 1/4 + 1/8 + 1/16 = **15/16 ≠ 1**. Since A, B, C, D are *the four possible* mutually exclusive outcomes, they're exhaustive and must sum to 1 (axioms 1 and 3), so by the axioms (d) is **not permissible**. Each value does lie in [0, 1], which may be what the slide checked. In an exam, show the sum and state the reason.",
+          text: "The slide marks (d) $P = 1/2$, 1/4, 1/8, 1/16 as **Permissible**. But 1/2 + 1/4 + 1/8 + 1/16 = **$15/16 \\ne 1$**. Since A, B, C, D are *the four possible* mutually exclusive outcomes, they're exhaustive and must sum to 1 (axioms 1 and 3), so by the axioms (d) is **not permissible**. Each value does lie in [0, 1], which may be what the slide checked. In an exam, show the sum and state the reason.",
         },
         {
           type: "callout",
           kind: "remember",
           title: "Quick revision",
-          text: "Classical = favourable/total (equally likely). Empirical = frequency/trials (law of large numbers). Axioms: P(S) = 1, 0 ≤ P ≤ 1, add for disjoint events. Complement: P(A) = 1 − P(Aᶜ).",
+          text: "Classical = favourable/total (equally likely). Empirical = frequency/trials (law of large numbers). Axioms: $P(S) = 1$, $0 \\le P \\le 1$, add for disjoint events. Complement: $P(A) = 1 - P(A^c)$.",
         },
       ],
     },
@@ -160,7 +482,7 @@ export default {
           type: "callout",
           kind: "formula",
           title: "Addition rule and complement rule (slides 19–20)",
-          text: "$$P(A \\cup B) = P(A) + P(B) - P(A \\cap B)$$\nIf A and B are **mutually exclusive**: $P(A \\cup B) = P(A) + P(B)$.\n$$P(A) = 1 - P(A^c)$$\n**Why subtract the overlap?** Adding P(A) and P(B) counts the outcomes in **both** twice; subtracting $P(A \\cap B)$ once corrects the double count.",
+          text: "$$P(A \\cup B) = P(A) + P(B) - P(A \\cap B)$$\nIf A and B are **mutually exclusive**: $P(A \\cup B) = P(A) + P(B)$.\n$$P(A) = 1 - P(A^c)$$\n**Why subtract the overlap?** Adding $P(A)$ and $P(B)$ counts the outcomes in **both** twice; subtracting $P(A \\cap B)$ once corrects the double count.",
         },
         {
           type: "p",
@@ -170,9 +492,9 @@ export default {
         {
           type: "list",
           items: [
-            "**Sum > 8:** P(9) + P(10) + P(11) + P(12) = 4/36 + 3/36 + 2/36 + 1/36 = **10/36** (= 5/18).",
-            "**Sum < 6:** P(2) + P(3) + P(4) + P(5) = 1/36 + 2/36 + 3/36 + 4/36 = **10/36**.",
-            "**Neither 7 nor 11:** easier via the complement. 7 and 11 are mutually exclusive, so P(7 or 11) = 6/36 + 2/36 = 8/36, and P(neither) = 1 − 8/36 = 28/36 = **7/9**.",
+            "**Sum > 8:** $P(9) + P(10) + P(11) + P(12) = 4/36 + 3/36 + 2/36 + 1/36$ = **10/36** (= 5/18).",
+            "**Sum < 6:** $P(2) + P(3) + P(4) + P(5) = 1/36 + 2/36 + 3/36 + 4/36$ = **10/36**.",
+            "**Neither 7 nor 11:** easier via the complement. 7 and 11 are mutually exclusive, so P(7 or 11) = $6/36 + 2/36 = 8/36$, and P(neither) = $1 - 8/36 = 28/36$ = **7/9**.",
           ],
         },
         {
@@ -181,7 +503,7 @@ export default {
         },
         {
           type: "p",
-          text: "First turn the “not” into a pass probability: P(M) = 1 − 5/9 = 4/9. “At least one” is the union, so the addition rule gives $\\frac{4}{5} = \\frac{2}{3} + \\frac{4}{9} - P(S \\cap M)$, hence $P(S \\cap M) = \\frac{2}{3} + \\frac{4}{9} - \\frac{4}{5} = \\frac{30 + 20 - 36}{45} = \\frac{14}{45}$.",
+          text: "First turn the “not” into a pass probability: $P(M) = 1 - 5/9 = 4/9$. “At least one” is the union, so the addition rule gives $\\frac{4}{5} = \\frac{2}{3} + \\frac{4}{9} - P(S \\cap M)$, hence $P(S \\cap M) = \\frac{2}{3} + \\frac{4}{9} - \\frac{4}{5} = \\frac{30 + 20 - 36}{45} = \\frac{14}{45}$.",
         },
         { type: "diagram", name: "i2-exam" },
         {
@@ -190,23 +512,23 @@ export default {
         },
         {
           type: "p",
-          text: "**Example 5, using symmetry (slides 32–33):** cable specs are 2000 ± 10 mm; too-small and too-large cables are equally likely, and P(meets spec) = 0.99. Let M = meets spec, S = too small, L = too large. M, S, L are mutually exclusive and exhaustive, so P(S) + P(L) = 0.01 and, by symmetry, **P(L) = 0.005**. (b) P(X ≥ 1990) = P(M) + P(L) = 0.99 + 0.005 = **0.995** (or 1 − P(S) = 1 − 0.005).",
+          text: "**Example 5, using symmetry (slides 32–33):** cable specs are $2000 \\pm 10$ mm; too-small and too-large cables are equally likely, and P(meets spec) = 0.99. Let M = meets spec, S = too small, L = too large. M, S, L are mutually exclusive and exhaustive, so $P(S) + P(L) = 0.01$ and, by symmetry, **P(L) = 0.005**. $(b) P(X \\ge 1990) = P(M) + P(L) = 0.99 + 0.005$ = **0.995** (or $1 - P(S) = 1 - 0.005$).",
         },
         {
           type: "p",
-          text: "**Example 6, a maximum (slide 34):** A and B are mutually exclusive with A ∪ B = S, so P(A) + P(B) = 1. When the sum of two numbers is fixed, their product is largest when they're equal: P(A) = P(B) = 1/2, so the **maximum of P(A)·P(B) is 1/4**.",
+          text: "**Example 6, a maximum (slide 34):** A and B are mutually exclusive with A ∪ $B = S$, so $P(A) + P(B) = 1$. When the sum of two numbers is fixed, their product is largest when they're equal: $P(A) = P(B) = 1/2$, so the **maximum of $P(A) \\cdot P(B)$ is 1/4**.",
         },
         {
           type: "callout",
           kind: "warn",
           title: "Common mistakes",
-          text: "- Using P(A) + P(B) when A and B **can overlap**. You must subtract P(A ∩ B).\n- Missing that “will **not** pass” gives the complement. Convert it first (Example 3).\n- Computing “neither 7 nor 11” by listing 28 outcomes. Use the complement.",
+          text: "- Using $P(A) + P(B)$ when A and B **can overlap**. You must subtract P(A ∩ B).\n- Missing that “will **not** pass” gives the complement. Convert it first (Example 3).\n- Computing “neither 7 nor 11” by listing 28 outcomes. Use the complement.",
         },
         {
           type: "callout",
           kind: "remember",
           title: "Quick revision",
-          text: "P(A ∪ B) = P(A) + P(B) − P(A ∩ B) · ME → drop the last term · “at least one” = union · “both” = P(A) + P(B) − P(A ∪ B) · “not/neither” → 1 − P(…).",
+          text: "P(A ∪ B) = $P(A) + P(B)$ − P(A ∩ B) · ME → drop the last term · “at least one” = union · “both” = $P(A) + P(B)$ − P(A ∪ B) · “not/neither” → 1 − P(…).",
         },
       ],
     },
@@ -262,7 +584,7 @@ export default {
           type: "callout",
           kind: "remember",
           title: "Quick revision",
-          text: "Independent: P(A ∩ B) = P(A)P(B), circles overlap. ME: P(A ∩ B) = 0, no overlap. ME (with P > 0) ⇒ dependent.",
+          text: "Independent: P(A ∩ B) = $P(A) P(B)$, circles overlap. ME: P(A ∩ B) = 0, no overlap. ME (with $P > 0$) ⇒ dependent.",
         },
       ],
     },
@@ -292,8 +614,8 @@ export default {
           items: [
             "**(a) Both laptops:** only {1,2} → **1/15**.",
             "**(b) Both desktops:** pairs from {3,4,5,6}: {3,4}, {3,5}, {3,6}, {4,5}, {4,6}, {5,6} → **6/15**.",
-            "**(c) At least one desktop:** complement of “both laptops” → 1 − 1/15 = **14/15**.",
-            "**(d) At least one of each type:** complement of “both the same type” → 1 − 1/15 − 6/15 = **8/15**.",
+            "**(c) At least one desktop:** complement of “both laptops” → $1 - 1/15$ = **14/15**.",
+            "**(d) At least one of each type:** complement of “both the same type” → $1 - 1/15 - 6/15$ = **8/15**.",
           ],
         },
         {
@@ -331,7 +653,7 @@ export default {
       head: ["Idea", "Rule"],
       rows: [
         ["Classical", "favourable / total (equally likely)"],
-        ["Axioms", "P(S) = 1 · 0 ≤ P ≤ 1 · disjoint → add"],
+        ["Axioms", "$P(S) = 1$ · $0 \\le P \\le 1$ · disjoint → add"],
         ["Complement", "$P(A) = 1 - P(A^c)$ (use for “at least”, “neither”)"],
         ["Addition", "$P(A \\cup B) = P(A) + P(B) - P(A \\cap B)$"],
         ["Mutually exclusive", "$P(A \\cap B) = 0$ (no overlap)"],
@@ -360,13 +682,13 @@ export default {
     ["Equally likely", "", "Outcomes with the same probability"],
     ["Independent", "", "One event doesn't change the other's probability: $P(A \\cap B) = P(A)P(B)$"],
     ["Law of large numbers", "", "Empirical probability approaches the true probability as trials increase"],
-    ["$^nC_r$", "Combinations, “n choose r”", "Ways to pick r of n items, order ignored: n!/(r!(n − r)!)"],
+    ["$^nC_r$", "Combinations, “n choose r”", "Ways to pick r of n items, order ignored: n!/(r!$(n - r)$!)"],
   ],
 
   examTips: [
     "Define your events with letters first (“Let S = passes Statistics…”). It earns method marks and prevents mix-ups.",
     "Translate words to symbols: at least one → ∪; both → ∩; not → complement; neither → (A ∪ B)ᶜ.",
-    "For independence questions, compute P(A)P(B) and P(A ∩ B) **separately**, then compare.",
+    "For independence questions, compute $P(A) P(B)$ and P(A ∩ B) **separately**, then compare.",
     "Leave answers as fractions when the data is in fractions (14/45), unless asked for decimals.",
   ],
 
@@ -376,21 +698,21 @@ export default {
       level: "From slides",
       hint: "Check (i) every value in [0, 1] and (ii) the four values sum to 1.",
       question: "An experiment has four possible mutually exclusive outcomes A, B, C, D. Are these assignments permissible? (a) 0.38, 0.16, 0.11, 0.35 (b) 0.31, 0.27, 0.28, 0.16 (c) 0.32, 0.27, −0.06, 0.47 (d) 1/2, 1/4, 1/8, 1/16 (e) 5/8, 1/6, 1/3, 2/9",
-      solution: "### Why this approach\nBy the axioms, each probability lies in [0, 1], and since A–D are all the possible mutually exclusive outcomes, they must sum to P(S) = 1.\n### Working\n(a) sum = 1.00, all in [0, 1] → **permissible**.\n(b) sum = 1.02 → **not permissible**.\n(c) P(C) = −0.06 is negative → **not permissible**.\n(d) sum = 15/16 → by the axioms **not permissible** (the slide says “Permissible”; see the flag in Lesson 3).\n(e) sum = 97/72 > 1 → **not permissible**.\n### Takeaway\nTwo checks, every time: range and total.",
+      solution: "### Why this approach\nBy the axioms, each probability lies in [0, 1], and since A–D are all the possible mutually exclusive outcomes, they must sum to $P(S) = 1$.\n### Working\n(a) sum = 1.00, all in [0, 1] → **permissible**.\n(b) sum = 1.02 → **not permissible**.\n$(c) P(C)$ = −0.06 is negative → **not permissible**.\n(d) sum = 15/16 → by the axioms **not permissible** (the slide says “Permissible”; see the flag in Lesson 3).\n(e) sum = 97/72 > 1 → **not permissible**.\n### Takeaway\nTwo checks, every time: range and total.",
     },
     {
       title: "Example 2: sums of two dice (slides 24–27)",
       level: "From slides",
       hint: "36 equally likely outcomes. Use the complement for (c).",
       question: "Two dice are thrown. Find the probability that the sum is (a) greater than 8, (b) less than 6, (c) neither 7 nor 11.",
-      solution: "### Working\nWays to get each sum: 2→1, 3→2, 4→3, 5→4, 6→5, 7→6, 8→5, 9→4, 10→3, 11→2, 12→1.\n(a) (4 + 3 + 2 + 1)/36 = **10/36 = 5/18**.\n(b) (1 + 2 + 3 + 4)/36 = **10/36 = 5/18**.\n(c) 1 − (6 + 2)/36 = **28/36 = 7/9**.",
+      solution: "### Working\nWays to get each sum: 2→1, 3→2, 4→3, 5→4, 6→5, 7→6, 8→5, 9→4, 10→3, 11→2, 12→1.\n(a) (4 + 3 + 2 + 1)/36 = **10/36 = 5/18**.\n(b) (1 + 2 + 3 + 4)/36 = **10/36 = 5/18**.\n(c) $1 - (6 + 2)/36$ = **28/36 = 7/9**.",
     },
     {
       title: "Example 3: passing both exams (slides 28–29)",
       level: "From slides",
-      hint: "P(M) = 1 − 5/9. “At least one” is the union.",
+      hint: "$P(M) = 1 - 5/9$. “At least one” is the union.",
       question: "P(pass statistics) = 2/3; P(not pass mathematics) = 5/9; P(pass at least one) = 4/5. Find P(pass both).",
-      solution: "### What is being asked\n$P(S \\cap M)$.\n### Formula\n$P(S \\cup M) = P(S) + P(M) - P(S \\cap M)$.\n### Working\n$P(M) = 1 - 5/9 = 4/9$. $\\frac{4}{5} = \\frac{2}{3} + \\frac{4}{9} - P(S \\cap M)$ → $P(S \\cap M) = \\frac{30 + 20 - 36}{45} = \\frac{14}{45}$.\n### Answer\n**14/45 ≈ 0.311.**",
+      solution: "### What is being asked\n$P(S \\cap M)$.\n### Formula\n$P(S \\cup M) = P(S) + P(M) - P(S \\cap M)$.\n### Working\n$P(M) = 1 - 5/9 = 4/9$. $\\frac{4}{5} = \\frac{2}{3} + \\frac{4}{9} - P(S \\cap M)$ → $P(S \\cap M) = \\frac{30 + 20 - 36}{45} = \\frac{14}{45}$.\n### Answer\n**$14/45 \\approx 0.311$.**",
     },
     {
       title: "Example 4: investors in both (slides 30–31)",
@@ -402,14 +724,14 @@ export default {
       title: "Example 5: computer cable lengths (slides 32–33)",
       level: "From slides",
       hint: "Too small and too large share the 0.01 equally.",
-      question: "Specs are 2000 ± 10 mm. Too-small and too-large cables are equally likely, and P(meets spec) = 0.99. (a) P(cable too large)? (b) P(length > 1990 mm)?",
+      question: "Specs are $2000 \\pm 10$ mm. Too-small and too-large cables are equally likely, and P(meets spec) = 0.99. (a) P(cable too large)? (b) P(length > 1990 mm)?",
       solution: "### Set-up\nM = meets spec, S = too small (< 1990), L = too large (> 2010): mutually exclusive and exhaustive.\n### (a)\n$P(S) + P(L) = 1 - 0.99 = 0.01$ and $P(S) = P(L)$ → **P(L) = 0.005**.\n### (b)\n$P(X \\ge 1990) = P(M) + P(L) = 0.99 + 0.005 =$ **0.995**. Equivalently $1 - P(S) = 1 - 0.005$.",
     },
     {
       title: "Example 6: maximum of P(A)·P(B) (slide 34)",
       level: "From slides",
-      question: "A and B are mutually exclusive with A ∪ B = S. What is the maximum value of P(A)·P(B)?",
-      solution: "ME and exhaustive → $P(A) + P(B) = 1$. For a fixed sum, the product is maximised when the two are equal: $P(A) = P(B) = 1/2$ → maximum $P(A)P(B) =$ **1/4**. (Check: with $p(1-p)$, p = 0.4 gives 0.24 < 0.25.)",
+      question: "A and B are mutually exclusive with A ∪ $B = S$. What is the maximum value of $P(A) \\cdot P(B)$?",
+      solution: "ME and exhaustive → $P(A) + P(B) = 1$. For a fixed sum, the product is maximised when the two are equal: $P(A) = P(B) = 1/2$ → maximum $P(A)P(B) =$ **1/4**. (Check: with $p(1-p)$, $p = 0.4$ gives 0.24 < 0.25.)",
     },
     {
       title: "Example 7: max and min of two dice (slide 35)",
@@ -422,7 +744,7 @@ export default {
       level: "From slides",
       hint: "15 equally likely pairs; computers 1 and 2 are the laptops.",
       question: "Two of six computers (2 laptops, 4 desktops) are randomly chosen. P(a) both laptops, (b) both desktops, (c) at least one desktop, (d) at least one of each type?",
-      solution: "(a) {1,2} only → **1/15**. (b) $^4C_2 = 6$ desktop pairs → **6/15**. (c) 1 − 1/15 = **14/15**. (d) 1 − P(same type) = 1 − 1/15 − 6/15 = **8/15**.",
+      solution: "(a) {1,2} only → **1/15**. (b) $^4C_2 = 6$ desktop pairs → **6/15**. (c) $1 - 1/15$ = **14/15**. (d) 1 − P(same type) = $1 - 1/15 - 6/15$ = **8/15**.",
     },
     {
       title: "Example 9: committee with a majority of women (slide 41)",
@@ -434,27 +756,27 @@ export default {
       title: "Practice Q1: bank accounts (slide 42)",
       level: "From slides",
       question: "40% of accounts are savings, 35% current, the rest loan. P(a) loan, (b) not savings, (c) not current, (d) current or loan?",
-      solution: "The three account types are ME and exhaustive.\n(a) 1 − 0.40 − 0.35 = **0.25**. (b) 1 − 0.40 = **0.60**. (c) 1 − 0.35 = **0.65**. (d) 0.35 + 0.25 = **0.60**. (All match the slide answers.)",
+      solution: "The three account types are ME and exhaustive.\n(a) $1 - 0.40 - 0.35$ = **0.25**. (b) $1 - 0.40$ = **0.60**. (c) $1 - 0.35$ = **0.65**. (d) 0.35 + 0.25 = **0.60**. (All match the slide answers.)",
     },
     {
       title: "Practice Q2: A and B contradicting each other (slide 43)",
       level: "From slides",
       hint: "Contradiction = exactly one of them tells the truth. Treat A and B as independent.",
       question: "A speaks the truth in 80% of cases, B in 60%. In what percentage of cases are they likely to contradict each other when stating the same fact?",
-      solution: "### Approach\nThey contradict when one tells the truth and the other doesn't. These two cases are ME, and A's and B's truthfulness are taken as independent (as in the slide hint).\n### Working\nP(A true, B false) = 0.8 × 0.4 = 0.32; P(A false, B true) = 0.2 × 0.6 = 0.12.\n### Answer\n0.32 + 0.12 = **0.44, i.e. 44% of cases**.",
+      solution: "### Approach\nThey contradict when one tells the truth and the other doesn't. These two cases are ME, and A's and B's truthfulness are taken as independent (as in the slide hint).\n### Working\nP(A true, B false) = $0.8 \\times 0.4 = 0.32$; P(A false, B true) = $0.2 \\times 0.6 = 0.12$.\n### Answer\n0.32 + 0.12 = **0.44, i.e. 44% of cases**.",
     },
     {
       title: "Practice Q3: internet and TV service (slide 43)",
       level: "From slides",
       question: "60% of households get internet from the cable company, 80% get TV, 50% get both. P(i) at least one service, (ii) exactly one service?",
-      solution: "(i) $P(I \\cup T) = 0.6 + 0.8 - 0.5 =$ **0.90**.\n(ii) Internet only = 0.6 − 0.5 = 0.10; TV only = 0.8 − 0.5 = 0.30 → exactly one = **0.40**. (Or: P(at least one) − P(both) = 0.9 − 0.5.)",
+      solution: "(i) $P(I \\cup T) = 0.6 + 0.8 - 0.5 =$ **0.90**.\n(ii) Internet only = $0.6 - 0.5 = 0.10$; TV only = $0.8 - 0.5 = 0.30$ → exactly one = **0.40**. (Or: P(at least one) − P(both) = $0.9 - 0.5$.)",
     },
     {
       title: "Practice Q4: motors for wireless capsules (slide 44)",
       level: "From slides",
       hint: "10 motors, 2 faulty, 8 good; choose 2 at random.",
       question: "Of 10 motors, 2 won't operate satisfactorily. Two are randomly selected for a capsule. Find P(a) both operate satisfactorily, (b) exactly one operates satisfactorily.",
-      solution: "*Exercise solution prepared for the website.*\n### Approach\nEvery pair is equally likely: total $^{10}C_2 = 45$.\n### (a)\nBoth good: $^8C_2 = 28$ → **28/45 ≈ 0.622**.\n### (b)\nOne good, one faulty: $^8C_1 \\times {}^2C_1 = 16$ → **16/45 ≈ 0.356**.\n### Check\nBoth faulty: $^2C_2 = 1$ → 1/45. Total 28 + 16 + 1 = 45 ✓.",
+      solution: "*Exercise solution prepared for the website.*\n### Approach\nEvery pair is equally likely: total $^{10}C_2 = 45$.\n### (a)\nBoth good: $^8C_2 = 28$ → **$28/45 \\approx 0.622$**.\n### (b)\nOne good, one faulty: $^8C_1 \\times {}^2C_1 = 16$ → **$16/45 \\approx 0.356$**.\n### Check\nBoth faulty: $^2C_2 = 1$ → 1/45. Total $28 + 16 + 1 = 45$ ✓.",
     },
     {
       title: "Practice Q5: coffee and soda (slide 45)",
@@ -471,23 +793,23 @@ export default {
     {
       title: "Practice Q7: find P(A), P(B), P(A ∩ B′) (slide 46)",
       level: "From slides",
-      hint: "P(A) = 1 − P(A′). Then rearrange the addition rule. A = (A ∩ B) ∪ (A ∩ B′).",
-      question: "P(A ∪ B) = 7/8, P(A ∩ B) = 1/4, P(A′) = 5/8. Find P(A), P(B) and P(A ∩ B′).",
+      hint: "$P(A) = 1 - P(A')$. Then rearrange the addition rule. A = (A ∩ B) ∪ (A ∩ $B'$).",
+      question: "P(A ∪ B) = 7/8, P(A ∩ B) = 1/4, $P(A') = 5/8$. Find $P(A)$, $P(B)$ and P(A ∩ $B'$).",
       solution: "*Exercise solution prepared for the website.*\n$P(A) = 1 - 5/8 =$ **3/8**.\n$P(B) = P(A \\cup B) - P(A) + P(A \\cap B) = 7/8 - 3/8 + 2/8 =$ **6/8 = 3/4**.\n$P(A \\cap B') = P(A) - P(A \\cap B) = 3/8 - 2/8 =$ **1/8** (A splits into the part inside B and the part outside B, which are ME).",
     },
     {
       title: "Practice Q8: P(A) = P(B) with given overlaps (slide 47)",
       level: "From slides",
-      hint: "A′ ∩ B′ is “neither”, which is the complement of A ∪ B.",
-      question: "P(A) = P(B) and P(A′ ∩ B′) = P(A ∩ B) = 1/6. Find (a) P(A), (b) P(A′ ∪ B′), (c) P(exactly one of A or B).",
+      hint: "$A'$ ∩ $B'$ is “neither”, which is the complement of A ∪ B.",
+      question: "$P(A) = P(B)$ and P($A'$ ∩ $B'$) = P(A ∩ B) = 1/6. Find $(a) P(A)$, $(b)$ P($A'$ ∪ $B'$), (c) P(exactly one of A or B).",
       solution: "*Exercise solution prepared for the website.*\n### (a)\nNeither = $(A \\cup B)^c$, so $P(A \\cup B) = 1 - 1/6 = 5/6$. Addition rule with $P(A) = P(B) = p$: $5/6 = 2p - 1/6$ → $p =$ **1/2**.\n### (b)\n$A' \\cup B'$ = “not both” = $(A \\cap B)^c$ → $1 - 1/6 =$ **5/6**.\n### (c)\nExactly one = at least one − both = $5/6 - 1/6 =$ **2/3**.",
     },
     {
       title: "Practice Q9: insurance deductibles (slides 47–49)",
       level: "From slides",
       hint: "Read the joint table: rows = auto (L, M, H), columns = homeowner's (N, L, M, H). Add the relevant cells.",
-      question: "Joint proportions (rows auto L/M/H; columns homeowner's N/L/M/H): L: 0.04, 0.06, 0.05, 0.03 · M: 0.07, 0.10, 0.20, 0.10 · H: 0.02, 0.03, 0.15, 0.10. Find P(a) medium auto and high homeowner's; (b) low auto; low homeowner's; (c) same category for both; (d) different categories; (e) at least one low; (f) neither low.",
-      solution: "*Exercise solution prepared for the website.*\n### ⚠️ Data check\nThe twelve cells as printed on slide 48 add up to **0.95**, not 1, which isn't possible for a complete probability table. The high-auto/high-home cell (0.10) is the likely typo: **0.15** would make the table sum to 1. Answers below use the slide's values, with the 0.15 version given where it changes the result.\n### (a)\nAuto M, home H → **0.10**.\n### (b)\nLow auto = 0.04 + 0.06 + 0.05 + 0.03 = **0.18**. Low homeowner's = 0.06 + 0.10 + 0.03 = **0.19**.\n### (c) Same category\nOnly L, M, H exist for both (auto has no N): LL + MM + HH = 0.06 + 0.20 + 0.10 = **0.36** (0.41 if HH = 0.15).\n### (d) Different\n1 − P(same) = **0.64** (0.59 if HH = 0.15). (With the printed table, adding the different-category cells directly gives 0.59, which shows the inconsistency.)\n### (e) At least one low\nP(low auto) + P(low home) − P(both low) = 0.18 + 0.19 − 0.06 = **0.31**.\n### (f) Neither low\n1 − 0.31 = **0.69**.",
+      question: "Joint proportions (rows auto L/M/H; columns homeowner's N/L/M/H): L: 0.04, 0.06, 0.05, $0.03 \\cdot M$: 0.07, 0.10, 0.20, $0.10 \\cdot H$: 0.02, 0.03, 0.15, 0.10. Find P(a) medium auto and high homeowner's; (b) low auto; low homeowner's; (c) same category for both; (d) different categories; (e) at least one low; (f) neither low.",
+      solution: "*Exercise solution prepared for the website.*\n### ⚠️ Data check\nThe twelve cells as printed on slide 48 add up to **0.95**, not 1, which isn't possible for a complete probability table. The high-auto/high-home cell (0.10) is the likely typo: **0.15** would make the table sum to 1. Answers below use the slide's values, with the 0.15 version given where it changes the result.\n### (a)\nAuto M, home H → **0.10**.\n### (b)\nLow auto = 0.04 + 0.06 + 0.05 + 0.03 = **0.18**. Low homeowner's = 0.06 + 0.10 + 0.03 = **0.19**.\n### (c) Same category\nOnly L, M, H exist for both (auto has no N): LL + MM + HH = 0.06 + 0.20 + 0.10 = **0.36** (0.41 if HH = 0.15).\n### (d) Different\n1 − P(same) = **0.64** (0.59 if HH = 0.15). (With the printed table, adding the different-category cells directly gives 0.59, which shows the inconsistency.)\n### (e) At least one low\nP(low auto) + P(low home) − P(both low) = $0.18 + 0.19 - 0.06$ = **0.31**.\n### (f) Neither low\n$1 - 0.31$ = **0.69**.",
     },
     {
       title: "Level 1: a single die",
@@ -500,25 +822,25 @@ export default {
       level: "Level 1",
       hint: "Use the complement.",
       question: "A fair coin is tossed three times. Find P(at least one head).",
-      solution: "S has 8 equally likely outcomes; “no heads” = {TTT}. P(at least one head) = 1 − 1/8 = **7/8**.",
+      solution: "S has 8 equally likely outcomes; “no heads” = {TTT}. P(at least one head) = $1 - 1/8$ = **7/8**.",
     },
     {
       title: "Level 1: is it a valid assignment?",
       level: "Level 1",
       question: "Three mutually exclusive and exhaustive outcomes have probabilities 0.2, 0.3 and 0.5. Is this permissible? What if they were 0.2, 0.3, 0.4?",
-      solution: "First: each in [0, 1] and the sum is 1.0 → **permissible**. Second: the sum is 0.9 ≠ 1 → **not permissible** (exhaustive outcomes must sum to P(S) = 1).",
+      solution: "First: each in [0, 1] and the sum is 1.0 → **permissible**. Second: the sum is $0.9 \\ne 1$ → **not permissible** (exhaustive outcomes must sum to $P(S) = 1$).",
     },
     {
       title: "Level 2: test for independence",
       level: "Level 2",
-      question: "P(A) = 0.5, P(B) = 0.4, P(A ∩ B) = 0.2. Are A and B independent? Are they mutually exclusive? Find P(A ∪ B).",
+      question: "$P(A) = 0.5$, $P(B) = 0.4$, P(A ∩ B) = 0.2. Are A and B independent? Are they mutually exclusive? Find P(A ∪ B).",
       solution: "$P(A)P(B) = 0.2 = P(A \\cap B)$ → **independent**. $P(A \\cap B) = 0.2 \\ne 0$ → **not** mutually exclusive. $P(A \\cup B) = 0.5 + 0.4 - 0.2 =$ **0.7**.",
     },
     {
       title: "Level 2: neither sport",
       level: "Level 2",
       question: "In a class of 60, 25 like cricket, 20 like football and 10 like both. A student is picked at random. Find P(likes neither).",
-      solution: "P(at least one) = (25 + 20 − 10)/60 = 35/60. P(neither) = 1 − 35/60 = **25/60 = 5/12**.",
+      solution: "P(at least one) = $(25 + 20 - 10)/60 = 35/60$. P(neither) = $1 - 35/60$ = **25/60 = 5/12**.",
     },
     {
       title: "Level 2: doubles or a sum of 8",
@@ -532,19 +854,19 @@ export default {
       level: "Level 3",
       hint: "Complement: no analysts means all 3 chosen are engineers.",
       question: "A team of 3 is chosen at random from 5 engineers and 4 analysts. Find P(at least one analyst).",
-      solution: "Total $^9C_3 = 84$. No analyst: $^5C_3 = 10$. P(at least one analyst) = 1 − 10/84 = **74/84 = 37/42 ≈ 0.881**.",
+      solution: "Total $^9C_3 = 84$. No analyst: $^5C_3 = 10$. P(at least one analyst) = $1 - 10/84$ = **$74/84 = 37/42 \\approx 0.881$**.",
     },
     {
       title: "Level 3: can ME events be independent?",
       level: "Level 3",
-      question: "A and B are mutually exclusive with P(A) = 0.3 and P(B) = 0.4. Can they be independent? Find P(A ∪ B) and P(neither).",
-      solution: "ME → $P(A \\cap B) = 0$, but independence needs $P(A)P(B) = 0.12$. Since 0 ≠ 0.12 → **not independent** (they're dependent). $P(A \\cup B) = 0.3 + 0.4 =$ **0.7**; P(neither) = **0.3**.",
+      question: "A and B are mutually exclusive with $P(A) = 0.3$ and $P(B) = 0.4$. Can they be independent? Find P(A ∪ B) and P(neither).",
+      solution: "ME → $P(A \\cap B) = 0$, but independence needs $P(A)P(B) = 0.12$. Since $0 \\ne 0.12$ → **not independent** (they're dependent). $P(A \\cup B) = 0.3 + 0.4 =$ **0.7**; P(neither) = **0.3**.",
     },
     {
       title: "Level 3: independent events, neither occurs",
       level: "Level 3",
-      question: "A and B are independent with P(A) = 0.6 and P(B) = 0.5. Find P(A ∪ B) and the probability that neither occurs.",
-      solution: "Independence → $P(A \\cap B) = 0.6 \\times 0.5 = 0.3$. $P(A \\cup B) = 0.6 + 0.5 - 0.3 =$ **0.8**. P(neither) = 1 − 0.8 = **0.2**.",
+      question: "A and B are independent with $P(A) = 0.6$ and $P(B) = 0.5$. Find P(A ∪ B) and the probability that neither occurs.",
+      solution: "Independence → $P(A \\cap B) = 0.6 \\times 0.5 = 0.3$. $P(A \\cup B) = 0.6 + 0.5 - 0.3 =$ **0.8**. P(neither) = $1 - 0.8$ = **0.2**.",
     },
   ],
 
@@ -553,13 +875,13 @@ export default {
       title: "Mutually exclusive vs independent",
       level: "Level 2",
       question: "Distinguish between mutually exclusive and independent events. Can two events with non-zero probabilities be both?",
-      solution: "### Model answer\n| | Mutually exclusive | Independent |\n|---|---|---|\n| Meaning | Cannot occur together | One doesn't affect the other |\n| Formula | $P(A \\cap B) = 0$ | $P(A \\cap B) = P(A)P(B)$ |\n| Venn | No overlap | Overlap |\n\n**Not both:** if P(A), P(B) > 0, then P(A)P(B) > 0 = P(A ∩ B), so ME events are always **dependent**: knowing A happened tells you B didn't.",
+      solution: "### Model answer\n| | Mutually exclusive | Independent |\n|---|---|---|\n| Meaning | Cannot occur together | One doesn't affect the other |\n| Formula | $P(A \\cap B) = 0$ | $P(A \\cap B) = P(A)P(B)$ |\n| Venn | No overlap | Overlap |\n\n**Not both:** if $P(A)$, $P(B) > 0$, then $P(A) P(B) > 0$ = P(A ∩ B), so ME events are always **dependent**: knowing A happened tells you B didn't.",
     },
     {
       title: "Three approaches to probability",
       level: "Level 1",
       question: "Explain the classical, empirical and axiomatic approaches to probability, with an example of each.",
-      solution: "**Classical:** favourable ÷ total, for equally likely outcomes (P(6 on a fair die) = 1/6). **Empirical:** times the event occurred ÷ total observations (if 45 of 300 trains were late last month, P(late) ≈ 0.15); by the law of large numbers this approaches the true value as observations grow. **Axiomatic:** any assignment satisfying P(S) = 1, 0 ≤ P(E) ≤ 1, and additivity for disjoint events, which is what lets us check whether given probabilities are permissible.",
+      solution: "**Classical:** favourable ÷ total, for equally likely outcomes (P(6 on a fair die) = 1/6). **Empirical:** times the event occurred ÷ total observations (if 45 of 300 trains were late last month, P(late) ≈ 0.15); by the law of large numbers this approaches the true value as observations grow. **Axiomatic:** any assignment satisfying $P(S) = 1$, $0 \\le P(E) \\le 1$, and additivity for disjoint events, which is what lets us check whether given probabilities are permissible.",
     },
     {
       title: "Exhaustive events",
@@ -571,7 +893,7 @@ export default {
       title: "Why subtract P(A ∩ B)?",
       level: "Level 2",
       question: "Explain, with a Venn diagram argument, why the addition rule subtracts P(A ∩ B).",
-      solution: "P(A) counts every outcome in circle A, including the overlap; P(B) counts every outcome in circle B, again including the overlap. So P(A) + P(B) counts the overlap **twice**. Subtracting P(A ∩ B) once leaves every outcome of A ∪ B counted exactly once. If A and B are ME there's no overlap, so nothing needs subtracting.",
+      solution: "$P(A)$ counts every outcome in circle A, including the overlap; $P(B)$ counts every outcome in circle B, again including the overlap. So $P(A) + P(B)$ counts the overlap **twice**. Subtracting P(A ∩ B) once leaves every outcome of A ∪ B counted exactly once. If A and B are ME there's no overlap, so nothing needs subtracting.",
     },
   ],
 
@@ -589,15 +911,15 @@ export default {
       q: "Events whose union is the whole sample space are called…",
       options: ["Mutually exclusive", "Independent", "Exhaustive", "Complementary only"],
       answer: 2,
-      why: "Exhaustive: at least one must occur, E₁ ∪ … ∪ Eₙ = S.",
+      why: "Exhaustive: at least one must occur, $E_1$ ∪ … ∪ $E_n = S$.",
       wrong: ["ME is about no overlap, not covering S.", "Independence is about probabilities multiplying.", null, "Complements are one special exhaustive pair, but the general term is exhaustive."],
     },
     {
       topic: "Axioms",
-      q: "Four ME and exhaustive outcomes have P = 1/2, 1/4, 1/8, 1/16. By the axioms, this is…",
+      q: "Four ME and exhaustive outcomes have $P = 1/2$, 1/4, 1/8, 1/16. By the axioms, this is…",
       options: ["Permissible", "Not permissible: the sum is 15/16", "Not permissible: a value is negative", "Permissible only if independent"],
       answer: 1,
-      why: "Exhaustive ME outcomes must sum to P(S) = 1; these sum to 15/16. (The slide marks it permissible; this is flagged in the notes.)",
+      why: "Exhaustive ME outcomes must sum to $P(S) = 1$; these sum to 15/16. (The slide marks it permissible; this is flagged in the notes.)",
       wrong: ["Each value is in [0, 1], but the total fails.", null, "None is negative.", "Independence has nothing to do with permissibility."],
     },
     {
@@ -611,11 +933,11 @@ export default {
     {
       topic: "Addition rule",
       type: "num",
-      q: "P(S) = 2/3, P(M) = 4/9, P(S ∪ M) = 4/5. Find P(S ∩ M) (fraction or decimal).",
+      q: "$P(S) = 2/3$, $P(M) = 4/9$, P(S ∪ M) = 4/5. Find P(S ∩ M) (fraction or decimal).",
       answer: 14 / 45,
       display: "14/45",
       tol: 0.002,
-      why: "2/3 + 4/9 − 4/5 = 14/45 ≈ 0.311.",
+      why: "$2/3 + 4/9 - 4/5 = 14/45 \\approx 0.311$.",
     },
     {
       topic: "Addition rule",
@@ -624,7 +946,7 @@ export default {
       answer: 7 / 9,
       display: "7/9",
       tol: 0.002,
-      why: "1 − (6 + 2)/36 = 28/36 = 7/9.",
+      why: "$1 - (6 + 2)/36 = 28/36 = 7/9$.",
     },
     {
       topic: "Addition rule",
@@ -632,7 +954,7 @@ export default {
       q: "60% have internet, 80% TV, 50% both. P(exactly one service)?",
       answer: 0.4,
       tol: 0.001,
-      why: "(0.6 − 0.5) + (0.8 − 0.5) = 0.10 + 0.30 = 0.40.",
+      why: "$(0.6 - 0.5) + (0.8 - 0.5) = 0.10 + 0.30 = 0.40$.",
     },
     {
       topic: "Addition rule",
@@ -640,30 +962,30 @@ export default {
       q: "75% invest in annuities, 45% in stocks, 85% in at least one. What proportion invest in both? (decimal)",
       answer: 0.35,
       tol: 0.001,
-      why: "0.75 + 0.45 − 0.85 = 0.35.",
+      why: "$0.75 + 0.45 - 0.85 = 0.35$.",
     },
     {
       topic: "Independence",
-      q: "A and B are mutually exclusive, with P(A) = 0.3 and P(B) = 0.4. Then A and B are…",
+      q: "A and B are mutually exclusive, with $P(A) = 0.3$ and $P(B) = 0.4$. Then A and B are…",
       options: ["Independent", "Dependent", "Exhaustive", "Equally likely"],
       answer: 1,
-      why: "P(A ∩ B) = 0 but P(A)P(B) = 0.12, so the independence test fails.",
-      wrong: ["Independence needs P(A ∩ B) = P(A)P(B) = 0.12, not 0.", null, "0.3 + 0.4 = 0.7 < 1, so they don't cover S.", "0.3 ≠ 0.4."],
+      why: "P(A ∩ B) = 0 but $P(A) P(B) = 0.12$, so the independence test fails.",
+      wrong: ["Independence needs P(A ∩ B) = $P(A) P(B) = 0.12$, not 0.", null, "0.3 + 0.4 = 0.7 < 1, so they don't cover S.", "$0.3 \\ne 0.4$."],
     },
     {
       topic: "Independence",
       q: "In a Venn diagram, independent events (with positive probabilities)…",
       options: ["Never overlap", "Always overlap", "Fill the whole sample space", "Are drawn as one circle"],
       answer: 1,
-      why: "P(A ∩ B) = P(A)P(B) > 0, so there must be an overlap (slide 22).",
-      wrong: ["No overlap is mutually exclusive.", null, "That would be exhaustive.", "One circle would mean A = B."],
+      why: "P(A ∩ B) = $P(A) P(B) > 0$, so there must be an overlap (slide 22).",
+      wrong: ["No overlap is mutually exclusive.", null, "That would be exhaustive.", "One circle would mean $A = B$."],
     },
     {
       topic: "Independence",
-      q: "Die thrown twice: A = {max is 2}, B = {min is 2}. P(A) = 3/36, P(B) = 9/36, P(A ∩ B) = 1/36. A and B are…",
+      q: "Die thrown twice: A = {max is 2}, B = {min is 2}. $P(A) = 3/36$, $P(B) = 9/36$, P(A ∩ B) = 1/36. A and B are…",
       options: ["Independent", "Dependent", "Mutually exclusive", "Exhaustive"],
       answer: 1,
-      why: "P(A)P(B) = 1/48 ≠ 1/36.",
+      why: "$P(A) P(B) = 1/48 \\ne 1/36$.",
       wrong: ["The product doesn't equal the intersection.", null, "(2,2) is in both.", "Their union is far from all 36 outcomes."],
     },
     {
@@ -673,7 +995,7 @@ export default {
       answer: 8 / 15,
       display: "8/15",
       tol: 0.002,
-      why: "1 − 1/15 − 6/15 = 8/15.",
+      why: "$1 - 1/15 - 6/15 = 8/15$.",
     },
     {
       topic: "Counting",
@@ -682,7 +1004,7 @@ export default {
       answer: 5 / 33,
       display: "5/33",
       tol: 0.002,
-      why: "(8·1 + 28·4)/792 = 120/792 = 5/33.",
+      why: "$(8 \\cdot 1 + 28 \\cdot 4)/792 = 120/792 = 5/33$.",
     },
     {
       topic: "Counting",

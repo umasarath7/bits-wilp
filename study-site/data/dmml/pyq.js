@@ -48,7 +48,7 @@ export default {
           type: "callout",
           kind: "tip",
           title: "Time budget",
-          text: "6 × 5 marks. Budget about **15–18 minutes per answer**: 2 minutes to plan (headings + diagram), 12 to write, 2 to add an example and a conclusion.",
+          text: "$6 \\times 5$ marks. Budget about **15–18 minutes per answer**: 2 minutes to plan (headings + diagram), 12 to write, 2 to add an example and a conclusion.",
         },
       ],
     },

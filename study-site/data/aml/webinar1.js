@@ -139,7 +139,7 @@ export default {
           caption: "Univariate analysis (slides 20–23, notebook)",
           head: ["Variable type", "Plot", "What we saw"],
           rows: [
-            ["Nominal (Gender, Married, Self_Employed, Credit_History)", "`value_counts(normalize=True).plot.barh()` in a 2 × 2 grid (`plt.subplot(2,2,i)`)", "About 75% male, about 67% married, about 15% self-employed"],
+            ["Nominal (Gender, Married, Self_Employed, Credit_History)", "`value_counts(normalize=True).plot.barh()` in a $2 \\times 2$ grid (`plt.subplot(2,2,i)`)", "About 75% male, about 67% married, about 15% self-employed"],
             ["Ordinal (Dependents, Education, Property_Location)", "`.plot.bar()`", "Few applicants with 3+ dependents; more graduates apply; roughly equal samples per area"],
             ["Numeric (Applicant_Income, CoapplicantIncome, Loan_Amt)", "Histogram + box plot", "Income: **strongly right-skewed** (mean 6082 vs median 3780, max 63337, skew 4.7) with outliers. Loan amount: also right-skewed (mean 156 vs median 126, skew 2.3)"],
           ],
@@ -200,7 +200,7 @@ export default {
           type: "callout",
           kind: "example",
           title: "Compute the features for one applicant",
-          text: "*Prepared for the website.* Income 5000, co-applicant 1500, loan 150 (thousand), tenure 360 months.\nTotal = 6500 → log = **8.78**. EMI = 150/360 = 0.4167 (thousand) → log = **−0.875**. Balance = 6500 − 416.7 = 6083.3 → log = **8.71**.\nThese are exactly the values the Streamlit app computes from the form inputs.",
+          text: "*Prepared for the website.* Income 5000, co-applicant 1500, loan 150 (thousand), tenure 360 months.\nTotal = 6500 → log = **8.78**. EMI = 150/360 = 0.4167 (thousand) → log = **−0.875**. Balance = $6500 - 416.7 = 6083.3$ → log = **8.71**.\nThese are exactly the values the Streamlit app computes from the form inputs.",
         },
         {
           type: "p",
@@ -277,7 +277,7 @@ export default {
           type: "callout",
           kind: "example",
           title: "Check one row by hand",
-          text: "SVM: TN 5, FP 3, FN 0, TP 15. Accuracy = 20/23 = **0.870**; precision = 15/18 = **0.833**; recall = 15/15 = **1.0**; F1 = 2(0.833)(1)/1.833 = **0.909** ✓.",
+          text: "SVM: TN 5, FP 3, FN 0, TP 15. Accuracy = 20/23 = **0.870**; precision = 15/18 = **0.833**; recall = 15/15 = **1.0**; $F_1 = 2 (0.833) (1)/1.833$ = **0.909** ✓.",
         },
         {
           type: "callout",
@@ -427,26 +427,26 @@ export default {
       title: "Approval rate from value_counts",
       level: "Easy",
       question: "`value_counts()` shows Y 74, N 40. What is the approval rate, and what's wrong with the notebook's `64/(64+50)`?",
-      solution: "*Exercise solution prepared for the website.*\n74/114 = **64.9%**. The notebook's 64 and 50 don't match the printed counts (and 64 + 50 = 114 only by coincidence), giving 56%. Compute from the output, e.g. `loan_data['Approved'].value_counts(normalize=True)`.",
+      solution: "*Exercise solution prepared for the website.*\n74/114 = **64.9%**. The notebook's 64 and 50 don't match the printed counts (and $64 + 50 = 114$ only by coincidence), giving 56%. Compute from the output, e.g. `loan_data['Approved'].value_counts(normalize=True)`.",
     },
     {
       title: "Engineer the features for an applicant",
       level: "Medium",
       hint: "EMI is in thousands; multiply by 1000 before subtracting from income.",
       question: "Income 4000, co-applicant 2000, loan 120 (thousand), tenure 240 months. Compute Total_Income_log, EMI_log and Balance_Income_log.",
-      solution: "*Exercise solution prepared for the website.*\nTotal = 6000 → ln 6000 = **8.70**.\nEMI = 120/240 = 0.5 → ln 0.5 = **−0.693**.\nBalance = 6000 − 500 = 5500 → ln 5500 = **8.61**.",
+      solution: "*Exercise solution prepared for the website.*\nTotal = 6000 → ln 6000 = **8.70**.\nEMI = 120/240 = 0.5 → ln 0.5 = **−0.693**.\nBalance = $6000 - 500 = 5500$ → ln 5500 = **8.61**.",
     },
     {
       title: "Metrics from the XGBoost confusion matrix",
       level: "Medium",
       question: "XGBoost: [[7, 1], [4, 11]] (rows actual N/Y, columns predicted N/Y). Compute accuracy, precision, recall and F1 for 'Approved'.",
-      solution: "TN 7, FP 1, FN 4, TP 11. Accuracy = 18/23 = **0.783**; precision = 11/12 = **0.917**; recall = 11/15 = **0.733**; F1 = 2(0.917)(0.733)/1.650 = **0.815** ✓ matches the notebook.",
+      solution: "TN 7, FP 1, FN 4, TP 11. Accuracy = 18/23 = **0.783**; precision = 11/12 = **0.917**; recall = 11/15 = **0.733**; $F_1 = 2 (0.917) (0.733)/1.650$ = **0.815** ✓ matches the notebook.",
     },
     {
       title: "Which model would you deploy?",
       level: "Hard",
       question: "Using the comparison table, which model would you deploy for the bank and why? What would you do before deciding?",
-      solution: "*Exercise solution prepared for the website.*\nThe costly error for a bank is approving a loan that should be rejected (FP for “Approved”). **XGBoost** has the highest precision (0.917, only 1 FP) despite lower accuracy; SVM has the best accuracy and F1 but 3 FPs. Before deciding: (1) fix the rural credit-history imputation; (2) evaluate all models with **stratified 5- or 10-fold cross-validation**, since 23 test rows are too few; (3) tune hyperparameters on validation folds; (4) consider the probability threshold (e.g. approve only if P > 0.7) to trade recall for precision.",
+      solution: "*Exercise solution prepared for the website.*\nThe costly error for a bank is approving a loan that should be rejected (FP for “Approved”). **XGBoost** has the highest precision (0.917, only 1 FP) despite lower accuracy; SVM has the best accuracy and F1 but 3 FPs. Before deciding: (1) fix the rural credit-history imputation; (2) evaluate all models with **stratified 5- or 10-fold cross-validation**, since 23 test rows are too few; (3) tune hyperparameters on validation folds; (4) consider the probability threshold (e.g. approve only if $P > 0.7$) to trade recall for precision.",
     },
     {
       title: "Fix the rural credit-history problem",
@@ -467,7 +467,7 @@ export default {
       title: "Data-science lifecycle for the loan case",
       level: "Easy",
       question: "List the stages of the webinar's data-science lifecycle with one action from the loan case for each.",
-      solution: "Business understanding (automate loan approval: binary classification) → data acquisition (read three CSVs) → data preparation (standardise names and codes, add Property_Location, concat to 114 × 13) → EDA (target balance, bar charts, cross-tabs, correlation heat map) → feature engineering (mode/median imputation, log transforms, Total_Income, EMI, Balance_Income, one-hot encoding) → model building and selection (LR, DT, RF, NB, SVM, XGBoost compared on accuracy/precision/recall/F1) → deployment (joblib + Streamlit app) (slide 2).",
+      solution: "Business understanding (automate loan approval: binary classification) → data acquisition (read three CSVs) → data preparation (standardise names and codes, add Property_Location, concat to $114 \\times 13$) → EDA (target balance, bar charts, cross-tabs, correlation heat map) → feature engineering (mode/median imputation, log transforms, Total_Income, EMI, Balance_Income, one-hot encoding) → model building and selection (LR, DT, RF, NB, SVM, XGBoost compared on accuracy/precision/recall/F1) → deployment (joblib + Streamlit app) (slide 2).",
     },
     {
       title: "Why log-transform income?",

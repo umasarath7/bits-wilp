@@ -155,9 +155,46 @@ function Block({ b }) {
       const D = diagrams[b.name];
       return D ? html`<${D} />` : null;
     }
+    case "answer":
+      return html`<div className="answer-box">
+        <div className="answer-label">${b.label || "Answer"}</div>
+        ${b.value && html`<div className="answer-value"><${Md} inline text=${b.value} /></div>`}
+        ${b.text && html`<${Md} text=${b.text} />`}
+      </div>`;
+    case "cards":
+      return html`<div className="cards-grid">
+        ${b.items.map((c, i) => html`<div key=${i} className="pcard">
+          ${c.figure && figures[c.figure] && html`<div className="pcard-fig" dangerouslySetInnerHTML=${{ __html: figures[c.figure].svg }} />`}
+          <div className="pcard-body">
+            <div className="pcard-title">${c.title}</div>
+            ${c.tag && html`<span className="pcard-tag">${c.tag}</span>`}
+            <${Md} text=${c.text} />
+            ${c.example && html`<div className="pcard-ex"><${Md} inline text=${"*Example:* " + c.example} /></div>`}
+          </div>
+        </div>`)}
+      </div>`;
+    case "check":
+      return html`<${CheckQ} b=${b} />`;
     default:
       return null;
   }
+}
+
+// A one-question self-check: pick an option, see right/wrong and why.
+function CheckQ({ b }) {
+  const [pick, setPick] = useState(null);
+  return html`<div className="check-q">
+    <div className="check-stem"><${Md} inline text=${b.q} /></div>
+    <div className="check-opts">
+      ${b.options.map((o, j) => html`<button key=${j} disabled=${pick !== null}
+        className=${"check-opt" + (pick === null ? "" : j === b.answer ? " right" : j === pick ? " wrong" : "")}
+        onClick=${() => setPick(j)}><span dangerouslySetInnerHTML=${{ __html: md(o, true) }} /></button>`)}
+    </div>
+    ${pick !== null && html`<div className=${"why " + (pick === b.answer ? "ok" : "no")}>
+      <b>${pick === b.answer ? "✅ Correct. " : "❌ Not quite. "}</b><${Md} inline text=${b.why} />
+      <button className="btn ghost small" onClick=${() => setPick(null)}>Try again</button>
+    </div>`}
+  </div>`;
 }
 
 // A table with a filter box: rows stay visible when any cell contains every typed word.
@@ -235,11 +272,20 @@ function NotesTab({ s }) {
 }
 
 // Shared by the Problems (numerical) and Theory tabs.
-function QuestionsTab({ items, storeKey, answerLabel }) {
+function QuestionsTab({ items, storeKey, answerLabel, legacyKeys }) {
   const [open, setOpen] = useState({});
   const [hint, setHint] = useState({});
-  const [solved, setSolved] = useState(() => store.get(storeKey, {}));
+  // Progress is stored per question id; older per-tab progress (numerical / theory) is carried over once.
+  const [solved, setSolved] = useState(() => {
+    const cur = store.get(storeKey, null);
+    if (cur || !legacyKeys) return cur || {};
+    const merged = {};
+    items.forEach((p, i) => { if (p.legacy && store.get(legacyKeys[p.legacy[0]], {})[p.legacy[1]]) merged[i] = true; });
+    return merged;
+  });
   const [filter, setFilter] = useState("All");
+  const [kind, setKind] = useState("All");
+  const kinds = [...new Set(items.map((p) => p.kind).filter(Boolean))];
   const levels = ["All", ...new Set(items.map((p) => p.level).filter(Boolean))];
   if (items.some((p) => p.pyq)) levels.push("📌 PYQ");
   const all = items.every((_, i) => open[i]);
@@ -249,10 +295,13 @@ function QuestionsTab({ items, storeKey, answerLabel }) {
     store.set(storeKey, next);
   };
   const solvedCount = items.filter((_, i) => solved[i]).length;
-  const visible = (p) => filter === "All" || (filter === "📌 PYQ" ? p.pyq : p.level === filter);
+  const visible = (p) => (kind === "All" || p.kind === kind) && (filter === "All" || (filter === "📌 PYQ" ? p.pyq : p.level === filter));
 
   return html`<div>
     <div className="toolbar">
+      ${kinds.length > 1 && html`<div className="seg">
+        ${["All", ...kinds].map((k) => html`<button key=${k} className=${kind === k ? "on" : ""} onClick=${() => setKind(k)}>${k === "Numerical" ? "✍️ Numerical" : k === "Theory" ? "📝 Theory" : "All types"}</button>`)}
+      </div>`}
       ${levels.length > 2 && html`<div className="seg">
         ${levels.map((l) => html`<button key=${l} className=${filter === l ? "on" : ""} onClick=${() => setFilter(l)}>${l}</button>`)}
       </div>`}
@@ -267,19 +316,20 @@ function QuestionsTab({ items, storeKey, answerLabel }) {
           <span className="qnum">Q${i + 1}</span>
           <h3>${p.title}</h3>
           ${p.pyq && html`<span className="badge pyq" title=${typeof p.pyq === "string" ? p.pyq : "Same pattern as a previous-year question"}>📌 PYQ</span>`}
+          ${p.kind === "Theory" && html`<span className="badge theory">Theory</span>`}
           ${p.level && html`<span className=${"badge " + p.level.toLowerCase().replace(/\s+/g, "-")}>${p.level}</span>`}
           ${p.marks && html`<span className="badge marks">${p.marks} marks</span>`}
         </header>
         <${Md} text=${p.question} />
         <div className="problem-actions">
           <button className="btn" onClick=${() => setOpen((o) => ({ ...o, [i]: !o[i] }))}>
-            ${open[i] ? `Hide ${answerLabel.toLowerCase()} ▴` : `Show ${answerLabel.toLowerCase()} ▾`}
+            ${open[i] ? `Hide ${(p.answerLabel || answerLabel).toLowerCase()} ▴` : `Show ${(p.answerLabel || answerLabel).toLowerCase()} ▾`}
           </button>
           ${p.hint && html`<button className="btn ghost" onClick=${() => setHint((h) => ({ ...h, [i]: !h[i] }))}>${hint[i] ? "Hide hint" : "💡 Hint"}</button>`}
           <label className="check"><input type="checkbox" checked=${!!solved[i]} onChange=${() => markSolved(i)} /> Done</label>
         </div>
         ${hint[i] && p.hint && html`<div className="callout tip hint"><${Md} text=${p.hint} /></div>`}
-        ${open[i] && html`<div className="solution"><div className="sol-label">${answerLabel}</div><${Md} text=${p.solution} /></div>`}
+        ${open[i] && html`<div className="solution"><div className="sol-label">${p.answerLabel || answerLabel}</div><${Md} text=${p.solution} /></div>`}
       </article>`)}
   </div>`;
 }
@@ -438,7 +488,14 @@ function SessionView({ subject, session, tab: requestedTab, done, toggleDone, on
   }, [key]);
 
   // Fall back to Notes when the requested tab has no content for this session (e.g. no numericals).
-  const tab = requestedTab === "notes" || data?.[requestedTab]?.length ? requestedTab : "notes";
+  const home = data?.simple?.length ? "simple" : "notes";
+  // Numerical problems and theory questions share one "Solved Questions" tab.
+  const solvedItems = [
+    ...(data?.problems || []).map((p, i) => ({ ...p, kind: "Numerical", legacy: ["n", i] })),
+    ...(data?.theory || []).map((p, i) => ({ ...p, kind: "Theory", answerLabel: "Model answer", legacy: ["t", i] })),
+  ];
+  const want = requestedTab === "theory" ? "problems" : requestedTab;
+  const tab = want && (want === "notes" || (want === "problems" ? solvedItems.length : data?.[want]?.length)) ? want : home;
   const changeTab = (t) => { location.hash = `#/${subject.id}/${session.n}/${t}`; };
   const idx = subject.sessions.indexOf(session);
   const prev = subject.sessions[idx - 1], next = subject.sessions[idx + 1];
@@ -459,15 +516,16 @@ function SessionView({ subject, session, tab: requestedTab, done, toggleDone, on
 
     ${data && html`
       <div className="tabs" role="tablist">
-        ${[["notes", "📖 Notes"], ["recap", "⚡ Recap"], ["problems", `✍️ Numerical (${data.problems?.length || 0})`], ["theory", `📝 Theory (${data.theory?.length || 0})`], ["quiz", `❓ Quiz (${data.quiz?.length || 0})`]]
-          .filter(([id]) => id === "notes" || data[id === "problems" ? "problems" : id]?.length)
+        ${[["simple", "🌱 Simple"], ["notes", data.simple?.length ? "📊 Slides" : "📖 Notes"], ["recap", "⚡ Recap"], ["problems", `✍️ Solved Questions (${solvedItems.length})`], ["quiz", `❓ Quiz (${data.quiz?.length || 0})`]]
+          .filter(([id]) => id === "notes" || (id === "problems" ? solvedItems.length : data[id]?.length))
           .map(([id, label]) =>
           html`<button key=${id} role="tab" className=${tab === id ? "on" : ""} onClick=${() => changeTab(id)}>${label}</button>`)}
       </div>
+      ${tab === "simple" && html`<${NotesTab} s=${{ overview: data.simpleIntro, summary: data.simple }} />`}
       ${tab === "notes" && html`<${NotesTab} s=${data} />`}
       ${tab === "recap" && html`<${RecapTab} s=${data} />`}
-      ${tab === "problems" && html`<${QuestionsTab} key=${key + "p"} items=${data.problems || []} storeKey=${key + ":solved"} answerLabel="Solution" />`}
-      ${tab === "theory" && html`<${QuestionsTab} key=${key + "t"} items=${data.theory || []} storeKey=${key + ":theory"} answerLabel="Model answer" />`}
+      ${tab === "problems" && html`<${QuestionsTab} key=${key + "q"} items=${solvedItems} storeKey=${key + ":questions"} answerLabel="Solution"
+        legacyKeys=${{ n: key + ":solved", t: key + ":theory" }} />`}
       ${tab === "quiz" && html`<${QuizTab} s=${data} key=${key} />`}
       <div className="complete">
         <label className="check big"><input type="checkbox" checked=${!!done[key]} onChange=${() => toggleDone(key)} /> Mark session as revised</label>
@@ -559,7 +617,7 @@ function App() {
   const [, sid, sn, tab] = hash.split("/");
   const subject = subjects.find((s) => s.id === sid);
   if (!subject) return html`<${Landing} done=${done} />`;
-  return html`<${SubjectView} subject=${subject} sessionN=${sn || null} tab=${["notes", "recap", "problems", "theory", "quiz"].includes(tab) ? tab : "notes"} done=${done} toggleDone=${toggleDone} />`;
+  return html`<${SubjectView} subject=${subject} sessionN=${sn || null} tab=${["simple", "notes", "recap", "problems", "theory", "quiz"].includes(tab) ? tab : null} done=${done} toggleDone=${toggleDone} />`;
 }
 
 createRoot(document.getElementById("root")).render(html`<${App} />`);

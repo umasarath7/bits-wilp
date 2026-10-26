@@ -37,7 +37,7 @@ export default {
         },
         {
           type: "p",
-          text: "**A classification example: MNIST (slides 5–6).** MNIST is a famous dataset of **70,000 handwritten digits**. Each image is 28 × 28 pixels, and each pixel is a number from 0 (black) to 255 (white). Flatten each image into a row of $28 \\times 28 = 784$ numbers and the whole dataset becomes a **70,000 × 784 matrix**, one row per image, with each image labelled by the digit it shows.",
+          text: "**A classification example: MNIST (slides 5–6).** MNIST is a famous dataset of **70,000 handwritten digits**. Each image is $28 \\times 28$ pixels, and each pixel is a number from 0 (black) to 255 (white). Flatten each image into a row of $28 \\times 28 = 784$ numbers and the whole dataset becomes a **70,$000 \\times 784$ matrix**, one row per image, with each image labelled by the digit it shows.",
         },
         {
           type: "p",
@@ -67,7 +67,7 @@ export default {
           type: "callout",
           kind: "formula",
           title: "How many classifiers?",
-          text: "$$\\text{OvA} = N \\qquad\\qquad \\text{OvO} = \\frac{N(N-1)}{2}$$\n\nN = number of classes. For N = 10: OvA = 10, OvO = 45.",
+          text: "$$\\text{OvA} = N \\qquad\\qquad \\text{OvO} = \\frac{N(N-1)}{2}$$\n\nN = number of classes. For $N = 10$: OvA = 10, OvO = 45.",
         },
         {
           type: "p",
@@ -86,7 +86,7 @@ export default {
         },
         {
           type: "p",
-          text: "The problem is that accuracy lumps all mistakes together. But there are **two different kinds of mistake**, and they usually have very different costs. To see them separately, we lay out the results in a 2 × 2 table called the **confusion matrix** (slide 10). Rows are what *actually* happened; columns are what the model *predicted*.",
+          text: "The problem is that accuracy lumps all mistakes together. But there are **two different kinds of mistake**, and they usually have very different costs. To see them separately, we lay out the results in a $2 \\times 2$ table called the **confusion matrix** (slide 10). Rows are what *actually* happened; columns are what the model *predicted*.",
         },
         {
           type: "table",
@@ -173,7 +173,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Most classifiers don't output a hard yes/no. They output a **score**, often a probability like “P(fraud) = 0.73”. We turn it into a decision with a **threshold**: flag the transaction if the score ≥ t. Choose t = 0.9 and you flag only the most suspicious cases (few false alarms, many misses). Choose t = 0.3 and you flag lots (few misses, many false alarms). **Every threshold gives a different confusion matrix.** So which threshold, and how do we compare two models fairly when each could use any threshold?",
+          text: "Most classifiers don't output a hard yes/no. They output a **score**, often a probability like “P(fraud) = 0.73”. We turn it into a decision with a **threshold**: flag the transaction if the score ≥ t. Choose $t = 0.9$ and you flag only the most suspicious cases (few false alarms, many misses). Choose $t = 0.3$ and you flag lots (few misses, many false alarms). **Every threshold gives a different confusion matrix.** So which threshold, and how do we compare two models fairly when each could use any threshold?",
         },
         { type: "diagram", name: "s3-threshold" },
         {
@@ -254,8 +254,8 @@ export default {
           rows: [
             ["**Holdout**", "Keep 2/3 for training, test on the other 1/3", "Simple and fast; but one split can be lucky or unlucky, and you train on less data"],
             ["**Random subsampling**", "Repeat the holdout several times with different random splits; average", "Smoother estimate; some records may never get tested"],
-            ["**k-fold cross-validation**", "Split into k parts; each part is the test set once while the other k−1 train; average the k scores", "Every record tested exactly once; costs k training runs"],
-            ["**Leave-one-out (LOOCV)**", "k-fold with k = n: test on one record at a time", "Uses almost all data for training; very expensive (n runs)"],
+            ["**k-fold cross-validation**", "Split into k parts; each part is the test set once while the other $k - 1$ train; average the k scores", "Every record tested exactly once; costs k training runs"],
+            ["**Leave-one-out (LOOCV)**", "k-fold with $k = n$: test on one record at a time", "Uses almost all data for training; very expensive (n runs)"],
             ["**Stratified sampling**", "Any of the above, but keep the **class proportions** the same in every split", "Essential for rare classes: every fold gets its share of frauds"],
             ["**Bootstrap**", "Draw n records **with replacement** to train; test on the records never drawn", "Great for small datasets"],
           ],
@@ -296,7 +296,7 @@ export default {
         },
         {
           type: "p",
-          text: "**4. Random search (slide 29).** Instead of a grid, try **randomly chosen** points (scikit-learn's `RandomizedSearchCV`). Why is this often better? Suppose only one of two hyperparameters really matters. A 3 × 3 grid spends 9 runs but tries only **3 distinct values** of the important one. Nine random points try **9 distinct values** of it. Random search doesn't need exponentially more points as dimensions grow, which is how it beats the curse of dimensionality. The downside: with a finite number of samples, it isn't guaranteed to land near the best setting.",
+          text: "**4. Random search (slide 29).** Instead of a grid, try **randomly chosen** points (scikit-learn's `RandomizedSearchCV`). Why is this often better? Suppose only one of two hyperparameters really matters. A $3 \\times 3$ grid spends 9 runs but tries only **3 distinct values** of the important one. Nine random points try **9 distinct values** of it. Random search doesn't need exponentially more points as dimensions grow, which is how it beats the curse of dimensionality. The downside: with a finite number of samples, it isn't guaranteed to land near the best setting.",
         },
         {
           type: "p",
@@ -413,7 +413,7 @@ export default {
           type: "callout",
           kind: "remember",
           title: "The whole session in six lines",
-          text: "1. Choose models by **cross-validation** error, never training error (decision tree overfits → random forest).\n2. Binary-only algorithms handle N classes with **OvA (N classifiers)** or **OvO (N(N−1)/2)**.\n3. Accuracy hides the two kinds of mistake. Use the confusion matrix: **precision** = TP/(TP+FP), **recall** = TP/(TP+FN), F1 = harmonic mean.\n4. Missing positives costly → recall; false alarms costly → precision. The **ROC curve** (TPR vs FPR over all thresholds) and **AUC** (1 ideal, 0.5 random) compare models across thresholds.\n5. Estimate performance with holdout, k-fold, LOOCV, stratified or bootstrap (≈63.2% unique). Tune hyperparameters by hand, grid, successive halving, or random search, scored by CV.\n6. **MLOps** = DevOps for ML: CI tests data and models too, CD ships a pipeline, **CT** retrains automatically; validate data (value vs schema skew) and models (offline, then canary/A-B).",
+          text: "1. Choose models by **cross-validation** error, never training error (decision tree overfits → random forest).\n2. Binary-only algorithms handle N classes with **OvA (N classifiers)** or **OvO $(N(N - 1)/2)$**.\n3. Accuracy hides the two kinds of mistake. Use the confusion matrix: **precision** = TP/(TP+FP), **recall** = TP/(TP+FN), F1 = harmonic mean.\n4. Missing positives costly → recall; false alarms costly → precision. The **ROC curve** (TPR vs FPR over all thresholds) and **AUC** (1 ideal, 0.5 random) compare models across thresholds.\n5. Estimate performance with holdout, k-fold, LOOCV, stratified or bootstrap (≈63.2% unique). Tune hyperparameters by hand, grid, successive halving, or random search, scored by CV.\n6. **MLOps** = DevOps for ML: CI tests data and models too, CD ships a pipeline, **CT** retrains automatically; validate data (value vs schema skew) and models (offline, then canary/A-B).",
         },
       ],
     },
@@ -422,7 +422,7 @@ export default {
   glossary: [
     ["Model selection", "—", "Choosing among candidate models by their validation/CV performance"],
     ["Random forest", "—", "Many decision trees trained differently, with their predictions averaged"],
-    ["MNIST", "Modified National Institute of Standards and Technology dataset", "70,000 labelled 28×28 images of handwritten digits"],
+    ["MNIST", "Modified National Institute of Standards and Technology dataset", "70,000 labelled $28 \\times 28$ images of handwritten digits"],
     ["OvA / OvR", "One-vs-All / One-vs-Rest", "One binary classifier per class; pick the highest score"],
     ["OvO", "One-vs-One", "One binary classifier per pair of classes; majority vote"],
     ["SVM", "Support Vector Machine", "A binary classifier that finds the widest separating margin (Session 7)"],
@@ -434,13 +434,13 @@ export default {
     ["Recall / TPR", "True Positive Rate, sensitivity", "TP / (TP + FN): of all real positives, how many were caught"],
     ["F1-score", "—", "Harmonic mean of precision and recall"],
     ["FPR", "False Positive Rate", "FP / (FP + TN): fraction of negatives wrongly flagged"],
-    ["Specificity / TNR", "True Negative Rate", "TN / (TN + FP) = 1 − FPR"],
+    ["Specificity / TNR", "True Negative Rate", "$\\text{TN}/(\\text{TN} + \\text{FP}) = 1 - \\text{FPR}$"],
     ["Threshold", "—", "The score above which we predict positive"],
     ["ROC", "Receiver Operating Characteristic", "Curve of TPR vs FPR over all thresholds"],
     ["AUC", "Area Under the (ROC) Curve", "1 = perfect, 0.5 = random guessing"],
     ["Learning curve", "—", "Performance vs training-set size"],
     ["Holdout", "—", "Train on 2/3, test on 1/3"],
-    ["LOOCV", "Leave-One-Out Cross-Validation", "k-fold with k = n"],
+    ["LOOCV", "Leave-One-Out Cross-Validation", "k-fold with $k = n$"],
     ["Bootstrap", "—", "Sampling with replacement; ≈63.2% unique records, rest used for testing"],
     ["HPO", "Hyperparameter optimisation", "Finding good hyperparameter values (tuning)"],
     ["Grid search", "—", "Try every combination on a grid of values"],
@@ -618,7 +618,7 @@ The model ranks its two most confident positives well, then mixes the classes ba
       title: "OvA vs OvO classifier counts and data sizes",
       level: "Easy",
       marks: 3,
-      hint: "OvA = K, OvO = K(K−1)/2. For data sizes: an OvA classifier sees every class; an OvO classifier sees only its two classes.",
+      hint: "OvA = K, OvO = $K(K - 1)/2$. For data sizes: an OvA classifier sees every class; an OvO classifier sees only its two classes.",
       question:
         "(a) How many binary classifiers do OvA and OvO need for 3, 4, 10 and 26 classes? (b) MNIST has 60,000 training images, about 6,000 per digit. How many images does each OvA classifier and each OvO classifier train on? (c) Why can OvO be faster overall for SVMs even though it trains more classifiers?",
       solution: `
@@ -648,9 +648,9 @@ OvO trains more classifiers, but each is small. That pays off for algorithms tha
       title: "Bootstrap sampling",
       level: "Medium",
       marks: 3,
-      hint: "The chance of missing one particular record in a single draw is 1 − 1/n. The draws are independent, so raise it to the power n.",
+      hint: "The chance of missing one particular record in a single draw is $1 - 1/n$. The draws are independent, so raise it to the power n.",
       question:
-        "You draw a bootstrap sample of size n = 1000 from 1000 records. (a) What is the probability that a given record is never chosen? (b) About how many unique records end up in the training sample, and how many are left for testing? (c) What happens to this fraction as n → ∞?",
+        "You draw a bootstrap sample of size $n = 1000$ from 1000 records. (a) What is the probability that a given record is never chosen? (b) About how many unique records end up in the training sample, and how many are left for testing? (c) What happens to this fraction as n → $\\infty$?",
       solution: `
 ### What is being asked
 Where the famous “63.2%” comes from (Lesson 6).
@@ -708,7 +708,7 @@ Cost $= 64 + 32 + 16 + 8 + 4 + 2 + 1 = 127$ units
       title: "Random search: how many trials?",
       level: "Medium",
       marks: 3,
-      hint: "Each random trial misses the good region with probability 0.95. The chance that *all* n trials miss is 0.95ⁿ.",
+      hint: "Each random trial misses the good region with probability 0.95. The chance that *all* n trials miss is $0.95^n$.",
       question:
         "Suppose the “good” region of hyperparameter space is the top 5% of configurations. (a) With random search of 60 trials, what is the probability that at least one trial lands in the good region? (b) How many trials are needed for a 95% chance? (c) Why does random search beat grid search when only a few hyperparameters matter?",
       solution: `
@@ -726,7 +726,7 @@ $$P(\\text{at least one hit in } n) = 1 - 0.95^n$$
 
 **(b)** Need $1 - 0.95^n \\ge 0.95$, i.e. $0.95^n \\le 0.05$. Take logs: $n \\ge \\frac{\\ln 0.05}{\\ln 0.95} = \\frac{-2.996}{-0.0513} = 58.4$, so **59 trials**.
 
-**(c)** A 3 × 3 grid spends 9 runs but tries only **3 distinct values** of each hyperparameter. Nine random trials try **9 distinct values** of each. If only one hyperparameter really matters, random search explores it three times as finely for the same cost, and the number of trials doesn't need to grow exponentially with the number of hyperparameters.
+**(c)** A $3 \\times 3$ grid spends 9 runs but tries only **3 distinct values** of each hyperparameter. Nine random trials try **9 distinct values** of each. If only one hyperparameter really matters, random search explores it three times as finely for the same cost, and the number of trials doesn't need to grow exponentially with the number of hyperparameters.
 
 ### Answer
 (a) **0.954** (b) **59** trials
@@ -765,7 +765,7 @@ Lowering the threshold flags more transactions: it catches more frauds (recall �
 | 0.7 | **0.667** | **0.50** |
 | 0.35 | **0.50** | **0.75** |
 
-**Analyst A → t = 0.35** (higher recall, fewer missed frauds). **Analyst B → t = 0.7** (higher precision, fewer false alarms).
+**Analyst A → $t = 0.35$** (higher recall, fewer missed frauds). **Analyst B → $t = 0.7$** (higher precision, fewer false alarms).
 
 ### Takeaway
 The model didn't change; only the threshold did. That's why ROC and precision–recall curves, which show *all* thresholds, are the fair way to compare models.`,
@@ -774,15 +774,15 @@ The model didn't change; only the threshold did. That's why ROC and precision–
       title: "Sizing the MNIST data matrix and split",
       level: "Easy",
       marks: 2,
-      hint: "Features per image = 28 × 28. Memory = number of values × bytes per value (uint8 = 1 byte, float64 = 8 bytes).",
+      hint: "Features per image = $28 \\times 28$. Memory = number of values × bytes per value (uint8 = 1 byte, float64 = 8 bytes).",
       question:
-        "MNIST has 70,000 images of 28×28 pixels. (a) What are the dimensions of the data matrix, and how many values does it hold? (b) How much memory does it need as uint8 and as float64? (c) Give the train/test sizes used in the slides, and say why the training set is shuffled.",
+        "MNIST has 70,000 images of $28 \\times 28$ pixels. (a) What are the dimensions of the data matrix, and how many values does it hold? (b) How much memory does it need as uint8 and as float64? (c) Give the train/test sizes used in the slides, and say why the training set is shuffled.",
       solution: `
 ### What is being asked
 Turn images into a data matrix (Lesson 1) and estimate its size.
 
 ### Working
-**(a)** Each image is flattened to $28 \\times 28 = 784$ numbers (one column per pixel). Matrix: **70,000 × 784**. Values: $70000 \\times 784 = 54{,}880{,}000$.
+**(a)** Each image is flattened to $28 \\times 28 = 784$ numbers (one column per pixel). Matrix: **70,$000 \\times 784$**. Values: $70000 \\times 784 = 54{,}880{,}000$.
 
 **(b)**
 - uint8 (1 byte each): 54.88 MB ≈ 52.3 MiB
@@ -791,7 +791,7 @@ Turn images into a data matrix (Lesson 1) and estimate its size.
 **(c)** **60,000 train / 10,000 test.** Shuffling makes the cross-validation folds similar (no fold is missing some digits) and stops order-sensitive algorithms (e.g. stochastic gradient descent) from seeing long runs of the same digit.
 
 ### Answer
-(a) **70,000 × 784**, **54.88 million** values (b) about **55 MB** as uint8, about **439 MB** as float64 (c) **60,000 / 10,000**, shuffled.
+(a) **70,$000 \\times 784$**, **54.88 million** values (b) about **55 MB** as uint8, about **439 MB** as float64 (c) **60,000 / 10,000**, shuffled.
 
 ### Takeaway
 Storing pixels as 1-byte integers instead of 8-byte floats saves 8× memory. That matters once datasets get large.`,
@@ -849,7 +849,7 @@ A one-line “how it works” plus a strength or weakness for each method, then 
 - **Holdout:** reserve part of the data (e.g. 1/3) for testing and train on the rest. Simple, but depends on one split and trains on less data.
 - **Random subsampling:** repeat the holdout several times and average. Less variance, but some records may never be tested.
 - **k-fold CV:** k disjoint folds; each is the test set once while the rest train. Every record is tested exactly once; average the k scores.
-- **Leave-one-out:** k = n. Nearly unbiased and uses maximum training data, but costs n training runs.
+- **Leave-one-out:** $k = n$. Nearly unbiased and uses maximum training data, but costs n training runs.
 - **Bootstrap:** sample n records **with replacement** for training (≈63.2% unique); test on the ≈36.8% never drawn.
 - **Stratified** versions keep the class proportions in every split.
 - **For a small dataset:** stratified 10-fold CV, LOOCV or bootstrap. You can't afford to lock a third of scarce data away in a single holdout.
@@ -948,10 +948,10 @@ Near-zero training error is a warning sign, not a success. Always judge by CV/va
 
   quiz: [
     { q: "Recall is:", options: ["TP/(TP+FP)", "TP/(TP+FN)", "TN/(TN+FP)", "(TP+TN)/N"], answer: 1, why: "Recall = fraction of actual positives that are caught." },
-    { q: "How many classifiers does One-vs-One need for 10 classes?", options: ["10", "20", "45", "90"], answer: 2, why: "K(K−1)/2 = 10·9/2 = 45." },
+    { q: "How many classifiers does One-vs-One need for 10 classes?", options: ["10", "20", "45", "90"], answer: 2, why: "$K(K - 1)/2 = 10 \\cdot 9/2 = 45$." },
     { q: "On an ROC plot, the ideal classifier sits at:", options: ["(0,0)", "(1,1)", "(0,1)", "(1,0)"], answer: 2, why: "FPR = 0 and TPR = 1." },
     { q: "An AUC of 0.5 means:", options: ["Perfect classifier", "Random guessing", "Always wrong", "50% accuracy"], answer: 1, why: "The diagonal ROC line corresponds to random guessing." },
-    { q: "In bootstrap sampling, roughly what fraction of records appear in the training sample?", options: ["50%", "63.2%", "80%", "100%"], answer: 1, why: "1 − (1−1/n)ⁿ → 1 − e⁻¹ ≈ 0.632." },
+    { q: "In bootstrap sampling, roughly what fraction of records appear in the training sample?", options: ["50%", "63.2%", "80%", "100%"], answer: 1, why: "$1 - (1 - 1/n)^n$ → $1 - e^{-1} \\approx 0.632$." },
     { q: "Which is unique to MLOps compared with DevOps?", options: ["Continuous integration", "Continuous delivery", "Continuous training", "Unit testing"], answer: 2, why: "CT automatically retrains models in production." },
     { q: "The incoming data suddenly lacks an expected feature column. This is:", options: ["Data value skew", "Data schema skew", "Concept drift", "Overfitting"], answer: 1, why: "A schema mismatch: stop the pipeline and fix it." },
     { q: "Main drawback of grid search:", options: ["Not reproducible", "Cost grows exponentially with the number of hyperparameters", "Can't be parallelised", "Needs labelled data"], answer: 1, why: "Every added hyperparameter multiplies the number of grid points." },

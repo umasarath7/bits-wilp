@@ -5,7 +5,7 @@ export default {
   title: "Mock Mid-sem Paper",
   source: "Practice paper · same pattern as the previous mid-sem · 30 marks · 2 hours",
   overview:
-    "A full practice paper that follows the exact structure of the previous mid-sem: Q1 short numericals (4 × 2), Q2 short theory (3 × 2), Q3 Naïve Bayes (5), Q4 regression (5), Q5 SVM with a feature map (6). The scenarios are new, but the skills are the same. Set a 2-hour timer, write your answers on paper, then open the solutions. Each solution explains *why* the method fits before calculating.",
+    "A full practice paper that follows the exact structure of the previous mid-sem: Q1 short numericals $(4 \\times 2)$, Q2 short theory $(3 \\times 2)$, Q3 Naïve Bayes (5), Q4 regression (5), Q5 SVM with a feature map (6). The scenarios are new, but the skills are the same. Set a 2-hour timer, write your answers on paper, then open the solutions. Each solution explains *why* the method fits before calculating.",
 
   summary: [
     {
@@ -30,7 +30,7 @@ export default {
       level: "Easy",
       marks: 2,
       hint: "Write the three absolute differences first. Euclidean = √(sum of squares), Manhattan = sum, supremum = the largest.",
-      question: "Two customers are described by (orders, returns, reviews): P = [2, −1, 4] and Q = [5, 3, 0]. Compute the Euclidean, Manhattan and supremum distances.",
+      question: "Two customers are described by (orders, returns, reviews): P = [2, −1, 4] and $Q = [5, 3, 0]$. Compute the Euclidean, Manhattan and supremum distances.",
       solution: `
 ### What is being asked
 Three Minkowski distances (Session 2, Lesson 10).
@@ -49,13 +49,13 @@ Differences: $|2 - 5| = 3$, $|-1 - 3| = 4$, $|4 - 0| = 4$
 Euclidean **6.403**, Manhattan **11**, supremum **4**.
 
 ### Takeaway
-$L_1 \\ge L_2 \\ge L_\\infty$ holds here (11 ≥ 6.403 ≥ 4), a quick self-check.`,
+$L_1 \\ge L_2 \\ge L_\\infty$ holds here $(11 \\ge 6.403 \\ge 4)$, a quick self-check.`,
     },
     {
       title: "Q1 (b) Metrics from a confusion matrix",
       level: "Easy",
       marks: 2,
-      hint: "Precision = TP ÷ (TP + FP); recall = TP ÷ (TP + FN). For F1, use 2TP ÷ (2TP + FP + FN).",
+      hint: "$\\text{Precision} = \\text{TP} \\div(\\text{TP} + \\text{FP})$; recall = $\\text{TP} \\div(\\text{TP} + \\text{FN})$. For F1, use $2 \\text{TP} \\div(2 \\text{TP} + \\text{FP} + \\text{FN})$.",
       question: `A disease-screening model tested on 500 patients:
 
 | | Predicted Positive | Predicted Negative |
@@ -109,7 +109,7 @@ To satisfy Dr. A, lower the decision threshold to raise recall, accepting more f
       title: "Q1 (d) Polynomial kernel",
       level: "Medium",
       marks: 2,
-      hint: "φ(x) = (1, √2x₁, √2x₂, x₁², x₂², √2x₁x₂). Then check your dot product against (1 + x₁·x₂)².",
+      hint: "$\\phi(x) = (1, \\sqrt{2} x_1, \\sqrt{2} x_2, x_1^2, x_2^2, \\sqrt{2} x_1 x_2)$. Then check your dot product against $(1 + x_1 \\cdot x_2)^2$.",
       question:
         "For $K(x,z) = (1 + x^Tz)^2$, with $x_1 = (2, 1)$ and $x_2 = (1, -1)$, compute $\\phi(x_1)$, $\\phi(x_2)$ and $K(x_1,x_2)$.",
       solution: `
@@ -126,7 +126,7 @@ $$\\phi(x) = (1, \\sqrt2x_1, \\sqrt2x_2, x_1^2, x_2^2, \\sqrt2x_1x_2)$$
 - Check: $x_1^Tx_2 = 2 - 1 = 1$, so $(1 + 1)^2 = 4$ ✓
 
 ### Answer
-**K(x₁, x₂) = 4**, with the φ vectors above.
+**K($x_1$, $x_2$) = 4**, with the $\\phi$ vectors above.
 
 ### Takeaway
 Always show the direct check; it confirms the arithmetic and demonstrates the kernel trick.`,
@@ -185,7 +185,7 @@ Yes has the bigger prior, but three of the four query values (Sunny, High, Stron
       title: "Q4 Linear regression: study hours vs marks",
       level: "Easy",
       marks: 5,
-      hint: "Means: x̄ = 6, ȳ = 66. Deviation table → slope = Σproduct ÷ Σsquares → intercept = ȳ − slope × x̄. For MSE, compute each prediction and squared error.",
+      hint: "Means: $\\bar{x} = 6$, ȳ = 66. Deviation table → slope = Σproduct ÷ Σsquares → intercept = ȳ − slope × $\\bar{x}$. For MSE, compute each prediction and squared error.",
       question: `| Study hours x | 2 | 4 | 6 | 8 | 10 |
 |---|---|---|---|---|---|
 | Marks y | 50 | 58 | 64 | 75 | 83 |
@@ -221,15 +221,15 @@ MSE $= (0.36 + 0.09 + 4 + 0.49 + 0.16)/5 = 5.1/5 = 1.02$
 (a) **ŷ = 4.15x + 41.1** (b) **70.15 marks** (c) **MSE = 1.02**
 
 ### Takeaway
-Each extra hour of study adds about 4.15 marks on average. The biggest error is at x = 6 (the student who scored 64 rather than the predicted 66).`,
+Each extra hour of study adds about 4.15 marks on average. The biggest error is at $x = 6$ (the student who scored 64 rather than the predicted 66).`,
     },
     {
       title: "Q5 SVM: concentric classes",
       level: "Hard",
       marks: 6,
-      hint: "The +1 points are near the origin, the −1 points far away. Try the squared distance from the origin, z = x₁² + x₂².",
+      hint: "The +1 points are near the origin, the −1 points far away. Try the squared distance from the origin, $z = x_1^2 + x_2^2$.",
       question: `Class +1: (0,0), (1,0), (0,1), (−1,0). Class −1: (2,0), (0,2), (−2,0), (0,−2).
-(a) Show the data is not linearly separable and suggest φ that makes it separable. [1]
+(a) Show the data is not linearly separable and suggest $\\phi$ that makes it separable. [1]
 (b) Identify the support vectors in the transformed space. [2]
 (c) Find the maximum-margin hyperplane in the transformed space and its margin. [2]
 (d) Express the decision boundary in the original space. [1]`,
@@ -242,25 +242,25 @@ The +1 class is surrounded on all sides by −1 points, so what separates them i
 
 ### Working
 **(a)** No straight line can put the central cluster on one side and all four surrounding points on the other. Use $z = \\phi(x) = x_1^2 + x_2^2$:
-- +1: z = 0, 1, 1, 1
-- −1: z = 4, 4, 4, 4
+- +1: $z = 0$, 1, 1, 1
+- −1: $z = 4$, 4, 4, 4
 
 Now they are separable on the z-axis.
 
-**(b)** The closest opposite-class values are z = 1 and z = 4. **Support vectors:** (1, 0), (0, 1), (−1, 0), where z = 1, and **all four** −1 points, where z = 4. The point (0, 0), with z = 0, is **not** a support vector.
+**(b)** The closest opposite-class values are $z = 1$ and $z = 4$. **Support vectors:** (1, 0), (0, 1), (−1, 0), where $z = 1$, and **all four** −1 points, where $z = 4$. The point (0, 0), with $z = 0$, is **not** a support vector.
 
-**(c)** Solve $wz + b = +1$ at z = 1 and $wz + b = -1$ at z = 4:
+**(c)** Solve $wz + b = +1$ at $z = 1$ and $wz + b = -1$ at $z = 4$:
 - $w + b = 1$ and $4w + b = -1$ → subtract: $3w = -2$, so $w = -2/3$ and $b = 5/3$
 - Hyperplane: $-\\frac23 z + \\frac53 = 0 \\Rightarrow z = 2.5$
-- Margin $= 2/|w| = 2/(2/3) = 3$, the gap from z = 1 to z = 4 ✓
+- Margin $= 2/|w| = 2/(2/3) = 3$, the gap from $z = 1$ to $z = 4$ ✓
 
 **(d)** $x_1^2 + x_2^2 = 2.5$: a circle of radius $\\sqrt{2.5} \\approx 1.58$ centred at the origin. Predict +1 inside and −1 outside.
 
 ### Answer
-(a) $z = x_1^2 + x_2^2$ (b) the three +1 points at z = 1 and all four −1 points (c) $z = 2.5$, margin 3 (d) circle $x_1^2 + x_2^2 = 2.5$
+(a) $z = x_1^2 + x_2^2$ (b) the three +1 points at $z = 1$ and all four −1 points (c) $z = 2.5$, margin 3 (d) circle $x_1^2 + x_2^2 = 2.5$
 
 ### Takeaway
-Pick φ to match the *shape* of the pattern: XOR → product $x_1x_2$; rings → squared radius $x_1^2 + x_2^2$.`,
+Pick $\\phi$ to match the *shape* of the pattern: XOR → product $x_1x_2$; rings → squared radius $x_1^2 + x_2^2$.`,
     },
   ],
 
@@ -284,19 +284,19 @@ The difference is the kind of feedback: answers, no answers, or rewards.`,
     {
       title: "Q2 (b) Regularisation",
       marks: 2,
-      question: "What is regularisation? How does the regularisation parameter λ affect bias and variance?",
+      question: "What is regularisation? How does the regularisation parameter $\\lambda$ affect bias and variance?",
       solution: `
 ### What the examiner wants
-The definition with the formula, and the effect of λ in both directions (Session 4, Lesson 11).
+The definition with the formula, and the effect of $\\lambda$ in both directions (Session 4, Lesson 11).
 
 ### Model answer
 - **Regularisation** adds a penalty on large weights to the cost, $J = \\text{error} + \\lambda\\sum_j\\theta_j^2$, discouraging overly complex models and so controlling **overfitting**.
-- **Larger λ:** weights shrink, giving a smoother, simpler model: **variance ↓, bias ↑**. Too large and the model underfits.
-- **Smaller λ:** a more flexible model: **bias ↓, variance ↑**. λ = 0 is plain least squares, which may overfit.
-- Choose λ by cross-validation. (For SVMs, C plays the inverse role.)
+- **Larger $\\lambda$:** weights shrink, giving a smoother, simpler model: **variance ↓, bias ↑**. Too large and the model underfits.
+- **Smaller $\\lambda$:** a more flexible model: **bias ↓, variance ↑**. $\\lambda = 0$ is plain least squares, which may overfit.
+- Choose $\\lambda$ by cross-validation. (For SVMs, C plays the inverse role.)
 
 ### Takeaway
-λ is a dial along the bias–variance trade-off.`,
+$\\lambda$ is a dial along the bias–variance trade-off.`,
     },
     {
       title: "Q2 (c) Frame food-delivery time prediction",

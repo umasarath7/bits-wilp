@@ -434,7 +434,7 @@ export default {
         },
         {
           type: "p",
-          text: "**The fix: K-fold cross-validation (CV).** Instead of one split, do several and average. Split the data into **K equal parts** called **folds**. Hold out fold 1, train on the other K−1 folds, and measure on fold 1. Then hold out fold 2, train on the rest, measure on fold 2. Repeat until **every fold has had one turn** as the validation set. Finally, **average the K scores**. **K = 10** is a common choice.",
+          text: "**The fix: K-fold cross-validation (CV).** Instead of one split, do several and average. Split the data into **K equal parts** called **folds**. Hold out fold 1, train on the other $K - 1$ folds, and measure on fold 1. Then hold out fold 2, train on the rest, measure on fold 2. Repeat until **every fold has had one turn** as the validation set. Finally, **average the K scores**. **K = 10** is a common choice.",
         },
         { type: "diagram", name: "s1-kfold" },
         {
@@ -525,7 +525,7 @@ export default {
     ["CV", "Cross-Validation", "Repeating training/validation on different splits and averaging"],
     ["K-fold CV", "—", "K rounds; each of K folds is the validation set once; average the K scores"],
     ["Test set", "—", "Data used only once, at the end, to report the final performance"],
-    ["Hyperparameter", "—", "A setting chosen before training (degree, λ, k), tuned with CV"],
+    ["Hyperparameter", "—", "A setting chosen before training (degree, $\\lambda$, k), tuned with CV"],
     ["$\\lambda$", "Lambda", "Regularisation strength"],
   ],
 
@@ -534,7 +534,7 @@ export default {
     "“Which type of learning is this?” → answer **all three questions** (type of feedback, batch/online, instance/model-based) with a one-line reason each.",
     "Overfit vs underfit questions usually give a table of training and validation errors. Look at the **gap** (overfitting) and the **level** (underfitting).",
     "Noise vs bias: noise → sample too small; bias → collection method flawed (a bigger sample doesn't fix it).",
-    "K-fold: K models, each trained on (K−1)/K of the data. Grid-search runs = combinations × K (+1 final refit).",
+    "K-fold: K models, each trained on $(K - 1)/K$ of the data. Grid-search runs = combinations × K (+1 final refit).",
   ],
 
   problems: [
@@ -654,7 +654,7 @@ Candidates further out (1.25, 4.25) make even more errors.
 
 **(b)** Best accuracy $= 7/8 = $ **87.5%**. No single threshold can reach 100%, because a **malignant 2.5 sits to the left of a benign 3.0**. Any cut either puts 2.5 on the benign side or 3.0 on the malignant side. The data is **not separable using one feature**. You would need more features (slide 31) or a more flexible model.
 
-**(c)** Choose **T = 2.25**. Its one mistake is a **false positive**: a benign tumour flagged as malignant, which means extra tests. T = 3.25's mistake is a **false negative**: a cancer is missed, which is far worse.
+**(c)** Choose **T = 2.25**. Its one mistake is a **false positive**: a benign tumour flagged as malignant, which means extra tests. $T = 3.25$'s mistake is a **false negative**: a cancer is missed, which is far worse.
 
 ### Takeaway
 “Training” a model means searching for the parameter value (here T) that minimises error on the training data. When two models tie on accuracy, choose based on **which mistake is more costly**, and choose P to reflect that.`,
@@ -665,7 +665,7 @@ Candidates further out (1.25, 4.25) make even more errors.
       level: "Easy",
       marks: 4,
       question:
-        "A dataset has 1,200 labelled samples. (a) With 10-fold CV, how many models are trained, and how many samples go into training and validation in each round? (b) How many times is each sample used for training and for validation? (c) Repeat (a) for leave-one-out CV (K = n).",
+        "A dataset has 1,200 labelled samples. (a) With 10-fold CV, how many models are trained, and how many samples go into training and validation in each round? (b) How many times is each sample used for training and for validation? (c) Repeat (a) for leave-one-out CV $(K = n)$.",
       solution: `
 ### What is being asked
 How K-fold cross-validation divides the data, and how much training it costs.
@@ -695,7 +695,7 @@ So **1× validation, 9× training**.
 - models trained: **1,200**
 
 ### Takeaway
-Bigger K means each model sees more training data (a more reliable estimate), but you train K models, so it costs more. K = 10 is the usual compromise. Leave-one-out is the extreme.`,
+Bigger K means each model sees more training data (a more reliable estimate), but you train K models, so it costs more. $K = 10$ is the usual compromise. Leave-one-out is the extreme.`,
     },
     {
       title: "Hyperparameter grid search cost",
@@ -808,7 +808,7 @@ Make the same prediction in the two ways from slide 41: by **looking up similar 
 
 ### Idea & why
 - **3-NN:** find the 3 countries whose GDP is closest to 33 and average their life satisfaction. No training step; the data *is* the model.
-- **Linear model:** find the straight line that best fits all 5 points (smallest total squared error), then read off the value at x = 33. Least squares gives a formula for the slope and intercept.
+- **Linear model:** find the straight line that best fits all 5 points (smallest total squared error), then read off the value at $x = 33$. Least squares gives a formula for the slope and intercept.
 
 ### Formulas
 k-NN (with $k$ neighbours $N$):
@@ -1156,7 +1156,7 @@ Why training error misleads, how each method works, and the specific weakness of
 ### Model answer
 - **Training error is too optimistic.** A complex model can memorise the training data (overfit) and still fail on new data. We need an estimate of performance on **unseen** data.
 - **Hold-out validation:** randomly set aside 20–30% of the data, train on the rest, evaluate on the held-out part, and pick the best model. *Weakness:* the score depends on **which** points happened to be held out (a lucky or unlucky split), and less data is left for training.
-- **K-fold CV:** split the data into K folds. Train on K−1 folds, validate on the remaining one, and repeat K times so each fold is validated once. **Average** the K scores (K = 10 is common).
+- **K-fold CV:** split the data into K folds. Train on $K - 1$ folds, validate on the remaining one, and repeat K times so each fold is validated once. **Average** the K scores ($K = 10$ is common).
 - **What it solves:** the estimate no longer depends on one particular split, and every point is used for both training and validation. *Cost:* K times the training.
 - The final **test set** is used only once, at the very end.
 
@@ -1204,9 +1204,9 @@ Validation answers the question “how will this do on data it hasn't seen?”. 
     },
     {
       q: "Which of these is a hyperparameter, not a parameter?",
-      options: ["The slope θ₁ of a linear model", "The intercept θ₀", "The regularisation strength λ", "The weight of the word “free” in a spam model"],
+      options: ["The slope $\\theta_1$ of a linear model", "The intercept $\\theta_0$", "The regularisation strength $\\lambda$", "The weight of the word “free” in a spam model"],
       answer: 2,
-      why: "λ is set before training and tuned with validation. The others are learnt from data.",
+      why: "$\\lambda$ is set before training and tuned with validation. The others are learnt from data.",
     },
     {
       q: "Apriori and Eclat are algorithms for:",

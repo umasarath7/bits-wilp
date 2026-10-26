@@ -414,3 +414,28 @@ input.search { width: 100%; margin-bottom: 6px; }
 .side-toc a { display: block; padding: 3px 10px; font-size: 0.8rem; color: var(--muted); text-decoration: none; line-height: 1.3; }
 .side-toc a:hover { color: var(--accent); }
 .toc-toggle { background: none; border: 0; color: var(--muted); cursor: pointer; margin-left: auto; padding: 0 4px; font-size: 0.8rem; }
+
+/* ---------- Simple tab blocks ---------- */
+.answer-box { border-left: 4px solid var(--ok); background: var(--ok-soft); border-radius: 10px; padding: 10px 14px; margin: 0.8rem 0; }
+.answer-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ok); }
+.answer-value { font-size: 1.45rem; font-weight: 700; color: var(--ok); margin: 2px 0 4px; }
+.answer-box .md p:last-child { margin-bottom: 0; }
+.cards-grid { display: grid; gap: 12px; margin: 0.8rem 0; }
+.pcard { display: grid; grid-template-columns: 190px 1fr; gap: 16px; align-items: center; border: 1px solid var(--border); border-radius: 12px; padding: 10px; background: var(--surface); }
+.pcard-body:only-child { grid-column: 1 / -1; }
+.pcard-fig svg { width: 100%; height: auto; display: block; }
+.pcard-title { font-weight: 700; font-size: 1.02rem; }
+.pcard-tag { display: inline-block; font-size: 0.75rem; color: var(--accent); background: var(--accent-soft); border-radius: 999px; padding: 1px 8px; margin: 3px 0 4px; }
+.pcard .md p { margin: 0.25rem 0; }
+.pcard-ex { color: var(--muted); font-size: 0.9rem; }
+@media (max-width: 640px) { .pcard { grid-template-columns: 1fr; } .pcard-fig { max-width: 260px; } }
+.check-q { border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; margin: 0.8rem 0; background: var(--surface); }
+.check-stem { font-weight: 600; margin-bottom: 8px; }
+.check-opts { display: grid; gap: 6px; }
+.check-opt { text-align: left; font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+.check-opt:hover:not(:disabled) { border-color: var(--accent); }
+.check-opt:disabled { cursor: default; }
+.check-opt.right { border-color: var(--ok); background: var(--ok-soft); }
+.check-opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.check-q .why .btn { margin-left: 8px; }
+.badge.theory { background: var(--exam-soft); color: var(--exam); border-color: transparent; }

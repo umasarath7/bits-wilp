@@ -90,7 +90,7 @@ export default {
         },
         {
           type: "p",
-          text: "**The general form: norms.** Both metrics are ways of measuring the “size” of the list of errors. That size is called a **norm**. MAE uses the **ℓ₁ norm** (sum of absolute values, also called the **Manhattan** norm). RMSE uses the **ℓ₂ norm** (square root of the sum of squares, the **Euclidean** norm). In general the ℓₖ norm is $\\|v\\|_k = (\\sum |v_i|^k)^{1/k}$. **The higher k is, the more the norm focuses on the largest values** and ignores small ones. That's exactly why RMSE (k = 2) is more sensitive to outliers than MAE (k = 1). We'll meet these same norms again as distances in Lesson 10.",
+          text: "**The general form: norms.** Both metrics are ways of measuring the “size” of the list of errors. That size is called a **norm**. MAE uses the **ℓ₁ norm** (sum of absolute values, also called the **Manhattan** norm). RMSE uses the **ℓ₂ norm** (square root of the sum of squares, the **Euclidean** norm). In general the ℓₖ norm is $\\|v\\|_k = (\\sum |v_i|^k)^{1/k}$. **The higher k is, the more the norm focuses on the largest values** and ignores small ones. That's exactly why RMSE $(k = 2)$ is more sensitive to outliers than MAE $(k = 1)$. We'll meet these same norms again as distances in Lesson 10.",
         },
       ],
     },
@@ -210,7 +210,7 @@ export default {
           type: "list",
           items: [
             "**Record data:** a collection of records, each with the same fixed set of attributes. Three special kinds: a **data matrix**, where all attributes are numeric, so each record is a point in multi-dimensional space and the whole dataset is an $m \\times n$ matrix ($m$ rows = objects, $n$ columns = attributes); **document data**, where each document becomes a vector of word counts (one column per word); and **transaction data**, where each record is a set of items, e.g. the products in one shopping trip.",
-            "**Graph data:** objects connected by links. The World Wide Web (pages linked to pages), social networks, and molecules such as benzene (C₆H₆), where atoms are connected by bonds.",
+            "**Graph data:** objects connected by links. The World Wide Web (pages linked to pages), social networks, and molecules such as benzene $(C_6 H_6)$, where atoms are connected by bonds.",
             "**Ordered data:** the order matters. **Sequences of transactions** (what a customer bought, visit after visit), **genetic sequences** (strings of A, C, G, T), **time series** and **spatio-temporal data** (average monthly temperature of land and ocean across the globe).",
           ],
         },
@@ -392,7 +392,7 @@ export default {
         { type: "diagram", name: "s2-meanmedian" },
         {
           type: "p",
-          text: "**Spread: range and variance (slide 59).** The **range** is max − min: simple, but it depends only on the two most extreme values, so a single outlier changes it completely. The **variance**, and its square root the **standard deviation** $s$, is the most common measure of spread: roughly, *how far is a typical value from the mean?* Because it squares distances, it too is affected by outliers, so more robust measures are sometimes used: the **Average Absolute Deviation (AAD)**, the **Median Absolute Deviation (MAD)**, and the **Interquartile Range (IQR)**, which is the 75th percentile minus the 25th.",
+          text: "**Spread: range and variance (slide 59).** The **range** is $\\max - \\min$: simple, but it depends only on the two most extreme values, so a single outlier changes it completely. The **variance**, and its square root the **standard deviation** $s$, is the most common measure of spread: roughly, *how far is a typical value from the mean?* Because it squares distances, it too is affected by outliers, so more robust measures are sometimes used: the **Average Absolute Deviation (AAD)**, the **Median Absolute Deviation (MAD)**, and the **Interquartile Range (IQR)**, which is the 75th percentile minus the 25th.",
         },
         {
           type: "callout",
@@ -428,7 +428,7 @@ export default {
           type: "callout",
           kind: "formula",
           title: "The Minkowski family",
-          text: "$$d(x, y) = \\left( \\sum_{k=1}^{n} |x_k - y_k|^r \\right)^{1/r}$$\n\n$n$ = number of attributes; $x_k, y_k$ = the $k$-th attribute of $x$ and $y$.\n\n- **r = 1: Manhattan distance** (also called city-block, taxicab or L₁): $\\sum |x_k - y_k|$. The distance a taxi drives on a grid of streets, where you can't cut diagonally. For binary vectors this equals the **Hamming distance**: the number of positions where the bits differ.\n- **r = 2: Euclidean distance** (L₂): $\\sqrt{\\sum (x_k - y_k)^2}$. The straight line, as the crow flies.\n- **r → ∞: Supremum distance** (L_max or L∞): $\\max_k |x_k - y_k|$. Only the single biggest difference counts.\n\nDon't confuse $r$ (the dial) with $n$ (the number of attributes). All three work for any $n$.",
+          text: "$$d(x, y) = \\left( \\sum_{k=1}^{n} |x_k - y_k|^r \\right)^{1/r}$$\n\n$n$ = number of attributes; $x_k, y_k$ = the $k$-th attribute of $x$ and $y$.\n\n- **r = 1: Manhattan distance** (also called city-block, taxicab or $L_1$): $\\sum |x_k - y_k|$. The distance a taxi drives on a grid of streets, where you can't cut diagonally. For binary vectors this equals the **Hamming distance**: the number of positions where the bits differ.\n- **r = 2: Euclidean distance** $(L_2)$: $\\sqrt{\\sum (x_k - y_k)^2}$. The straight line, as the crow flies.\n- **r → $\\infty$: Supremum distance** ($L_{\\text{max}}$ or L∞): $\\max_k |x_k - y_k|$. Only the single biggest difference counts.\n\nDon't confuse $r$ (the dial) with $n$ (the number of attributes). All three work for any $n$.",
         },
         {
           type: "callout",
@@ -568,8 +568,8 @@ export default {
     ["MAD", "Median Absolute Deviation", "Median distance from the median; very robust"],
     ["IQR", "Interquartile Range", "75th percentile − 25th percentile"],
     ["Proximity", "—", "Similarity or dissimilarity (distance)"],
-    ["L₁ / Manhattan", "City-block distance", "Sum of absolute differences"],
-    ["L₂ / Euclidean", "Straight-line distance", "Square root of the sum of squared differences"],
+    ["$L_1$ / Manhattan", "City-block distance", "Sum of absolute differences"],
+    ["$L_2$ / Euclidean", "Straight-line distance", "Square root of the sum of squared differences"],
     ["L∞ / Supremum", "L-max distance", "The largest single difference"],
     ["Hamming distance", "—", "Number of positions where two binary strings differ"],
     ["$\\Sigma$ (in Mahalanobis)", "Covariance matrix", "Describes the spread and correlation of the attributes"],
@@ -601,7 +601,7 @@ export default {
 How far apart two records are, using four members of the Minkowski family (Lesson 10).
 
 ### Why this approach
-All Minkowski distances use the same ingredient: the **absolute difference in each attribute**. They differ only in how those differences are combined: added (r = 1), squared-then-rooted (r = 2), cubed-then-cube-rooted (r = 3), or just the maximum (r → ∞).
+All Minkowski distances use the same ingredient: the **absolute difference in each attribute**. They differ only in how those differences are combined: added $(r = 1)$, squared-then-rooted $(r = 2)$, cubed-then-cube-rooted $(r = 3)$, or just the maximum (r → $\\infty$).
 
 ### Formula
 $$d_r(x, y) = \\left( \\sum_{k} |x_k - y_k|^r \\right)^{1/r}, \\qquad d_\\infty = \\max_k |x_k - y_k|$$
@@ -609,13 +609,13 @@ $$d_r(x, y) = \\left( \\sum_{k} |x_k - y_k|^r \\right)^{1/r}, \\qquad d_\\infty 
 ### Working
 Differences: $|1-4| = 3$, $|5-1| = 4$, $|2-6| = 4$, $|8-5| = 3$, i.e. $(3, 4, 4, 3)$.
 
-**(a) Manhattan (r = 1):** $3 + 4 + 4 + 3 = 14$
+**(a) Manhattan $(r = 1)$:** $3 + 4 + 4 + 3 = 14$
 
-**(b) Euclidean (r = 2):** $\\sqrt{3^2 + 4^2 + 4^2 + 3^2} = \\sqrt{9 + 16 + 16 + 9} = \\sqrt{50} = 7.071$
+**(b) Euclidean $(r = 2)$:** $\\sqrt{3^2 + 4^2 + 4^2 + 3^2} = \\sqrt{9 + 16 + 16 + 9} = \\sqrt{50} = 7.071$
 
 **(c) Supremum:** $\\max(3, 4, 4, 3) = 4$
 
-**(d) r = 3:** $(3^3 + 4^3 + 4^3 + 3^3)^{1/3} = (27 + 64 + 64 + 27)^{1/3} = 182^{1/3} = 5.667$
+**(d) $r = 3$:** $(3^3 + 4^3 + 4^3 + 3^3)^{1/3} = (27 + 64 + 64 + 27)^{1/3} = 182^{1/3} = 5.667$
 
 ### Answer
 Manhattan **14**, Euclidean **7.071**, supremum **4**, Minkowski-3 **5.667**.
@@ -627,7 +627,7 @@ As r grows, the distance shrinks toward the single largest difference: $L_1 \\ge
       title: "Distance matrices for four points",
       level: "Medium",
       marks: 5,
-      hint: "There are only 6 distinct pairs (the matrix is symmetric with zeros on the diagonal). For each pair, write the differences in x and y, then apply L₁, L₂ and L∞.",
+      hint: "There are only 6 distinct pairs (the matrix is symmetric with zeros on the diagonal). For each pair, write the differences in x and y, then apply $L_1$, $L_2$ and L∞.",
       question:
         "Four delivery hubs sit on a city grid at $p_1 = (0,2)$, $p_2 = (2,0)$, $p_3 = (3,1)$, $p_4 = (5,1)$ (km). Build the $L_1$, $L_2$ and $L_\\infty$ distance matrices. Which pair is closest under each metric?",
       solution: `
@@ -638,7 +638,7 @@ All pairwise distances, under three metrics, arranged as matrices (slide 63/66 s
 A distance matrix is symmetric ($d(a,b) = d(b,a)$) with zeros on the diagonal, so we only compute the 6 pairs above the diagonal and mirror them.
 
 ### Working
-| Pair | Δx, Δy | L₁ | L₂ | L∞ |
+| Pair | $\\Delta x$, $\\Delta y$ | $L_1$ | $L_2$ | L∞ |
 |---|---|---|---|---|
 | p1–p2 | 2, 2 | 4 | $\\sqrt8 = 2.828$ | 2 |
 | p1–p3 | 3, 1 | 4 | $\\sqrt{10} = 3.162$ | 3 |
@@ -678,7 +678,7 @@ A distance matrix is symmetric ($d(a,b) = d(b,a)$) with zeros on the diagonal, s
 Closest pair: **p2–p3** under $L_2$ (1.414) and $L_\\infty$ (1). Under $L_1$ it's a **tie** between p2–p3 and p3–p4 (both 2).
 
 ### Takeaway
-Different metrics can rank neighbours differently. A diagonal step (1, 1) is cheap in L₂ and L∞ but costs 2 in L₁, the same as a straight step of 2. So the choice of distance changes which neighbours k-NN or clustering will pick.`,
+Different metrics can rank neighbours differently. A diagonal step (1, 1) is cheap in $L_2$ and L∞ but costs 2 in $L_1$, the same as a straight step of 2. So the choice of distance changes which neighbours k-NN or clustering will pick.`,
     },
     {
       title: "Cosine similarity of documents",
@@ -758,7 +758,7 @@ Correlation only measures **straight-line** association. **Zero correlation does
       title: "Summary statistics with an outlier",
       level: "Medium",
       marks: 5,
-      hint: "Sort first (it already is). Median of 8 values = average of the 4th and 5th. A 12.5% trimmed mean on 8 values drops 1 value from each end. For the standard deviation, divide by m − 1 = 7.",
+      hint: "Sort first (it already is). Median of 8 values = average of the 4th and 5th. A 12.5% trimmed mean on 8 values drops 1 value from each end. For the standard deviation, divide by $m - 1 = 7$.",
       question:
         "Daily footfall (hundreds of visitors) at a mall over 8 days: 10, 12, 13, 15, 15, 18, 20, 97 (the last day had a festival sale). Compute the mean, median, mode, 12.5%-trimmed mean, range, sample standard deviation and AAD. Recompute the mean, median and standard deviation without 97. What do you conclude?",
       solution: `
@@ -797,7 +797,7 @@ One outlier shifted the mean by 10 and made the standard deviation **8.5× bigge
       title: "Min-max normalisation and z-score standardisation",
       level: "Easy",
       marks: 3,
-      hint: "Min-max: subtract the minimum, divide by the range. Z-score: subtract the mean, divide by the sample standard deviation (divide the sum of squares by m − 1 = 4).",
+      hint: "Min-max: subtract the minimum, divide by the range. Z-score: subtract the mean, divide by the sample standard deviation (divide the sum of squares by $m - 1 = 4$).",
       question:
         "Annual incomes (₹ lakh) of five loan applicants: 20, 30, 50, 60, 90. (a) Min-max normalise to [0, 1]. (b) Z-score standardise (use the sample standard deviation). (c) Why does Euclidean distance need this?",
       solution: `
@@ -819,7 +819,7 @@ $s = \\sqrt{3000/4} = \\sqrt{750} = 27.386$
 $z = -30/27.386, \\dots$ → **−1.095, −0.730, 0, 0.365, 1.461**
 
 ### Answer
-(a) 0, 0.143, 0.429, 0.571, 1.0 (b) −1.095, −0.730, 0, 0.365, 1.461
+(a) 0, 0.143, 0.429, 0.571, 1.0 $(b) - 1.095$, −0.730, 0, 0.365, 1.461
 
 **(c)** Euclidean distance is dominated by whichever attribute has the largest numeric range. If income were in rupees (lakhs of units) and age in years (tens), age would barely affect the distance. Scaling gives every attribute an equal say (slide 62: “standardisation is necessary if scales differ”).
 
@@ -830,7 +830,7 @@ Min-max fixes the range to [0, 1] but is sensitive to extreme values. Z-scores c
       title: "Equal-width vs equal-frequency discretisation",
       level: "Easy",
       marks: 3,
-      hint: "Equal width: bin width = (max − min) ÷ number of bins. Equal frequency: 12 values into 3 bins = 4 values per bin, in sorted order.",
+      hint: "Equal width: bin width = $(\\max - \\min)$ ÷ number of bins. Equal frequency: 12 values into 3 bins = 4 values per bin, in sorted order.",
       question: "Customer ages at a gym: 4, 8, 15, 21, 21, 24, 25, 28, 34, 40, 52, 60. Discretise them into 3 bins using (a) equal width and (b) equal frequency.",
       solution: `
 ### What is being asked
@@ -876,7 +876,7 @@ $$\\text{MAE} = \\frac1m \\sum |e_i|, \\qquad \\text{RMSE} = \\sqrt{\\frac1m \\s
 - MAE $= (0.5 + 0 + 2 + 1 + 0.5)/5 = 4/5 = 0.80$
 - RMSE $= \\sqrt{(0.25 + 0 + 4 + 1 + 0.25)/5} = \\sqrt{5.5/5} = \\sqrt{1.1} = 1.049$
 
-**(b)** New error = 16 − 6 = 10
+**(b)** New error = $16 - 6 = 10$
 - MAE $= (4 + 10)/6 = 14/6 = 2.33$
 - RMSE $= \\sqrt{(5.5 + 100)/6} = \\sqrt{17.58} = 4.19$
 
@@ -917,7 +917,7 @@ Test size $= 0.20 \\times 20640 = 4128$
 | 4 | 18% | 743.04 ≈ **743** |
 | 5 | 11% | 454.08 ≈ **454** |
 
-Check: 165 + 1321 + 1445 + 743 + 454 = 4128 ✓
+Check: $165 + 1321 + 1445 + 743 + 454 = 4128$ ✓
 
 ### Answer
 165, 1321, 1445, 743 and 454 districts. **Why not purely random:** a random draw could, by chance, include far fewer than 165 category-1 districts (a small, 4% group). Then the test set wouldn't represent low-income districts, and the reported error would be misleading. Stratification guarantees the proportions.
@@ -929,7 +929,7 @@ Stratify on the attribute that matters most, especially when some groups are sma
       title: "Mahalanobis distance",
       level: "Hard",
       marks: 5,
-      hint: "Invert the 2×2 covariance matrix: swap the diagonal, negate the off-diagonal, divide by the determinant. Then compute $d^T \\Sigma^{-1} d$ for each difference vector $d$.",
+      hint: "Invert the $2 \\times 2$ covariance matrix: swap the diagonal, negate the off-diagonal, divide by the determinant. Then compute $d^T \\Sigma^{-1} d$ for each difference vector $d$.",
       question:
         "Two correlated measurements (say, standardised height and weight) have covariance matrix $\\Sigma = \\begin{pmatrix}0.3 & 0.2\\\\0.2 & 0.3\\end{pmatrix}$. For $A = (0.5, 0.5)$, $B = (0, 1)$, $C = (1.5, 1.5)$ compute $\\text{mahal}(A,B)$ and $\\text{mahal}(A,C) = (x-y)^T\\Sigma^{-1}(x-y)$. Compare with the Euclidean distances and explain.",
       solution: `
@@ -1008,7 +1008,7 @@ For each attribute: the type, whether it's discrete or continuous, and **the pro
 |---|---|---|---|
 | Employee ID | **Nominal** | Discrete | Only = / ≠ is meaningful; averaging IDs is nonsense |
 | Satisfaction 1–5 | **Ordinal** | Discrete | Order matters, but the gaps between stars aren't equal |
-| °C | **Interval** | Continuous | Differences are meaningful; zero is arbitrary, so 20 °C ≠ 2 × 10 °C |
+| °C | **Interval** | Continuous | Differences are meaningful; zero is arbitrary, so 20 °$C \\ne 2 \\times 10$ °C |
 | 100 m time | **Ratio** | Continuous | True zero; 20 s really is twice 10 s |
 | Date of birth | **Interval** | Discrete (days) | Differences (age) are meaningful; there's no true “zero date” |
 | Number of children | **Ratio** | Discrete | Counts have a true zero |
@@ -1154,9 +1154,9 @@ Random sampling is fair *on average*; stratified sampling is fair *every time*.`
 
   quiz: [
     { q: "Temperature in Celsius is which attribute type?", options: ["Nominal", "Ordinal", "Interval", "Ratio"], answer: 2, why: "Differences are meaningful but zero is arbitrary, so ratios are not." },
-    { q: "Minkowski distance with r → ∞ is:", options: ["Manhattan", "Euclidean", "Supremum (max component difference)", "Hamming"], answer: 2, why: "$L_\\infty$ = the maximum absolute difference over the components." },
-    { q: "Which metric is preferred when the data has many outliers?", options: ["RMSE", "MAE", "R²", "Accuracy"], answer: 1, why: "MAE ($\\ell_1$) doesn't square errors, so outliers affect it less." },
-    { q: "Correlation between x = (−3…3) and y = x² is:", options: ["1", "−1", "0", "0.5"], answer: 2, why: "The relationship is perfect but non-linear; correlation only captures linear association." },
+    { q: "Minkowski distance with r → $\\infty$ is:", options: ["Manhattan", "Euclidean", "Supremum (max component difference)", "Hamming"], answer: 2, why: "$L_\\infty$ = the maximum absolute difference over the components." },
+    { q: "Which metric is preferred when the data has many outliers?", options: ["RMSE", "MAE", "$R^2$", "Accuracy"], answer: 1, why: "MAE ($\\ell_1$) doesn't square errors, so outliers affect it less." },
+    { q: "Correlation between x = (−3…3) and $y = x^2$ is:", options: ["1", "−1", "0", "0.5"], answer: 2, why: "The relationship is perfect but non-linear; correlation only captures linear association." },
     { q: "Dividing total_rooms by households to get rooms_per_household is:", options: ["Feature selection", "Feature construction", "Discretisation", "Sampling"], answer: 1, why: "A new feature built by combining existing ones." },
     { q: "Why use one-hot encoding for ocean_proximity instead of integers 0–4?", options: ["Saves memory", "Integers imply a false order and similarity", "scikit-learn requires it", "It removes missing values"], answer: 1, why: "Nominal categories have no order, and integer codes would suggest that nearby codes are similar." },
     { q: "Which statistic is LEAST affected by an outlier?", options: ["Mean", "Range", "Standard deviation", "Median"], answer: 3, why: "The median depends only on the middle value(s)." },

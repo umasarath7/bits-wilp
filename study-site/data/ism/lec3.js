@@ -6,7 +6,347 @@ export default {
   source: "Lec3.pdf (CS-3) · 57 slides",
   quizMode: "step",
   overview:
-    "Probabilities are not fixed: they change when we **learn something**. A doctor's estimate that you have a disease changes when a blood test comes back negative (slide 7). This lecture makes that precise. **Conditional probability** P(A | B) is the probability of A once we know B happened, and it rearranges into the **multiplication rule** for “A and B”. If learning B changes nothing, A and B are **independent**, and probabilities simply multiply. Finally, the **law of total probability** finds the overall chance of an event by splitting the world into cases (which forest? which device? rain or no rain?), working out each case, and adding up. That sets up Bayes' theorem in Lecture 4.",
+    "Probabilities are not fixed: they change when we **learn something**. A doctor's estimate that you have a disease changes when a blood test comes back negative (slide 7). This lecture makes that precise. **Conditional probability** $P(A \\mid B)$ is the probability of A once we know B happened, and it rearranges into the **multiplication rule** for “A and B”. If learning B changes nothing, A and B are **independent**, and probabilities simply multiply. Finally, the **law of total probability** finds the overall chance of an event by splitting the world into cases (which forest? which device? rain or no rain?), working out each case, and adding up. That sets up Bayes' theorem in Lecture 4.",
+
+  simpleIntro: "Probabilities change when you **learn something**. Knowing it's cloudy raises the chance of rain. This lecture gives you four tools: **conditional probability** (the chance of A once you know B happened), the **multiplication rule** (“A and then B”), **independence** (when learning B changes nothing) and the **law of total probability** (split a hard question into easy cases). All examples are the lecturer's own.",
+
+  simple: [
+    {
+      "id": "s-big",
+      "heading": "1. The big picture",
+      "slides": "",
+      "blocks": [
+        {
+          "type": "cards",
+          "items": [
+            {
+              "title": "Conditional probability",
+              "text": "Once you know B happened, **B becomes your whole world**. Ask: what fraction of B is also A?",
+              "tag": "“Given that…”",
+              "example": "P(MasterCard | has Visa) = 0.5",
+              "figure": "i3-cond"
+            },
+            {
+              "title": "Independence",
+              "text": "Learning B **doesn't change** the chance of A, so probabilities simply multiply.",
+              "tag": "Information that doesn't matter",
+              "example": "Coin toss and a die roll"
+            },
+            {
+              "title": "Total probability",
+              "text": "Split the population into cases, find the chance **within each case**, then combine with a weighted average.",
+              "tag": "Divide and conquer",
+              "example": "Gas station: P(fills tank) = 0.455",
+              "figure": "i3-tree"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s-cond",
+      "heading": "2. Conditional probability: shrink the world",
+      "slides": "6–17",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "$P(A \\mid B)$ is read “the probability of A **given** B”. The bar means *we already know B happened*, so outcomes outside B are no longer possible. Among what remains (B), what share is also A?"
+        },
+        {
+          "type": "diagram",
+          "name": "i3-cond"
+        },
+        {
+          "type": "callout",
+          "kind": "formula",
+          "title": "Formula",
+          "text": "$$P(A \\mid B) = \\frac{P(A \\cap B)}{P(B)} \\qquad (P(B) > 0)$$ The overlap divided by the new “world” B."
+        },
+        {
+          "type": "callout",
+          "kind": "example",
+          "title": "Solved example (lecturer's Example 1): Visa and MasterCard",
+          "text": "A student is picked at random. A = has Visa, B = has MasterCard. $P(A) = 0.5$, $P(B) = 0.5$, $P(A \\cap B) = 0.25$. Find $P(B \\mid A)$.\n\n**Approach:** the world is now “Visa holders”. What fraction of them also have MasterCard?\n$P(B \\mid A) = \\frac{P(A \\cap B)}{P(A)} = \\frac{0.25}{0.5} = 0.5$."
+        },
+        {
+          "type": "answer",
+          "value": "0.5",
+          "text": "Half of the Visa holders also carry a MasterCard."
+        },
+        {
+          "type": "callout",
+          "kind": "example",
+          "title": "Lecturer's Example 3: one event inside another",
+          "text": "A repair shop: A = next item is an audio component $(P = 0.6)$, B = it's a CD player $(P = 0.05)$. Every CD player is an audio component, so $A \\cap B = B$:\n$P(B \\mid A) = \\frac{0.05}{0.6} = 0.0833$."
+        },
+        {
+          "type": "callout",
+          "kind": "warn",
+          "title": "P(A | B) is not P(B | A)",
+          "text": "P(spots | measles) is nearly 1; P(measles | spots) is small (many things cause spots). Always check **which event is known**: it goes after the bar and in the denominator."
+        },
+        {
+          "type": "check",
+          "q": "P(A ∩ B) = 0.2 and P(B) = 0.5. What is P(A | B)?",
+          "options": [
+            "0.1",
+            "0.4",
+            "0.7",
+            "2.5"
+          ],
+          "answer": 1,
+          "why": "$0.2 / 0.5 = 0.4$."
+        }
+      ]
+    },
+    {
+      "id": "s-mult",
+      "heading": "3. “A and then B”: the multiplication rule",
+      "slides": "8–10, 23–24",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Rearrange the conditional formula and you get a recipe for “and”: the chance of the first step, times the chance of the second step **given the first happened**."
+        },
+        {
+          "type": "callout",
+          "kind": "formula",
+          "title": "Multiplication rule",
+          "text": "$$P(A \\cap B) = P(A)\\,P(B \\mid A)$$ For a chain: $P(A \\cap B \\cap C) = P(A)\\,P(B \\mid A)\\,P(C \\mid A \\cap B)$."
+        },
+        {
+          "type": "callout",
+          "kind": "example",
+          "title": "Solved example (lecturer's Example 7): two queens",
+          "text": "Two cards are dealt **without replacement**. P(both queens)?\n\nFirst card: 4 queens out of 52. Given that it was a queen, only 3 queens remain out of 51.\n$P = \\frac{4}{52} \\times \\frac{3}{51} = 0.0045$"
+        },
+        {
+          "type": "answer",
+          "value": "≈ 0.0045",
+          "text": "The second fraction changed because the first card was not put back."
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "title": "Spot the clue",
+          "text": "**“Without replacement”**, “one after another”, “in stages” → multiply, updating the fractions at each step."
+        }
+      ]
+    },
+    {
+      "id": "s-indep",
+      "heading": "4. Independence: when information doesn't matter",
+      "slides": "18–28",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "If knowing B tells you nothing new about A, then $P(A \\mid B) = P(A)$: the events are **independent**. Plug that into the multiplication rule and “and” becomes a plain product."
+        },
+        {
+          "type": "callout",
+          "kind": "formula",
+          "title": "Independence test",
+          "text": "$$A, B \\text{ independent} \\iff P(A \\cap B) = P(A)\\,P(B) \\iff P(A \\mid B) = P(A)$$"
+        },
+        {
+          "type": "callout",
+          "kind": "example",
+          "title": "Solved example (lecturer's Example 4): spam features",
+          "text": "Two independent features: A = email contains “offer” $(P = 0.6)$, B = has a suspicious link $(P = 0.4)$.\n\n**Both:** $0.6 \\times 0.4 = 0.24$.\n**Either (or both):** addition rule from Lecture 2: $0.6 + 0.4 - 0.24 = 0.76$.\n**Neither:** complement: $1 - 0.76 = 0.24$."
+        },
+        {
+          "type": "answer",
+          "value": "Both 0.24 · either 0.76 · neither 0.24"
+        },
+        {
+          "type": "callout",
+          "kind": "example",
+          "title": "Testing independence from data (slide 27)",
+          "text": "100 flights: 45 from airport A, 20 late, 9 both. $P(A)P(\\text{late}) = 0.45 \\times 0.20 = 0.09$, which equals $P(A \\cap \\text{late}) = 9/100$ → **independent**. Same idea: P(late | A) $= 9/45 = 0.20$ = P(late). Knowing the airport tells you nothing."
+        },
+        {
+          "type": "callout",
+          "kind": "example",
+          "title": "Lecturer's Example 1: letters from two bags",
+          "text": "Bag 1: I, L, J, A, U. Bag 2: L, R, H, E, C, A. One card from each bag (independent draws). P(J and R) $= \\frac{1}{5} \\cdot \\frac{1}{6} = \\frac{1}{30}$. Both vowels: Bag 1 has **three** vowels (I, A, U), Bag 2 has two → $\\frac{3}{5} \\cdot \\frac{2}{6} = \\frac{1}{5}$. (The slide's 2/15 counts only two vowels in Bag 1.)"
+        },
+        {
+          "type": "check",
+          "q": "P(A) = 0.3, P(B) = 0.5, P(A ∩ B) = 0.15. Are A and B independent?",
+          "options": [
+            "Yes",
+            "No",
+            "Can't tell",
+            "Only if mutually exclusive"
+          ],
+          "answer": 0,
+          "why": "$0.3 \\times 0.5 = 0.15$ = P(A ∩ B) → independent."
+        }
+      ]
+    },
+    {
+      "id": "s-total",
+      "heading": "5. Law of total probability: split into cases",
+      "slides": "29–47",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Some questions are hard in one go but easy case by case. If the population splits into groups $A_1, A_2, \\dots$ (no overlaps, nobody left out: a **partition**) and you know the rate of B inside each group, the overall rate is a **weighted average**."
+        },
+        {
+          "type": "diagram",
+          "name": "i3-partition"
+        },
+        {
+          "type": "callout",
+          "kind": "formula",
+          "title": "Formula",
+          "text": "$$P(B) = \\sum_i P(A_i)\\,P(B \\mid A_i)$$ **Tree method:** one branch per case, **multiply along each path, add across the paths**."
+        },
+        {
+          "type": "callout",
+          "kind": "example",
+          "title": "Solved example (lecturer's Example 1): the gas station",
+          "text": "40% of customers buy regular, 35% plus, 25% premium. Of these, 30%, 60% and 50% fill the tank. P(the next customer fills the tank)?\n\n$P(B) = (0.4)(0.3) + (0.35)(0.6) + (0.25)(0.5) = 0.12 + 0.21 + 0.125$"
+        },
+        {
+          "type": "answer",
+          "value": "0.455",
+          "text": "Just under half of all customers fill their tank."
+        },
+        {
+          "type": "diagram",
+          "name": "i3-tree"
+        },
+        {
+          "type": "callout",
+          "kind": "example",
+          "title": "Lecturer's Example 2: the binary channel",
+          "text": "A 1 is sent 40% of the time (so a 0 is sent 60%). A sent 0 arrives correctly with probability 0.90, a sent 1 with 0.95. P(a 1 is received)?\n\nTwo ways to receive a 1: a 1 was sent and survived $(0.4 \\times 0.95 = 0.38)$, or a 0 was sent and flipped $(0.6 \\times 0.10 = 0.06)$.\n$P(\\text{1 received}) = 0.38 + 0.06 = 0.44$."
+        },
+        {
+          "type": "diagram",
+          "name": "i3-channel"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "title": "Spot the clue",
+          "text": "The question gives **percentages of groups** (machines, suppliers, signal types) and **a rate within each group** (defective, fills tank, error), then asks for the **overall** rate → total probability. Reversing it (“given it was defective, which machine?”) is **Bayes**: Lecture 4."
+        },
+        {
+          "type": "check",
+          "q": "Machine A makes 60% of items (2% defective), machine B 40% (5% defective). Overall defective rate?",
+          "options": [
+            "3.5%",
+            "3.2%",
+            "7%",
+            "2.6%"
+          ],
+          "answer": 1,
+          "why": "$0.6(0.02) + 0.4(0.05) = 0.012 + 0.020 = 0.032$."
+        }
+      ]
+    },
+    {
+      "id": "s-compare",
+      "heading": "6. Which rule do I need?",
+      "slides": "49–50",
+      "blocks": [
+        {
+          "type": "table",
+          "head": [
+            "The question says…",
+            "Use",
+            "Formula"
+          ],
+          "rows": [
+            [
+              "“given that”, “among those who…”",
+              "Conditional",
+              "$P(A \\mid B) = P(A \\cap B)/P(B)$"
+            ],
+            [
+              "“A and then B”, without replacement",
+              "Multiplication rule",
+              "$P(A)P(B \\mid A)$"
+            ],
+            [
+              "independent events, “both”",
+              "Product",
+              "$P(A)P(B)$"
+            ],
+            [
+              "“either”, “at least one”",
+              "Addition / complement (Lecture 2)",
+              "$P(A) + P(B) - P(A \\cap B)$, $1 - P(\\text{none})$"
+            ],
+            [
+              "groups + a rate in each → overall rate",
+              "Total probability",
+              "$\\sum P(A_i)P(B \\mid A_i)$"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s-test",
+      "heading": "7. Test your understanding",
+      "slides": "",
+      "blocks": [
+        {
+          "type": "check",
+          "q": "Two cards without replacement. P(both aces)?",
+          "options": [
+            "(4/52)²",
+            "(4/52)(3/51)",
+            "4/52 + 3/51",
+            "(4/52)(4/51)"
+          ],
+          "answer": 1,
+          "why": "Multiplication rule with the fraction updated after the first ace."
+        },
+        {
+          "type": "check",
+          "q": "If A and B are independent, P(A | B) equals…",
+          "options": [
+            "P(B)",
+            "P(A)",
+            "P(A)P(B)",
+            "0"
+          ],
+          "answer": 1,
+          "why": "Knowing B changes nothing."
+        },
+        {
+          "type": "check",
+          "q": "Same binary channel: P(1 received) = 0.44 and P(1 sent and received) = 0.38. P(1 was sent | 1 received)?",
+          "options": [
+            "0.38",
+            "0.44",
+            "0.864",
+            "0.95"
+          ],
+          "answer": 2,
+          "why": "$0.38 / 0.44 = 0.864$: a preview of Bayes' theorem (Lecture 4)."
+        }
+      ]
+    },
+    {
+      "id": "s-remember",
+      "heading": "8. What to remember for your exam",
+      "slides": "",
+      "blocks": [
+        {
+          "type": "callout",
+          "kind": "remember",
+          "title": "Remember",
+          "text": "- **Given B** → B is your new world: $P(A \\mid B) = \\frac{P(A \\cap B)}{P(B)}$. The known event goes **after the bar** and in the **denominator**.\n- **And (in stages):** $P(A)P(B \\mid A)$; without replacement → update the fractions.\n- **Independent:** $P(A \\cap B) = P(A)P(B)$; test it from the data.\n- **Total probability:** multiply along tree branches, add across: $\\sum P(A_i)P(B \\mid A_i)$."
+        }
+      ]
+    }
+  ],
 
   summary: [
     {
@@ -29,7 +369,7 @@ export default {
         { type: "diagram", name: "i3-cond" },
         {
           type: "p",
-          text: "**Why divide by P(A)?** Once we know A happened, everything outside A is ruled out: A becomes the new sample space. The only way B can still happen is in the overlap $A \\cap B$. So the new probability of B is the overlap as a **fraction of A**.",
+          text: "**Why divide by $P(A)$?** Once we know A happened, everything outside A is ruled out: A becomes the new sample space. The only way B can still happen is in the overlap $A \\cap B$. So the new probability of B is the overlap as a **fraction of A**.",
         },
         {
           type: "callout",
@@ -52,7 +392,7 @@ export default {
         },
         {
           type: "p",
-          text: "Let A = will not default, B = middle-aged. (a) P(not default | middle-aged): restrict to the middle-aged **column**: $P(A \\mid B) = \\frac{27368}{32219} = 0.85$. (b) P(middle-aged | not default): restrict to the “No” **row**: $P(B \\mid A) = \\frac{27368}{38130} = 0.72$. Same overlap (27368), **different denominators**. That's the whole point: P(A | B) ≠ P(B | A) in general. (The slide works via rounded probabilities 0.59/0.69 and 0.59/0.82; using the counts directly avoids rounding.)",
+          text: "Let A = will not default, B = middle-aged. (a) P(not default | middle-aged): restrict to the middle-aged **column**: $P(A \\mid B) = \\frac{27368}{32219} = 0.85$. (b) P(middle-aged | not default): restrict to the “No” **row**: $P(B \\mid A) = \\frac{27368}{38130} = 0.72$. Same overlap (27368), **different denominators**. That's the whole point: $P(A \\mid B) \\ne P(B \\mid A)$ in general. (The slide works via rounded probabilities 0.59/0.69 and 0.59/0.82; using the counts directly avoids rounding.)",
         },
         {
           type: "callout",
@@ -64,13 +404,13 @@ export default {
           type: "callout",
           kind: "warn",
           title: "Common mistakes",
-          text: "- Swapping the condition: P(A | B) and P(B | A) have **different denominators**.\n- Dividing by the total (46687) instead of the conditioning group's total.\n- Forgetting that “given at least one” means dividing by $P(A \\cup B)$.",
+          text: "- Swapping the condition: $P(A \\mid B)$ and $P(B \\mid A)$ have **different denominators**.\n- Dividing by the total (46687) instead of the conditioning group's total.\n- Forgetting that “given at least one” means dividing by $P(A \\cup B)$.",
         },
         {
           type: "callout",
           kind: "remember",
           title: "Quick revision",
-          text: "P(B | A) = P(A ∩ B) / P(A): restrict to A, take the share. In a table: divide by the **row/column total of the given group**.",
+          text: "$P(B \\mid A)$ = P(A ∩ B) / $P(A)$: restrict to A, take the share. In a table: divide by the **row/column total of the given group**.",
         },
       ],
     },
@@ -91,7 +431,7 @@ export default {
         },
         {
           type: "p",
-          text: "**Slightly harder: the two suppliers (Example 3, slides 23–24).** A batch from supplier 1 arrives every weekday (5 days); supplier 2 also sends a batch on 2 of those days. 80% of supplier 1's batches and 90% of supplier 2's pass inspection. On a random day, what is P(two batches pass)? Two batches can only pass on a day when two arrive: P(two arrive) = 2/5 = 0.4. Given two arrive, both pass with probability 0.8 × 0.9 (the inspections are independent). So $P(\\text{two pass}) = P(\\text{both pass} \\mid \\text{two received}) \\cdot P(\\text{two received}) = (0.8)(0.9)(0.4) = 0.288$.",
+          text: "**Slightly harder: the two suppliers (Example 3, slides 23–24).** A batch from supplier 1 arrives every weekday (5 days); supplier 2 also sends a batch on 2 of those days. 80% of supplier 1's batches and 90% of supplier 2's pass inspection. On a random day, what is P(two batches pass)? Two batches can only pass on a day when two arrive: P(two arrive) = 2/5 = 0.4. Given two arrive, both pass with probability $0.8 \\times 0.9$ (the inspections are independent). So $P(\\text{two pass}) = P(\\text{both pass} \\mid \\text{two received}) \\cdot P(\\text{two received}) = (0.8)(0.9)(0.4) = 0.288$.",
         },
         {
           type: "callout",
@@ -146,11 +486,11 @@ export default {
           type: "callout",
           kind: "example",
           title: "Slightly harder: Example 4 (slides 25–26), spam features",
-          text: "Two **independent** features: A = contains “offer” (P = 0.6), B = has a suspicious link (P = 0.4).\n\n(a) Both: $P(A \\cap B) = 0.6 \\times 0.4 = 0.24$.\n(b) Either or both: $P(A \\cup B) = 0.6 + 0.4 - 0.24 = 0.76$.\n(c) Neither: $1 - 0.76 = 0.24$.\n\nNotice how independence feeds the addition rule from Lecture 2.",
+          text: "Two **independent** features: A = contains “offer” $(P = 0.6)$, B = has a suspicious link $(P = 0.4)$.\n\n(a) Both: $P(A \\cap B) = 0.6 \\times 0.4 = 0.24$.\n(b) Either or both: $P(A \\cup B) = 0.6 + 0.4 - 0.24 = 0.76$.\n(c) Neither: $1 - 0.76 = 0.24$.\n\nNotice how independence feeds the addition rule from Lecture 2.",
         },
         {
           type: "p",
-          text: "**Testing independence from data (miscellaneous Q3, slide 27).** 100 flights: 45 from airport A, 20 late, 9 both. $P(A)P(\\text{late}) = 0.45 \\times 0.20 = 0.09 = P(A \\cap \\text{late})$ → **independent**. Equivalently P(late | A) = 9/45 = 0.20 = P(late): knowing the airport tells you nothing about lateness.",
+          text: "**Testing independence from data (miscellaneous Q3, slide 27).** 100 flights: 45 from airport A, 20 late, 9 both. $P(A)P(\\text{late}) = 0.45 \\times 0.20 = 0.09 = P(A \\cap \\text{late})$ → **independent**. Equivalently P(late | A) = $9/45 = 0.20$ = P(late): knowing the airport tells you nothing about lateness.",
         },
         {
           type: "callout",
@@ -162,7 +502,7 @@ export default {
           type: "callout",
           kind: "remember",
           title: "Quick revision",
-          text: "Independent ⟺ P(A ∩ B) = P(A)P(B) ⟺ P(A | B) = P(A). With replacement → independent; without → dependent.",
+          text: "Independent ⟺ P(A ∩ B) = $P(A) P(B) \\iff P(A \\mid B) = P(A)$. With replacement → independent; without → dependent.",
         },
       ],
     },
@@ -201,7 +541,7 @@ export default {
         },
         {
           type: "p",
-          text: "**Slightly harder: the binary channel (Example 2, slides 36–39).** Messages use signals 0 and 1; a 1 is sent 40% of the time. A sent 0 is received correctly with probability 0.90, a sent 1 with probability 0.95. Let A = 1 sent, B = 1 received. Then $P(B \\mid A) = 0.95$ and $P(B \\mid A') = 1 - 0.90 = 0.10$.",
+          text: "**Slightly harder: the binary channel (Example 2, slides 36–39).** Messages use signals 0 and 1; a 1 is sent 40% of the time. A sent 0 is received correctly with probability 0.90, a sent 1 with probability 0.95. Let $A = 1$ sent, $B = 1$ received. Then $P(B \\mid A) = 0.95$ and $P(B \\mid A') = 1 - 0.90 = 0.10$.",
         },
         { type: "diagram", name: "i3-channel" },
         {
@@ -225,19 +565,19 @@ export default {
           type: "callout",
           kind: "tip",
           title: "Spotting a total-probability question",
-          text: "The question gives you **percentages of a population in groups** (machines, forests, devices, weather) and **a rate within each group** (defective, poisonous, clicks), then asks for the **overall** rate. Two cases (rain / no rain) count too: B and B′ always form a partition.",
+          text: "The question gives you **percentages of a population in groups** (machines, forests, devices, weather) and **a rate within each group** (defective, poisonous, clicks), then asks for the **overall** rate. Two cases (rain / no rain) count too: B and $B'$ always form a partition.",
         },
         {
           type: "callout",
           kind: "warn",
           title: "Common mistakes",
-          text: "- Averaging the conditional rates without weights: (0.3 + 0.6 + 0.5)/3 ≠ 0.455.\n- Using P(correctly received) where P(**received 1**) is needed: for a sent 0, that's 1 − 0.90 = 0.10.\n- Cases that don't sum to 1. Check the partition first.",
+          text: "- Averaging the conditional rates without weights: $(0.3 + 0.6 + 0.5)/3 \\ne 0.455$.\n- Using P(correctly received) where P(**received 1**) is needed: for a sent 0, that's $1 - 0.90 = 0.10$.\n- Cases that don't sum to 1. Check the partition first.",
         },
         {
           type: "callout",
           kind: "remember",
           title: "Quick revision",
-          text: "P(B) = Σ P(Aᵢ)P(B | Aᵢ) over a partition. Tree: multiply along, add across. Reverse question P(Aᵢ | B) = P(Aᵢ)P(B | Aᵢ) / P(B) → Lecture 4.",
+          text: "$P(B) = \\sum P(A_i) P(B \\mid A_i)$ over a partition. Tree: multiply along, add across. Reverse question $P(A_i \\mid B) = P(A_i) P(B \\mid A_i)/P(B)$ → Lecture 4.",
         },
       ],
     },
@@ -286,7 +626,7 @@ export default {
       type: "callout",
       kind: "exam",
       title: "Don't lose marks",
-      text: "Name your events · P(A | B) ≠ P(B | A) · check the partition sums to 1 · weighted, not plain, average.",
+      text: "Name your events · $P(A \\mid B) \\ne P(B \\mid A)$ · check the partition sums to 1 · weighted, not plain, average.",
     },
   ],
 
@@ -303,7 +643,7 @@ export default {
   ],
 
   examTips: [
-    "Write the given information as probability statements first, e.g. P(A) = 0.4, P(B | A) = 0.95, P(B | A′) = 0.10. Half the marks are in this step.",
+    "Write the given information as probability statements first, e.g. $P(A) = 0.4$, $P(B \\mid A) = 0.95$, $P(B \\mid A') = 0.10$. Half the marks are in this step.",
     "For any “percentage of groups × rate in group” question, draw the tree.",
     "Table questions: circle the row or column of the condition before dividing.",
     "Keep 4 decimals in intermediate steps; round only the final answer.",
@@ -313,48 +653,48 @@ export default {
     {
       title: "Example 1: Visa and MasterCard (slides 11–13)",
       level: "From slides",
-      hint: "For (b) and (c), use P(A ∩ B′) = P(A) − P(A ∩ B). For (d), divide by P(A ∪ B).",
-      question: "P(A) = 0.5 (Visa), P(B) = 0.5 (MasterCard), P(A ∩ B) = 0.25. Find (a) P(B | A), (b) P(B′ | A), (c) P(A′ | B), (d) P(Visa | at least one card).",
-      solution: "### Formula\n$P(X \\mid Y) = P(X \\cap Y)/P(Y)$.\n### Working\n(a) 0.25/0.5 = **0.5**.\n(b) (0.5 − 0.25)/0.5 = **0.5**.\n(c) (0.5 − 0.25)/0.5 = **0.5**.\n(d) $A \\cap (A \\cup B) = A$, so $P(A)/P(A \\cup B) = 0.5/(0.5 + 0.5 - 0.25) = 0.5/0.75 =$ **0.67**.\n### Interpretation\nAmong card-holders with at least one card, two-thirds have Visa.",
+      hint: "For (b) and (c), use P(A ∩ $B'$) = $P(A)$ − P(A ∩ B). For (d), divide by P(A ∪ B).",
+      question: "$P(A) = 0.5$ (Visa), $P(B) = 0.5$ (MasterCard), P(A ∩ B) = 0.25. Find $(a) P(B \\mid A)$, $(b) P(B' \\mid A)$, $(c) P(A' \\mid B)$, (d) P(Visa | at least one card).",
+      solution: "### Formula\n$P(X \\mid Y) = P(X \\cap Y)/P(Y)$.\n### Working\n(a) 0.25/0.5 = **0.5**.\n(b) $(0.5 - 0.25)/0.5$ = **0.5**.\n(c) $(0.5 - 0.25)/0.5$ = **0.5**.\n(d) $A \\cap (A \\cup B) = A$, so $P(A)/P(A \\cup B) = 0.5/(0.5 + 0.5 - 0.25) = 0.5/0.75 =$ **0.67**.\n### Interpretation\nAmong card-holders with at least one card, two-thirds have Visa.",
     },
     {
       title: "Example 2: loan defaults by age (slides 14–15)",
       level: "From slides",
       hint: "Restrict to the column (middle-aged) for (a) and the row (no default) for (b).",
       question: "Using the loan table (middle-aged total 32219, no-default total 38130, middle-aged & no default 27368, grand total 46687): (a) P(not default | middle-aged); (b) P(middle-aged | not default).",
-      solution: "(a) 27368/32219 = **0.849 ≈ 0.85**.\n(b) 27368/38130 = **0.718 ≈ 0.72**.\n### Takeaway\nSame numerator, different conditioning group.",
+      solution: "(a) 27368/32219 = **$0.849 \\approx 0.85$**.\n(b) 27368/38130 = **$0.718 \\approx 0.72$**.\n### Takeaway\nSame numerator, different conditioning group.",
     },
     {
       title: "Example 3: compact disc players (slides 16–17)",
       level: "From slides",
-      question: "A = audio component, B = compact disc player (B ⊆ A). P(A) = 0.6, P(B) = 0.05. Find P(B | A).",
-      solution: "B ⊆ A → A ∩ B = B → P(B | A) = 0.05/0.6 = **0.0833**.",
+      question: "A = audio component, B = compact disc player (B ⊆ A). $P(A) = 0.6$, $P(B) = 0.05$. Find $P(B \\mid A)$.",
+      solution: "B ⊆ A → A ∩ $B = B$ → $P(B \\mid A) = 0.05/0.6$ = **0.0833**.",
     },
     {
       title: "Independent Example 1: letters from two bags (slides 19–20)",
       level: "From slides",
       hint: "Count vowels in each bag carefully.",
       question: "Bag 1: I, L, J, A, U. Bag 2: L, R, H, E, C, A. One card from each bag. Find P(a) J and R, (b) both L, (c) both vowels.",
-      solution: "(a) (1/5)(1/6) = **1/30**. (b) (1/5)(1/6) = **1/30**.\n(c) Bag 1 vowels: I, A, U (3 of 5); Bag 2 vowels: E, A (2 of 6). P = (3/5)(2/6) = **1/5**.\n⚠️ The slide gives (2/5)(2/6) = 2/15, which undercounts Bag 1's vowels.",
+      solution: "(a) (1/5)(1/6) = **1/30**. (b) (1/5)(1/6) = **1/30**.\n(c) Bag 1 vowels: I, A, U (3 of 5); Bag 2 vowels: E, A (2 of 6). $P = (3/5) (2/6)$ = **1/5**.\n⚠️ The slide gives (2/5)(2/6) = 2/15, which undercounts Bag 1's vowels.",
     },
     {
       title: "Independent Example 2: right-handed adults (slides 21–22)",
       level: "From slides",
       question: "272 of 300 adults are right-handed. Three are selected with replacement. Find P(a) all right-handed, (b) all left-handed, (c) at least one right-handed.",
-      solution: "With replacement → independent picks.\n(a) $(272/300)^3 =$ **0.745**. (b) $(28/300)^3 =$ **0.0008**. (c) 1 − 0.0008 = **0.9992**.",
+      solution: "With replacement → independent picks.\n(a) $(272/300)^3 =$ **0.745**. (b) $(28/300)^3 =$ **0.0008**. (c) $1 - 0.0008$ = **0.9992**.",
     },
     {
       title: "Independent Example 3: two suppliers (slides 23–24)",
       level: "From slides",
       hint: "Two batches only arrive on 2 of 5 days.",
       question: "Supplier 1 sends a batch every weekday; supplier 2 also sends one on 2 days a week. 80% of supplier 1's and 90% of supplier 2's batches pass. On a random day, P(two batches pass)?",
-      solution: "### Approach\nTwo pass ⟹ two arrived. Multiplication rule: P(two pass) = P(both pass | two received) · P(two received).\n### Working\nP(two received) = 2/5 = 0.4; P(both pass | two) = 0.8 × 0.9 = 0.72 (independent inspections).\n### Answer\n0.72 × 0.4 = **0.288**.",
+      solution: "### Approach\nTwo pass ⟹ two arrived. Multiplication rule: P(two pass) = P(both pass | two received) · P(two received).\n### Working\nP(two received) = 2/5 = 0.4; P(both pass | two) = $0.8 \\times 0.9 = 0.72$ (independent inspections).\n### Answer\n$0.72 \\times 0.4$ = **0.288**.",
     },
     {
       title: "Independent Example 4: spam features (slides 25–26)",
       level: "From slides",
       question: "Independent features: P(“offer”) = 0.6, P(suspicious link) = 0.4. Find P(a) both, (b) at least one, (c) neither.",
-      solution: "(a) 0.6 × 0.4 = **0.24**. (b) 0.6 + 0.4 − 0.24 = **0.76**. (c) 1 − 0.76 = **0.24**.",
+      solution: "(a) $0.6 \\times 0.4$ = **0.24**. (b) $0.6 + 0.4 - 0.24$ = **0.76**. (c) $1 - 0.76$ = **0.24**.",
     },
     {
       title: "Misc Q1: marbles with and without replacement (slide 27)",
@@ -373,13 +713,13 @@ export default {
       title: "Misc Q3: airports and late flights (slide 27)",
       level: "From slides",
       question: "100 flights: 20 late. 45 from airport A (9 late), 55 from B (11 late). Are “depart from A” and “departed late” independent?",
-      solution: "*Exercise solution prepared for the website.*\nP(A) = 0.45, P(late) = 0.20, P(A ∩ late) = 0.09. P(A)P(late) = 0.09 = P(A ∩ late) → **independent**. (Check: P(late | A) = 9/45 = 0.2 = P(late), and P(late | B) = 11/55 = 0.2 too.)",
+      solution: "*Exercise solution prepared for the website.*\n$P(A) = 0.45$, P(late) = 0.20, P(A ∩ late) = 0.09. P(A)P(late) = 0.09 = P(A ∩ late) → **independent**. (Check: P(late | A) = $9/45 = 0.2$ = P(late), and P(late | B) = 11/55 = 0.2 too.)",
     },
     {
       title: "Misc Q4: conditional probabilities from P(A), P(B), P(A ∩ B) (slide 28)",
       level: "From slides",
-      hint: "P(A′ ∩ B′) = 1 − P(A ∪ B). P(A ∩ B′) = P(A) − P(A ∩ B).",
-      question: "P(A) = 1/3, P(B) = 1/2, P(A ∩ B) = 1/4. Find P(A | B), P(B | A), P(A′ | B′), P(B′ | A′), P(A | B′).",
+      hint: "P($A'$ ∩ $B'$) = 1 − P(A ∪ B). P(A ∩ $B'$) = $P(A)$ − P(A ∩ B).",
+      question: "$P(A) = 1/3$, $P(B) = 1/2$, P(A ∩ B) = 1/4. Find $P(A \\mid B)$, $P(B \\mid A)$, $P(A' \\mid B')$, $P(B' \\mid A')$, $P(A \\mid B')$.",
       solution: "*Exercise solution prepared for the website.*\n$P(A \\mid B) = \\frac{1/4}{1/2} =$ **1/2**. $P(B \\mid A) = \\frac{1/4}{1/3} =$ **3/4**.\n$P(A \\cup B) = 1/3 + 1/2 - 1/4 = 7/12$, so $P(A' \\cap B') = 5/12$.\n$P(A' \\mid B') = \\frac{5/12}{1/2} =$ **5/6**. $P(B' \\mid A') = \\frac{5/12}{2/3} =$ **5/8**.\n$P(A \\mid B') = \\frac{P(A) - P(A \\cap B)}{P(B')} = \\frac{1/12}{1/2} =$ **1/6**.",
     },
     {
@@ -387,7 +727,7 @@ export default {
       level: "From slides",
       hint: "Treat the students as independent. For (iii), add the three “exactly two” cases and “all three”.",
       question: "Students A, B, C pass with probabilities 1/4, 1/2, 1/3. Find P(i) all pass, (ii) at least one passes, (iii) at least two pass.",
-      solution: "*Exercise solution prepared for the website.*\nAssume the students pass independently.\n(i) (1/4)(1/2)(1/3) = **1/24**.\n(ii) 1 − P(all fail) = 1 − (3/4)(1/2)(2/3) = 1 − 1/4 = **3/4**.\n(iii) Exactly two: A, B pass & C fails = (1/4)(1/2)(2/3) = 1/12; A,C pass & B fails = (1/4)(1/2)(1/3) = 1/24; B,C pass & A fails = (3/4)(1/2)(1/3) = 1/8. Sum = 2/24 + 1/24 + 3/24 = 6/24. Add all three (1/24): **7/24**.",
+      solution: "*Exercise solution prepared for the website.*\nAssume the students pass independently.\n(i) (1/4)(1/2)(1/3) = **1/24**.\n(ii) 1 − P(all fail) = $1 - (3/4) (1/2) (2/3) = 1 - 1/4$ = **3/4**.\n(iii) Exactly two: A, B pass & C fails = (1/4)(1/2)(2/3) = 1/12; A,C pass & B fails = (1/4)(1/2)(1/3) = 1/24; B,C pass & A fails = (3/4)(1/2)(1/3) = 1/8. Sum = $2/24 + 1/24 + 3/24 = 6/24$. Add all three (1/24): **7/24**.",
     },
     {
       title: "Total probability Example 1: gas station (slides 33–35)",
@@ -398,66 +738,66 @@ export default {
     {
       title: "Total probability Example 2: binary channel (slides 36–39)",
       level: "From slides",
-      hint: "P(1 received | 0 sent) = 1 − 0.90.",
+      hint: "P(1 received | 0 sent) = $1 - 0.90$.",
       question: "A 1 is transmitted 40% of the time. P(0 received correctly) = 0.90, P(1 received correctly) = 0.95. Find (a) P(1 received), (b) P(1 sent | 1 received).",
-      solution: "### Set-up\nA = 1 sent, B = 1 received. P(A) = 0.4, P(A′) = 0.6, P(B | A) = 0.95, P(B | A′) = 0.10.\n### (a)\nP(B) = 0.95(0.4) + 0.10(0.6) = **0.44**.\n### (b)\nP(A | B) = P(A)P(B | A)/P(B) = 0.38/0.44 = **0.863**.",
+      solution: "### Set-up\n$A = 1$ sent, $B = 1$ received. $P(A) = 0.4$, $P(A') = 0.6$, $P(B \\mid A) = 0.95$, $P(B \\mid A') = 0.10$.\n### (a)\n$P(B) = 0.95 (0.4) + 0.10 (0.6)$ = **0.44**.\n### (b)\n$P(A \\mid B) = P(A) P(B \\mid A)/P(B) = 0.38/0.44$ = **0.863**.",
     },
     {
       title: "Total probability Examples 3–5: ad clicks, forests, mining (slides 40–47)",
       level: "From slides",
       question: "(a) Device use: desktop 0.5, tablet 0.2, mobile 0.3; click rates 0.04, 0.06, 0.1. P(click)? (b) Forests A, B, C cover 50%, 30%, 20% of land, with 20%, 40%, 70% poisonous plants. P(poisonous)? (c) P(job on time | rain) = 0.42, P(on time | no rain) = 0.90, P(rain) = 0.45. P(on time)?",
-      solution: "(a) 0.04(0.5) + 0.06(0.2) + 0.1(0.3) = **0.062**.\n(b) 0.20(0.50) + 0.40(0.30) + 0.70(0.20) = **0.36**.\n(c) B = rain, B′ = no rain (a partition): 0.45(0.42) + 0.55(0.90) = 0.189 + 0.495 = **0.684**.",
+      solution: "(a) 0.04(0.5) + 0.06(0.2) + 0.1(0.3) = **0.062**.\n(b) 0.20(0.50) + 0.40(0.30) + 0.70(0.20) = **0.36**.\n(c) B = rain, $B'$ = no rain (a partition): $0.45 (0.42) + 0.55 (0.90) = 0.189 + 0.495$ = **0.684**.",
     },
     {
       title: "Practice Ex 1: misfiling secretaries (slide 51)",
       level: "From slides",
       hint: "Total probability for P(misfiled), then the reverse formula.",
       question: "Four secretaries handle 20%, 60%, 15%, 5% of files and misfile with probabilities 0.05, 0.1, 0.1, 0.05. Find the probability that a misfiled report is the first secretary's. (Ans on slide: 0.1143)",
-      solution: "P(M) = 0.2(0.05) + 0.6(0.1) + 0.15(0.1) + 0.05(0.05) = 0.01 + 0.06 + 0.015 + 0.0025 = 0.0875.\nP(S₁ | M) = 0.01/0.0875 = **0.1143** ✓.",
+      solution: "$P(M) = 0.2 (0.05) + 0.6 (0.1) + 0.15 (0.1) + 0.05 (0.05) = 0.01 + 0.06 + 0.015 + 0.0025 = 0.0875$.\n$P(S_1 \\mid M) = 0.01/0.0875$ = **0.1143** ✓.",
     },
     {
       title: "Practice Ex 2: irregular students (slide 51)",
       level: "From slides",
       question: "70% boys, 30% girls; 5% of boys and 3% of girls are irregular. Find P(irregular) and the probability that an irregular student is a girl.",
-      solution: "P(I) = 0.7(0.05) + 0.3(0.03) = 0.035 + 0.009 = **0.044** ✓.\n“The irregular student is a girl” is conditional: P(G | I) = 0.009/0.044 = **0.2045**.\n⚠️ The slide's answer 0.009 is P(irregular **and** girl), the joint probability, not the conditional one the wording asks for. Know both.",
+      solution: "$P(I) = 0.7 (0.05) + 0.3 (0.03) = 0.035 + 0.009$ = **0.044** ✓.\n“The irregular student is a girl” is conditional: $P(G \\mid I) = 0.009/0.044$ = **0.2045**.\n⚠️ The slide's answer 0.009 is P(irregular **and** girl), the joint probability, not the conditional one the wording asks for. Know both.",
     },
     {
       title: "Practice Ex 3: three machines (slide 52)",
       level: "From slides",
       question: "Machines A, B, C make 60%, 30%, 10% of items with 2%, 3%, 4% defective. (i) P(not defective and from C)? (ii) P(produced by C or B)?",
-      solution: "(i) P(C ∩ D′) = 0.10 × 0.96 = **0.096** ✓.\n(ii) Unconditionally, P(B ∪ C) = 0.3 + 0.1 = **0.4** ✓ (the slide's answer).\n⚠️ Ambiguity: the stem says the item “is found to be defective”. If (ii) means P(B or C | defective): P(D) = 0.012 + 0.009 + 0.004 = 0.025, so (0.009 + 0.004)/0.025 = **0.52**.",
+      solution: "(i) P(C ∩ $D'$) = $0.10 \\times 0.96$ = **0.096** ✓.\n(ii) Unconditionally, P(B ∪ C) = 0.3 + 0.1 = **0.4** ✓ (the slide's answer).\n⚠️ Ambiguity: the stem says the item “is found to be defective”. If (ii) means P(B or C | defective): $P(D) = 0.012 + 0.009 + 0.004 = 0.025$, so (0.009 + 0.004)/0.025 = **0.52**.",
     },
     {
       title: "Practice Ex 4: deck missing the ace of diamonds (slide 52)",
       level: "From slides",
       question: "A card is drawn from a deck missing the ace of diamonds (51 cards). (1) P(club)? (2) P(queen)? (3) Are “club” and “queen” independent?",
-      solution: "(1) **13/51**. (2) **4/51**. (3) P(club ∩ queen) = 1/51 ≈ 0.0196, but P(club)P(queen) = 52/2601 ≈ 0.0200 → **not independent** ✓. (In a full deck, 13/52 × 4/52 = 1/52 exactly, so they *would* be independent: removing one card breaks it.)",
+      solution: "(1) **13/51**. (2) **4/51**. (3) P(club ∩ queen) = $1/51 \\approx 0.0196$, but P(club)P(queen) = $52/2601 \\approx 0.0200$ → **not independent** ✓. (In a full deck, $13/52 \\times 4/52 = 1/52$ exactly, so they *would* be independent: removing one card breaks it.)",
     },
     {
       title: "Practice Ex 5: three tool companies (slide 53)",
       level: "From slides",
-      hint: "Let B produce x and C produce 0.7 − x; set the total probability of non-defective to 0.96.",
+      hint: "Let B produce x and C produce $0.7 - x$; set the total probability of non-defective to 0.96.",
       question: "A makes 30% of tools, B and C the remaining 70%. Non-defective rates: A 98%, B 95%, C 97%. What shares should B and C produce so that P(non-defective) = 0.96?",
-      solution: "### Set-up\nTotal probability: $0.3(0.98) + x(0.95) + (0.7 - x)(0.97) = 0.96$.\n### Working\n$0.294 + 0.679 - 0.02x = 0.96$ → $0.02x = 0.013$ → $x = 0.65$.\n### Answer\n**B produces 65%, C produces 5%.** Check: 0.294 + 0.6175 + 0.0485 = 0.96 ✓.\n⚠️ The slide's answer “0.164” doesn't match this set-up; we couldn't reproduce it from the given data.",
+      solution: "### Set-up\nTotal probability: $0.3(0.98) + x(0.95) + (0.7 - x)(0.97) = 0.96$.\n### Working\n$0.294 + 0.679 - 0.02x = 0.96$ → $0.02x = 0.013$ → $x = 0.65$.\n### Answer\n**B produces 65%, C produces 5%.** Check: $0.294 + 0.6175 + 0.0485 = 0.96$ ✓.\n⚠️ The slide's answer “0.164” doesn't match this set-up; we couldn't reproduce it from the given data.",
     },
     {
       title: "Practice Ex 6: shopping for clothing (slide 54)",
       level: "From slides",
       hint: "Table: Yes (male 136, female 224, total 360); No (104, 36, 140); totals 240, 260, 500.",
       question: "500 respondents. Enjoy shopping for clothing: Yes, male 136, female 224; No, male 104, female 36. (a) Given female, P(does not enjoy)? (b) Given enjoys, P(male)?",
-      solution: "(a) 36/260 = **0.1385** ✓ (slide 0.1384).\n(b) 136/360 = **0.378**.\n⚠️ The slide's 0.56 is 136/240 = 0.567 = P(enjoys | male), the reversed conditional. The question asks P(male | enjoys).",
+      solution: "(a) 36/260 = **0.1385** ✓ (slide 0.1384).\n(b) 136/360 = **0.378**.\n⚠️ The slide's 0.56 is $136/240 = 0.567$ = P(enjoys | male), the reversed conditional. The question asks P(male | enjoys).",
     },
     {
       title: "Practice Ex 7: two cards from a deck (slide 55)",
       level: "From slides",
       question: "Two cards dealt without replacement. (a) P(both queens)? (b) P(first a 10, second a 5 or 6)? (c) (a) with replacement?",
-      solution: "(a) (4/52)(3/51) = **0.0045** ✓. (b) (4/52)(8/51) = **0.0121** ✓ (8 fives and sixes). (c) (4/52)² = **0.0059** ✓.",
+      solution: "(a) (4/52)(3/51) = **0.0045** ✓. (b) (4/52)(8/51) = **0.0121** ✓ (8 fives and sixes). (c) $(4/52)^2$ = **0.0059** ✓.",
     },
     {
       title: "Level 1: conditional from a joint",
       level: "Level 1",
-      question: "P(A) = 0.5 and P(A ∩ B) = 0.2. Find P(B | A).",
-      solution: "P(B | A) = 0.2/0.5 = **0.4**.",
+      question: "$P(A) = 0.5$ and P(A ∩ B) = 0.2. Find $P(B \\mid A)$.",
+      solution: "$P(B \\mid A) = 0.2/0.5$ = **0.4**.",
     },
     {
       title: "Level 1: a die, given even",
@@ -468,20 +808,20 @@ export default {
     {
       title: "Level 1: independent multiply",
       level: "Level 1",
-      question: "A and B are independent with P(A) = 0.3 and P(B) = 0.5. Find P(A ∩ B) and P(A | B).",
-      solution: "P(A ∩ B) = **0.15**; P(A | B) = P(A) = **0.3**.",
+      question: "A and B are independent with $P(A) = 0.3$ and $P(B) = 0.5$. Find P(A ∩ B) and $P(A \\mid B)$.",
+      solution: "P(A ∩ B) = **0.15**; $P(A \\mid B) = P(A)$ = **0.3**.",
     },
     {
       title: "Level 2: metro commuters",
       level: "Level 2",
       question: "Of 200 employees, 120 commute by metro (30 of them were late last month); of the 80 others, 32 were late. Find P(late | metro), P(metro | late), and decide whether lateness and metro use are independent.",
-      solution: "P(late | metro) = 30/120 = **0.25**. Late total = 62 → P(metro | late) = 30/62 = **0.484**. P(late) = 62/200 = 0.31 ≠ 0.25 → **dependent** (metro users are late less often).",
+      solution: "P(late | metro) = 30/120 = **0.25**. Late total = 62 → P(metro | late) = 30/62 = **0.484**. P(late) = $62/200 = 0.31 \\ne 0.25$ → **dependent** (metro users are late less often).",
     },
     {
       title: "Level 2: total probability across shifts",
       level: "Level 2",
       question: "A factory's morning, evening and night shifts make 50%, 30%, 20% of output, with defect rates 1%, 2%, 3%. Find the overall defect rate.",
-      solution: "0.5(0.01) + 0.3(0.02) + 0.2(0.03) = 0.005 + 0.006 + 0.006 = **0.017 (1.7%)**.",
+      solution: "$0.5 (0.01) + 0.3 (0.02) + 0.2 (0.03) = 0.005 + 0.006 + 0.006$ = **0.017 (1.7%)**.",
     },
     {
       title: "Level 2: three hearts in a row",
@@ -500,7 +840,7 @@ export default {
       title: "Level 3: independent components",
       level: "Level 3",
       question: "Three independent components work with probabilities 0.9, 0.8, 0.7. Find P(at least one works) and P(exactly two work).",
-      solution: "At least one: 1 − (0.1)(0.2)(0.3) = **0.994**.\nExactly two: 0.9(0.8)(0.3) + 0.9(0.2)(0.7) + 0.1(0.8)(0.7) = 0.216 + 0.126 + 0.056 = **0.398**.",
+      solution: "At least one: $1 - (0.1) (0.2) (0.3)$ = **0.994**.\nExactly two: $0.9 (0.8) (0.3) + 0.9 (0.2) (0.7) + 0.1 (0.8) (0.7) = 0.216 + 0.126 + 0.056$ = **0.398**.",
     },
   ],
 
@@ -508,14 +848,14 @@ export default {
     {
       title: "P(A | B) vs P(B | A)",
       level: "Level 2",
-      question: "Explain with the loan-default example why P(A | B) and P(B | A) are generally different.",
-      solution: "Both have the same numerator P(A ∩ B) (27368 people who are middle-aged and didn't default) but different denominators. P(not default | middle-aged) = 27368/32219 = 0.85 divides by all middle-aged people; P(middle-aged | not default) = 27368/38130 = 0.72 divides by all non-defaulters. They're equal only when P(A) = P(B).",
+      question: "Explain with the loan-default example why $P(A \\mid B)$ and $P(B \\mid A)$ are generally different.",
+      solution: "Both have the same numerator P(A ∩ B) (27368 people who are middle-aged and didn't default) but different denominators. P(not default | middle-aged) = 27368/32219 = 0.85 divides by all middle-aged people; P(middle-aged | not default) = 27368/38130 = 0.72 divides by all non-defaulters. They're equal only when $P(A) = P(B)$.",
     },
     {
       title: "Three equivalent definitions of independence",
       level: "Level 1",
       question: "State three equivalent conditions for A and B to be independent and show why they are equivalent.",
-      solution: "P(A | B) = P(A); P(B | A) = P(B); P(A ∩ B) = P(A)P(B). If P(A ∩ B) = P(A)P(B), then P(A | B) = P(A)P(B)/P(B) = P(A), and similarly for P(B | A). Conversely, P(A | B) = P(A) gives P(A ∩ B) = P(B)P(A | B) = P(A)P(B).",
+      solution: "$P(A \\mid B) = P(A)$; $P(B \\mid A) = P(B)$; P(A ∩ B) = $P(A) P(B)$. If P(A ∩ B) = $P(A) P(B)$, then $P(A \\mid B) = P(A) P(B)/P(B) = P(A)$, and similarly for $P(B \\mid A)$. Conversely, $P(A \\mid B) = P(A)$ gives P(A ∩ B) = $P(B) P(A \\mid B) = P(A) P(B)$.",
     },
     {
       title: "Prove the law of total probability",
@@ -527,7 +867,7 @@ export default {
       title: "With vs without replacement",
       level: "Level 1",
       question: "Explain how sampling with and without replacement affects independence, with an example.",
-      solution: "With replacement, the item goes back, so every draw faces the same population: the draws are independent and probabilities multiply directly ((5/13)² for two red marbles). Without replacement, each draw changes what's left, so the draws are dependent and we use the multiplication rule with updated fractions ((5/13)(4/12)). For a very large population (6400 bulbs), the difference is negligible.",
+      solution: "With replacement, the item goes back, so every draw faces the same population: the draws are independent and probabilities multiply directly ($(5/13)^2$ for two red marbles). Without replacement, each draw changes what's left, so the draws are dependent and we use the multiplication rule with updated fractions ((5/13)(4/12)). For a very large population (6400 bulbs), the difference is negligible.",
     },
   ],
 
@@ -535,18 +875,18 @@ export default {
     {
       topic: "Conditional",
       type: "num",
-      q: "P(A) = 0.5, P(B) = 0.5, P(A ∩ B) = 0.25. Find P(A | A ∪ B) (2 decimals).",
+      q: "$P(A) = 0.5$, $P(B) = 0.5$, P(A ∩ B) = 0.25. Find P(A | A ∪ B) (2 decimals).",
       answer: 0.67,
       tol: 0.005,
-      why: "P(A)/P(A ∪ B) = 0.5/0.75 = 0.667.",
+      why: "$P(A)$/P(A ∪ B) = 0.5/0.75 = 0.667.",
     },
     {
       topic: "Conditional",
       type: "num",
-      q: "B ⊆ A, P(A) = 0.6, P(B) = 0.05. Find P(B | A) (4 decimals).",
+      q: "B ⊆ A, $P(A) = 0.6$, $P(B) = 0.05$. Find $P(B \\mid A)$ (4 decimals).",
       answer: 0.0833,
       tol: 0.0005,
-      why: "A ∩ B = B, so 0.05/0.6.",
+      why: "A ∩ $B = B$, so 0.05/0.6.",
     },
     {
       topic: "Conditional",
@@ -559,10 +899,10 @@ export default {
     {
       topic: "Conditional",
       q: "Which is always true?",
-      options: ["P(A | B) = P(B | A)", "P(A ∩ B) = P(A)P(B | A)", "P(A | B) = P(A)P(B)", "P(A | B) ≤ P(A)"],
+      options: ["$P(A \\mid B) = P(B \\mid A)$", "P(A ∩ B) = $P(A) P(B \\mid A)$", "$P(A \\mid B) = P(A) P(B)$", "$P(A \\mid B) \\le P(A)$"],
       answer: 1,
-      why: "That's the multiplication rule; it holds for any events with P(A) > 0.",
-      wrong: ["They differ unless P(A) = P(B).", null, "Mixes up conditional and joint probability.", "Conditioning can raise or lower a probability."],
+      why: "That's the multiplication rule; it holds for any events with $P(A) > 0$.",
+      wrong: ["They differ unless $P(A) = P(B)$.", null, "Mixes up conditional and joint probability.", "Conditioning can raise or lower a probability."],
     },
     {
       topic: "Independence",
@@ -570,22 +910,22 @@ export default {
       q: "272 of 300 adults are right-handed. Pick 3 with replacement. P(all right-handed)? (3 decimals)",
       answer: 0.745,
       tol: 0.002,
-      why: "(272/300)³ = 0.745.",
+      why: "$(272/300)^3 = 0.745$.",
     },
     {
       topic: "Independence",
       type: "num",
-      q: "Independent features: P(A) = 0.6, P(B) = 0.4. P(neither)?",
+      q: "Independent features: $P(A) = 0.6$, $P(B) = 0.4$. P(neither)?",
       answer: 0.24,
       tol: 0.001,
-      why: "1 − (0.6 + 0.4 − 0.24) = 0.24.",
+      why: "$1 - (0.6 + 0.4 - 0.24) = 0.24$.",
     },
     {
       topic: "Independence",
       q: "45 of 100 flights leave from A; 20 are late; 9 are from A and late. The events are…",
       options: ["Independent", "Dependent", "Mutually exclusive", "Exhaustive"],
       answer: 0,
-      why: "0.45 × 0.20 = 0.09 = P(A ∩ late).",
+      why: "$0.45 \\times 0.20 = 0.09$ = P(A ∩ late).",
       wrong: [null, "The product equals the joint probability, so they're not dependent.", "9 flights are in both, so they're not exclusive.", "Their union is not all flights."],
     },
     {
@@ -595,7 +935,7 @@ export default {
       answer: 5 / 39,
       display: "5/39",
       tol: 0.002,
-      why: "(5/13)(4/12) = 5/39 ≈ 0.128.",
+      why: "$(5/13) (4/12) = 5/39 \\approx 0.128$.",
     },
     {
       topic: "Total probability",
@@ -611,7 +951,7 @@ export default {
       q: "Binary channel: P(1 sent) = 0.4, P(1 rec | 1 sent) = 0.95, P(0 rec | 0 sent) = 0.90. P(1 received)?",
       answer: 0.44,
       tol: 0.001,
-      why: "0.95(0.4) + 0.10(0.6) = 0.44.",
+      why: "$0.95 (0.4) + 0.10 (0.6) = 0.44$.",
     },
     {
       topic: "Total probability",
@@ -627,15 +967,15 @@ export default {
       q: "P(on time | rain) = 0.42, P(on time | no rain) = 0.90, P(rain) = 0.45. P(on time)?",
       answer: 0.684,
       tol: 0.001,
-      why: "0.45(0.42) + 0.55(0.90) = 0.684.",
+      why: "$0.45 (0.42) + 0.55 (0.90) = 0.684$.",
     },
     {
       topic: "Total probability",
-      q: "The law of total probability requires the cases A₁…Aₖ to be…",
+      q: "The law of total probability requires the cases $A_1$…$A_k$ to be…",
       options: ["Independent", "Equally likely", "Mutually exclusive and exhaustive", "Each with probability above 0.5"],
       answer: 2,
       why: "They must form a partition: no overlaps, covering everything.",
-      wrong: ["Independence isn't needed (or even possible for disjoint events with P > 0).", "They can have any probabilities, e.g. 0.4/0.35/0.25.", null, "They must sum to 1, so at most one can exceed 0.5."],
+      wrong: ["Independence isn't needed (or even possible for disjoint events with $P > 0$).", "They can have any probabilities, e.g. 0.4/0.35/0.25.", null, "They must sum to 1, so at most one can exceed 0.5."],
     },
   ],
 };

@@ -218,7 +218,7 @@ export default {
           type: "callout",
           kind: "example",
           title: "Worked example",
-          text: "A feature's training distribution over 4 bins is 25%, 25%, 25%, 25%. In production this month it's 10%, 20%, 30%, 40%.\n\n| Bin | E | A | A − E | ln(A/E) | (A − E) ln(A/E) |\n|---|---|---|---|---|---|\n| 1 | 0.25 | 0.10 | −0.15 | −0.916 | 0.137 |\n| 2 | 0.25 | 0.20 | −0.05 | −0.223 | 0.011 |\n| 3 | 0.25 | 0.30 | 0.05 | 0.182 | 0.009 |\n| 4 | 0.25 | 0.40 | 0.15 | 0.470 | 0.071 |\n\nPSI = 0.137 + 0.011 + 0.009 + 0.071 = **0.228**: a **moderate shift**. Investigate and consider retraining. (KL(A‖E) = 0.106.) Note that every PSI term is positive: shifts in either direction add to the total.",
+          text: "A feature's training distribution over 4 bins is 25%, 25%, 25%, 25%. In production this month it's 10%, 20%, 30%, 40%.\n\n| Bin | E | A | $A - E$ | $\\ln(A/E)$ | $(A - E)$ $\\ln(A/E)$ |\n|---|---|---|---|---|---|\n| 1 | 0.25 | 0.10 | −0.15 | −0.916 | 0.137 |\n| 2 | 0.25 | 0.20 | −0.05 | −0.223 | 0.011 |\n| 3 | 0.25 | 0.30 | 0.05 | 0.182 | 0.009 |\n| 4 | 0.25 | 0.40 | 0.15 | 0.470 | 0.071 |\n\nPSI = 0.137 + 0.011 + 0.009 + 0.071 = **0.228**: a **moderate shift**. Investigate and consider retraining. (KL(A‖E) = 0.106.) Note that every PSI term is positive: shifts in either direction add to the total.",
         },
         { type: "diagram", name: "d8-psi" },
       ],
@@ -271,7 +271,7 @@ export default {
           head: ["", "Great Expectations (GX)", "Soda Core", "Deequ (AWS Labs)"],
           rows: [
             ["Idea", "“Test your data, not just your code”: **Expectations** describe the expected state of data", "Open-source Python library + command line; checks written in **SodaCL** (YAML)", "A data-quality library built on **Apache Spark** (Scala/Python)"],
-            ["Strengths", "A huge library of expectations; checks run where the data is; supports **data contracts**; human-readable reports; results stored in S3/GCS/Postgres/files", "Many connectors; scans run programmatically or on a schedule; good for production monitoring and checking external data before ingestion", "Scales to billions of rows; **suggests constraints** by profiling the data; keeps a metrics history for trend alerts (warn beyond 3σ, error beyond 4σ)"],
+            ["Strengths", "A huge library of expectations; checks run where the data is; supports **data contracts**; human-readable reports; results stored in S3/GCS/Postgres/files", "Many connectors; scans run programmatically or on a schedule; good for production monitoring and checking external data before ingestion", "Scales to billions of rows; **suggests constraints** by profiling the data; keeps a metrics history for trend alerts (warn beyond $3 \\sigma$, error beyond $4 \\sigma$)"],
             ["Integrations", "Airflow, dbt, Dagster, Meltano", "Airflow, Dagster, dbt (results to Soda Cloud)", "AWS EMR, Glue; metrics in S3/DynamoDB; QuickSight"],
             ["Best for", "Validation at every pipeline stage; shift-left quality", "Continuous production monitoring and anomaly detection", "Spark-based data lakes; unit tests for very large data"],
           ],
@@ -367,7 +367,7 @@ export default {
     {
       "type": "list",
       "items": [
-        "**PSI** = Σ(A − E)·ln(A/E): < 0.1 stable, 0.1–0.25 moderate, > 0.25 drift.",
+        "**PSI** = $\\sum(A - E) \\cdot \\ln(A/E)$: < 0.1 stable, 0.1–0.25 moderate, > 0.25 drift.",
         "Profile once at the start; **validate before every training run** (Great Expectations, Soda, Deequ); shift left to ingestion."
       ]
     },
@@ -414,7 +414,7 @@ export default {
     ["GX", "Great Expectations", "Framework of human-readable data “expectations”"],
     ["SodaCL", "Soda Checks Language", "YAML language for data-quality checks"],
     ["Deequ", "—", "AWS Labs' Spark library for data-quality constraints"],
-    ["σ", "Sigma (standard deviation)", "Used for alert thresholds (3σ, 4σ)"],
+    ["$\\sigma$", "Sigma (standard deviation)", "Used for alert thresholds $(3 \\sigma, 4 \\sigma)$"],
     ["Medallion architecture", "Bronze / silver / gold layers", "Raw → cleaned → business-ready data"],
     ["Shift-left", "—", "Test as early as possible in the pipeline"],
     ["NaN / INF", "Not a Number / infinity", "Invalid numeric values"],
@@ -630,7 +630,7 @@ A comparison table on idea, strengths, integrations and best use, plus a line on
 | | Great Expectations | Soda Core | Deequ |
 |---|---|---|---|
 | Core idea | "Test data, not just code": declarative **Expectations** | YAML checks in **SodaCL**, CLI + Python | **Constraint** verification on **Spark** |
-| Unique features | Huge expectation library; checks run in place; **data contracts**; human-readable docs; results in S3/GCS/Postgres | Many connectors; programmatic or scheduled scans; anomaly detection and profiling | **Constraint suggestion** from profiling; metrics repository; anomaly rules (warn > 3σ, error > 4σ) |
+| Unique features | Huge expectation library; checks run in place; **data contracts**; human-readable docs; results in S3/GCS/Postgres | Many connectors; programmatic or scheduled scans; anomaly detection and profiling | **Constraint suggestion** from profiling; metrics repository; anomaly rules (warn > $3 \\sigma$, error > $4 \\sigma$) |
 | Integrations | Airflow operator, dbt, Dagster, Meltano | Airflow, Dagster, dbt → Soda Cloud | AWS EMR, Glue; S3/DynamoDB; QuickSight |
 | Sweet spot | Validation at every pipeline stage (shift-left) | Production monitoring; **external data before ingestion** | **Billions of rows** in Spark lakes |
 

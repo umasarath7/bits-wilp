@@ -32,7 +32,7 @@ export default {
       blocks: [
         {
           type: "table",
-          caption: "Previous comprehensive: 6 × 5 marks",
+          caption: "Previous comprehensive: $6 \\times 5$ marks",
           head: ["Q", "Asked", "Lecture", "Style"],
           rows: [
             ["1", "How graph data models influence query languages + example", "L1", "Mechanism + example"],

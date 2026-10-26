@@ -10,6 +10,296 @@ export default {
   overview:
     "The lecture opens with a puzzle (slides 7–8): two IPL batsmen's runs in five matches. **Who is better on average? Who is more consistent? Are there any unusual scores?** Answering properly takes the whole toolkit of descriptive statistics, built up in this order: first decide **what kind of data** you have (its level of measurement), then summarise its **centre** (mean, median, mode), its **shape** (symmetric or skewed), its **spread** (range, variance, standard deviation) and finally its **five-number summary**, box plot and **outliers**. By the end you can answer all three IPL questions with numbers.",
 
+  simpleIntro: "Descriptive statistics answers three questions about any pile of numbers: **what is typical** (centre), **how spread out** (variability), and **are there oddballs** (outliers). The lecture's running puzzle: two IPL batsmen, five matches each. Who is better? Who is more consistent? By the end you can answer both with numbers.",
+
+  simple: [
+    {
+      "id": "s-big",
+      "heading": "1. The big picture: the IPL puzzle",
+      "slides": "",
+      "blocks": [
+        {
+          "type": "table",
+          "head": [
+            "Match",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+          ],
+          "rows": [
+            [
+              "Batsman 1",
+              "45",
+              "62",
+              "86",
+              "28",
+              "44"
+            ],
+            [
+              "Batsman 2",
+              "34",
+              "78",
+              "12",
+              "135",
+              "64"
+            ]
+          ],
+          "caption": "Runs scored (lecturer's slide 7)"
+        },
+        {
+          "type": "cards",
+          "items": [
+            {
+              "title": "Centre",
+              "text": "One number for “typical”: the **mean**, **median** or **mode**.",
+              "tag": "Who is better?",
+              "example": "Batsman 2 averages 64.6 vs 53."
+            },
+            {
+              "title": "Spread",
+              "text": "How far scores wander from the centre: **range**, **variance**, **standard deviation**, **IQR**.",
+              "tag": "Who is consistent?",
+              "example": "Batsman 1's SD ≈ 19.7 vs 42.0.",
+              "figure": "i1-spread"
+            },
+            {
+              "title": "Shape & outliers",
+              "text": "Is the data lopsided (**skewed**)? Are any values far from the rest (**outliers**)? A **box plot** shows both.",
+              "tag": "Any oddballs?",
+              "figure": "i1-boxanat"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s-types",
+      "heading": "2. What kind of data do I have?",
+      "slides": "10–19",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The type of data decides which summaries make sense. Climb the ladder: each level allows everything below it, plus one more thing."
+        },
+        {
+          "type": "table",
+          "head": [
+            "Level",
+            "You can…",
+            "Example"
+          ],
+          "rows": [
+            [
+              "**Nominal**",
+              "only name / count categories",
+              "Vehicle type, blood group"
+            ],
+            [
+              "**Ordinal**",
+              "+ put them in order",
+              "Satisfaction: low < medium < high"
+            ],
+            [
+              "**Interval**",
+              "+ subtract (differences mean something)",
+              "Temperature in °C"
+            ],
+            [
+              "**Ratio**",
+              "+ divide (a true zero: “twice as much”)",
+              "Runs, income, age"
+            ]
+          ]
+        },
+        {
+          "type": "diagram",
+          "name": "i1-levels"
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "title": "Quick test",
+          "text": "Can you say “twice as much”? → ratio. Only “more/less”? → ordinal. Only “different”? → nominal."
+        }
+      ]
+    },
+    {
+      "id": "s-centre",
+      "heading": "3. The centre: mean, median, mode",
+      "slides": "20–29",
+      "blocks": [
+        {
+          "type": "callout",
+          "kind": "formula",
+          "title": "Mean",
+          "text": "$$\\bar x = \\frac{\\sum x}{n} \\qquad \\text{(grouped data: } \\bar x = \\frac{\\sum f x}{\\sum f}\\text{)}$$"
+        },
+        {
+          "type": "p",
+          "text": "**Median** = the middle value after **sorting** (n odd: position $\\frac{n + 1}{2}$; n even: average the two middle values). **Mode** = the most frequent value."
+        },
+        {
+          "type": "callout",
+          "kind": "example",
+          "title": "Solved example: the IPL batsmen",
+          "text": "Batsman 1: total 265 → mean $= 265/5 = 53$; sorted 28, 44, **45**, 62, 86 → median 45.\nBatsman 2: total 323 → mean $= 323/5 = 64.6$; sorted 12, 34, **64**, 78, 135 → median 64."
+        },
+        {
+          "type": "answer",
+          "value": "Batsman 2 is better on average (64.6 vs 53)",
+          "text": "Notice Batsman 2's mean is pulled up by the single 135."
+        },
+        {
+          "type": "callout",
+          "kind": "tip",
+          "title": "Which centre to use?",
+          "text": "- Symmetric data, no outliers → **mean**.\n- Skewed data or outliers (incomes, house prices) → **median**: one billionaire doesn't move it.\n- Categories (most popular car colour) → **mode**."
+        },
+        {
+          "type": "check",
+          "q": "Incomes: 30, 32, 35, 38, 500 (thousand). Which best describes a typical income?",
+          "options": [
+            "Mean (127)",
+            "Median (35)",
+            "Range",
+            "Mode"
+          ],
+          "answer": 1,
+          "why": "The 500 drags the mean up to 127, far above everyone else. The median (35) is typical."
+        }
+      ]
+    },
+    {
+      "id": "s-shape",
+      "heading": "4. Shape: is the data lopsided?",
+      "slides": "30–32",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "In a **symmetric** distribution, mean = median = mode. If a long tail stretches to the **right** (a few huge values), the mean is dragged right: **mean > median** (positive skew). A long **left** tail gives mean < median (negative skew). **Name the skew after the tail**, not the peak."
+        },
+        {
+          "type": "diagram",
+          "name": "i1-skew"
+        },
+        {
+          "type": "callout",
+          "kind": "formula",
+          "title": "Shortcuts (moderately skewed data)",
+          "text": "$$3\\,\\text{Median} = \\text{Mode} + 2\\,\\text{Mean} \\qquad \\text{Skewness} = \\frac{3(\\bar x - \\text{Median})}{s}$$"
+        },
+        {
+          "type": "callout",
+          "kind": "example",
+          "title": "Lecturer's example",
+          "text": "Mean 40, median 42 → Mode $= 3(42) - 2(40) = 46$. Mean < median < mode → **negatively (left) skewed**."
+        }
+      ]
+    },
+    {
+      "id": "s-spread",
+      "heading": "5. Spread: range, variance, standard deviation",
+      "slides": "33–56",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Two groups can share an average yet behave very differently. **Range** = max − min (quick, but uses only two values). The **standard deviation** measures the *typical distance from the mean*, using every value."
+        },
+        {
+          "type": "callout",
+          "kind": "formula",
+          "title": "Variance and SD",
+          "text": "$$s^2 = \\frac{\\sum (x - \\bar x)^2}{n - 1} \\quad \\text{(sample)} \\qquad \\sigma^2 = \\frac{\\sum(x - \\mu)^2}{N} \\quad \\text{(population)} \\qquad SD = \\sqrt{\\text{variance}}$$"
+        },
+        {
+          "type": "p",
+          "text": "**Recipe:** (1) find the mean, (2) subtract it from each value, (3) square, (4) add up (= SS), (5) divide by $n - 1$ (sample) or $N$ (population), (6) square root."
+        },
+        {
+          "type": "callout",
+          "kind": "example",
+          "title": "Solved example (lecturer's slide 46): Group 1",
+          "text": "Scores 2, 8, 5, 3, 7, 8, 5, 2, 5; mean = 5.\nDeviations: −3, 3, 0, −2, 2, 3, 0, −3, 0 → squares sum to $SS = 44$.\n$s = \\sqrt{44/8} = \\sqrt{5.5} = 2.345$."
+        },
+        {
+          "type": "answer",
+          "value": "s = 2.345",
+          "text": "Group 2 (1, 15, 5, 5, 6, 3, 5, 2, 3) has the **same mean 5** but $s = 4.093$: almost double the spread."
+        },
+        {
+          "type": "callout",
+          "kind": "example",
+          "title": "Back to the IPL puzzle",
+          "text": "Treating each batsman's 5 matches as the whole population (as the slides do): variance **388 vs 1767.84**, SD **19.7 vs 42.0**. **Batsman 1 is far more consistent**; Batsman 2 is a boom-or-bust player."
+        },
+        {
+          "type": "diagram",
+          "name": "i1-ipl"
+        },
+        {
+          "type": "callout",
+          "kind": "warn",
+          "title": "n or n − 1?",
+          "text": "Sample → divide by $n - 1$ (it corrects for estimating the mean from the same data). Whole population → divide by $N$. Say which you used."
+        }
+      ]
+    },
+    {
+      "id": "s-box",
+      "heading": "6. Quartiles, IQR, box plots and outliers",
+      "slides": "57–63",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Sort the data and cut it into four equal parts. $Q_1$ = the 25% mark, $Q_2$ = median, $Q_3$ = the 75% mark. The **IQR** $= Q_3 - Q_1$ is the spread of the **middle half**: it ignores extremes."
+        },
+        {
+          "type": "callout",
+          "kind": "formula",
+          "title": "Outlier fences",
+          "text": "$$\\text{Position of } Q_1 = \\frac{n + 1}{4}, \\quad Q_3 = \\frac{3(n + 1)}{4} \\qquad \\text{fences: } Q_1 - 1.5\\,IQR \\text{ and } Q_3 + 1.5\\,IQR$$ Anything outside the fences is an **outlier**."
+        },
+        {
+          "type": "callout",
+          "kind": "example",
+          "title": "Lecturer's example (slide 58)",
+          "text": "11, 12, 13, 16, 16, 17, 17, 18, 21 ($n = 9$). $Q_1$ at position 2.5 → 12.5; median 16; $Q_3$ at position 7.5 → 17.5. IQR $= 5$; fences 5 and 25 → **no outliers**."
+        },
+        {
+          "type": "diagram",
+          "name": "i1-boxanat"
+        },
+        {
+          "type": "check",
+          "q": "Q₁ = 20, Q₃ = 30. Which value is an outlier?",
+          "options": [
+            "12",
+            "40",
+            "46",
+            "25"
+          ],
+          "answer": 2,
+          "why": "IQR = 10 → fences $20 - 15 = 5$ and $30 + 15 = 45$. Only 46 lies outside them."
+        }
+      ]
+    },
+    {
+      "id": "s-remember",
+      "heading": "7. What to remember for your exam",
+      "slides": "",
+      "blocks": [
+        {
+          "type": "callout",
+          "kind": "remember",
+          "title": "Remember",
+          "text": "- **Data type ladder:** nominal → ordinal → interval → ratio.\n- **Centre:** mean (symmetric), median (skewed/outliers), mode (categories).\n- **Skew is named after the tail:** right tail → mean > median.\n- **SD recipe:** mean → deviations → square → sum → ÷ (n − 1) → √.\n- **Box plot:** Q₁ at (n+1)/4, Q₃ at 3(n+1)/4; outliers beyond Q₁ − 1.5 IQR or Q₃ + 1.5 IQR."
+        }
+      ]
+    }
+  ],
+
   summary: [
     {
       id: "course",
@@ -284,11 +574,11 @@ export default {
         },
         {
           type: "p",
-          text: "**Example 1, odd n (slide 29):** three-year annualised returns of seven low-risk small-cap growth funds, already sorted: 19.0, 20.8, 22.3, **22.4**, 24.9, 26.0, 29.9. With n = 7 the middle is position (7 + 1)/2 = 4, so **median = 22.4**.",
+          text: "**Example 1, odd n (slide 29):** three-year annualised returns of seven low-risk small-cap growth funds, already sorted: 19.0, 20.8, 22.3, **22.4**, 24.9, 26.0, 29.9. With $n = 7$ the middle is position $(7 + 1)/2 = 4$, so **median = 22.4**.",
         },
         {
           type: "p",
-          text: "**Example 2, even n (slide 29):** the 10 travel times, sorted: 29, 31, 35, 39, **39, 40**, 43, 44, 44, 52. With n = 10 the middle positions are 5 and 6, so **median = (39 + 40)/2 = 39.5** minutes. Compare the mean of the same data, 39.6: almost equal, which hints the data is roughly symmetric (Lesson 5).",
+          text: "**Example 2, even n (slide 29):** the 10 travel times, sorted: 29, 31, 35, 39, **39, 40**, 43, 44, 44, 52. With $n = 10$ the middle positions are 5 and 6, so **median = $(39 + 40)/2 = 39.5$** minutes. Compare the mean of the same data, 39.6: almost equal, which hints the data is roughly symmetric (Lesson 5).",
         },
         {
           type: "callout",
@@ -337,7 +627,7 @@ export default {
           type: "callout",
           kind: "formula",
           title: "Empirical relation and coefficients of skewness (slide 32)",
-          text: "For **moderately skewed** data, the empirical relationship is\n$$3\\,\\text{Median} = \\text{Mode} + 2\\,\\text{Mean}$$\nCoefficient of skewness (s = standard deviation):\n$$\\text{using the mode: } \\frac{\\bar X - \\text{Mode}}{s} \\qquad \\text{using the median: } \\frac{3(\\bar X - \\text{Median})}{s}$$\nSign: **positive → right skew, zero → symmetric, negative → left skew** (slide 63: S < 0, S = 0, S > 0).",
+          text: "For **moderately skewed** data, the empirical relationship is\n$$3\\,\\text{Median} = \\text{Mode} + 2\\,\\text{Mean}$$\nCoefficient of skewness (s = standard deviation):\n$$\\text{using the mode: } \\frac{\\bar X - \\text{Mode}}{s} \\qquad \\text{using the median: } \\frac{3(\\bar X - \\text{Median})}{s}$$\nSign: **positive → right skew, zero → symmetric, negative → left skew** (slide 63: $S < 0$, $S = 0$, $S > 0$).",
         },
         {
           type: "p",
@@ -353,7 +643,7 @@ export default {
           type: "callout",
           kind: "example",
           title: "Slightly harder: Practice Q4 data (slide 68)",
-          text: "Mean = 74.3, median = 79, s = 10.534 (computed in the Numerical tab). Coefficient of skewness $= \\frac{3(74.3 - 79)}{10.534} = \\frac{-14.1}{10.534} = -1.34$. Strongly **negative**: the two very low values (45, 48) drag the mean below the median.",
+          text: "Mean = 74.3, median = 79, $s = 10.534$ (computed in the Numerical tab). Coefficient of skewness $= \\frac{3(74.3 - 79)}{10.534} = \\frac{-14.1}{10.534} = -1.34$. Strongly **negative**: the two very low values (45, 48) drag the mean below the median.",
         },
         {
           type: "callout",
@@ -371,7 +661,7 @@ export default {
           type: "callout",
           kind: "remember",
           title: "Quick revision",
-          text: "Mean chases the tail. Right skew: mode < median < mean. Left skew: mean < median < mode. 3 Median = Mode + 2 Mean. Sk = (X̄ − Mode)/s = 3(X̄ − Median)/s.",
+          text: "Mean chases the tail. Right skew: mode < median < mean. Left skew: mean < median < mode. 3 Median = Mode + 2 Mean. Sk = ($\\bar{X}$ − Mode)/$s = 3$($\\bar{X}$ − Median)/s.",
         },
       ],
     },
@@ -411,13 +701,13 @@ export default {
         },
         {
           type: "p",
-          text: "**Example (slide 38):** scores 7, 2, 7, 6, 5, 6, 2. Range = 7 − 2 = **5**. **Harder (Group 1 vs Group 2):** range of Group 1 = 8 − 2 = 6; range of Group 2 = 15 − 1 = 14. The range does separate them, but notice Group 2's range is driven entirely by one score (15). Change that single score and the range changes completely. That's why we need a measure that uses **every** score.",
+          text: "**Example (slide 38):** scores 7, 2, 7, 6, 5, 6, 2. Range = $7 - 2$ = **5**. **Harder (Group 1 vs Group 2):** range of Group $1 = 8 - 2 = 6$; range of Group $2 = 15 - 1 = 14$. The range does separate them, but notice Group 2's range is driven entirely by one score (15). Change that single score and the range changes completely. That's why we need a measure that uses **every** score.",
         },
         {
           type: "callout",
           kind: "remember",
           title: "Quick revision",
-          text: "Same centre ≠ same data. Range = max − min: quick, but uses only two values and is wrecked by one extreme.",
+          text: "Same centre ≠ same data. Range = $\\max - \\min$: quick, but uses only two values and is wrecked by one extreme.",
         },
       ],
     },
@@ -458,11 +748,11 @@ export default {
           type: "callout",
           kind: "formula",
           title: "Variance and standard deviation (slides 43–44, 51)",
-          text: "**Population** (all the data; mean $\\mu$ known):\n$$\\sigma^2 = \\frac{SS}{N} = \\frac{\\Sigma(X-\\mu)^2}{N}, \\qquad \\sigma = \\sqrt{\\sigma^2}$$\n**Sample** (estimating a population from a sample):\n$$s^2 = \\frac{SS}{n-1} = \\frac{\\Sigma(X-\\bar X)^2}{n-1}, \\qquad s = \\sqrt{\\frac{SS}{n-1}}$$\n**Use:** σ when you have the whole population; **s with n − 1** when the data is a sample used to estimate the population.",
+          text: "**Population** (all the data; mean $\\mu$ known):\n$$\\sigma^2 = \\frac{SS}{N} = \\frac{\\Sigma(X-\\mu)^2}{N}, \\qquad \\sigma = \\sqrt{\\sigma^2}$$\n**Sample** (estimating a population from a sample):\n$$s^2 = \\frac{SS}{n-1} = \\frac{\\Sigma(X-\\bar X)^2}{n-1}, \\qquad s = \\sqrt{\\frac{SS}{n-1}}$$\n**Use:** $\\sigma$ when you have the whole population; **s with $n - 1$** when the data is a sample used to estimate the population.",
         },
         {
           type: "p",
-          text: "**Why n − 1 for a sample? (slides 50–52)** The goal of inferential statistics is to draw conclusions about a population from a sample. But samples have **less variability** than the population: extreme scores are less likely to be picked. Computing the sample variance with N would give a **biased** (too small) estimate. Dividing by **n − 1** corrects it. The idea behind it is **degrees of freedom**: once you've used the data to compute $\\bar X$, only n − 1 scores are free to vary. The last one is fixed, because the deviations must sum to zero. So **df = n − 1**.",
+          text: "**Why $n - 1$ for a sample? (slides 50–52)** The goal of inferential statistics is to draw conclusions about a population from a sample. But samples have **less variability** than the population: extreme scores are less likely to be picked. Computing the sample variance with N would give a **biased** (too small) estimate. Dividing by **n − 1** corrects it. The idea behind it is **degrees of freedom**: once you've used the data to compute $\\bar X$, only $n - 1$ scores are free to vary. The last one is fixed, because the deviations must sum to zero. So **df = $n - 1$**.",
         },
         {
           type: "callout",
@@ -496,7 +786,7 @@ export default {
           type: "callout",
           kind: "remember",
           title: "Quick revision",
-          text: "Deviations sum to 0 → square them. SS = Σ(x − x̄)². Population: σ² = SS/N. Sample: s² = SS/(n − 1), df = n − 1. SD = √variance, same units as data.",
+          text: "Deviations sum to 0 → square them. SS = $\\sum(x - \\bar{x})^2$. Population: $\\sigma^2$ = SS/N. Sample: $s^2$ = SS/$(n - 1)$, df = $n - 1$. SD = √variance, same units as data.",
         },
       ],
     },
@@ -524,11 +814,11 @@ export default {
           type: "callout",
           kind: "warn",
           title: "Slide check (flagged): which divisor?",
-          text: "The slide's 388 and 1767.84 divide SS by **N = 5**, i.e. they treat the five matches as the **population** (σ²). If you treat them as a **sample** (s², divide by n − 1 = 4) you get **485** and **2209.8** (s = 22.02 and 47.01). The conclusion is the same either way. In an exam, **state which you're using**: “treating the 5 matches as the population…” or “as a sample, using n − 1…”.",
+          text: "The slide's 388 and 1767.84 divide SS by **N = 5**, i.e. they treat the five matches as the **population** $(\\sigma^2)$. If you treat them as a **sample** ($s^2$, divide by $n - 1 = 4$) you get **485** and **2209.8** ($s = 22.02$ and 47.01). The conclusion is the same either way. In an exam, **state which you're using**: “treating the 5 matches as the population…” or “as a sample, using $n - 1$…”.",
         },
         {
           type: "p",
-          text: "**Unusual scores:** the 135 looks extreme. Is it formally an outlier? We'll test it with the 1.5 × IQR rule in Lesson 9 (spoiler: with only five scores, it isn't).",
+          text: "**Unusual scores:** the 135 looks extreme. Is it formally an outlier? We'll test it with the $1.5 \\times \\text{IQR}$ rule in Lesson 9 (spoiler: with only five scores, it isn't).",
         },
       ],
     },
@@ -545,7 +835,7 @@ export default {
         },
         {
           type: "p",
-          text: "**Five-number summary (slide 57):** **Minimum, Q₁** (first quartile, the 25% mark), **Median, Q₃** (third quartile, the 75% mark), **Maximum**. Quartiles split the sorted data into four equal parts, just as the median splits it into two.",
+          text: "**Five-number summary (slide 57):** **Minimum, $Q_1$** (first quartile, the 25% mark), **Median, $Q_3$** (third quartile, the 75% mark), **Maximum**. Quartiles split the sorted data into four equal parts, just as the median splits it into two.",
         },
         {
           type: "callout",
@@ -561,22 +851,22 @@ export default {
           type: "callout",
           kind: "example",
           title: "Simple example (slide 58)",
-          text: "Ordered data: 11, 12, 13, 16, 16, 17, 17, 18, 21 (n = 9).\n\nPosition of $Q_1 = \\frac{1(9+1)}{4} = 2.5$ → halfway between 12 and 13 → $Q_1 = 12.5$.\n\nPosition of $Q_3 = \\frac{3(9+1)}{4} = 7.5$ → halfway between 17 and 18 → $Q_3 = 17.5$.\n\n$IQR = 17.5 - 12.5 = 5$. Fences: 12.5 − 7.5 = 5 and 17.5 + 7.5 = 25. Every value lies inside, so **no outliers**. Five-number summary: 11, 12.5, 16, 17.5, 21.",
+          text: "Ordered data: 11, 12, 13, 16, 16, 17, 17, 18, 21 $(n = 9)$.\n\nPosition of $Q_1 = \\frac{1(9+1)}{4} = 2.5$ → halfway between 12 and 13 → $Q_1 = 12.5$.\n\nPosition of $Q_3 = \\frac{3(9+1)}{4} = 7.5$ → halfway between 17 and 18 → $Q_3 = 17.5$.\n\n$IQR = 17.5 - 12.5 = 5$. Fences: $12.5 - 7.5 = 5$ and $17.5 + 7.5 = 25$. Every value lies inside, so **no outliers**. Five-number summary: 11, 12.5, 16, 17.5, 21.",
         },
         { type: "diagram", name: "i1-boxanat" },
         {
           type: "p",
-          text: "**The box-and-whisker plot (slides 59–60)** draws the five-number summary: a **box** from Q₁ to Q₃ (its length is the IQR), a line inside at the **median (Q₂)**, and **whiskers** out to the smallest and largest values that are not outliers. Outliers are plotted as separate points.",
+          text: "**The box-and-whisker plot (slides 59–60)** draws the five-number summary: a **box** from $Q_1$ to $Q_3$ (its length is the IQR), a line inside at the **median $(Q_2)$**, and **whiskers** out to the smallest and largest values that are not outliers. Outliers are plotted as separate points.",
         },
         {
           type: "p",
-          text: "**Reading skewness from a box plot (slide 63).** Symmetric: the median sits in the middle of the box and the whiskers are about equal. **Negatively skewed:** the median is nearer Q₃ and the **left** whisker is longer. **Positively skewed:** the median is nearer Q₁ and the **right** whisker is longer. **Outliers and the normal curve (slide 62):** the fences Q₁ − 1.5 IQR and Q₃ + 1.5 IQR sit at about ±2.698σ for bell-shaped data (the box itself spans about ±0.6745σ and holds the middle 50%), so in bell-shaped data very few points fall outside them.",
+          text: "**Reading skewness from a box plot (slide 63).** Symmetric: the median sits in the middle of the box and the whiskers are about equal. **Negatively skewed:** the median is nearer $Q_3$ and the **left** whisker is longer. **Positively skewed:** the median is nearer $Q_1$ and the **right** whisker is longer. **Outliers and the normal curve (slide 62):** the fences $Q_1 - 1.5$ IQR and $Q_3 + 1.5$ IQR sit at about ±$2.698 \\sigma$ for bell-shaped data (the box itself spans about ±$0.6745 \\sigma$ and holds the middle 50%), so in bell-shaped data very few points fall outside them.",
         },
         {
           type: "callout",
           kind: "example",
           title: "Slightly harder: is the IPL 135 an outlier?",
-          text: "Batsman 2 sorted: 12, 34, 64, 78, 135 (n = 5). $Q_1$ at position 1.5 → (12 + 34)/2 = 23. $Q_3$ at position 4.5 → (78 + 135)/2 = 106.5. IQR = 83.5. Upper limit = 106.5 + 1.5(83.5) = 231.75. Since 135 < 231.75, it is **not** an outlier by the rule. With only five scores the quartiles are very wide. The 135 is unusual but inflates the SD (Lesson 8); it doesn't break the fence.",
+          text: "Batsman 2 sorted: 12, 34, 64, 78, 135 $(n = 5)$. $Q_1$ at position 1.5 → $(12 + 34)/2 = 23$. $Q_3$ at position 4.5 → $(78 + 135)/2 = 106.5$. IQR = 83.5. Upper limit = $106.5 + 1.5 (83.5) = 231.75$. Since 135 < 231.75, it is **not** an outlier by the rule. With only five scores the quartiles are very wide. The 135 is unusual but inflates the SD (Lesson 8); it doesn't break the fence.",
         },
         {
           type: "p",
@@ -594,7 +884,7 @@ export default {
           type: "callout",
           kind: "remember",
           title: "Quick revision",
-          text: "Five numbers: Min, Q₁, Median, Q₃, Max. Q₁ at (n+1)/4, Q₃ at 3(n+1)/4. IQR = Q₃ − Q₁ (robust). Fences Q₁ − 1.5 IQR, Q₃ + 1.5 IQR (major: 3 IQR). Box plot: median nearer Q₁ + long right whisker → right skew.",
+          text: "Five numbers: Min, $Q_1$, Median, $Q_3$, Max. $Q_1$ at (n+1)/4, $Q_3$ at 3(n+1)/4. $\\text{IQR} = Q_3 - Q_1$ (robust). Fences $Q_1 - 1.5$ IQR, $Q_3 + 1.5$ IQR (major: 3 IQR). Box plot: median nearer $Q_1$ + long right whisker → right skew.",
         },
       ],
     },
@@ -608,9 +898,9 @@ export default {
       rows: [
         ["What kind of data?", "Nominal < Ordinal < Interval < Ratio", "N/O → nonparametric; I/R → parametric"],
         ["Typical value?", "Mean / Median / Mode", "$\\bar x = \\Sigma x / n$; grouped $\\Sigma fx / \\Sigma f$; median at $(n+1)/2$"],
-        ["Lopsided?", "Compare mean and median", "Right skew: mean > median; 3 Md = Mo + 2 x̄"],
+        ["Lopsided?", "Compare mean and median", "Right skew: mean > median; 3 Md = Mo + $2 \\bar{x}$"],
         ["How spread?", "Range, variance, SD", "$s^2 = SS/(n-1)$, $\\sigma^2 = SS/N$"],
-        ["Middle 50%, outliers?", "Five-number summary, IQR, box plot", "Q₁ at (n+1)/4; fences Q₁ − 1.5 IQR, Q₃ + 1.5 IQR"],
+        ["Middle 50%, outliers?", "Five-number summary, IQR, box plot", "$Q_1$ at (n+1)/4; fences $Q_1 - 1.5$ IQR, $Q_3 + 1.5$ IQR"],
       ],
     },
     { type: "diagram", name: "i1-skew" },
@@ -619,7 +909,7 @@ export default {
       type: "callout",
       kind: "exam",
       title: "Don't lose marks",
-      text: "Sort before median/quartiles · sample → **n − 1** · state σ or s · skew is named by the **tail** · deviations always sum to 0.",
+      text: "Sort before median/quartiles · sample → **n − 1** · state $\\sigma$ or s · skew is named by the **tail** · deviations always sum to 0.",
     },
   ],
 
@@ -633,17 +923,17 @@ export default {
     ["Skewness", "", "Lopsidedness; named after the long tail (left = negative, right = positive)"],
     ["SS", "Sum of Squares", "$\\Sigma(x - \\bar x)^2$, the total squared deviation"],
     ["$\\sigma^2$, $\\sigma$", "Population variance, population standard deviation", "SS/N and its square root"],
-    ["$s^2$, $s$", "Sample variance, sample standard deviation", "SS/(n − 1) and its square root"],
-    ["df", "Degrees of freedom", "Number of values free to vary: n − 1 for a sample variance"],
-    ["Q₁, Q₂, Q₃", "First, second, third quartile", "25%, 50% (median), 75% marks of sorted data"],
-    ["IQR", "Interquartile Range", "Q₃ − Q₁: spread of the middle 50%"],
-    ["Outlier", "", "A value outside Q₁ − 1.5 IQR … Q₃ + 1.5 IQR"],
+    ["$s^2$, $s$", "Sample variance, sample standard deviation", "SS/$(n - 1)$ and its square root"],
+    ["df", "Degrees of freedom", "Number of values free to vary: $n - 1$ for a sample variance"],
+    ["$Q_1$, $Q_2$, $Q_3$", "First, second, third quartile", "25%, 50% (median), 75% marks of sorted data"],
+    ["IQR", "Interquartile Range", "$Q_3 - Q_1$: spread of the middle 50%"],
+    ["Outlier", "", "A value outside $Q_1 - 1.5$ IQR … $Q_3 + 1.5$ IQR"],
     ["URL / LRL", "Upper / Lower Real Limit", "Boundaries of a continuous measurement, used for the range"],
   ],
 
   examTips: [
     "Always write the formula first, then substitute. Marks are given for method.",
-    "For SD questions, say whether you treat the data as a **sample (n − 1)** or a **population (N)**.",
+    "For SD questions, say whether you treat the data as a **sample $(n - 1)$** or a **population (N)**.",
     "Quartiles: use the slides' **(n + 1)/4** position rule and show the interpolation.",
     "“Comment on the shape” → compare mean vs median **and** look at the box plot whiskers; quote the coefficient of skewness if you have s.",
     "“Comment on outliers” → compute both fences explicitly and list any values outside.",
@@ -662,14 +952,14 @@ export default {
       level: "From slides",
       hint: "Subtract 39.6 from each time and add the results.",
       question: "Exercise from slide 40 (exercise solution prepared for the website): for the get-ready times above, find the deviation of each value from the mean and then the “mean deviation”.",
-      solution: "### What is being asked\nCompute $x - \\bar x$ for each value and average them.\n### Working\nDeviations from 39.6: −0.6, −10.6, 3.4, 12.4, −0.6, 4.4, 0.4, −8.6, 4.4, −4.6.\nPositives: 3.4 + 12.4 + 4.4 + 0.4 + 4.4 = 25.0. Negatives: −0.6 − 10.6 − 0.6 − 8.6 − 4.6 = −25.0. Sum = **0**, so the mean deviation is **0**.\n### Takeaway\nThis always happens: the mean is the balance point (slide 41). That's why the SD squares the deviations first.",
+      solution: "### What is being asked\nCompute $x - \\bar x$ for each value and average them.\n### Working\nDeviations from 39.6: −0.6, −10.6, 3.4, 12.4, −0.6, 4.4, 0.4, −8.6, 4.4, −4.6.\nPositives: $3.4 + 12.4 + 4.4 + 0.4 + 4.4 = 25.0$. Negatives: −$0.6 - 10.6 - 0.6 - 8.6 - 4.6$ = −25.0. Sum = **0**, so the mean deviation is **0**.\n### Takeaway\nThis always happens: the mean is the balance point (slide 41). That's why the SD squares the deviations first.",
     },
     {
       title: "Mean of grouped scores: TV hours in Bengaluru (slide 23)",
       level: "From slides",
-      hint: "Multiply each score by its frequency; divide ΣfY by Σf.",
-      question: "Hours spent watching TV per day: 1 hour (f = 104), 2 hours (f = 130), 3 hours (f = 98). Find the mean.",
-      solution: "### What is being asked\nThe mean of grouped (frequency-table) data.\n### Why this approach\nEach score occurs f times, so weight it: $\\bar Y = \\Sigma fY / N$.\n### Working\n$fY$: 1×104 = 104, 2×130 = 260, 3×98 = 294. $\\Sigma fY = 658$; $N = 104 + 130 + 98 = 332$.\n$$\\bar Y = \\frac{658}{332} = 1.98$$\n### Answer\n**Mean ≈ 1.98 hours per day.**\n### Takeaway\nDivide by Σf (332 children), not by the number of rows (3).",
+      hint: "Multiply each score by its frequency; divide ΣfY by $\\sum f$.",
+      question: "Hours spent watching TV per day: 1 hour $(f = 104)$, 2 hours $(f = 130)$, 3 hours $(f = 98)$. Find the mean.",
+      solution: "### What is being asked\nThe mean of grouped (frequency-table) data.\n### Why this approach\nEach score occurs f times, so weight it: $\\bar Y = \\Sigma fY / N$.\n### Working\n$fY$: $1 \\times 104 = 104$, $2 \\times 130 = 260$, $3 \\times 98 = 294$. $\\Sigma fY = 658$; $N = 104 + 130 + 98 = 332$.\n$$\\bar Y = \\frac{658}{332} = 1.98$$\n### Answer\n**Mean ≈ 1.98 hours per day.**\n### Takeaway\nDivide by $\\sum f$ (332 children), not by the number of rows (3).",
     },
     {
       title: "Mode of server failures (slide 26)",
@@ -683,13 +973,13 @@ export default {
       level: "From slides",
       hint: "Sort first; n odd → middle value; n even → average of the two middle values.",
       question: "(a) Returns of seven small-cap funds: 19.0, 20.8, 22.3, 22.4, 24.9, 26.0, 29.9. (b) Travel times (sorted): 29, 31, 35, 39, 39, 40, 43, 44, 44, 52. Find each median.",
-      solution: "### (a) n = 7 (odd)\nPosition (7 + 1)/2 = 4 → **median = 22.4**.\n### (b) n = 10 (even)\nPositions 5 and 6 → 39 and 40 → **median = (39 + 40)/2 = 39.5** minutes.\n### Takeaway\nMean of (b) is 39.6, median 39.5: nearly equal, so the data is roughly symmetric.",
+      solution: "### (a) $n = 7$ (odd)\nPosition $(7 + 1)/2 = 4$ → **median = 22.4**.\n### (b) $n = 10$ (even)\nPositions 5 and 6 → 39 and 40 → **median = $(39 + 40)/2 = 39.5$** minutes.\n### Takeaway\nMean of (b) is 39.6, median 39.5: nearly equal, so the data is roughly symmetric.",
     },
     {
       title: "Range (slide 38)",
       level: "From slides",
       question: "Find the range of the scores 7, 2, 7, 6, 5, 6, 2.",
-      solution: "Range = highest − lowest = 7 − 2 = **5**. It uses only two of the seven scores, which is why it's called an imprecise measure.",
+      solution: "Range = highest − lowest = $7 - 2$ = **5**. It uses only two of the seven scores, which is why it's called an imprecise measure.",
     },
     {
       title: "Classify the variables (slide 19)",
@@ -700,70 +990,70 @@ export default {
     {
       title: "Same mean, different spread: Groups 1 and 2 (slides 33–47)",
       level: "From slides",
-      hint: "Both means are 5. Find SS for each, then divide by n − 1 = 8.",
+      hint: "Both means are 5. Find SS for each, then divide by $n - 1 = 8$.",
       question: "Group 1: 2, 8, 5, 3, 7, 8, 5, 2, 5. Group 2: 1, 15, 5, 5, 6, 3, 5, 2, 3. Show that mean, median and mode are equal for both, then find the standard deviation of each.",
-      solution: "### Centre\nBoth sums are 45, so both means = 45/9 = 5. Sorted G1: 2, 2, 3, 5, **5**, 5, 7, 8, 8 → median 5, mode 5. Sorted G2: 1, 2, 3, 3, **5**, 5, 5, 6, 15 → median 5, mode 5.\n### Why SD\nIdentical centres, so only a spread measure can tell them apart. The slides use the sample formula $S = \\sqrt{SS/(n-1)}$.\n### Working\nG1 squared deviations: 9, 9, 0, 4, 4, 9, 0, 9, 0 → SS = 44 → $S = \\sqrt{44/8} = 2.345$.\nG2 squared deviations: 16, 100, 0, 0, 1, 4, 0, 9, 4 → SS = 134 → $S = \\sqrt{134/8} = 4.093$.\n### Answer\n**S₁ = 2.345, S₂ = 4.093**: Group 2 is much more variable.\n### Takeaway\n“Why mean is not enough”: always report a spread measure with the centre.",
+      solution: "### Centre\nBoth sums are 45, so both means = 45/9 = 5. Sorted G1: 2, 2, 3, 5, **5**, 5, 7, 8, 8 → median 5, mode 5. Sorted G2: 1, 2, 3, 3, **5**, 5, 5, 6, 15 → median 5, mode 5.\n### Why SD\nIdentical centres, so only a spread measure can tell them apart. The slides use the sample formula $S = \\sqrt{SS/(n-1)}$.\n### Working\nG1 squared deviations: 9, 9, 0, 4, 4, 9, 0, 9, 0 → SS = 44 → $S = \\sqrt{44/8} = 2.345$.\nG2 squared deviations: 16, 100, 0, 0, 1, 4, 0, 9, 4 → SS = 134 → $S = \\sqrt{134/8} = 4.093$.\n### Answer\n**S₁ = 2.345, $S_2 = 4.093$**: Group 2 is much more variable.\n### Takeaway\n“Why mean is not enough”: always report a spread measure with the centre.",
     },
     {
       title: "Learning check: variance from SS (slide 53)",
       level: "From slides",
       question: "A sample of four scores has SS = 24. What is the variance? (1) 6 (2) 7 (3) 8 (4) 12",
-      solution: "Sample → $s^2 = SS/(n-1) = 24/3 =$ **8**, option (3). Option (1), 6, is the trap: dividing by n = 4 (the population formula).",
+      solution: "Sample → $s^2 = SS/(n-1) = 24/3 =$ **8**, option (3). Option (1), 6, is the trap: dividing by $n = 4$ (the population formula).",
     },
     {
       title: "IPL batsmen: average, consistency, extremes (slides 7–8, 55)",
       level: "From slides",
       hint: "Mean for average, SD for consistency, IQR fences for extremes.",
       question: "Runs in 5 matches. Batsman 1: 45, 62, 86, 28, 44. Batsman 2: 34, 78, 12, 135, 64. Who performs better on average? Who is more consistent? Are there any unusual scores?",
-      solution: "### Average\nB1: 265/5 = **53**. B2: 323/5 = **64.6**. Batsman 2 is better on average.\n### Consistency (variance and SD)\nB1: deviations −8, 9, 33, −25, −9 → SS = 1940. B2: SS = 8839.2.\nAs on slide 55 (divide by N = 5): $\\sigma_1^2 = 388$, $\\sigma_1 = 19.7$; $\\sigma_2^2 = 1767.84$, $\\sigma_2 = 42.05$.\n(Using n − 1 = 4: $s_1^2 = 485$, $s_1 = 22.02$; $s_2^2 = 2209.8$, $s_2 = 47.01$. Same conclusion.)\n**Batsman 1 is more consistent**; Batsman 2's spread comes mostly from the 135.\n### Extremes\nB2 sorted 12, 34, 64, 78, 135: Q₁ = 23, Q₃ = 106.5, IQR = 83.5, upper fence 231.75 → 135 is **unusual but not an outlier** by the 1.5 IQR rule.\n### Takeaway\nAverage and consistency are different questions. Answer both with the right tool.",
+      solution: "### Average\nB1: 265/5 = **53**. B2: 323/5 = **64.6**. Batsman 2 is better on average.\n### Consistency (variance and SD)\nB1: deviations −8, 9, 33, −25, −9 → SS = 1940. B2: SS = 8839.2.\nAs on slide 55 (divide by $N = 5$): $\\sigma_1^2 = 388$, $\\sigma_1 = 19.7$; $\\sigma_2^2 = 1767.84$, $\\sigma_2 = 42.05$.\n(Using $n - 1 = 4$: $s_1^2 = 485$, $s_1 = 22.02$; $s_2^2 = 2209.8$, $s_2 = 47.01$. Same conclusion.)\n**Batsman 1 is more consistent**; Batsman 2's spread comes mostly from the 135.\n### Extremes\nB2 sorted 12, 34, 64, 78, 135: $Q_1 = 23$, $Q_3 = 106.5$, IQR = 83.5, upper fence 231.75 → 135 is **unusual but not an outlier** by the 1.5 IQR rule.\n### Takeaway\nAverage and consistency are different questions. Answer both with the right tool.",
     },
     {
       title: "Interquartile range (slide 58)",
       level: "From slides",
-      question: "Ordered data: 11, 12, 13, 16, 16, 17, 17, 18, 21. Find Q₁, Q₃ and the IQR.",
-      solution: "### Formula\nPosition of $Q_1 = 1(n+1)/4$, of $Q_3 = 3(n+1)/4$, with n = 9.\n### Working\n$Q_1$ position = 10/4 = 2.5 → between 12 and 13 → **12.5**. $Q_3$ position = 30/4 = 7.5 → between 17 and 18 → **17.5**.\n### Answer\n**IQR = 17.5 − 12.5 = 5.**",
+      question: "Ordered data: 11, 12, 13, 16, 16, 17, 17, 18, 21. Find $Q_1$, $Q_3$ and the IQR.",
+      solution: "### Formula\nPosition of $Q_1 = 1(n+1)/4$, of $Q_3 = 3(n+1)/4$, with $n = 9$.\n### Working\n$Q_1$ position = 10/4 = 2.5 → between 12 and 13 → **12.5**. $Q_3$ position = 30/4 = 7.5 → between 17 and 18 → **17.5**.\n### Answer\n**IQR = $17.5 - 12.5 = 5$.**",
     },
     {
       title: "Practice Q1: office noise levels (slide 66)",
       level: "From slides",
-      hint: "n = 77. Q₁ is at position 19.5 and Q₃ at 58.5. Use the sample SD.",
+      hint: "$n = 77$. $Q_1$ is at position 19.5 and $Q_3$ at 58.5. Use the sample SD.",
       question: "Noise levels (dBA) for 77 office workers (data on slide 66, already sorted from 55.3 to 83.0). (a) Find the arithmetic mean, SD, variance and IQR. (b) Draw a box-and-whisker plot. (c) Comment on outliers, if any.",
-      solution: "*Exercise solution prepared for the website.*\n### Approach\nThe data is a sample of 77 workers → use $s^2 = SS/(n-1)$. Quartiles by the (n + 1)/4 rule.\n### (a) Working\n$\\Sigma x = 4996.3$, so $\\bar x = 4996.3/77 = 64.887$ dBA.\n$SS = \\Sigma(x - \\bar x)^2 = 4627.007$ → $s^2 = 4627.007/76 = 60.88$ dBA², $s = 7.80$ dBA.\nPosition of Q₁ = 78/4 = 19.5 → 19th and 20th values are both 57.8 → **Q₁ = 57.8**. Median at position 39 → **64.7**. Position of Q₃ = 58.5 → 58th and 59th are both 70.4 → **Q₃ = 70.4**.\n**IQR = 70.4 − 57.8 = 12.6.**\n### (b) Box plot\nFive-number summary: 55.3, 57.8, 64.7, 70.4, 83.0. Box from 57.8 to 70.4 with the median at 64.7; whiskers to 55.3 and 83.0.\n### (c) Outliers\nLower fence = 57.8 − 1.5(12.6) = 38.9; upper fence = 70.4 + 18.9 = 89.3. All values lie in [55.3, 83.0], so **no outliers**.\n### Shape\nMean 64.89 vs median 64.7 (Sk = 3(0.187)/7.80 ≈ 0.07): nearly symmetric overall, though the right whisker (12.6) is much longer than the left (2.5).",
+      solution: "*Exercise solution prepared for the website.*\n### Approach\nThe data is a sample of 77 workers → use $s^2 = SS/(n-1)$. Quartiles by the (n + 1)/4 rule.\n### (a) Working\n$\\Sigma x = 4996.3$, so $\\bar x = 4996.3/77 = 64.887$ dBA.\n$SS = \\Sigma(x - \\bar x)^2 = 4627.007$ → $s^2 = 4627.007/76 = 60.88$ dBA², $s = 7.80$ dBA.\nPosition of $Q_1 = 78/4 = 19.5$ → 19th and 20th values are both 57.8 → **Q₁ = 57.8**. Median at position 39 → **64.7**. Position of $Q_3 = 58.5$ → 58th and 59th are both 70.4 → **Q₃ = 70.4**.\n**IQR = $70.4 - 57.8 = 12.6$.**\n### (b) Box plot\nFive-number summary: 55.3, 57.8, 64.7, 70.4, 83.0. Box from 57.8 to 70.4 with the median at 64.7; whiskers to 55.3 and 83.0.\n### (c) Outliers\nLower fence = $57.8 - 1.5 (12.6) = 38.9$; upper fence = $70.4 + 18.9 = 89.3$. All values lie in [55.3, 83.0], so **no outliers**.\n### Shape\nMean 64.89 vs median 64.7 (Sk = $3 (0.187)/7.80 \\approx 0.07$): nearly symmetric overall, though the right whisker (12.6) is much longer than the left (2.5).",
     },
     {
       title: "Practice Q2: fat in chicken sandwiches (slide 67)",
       level: "From slides",
-      hint: "Sort the 20 values. Q₁ at position 5.25, Q₃ at 15.75.",
-      question: "Total fat (g/serving) for 20 chicken sandwiches: 7 8 4 5 16 20 20 24 19 30 23 30 25 19 29 29 30 30 40 56. (a) Mean, median, Q₁, Q₃. (b) Variance, SD, range, IQR; any outliers? (c) Are the data skewed? (d) Conclusions.",
-      solution: "*Exercise solution prepared for the website.*\n### Sort\n4, 5, 7, 8, 16, 19, 19, 20, 20, 23, 24, 25, 29, 29, 30, 30, 30, 30, 40, 56 (n = 20).\n### (a)\nMean = 464/20 = **23.2 g**. Median = average of 10th and 11th = (23 + 24)/2 = **23.5 g**.\nQ₁ position = 21/4 = 5.25 → 16 + 0.25(19 − 16) = **16.75**. Q₃ position = 15.75 → 30 + 0.75(30 − 30) = **30**.\n### (b)\nSS = 2915.2 → $s^2 = 2915.2/19 = 153.43$, **s = 12.39 g**. Range = 56 − 4 = **52**. IQR = 30 − 16.75 = **13.25**.\nFences: 16.75 − 19.875 = −3.125 and 30 + 19.875 = 49.875 → **56 is an outlier**.\n### (c) Shape\nMean (23.2) is just below the median (23.5); Sk = 3(23.2 − 23.5)/12.39 = −0.07 ≈ 0. The middle of the data is roughly symmetric, but there's one high outlier (56) on the right.\n### (d) Conclusion\nA typical chicken sandwich has about 23–24 g of fat; the middle half lies between about 17 and 30 g. One sandwich (56 g) is unusually fatty.",
+      hint: "Sort the 20 values. $Q_1$ at position 5.25, $Q_3$ at 15.75.",
+      question: "Total fat (g/serving) for 20 chicken sandwiches: 7 8 4 5 16 20 20 24 19 30 23 30 25 19 29 29 30 30 40 56. (a) Mean, median, $Q_1$, $Q_3$. (b) Variance, SD, range, IQR; any outliers? (c) Are the data skewed? (d) Conclusions.",
+      solution: "*Exercise solution prepared for the website.*\n### Sort\n4, 5, 7, 8, 16, 19, 19, 20, 20, 23, 24, 25, 29, 29, 30, 30, 30, 30, 40, 56 $(n = 20)$.\n### (a)\nMean = 464/20 = **23.2 g**. Median = average of 10th and 11th = (23 + 24)/2 = **23.5 g**.\n$Q_1$ position = 21/4 = 5.25 → $16 + 0.25 (19 - 16)$ = **16.75**. $Q_3$ position = 15.75 → $30 + 0.75 (30 - 30)$ = **30**.\n### (b)\nSS = 2915.2 → $s^2 = 2915.2/19 = 153.43$, **s = 12.39 g**. Range = $56 - 4$ = **52**. $\\text{IQR} = 30 - 16.75$ = **13.25**.\nFences: $16.75 - 19.875$ = −3.125 and $30 + 19.875 = 49.875$ → **56 is an outlier**.\n### (c) Shape\nMean (23.2) is just below the median (23.5); Sk = $3 (23.2 - 23.5)/12.39$ = −$0.07 \\approx 0$. The middle of the data is roughly symmetric, but there's one high outlier (56) on the right.\n### (d) Conclusion\nA typical chicken sandwich has about 23–24 g of fat; the middle half lies between about 17 and 30 g. One sandwich (56 g) is unusually fatty.",
     },
     {
       title: "Practice Q3: camera battery life (slide 68)",
       level: "From slides",
-      hint: "n = 12. Q₁ at position 3.25, Q₃ at 9.75.",
+      hint: "$n = 12$. $Q_1$ at position 3.25, $Q_3$ at 9.75.",
       question: "Battery life (shots): 300 180 85 170 380 460 260 35 380 120 110 240. List the five-point summary.",
-      solution: "*Exercise solution prepared for the website.*\n### Sort\n35, 85, 110, 120, 170, 180, 240, 260, 300, 380, 380, 460.\n### Quartiles\nQ₁ position = 13/4 = 3.25 → 110 + 0.25(120 − 110) = **112.5**. Median = (180 + 240)/2 = **210**. Q₃ position = 9.75 → 300 + 0.75(380 − 300) = **360**.\n### Answer\n**Min 35, Q₁ 112.5, Median 210, Q₃ 360, Max 460.**\n(IQR = 247.5; fences −258.75 and 731.25, so no outliers.)",
+      solution: "*Exercise solution prepared for the website.*\n### Sort\n35, 85, 110, 120, 170, 180, 240, 260, 300, 380, 380, 460.\n### Quartiles\n$Q_1$ position = 13/4 = 3.25 → $110 + 0.25 (120 - 110)$ = **112.5**. Median = (180 + 240)/2 = **210**. $Q_3$ position = 9.75 → $300 + 0.75 (380 - 300)$ = **360**.\n### Answer\n**Min 35, $Q_1$ 112.5, Median 210, $Q_3$ 360, Max 460.**\n(IQR = 247.5; fences −258.75 and 731.25, so no outliers.)",
     },
     {
       title: "Practice Q4: quartiles, IQR, outliers, box plot (slide 68)",
       level: "From slides",
-      hint: "n = 20. After sorting, check the two smallest values against Q₁ − 1.5 IQR.",
+      hint: "$n = 20$. After sorting, check the two smallest values against $Q_1 - 1.5$ IQR.",
       question: "Data: 73 78 70 81 79 80 73 48 80 80 78 80 80 79 74 82 80 64 45 82. (a) Quartiles. (b) IQR. (c) Five-number summary. (d) Potential outliers. (e) Box plot and interpretation.",
-      solution: "*Exercise solution prepared for the website.*\n### Sort\n45, 48, 64, 70, 73, 73, 74, 78, 78, 79, 79, 80, 80, 80, 80, 80, 80, 81, 82, 82.\n### (a) Quartiles\nQ₁ position 5.25 → 73 + 0.25(0) = **73**. Median = (79 + 79)/2 = **79**. Q₃ position 15.75 → 80 + 0.75(0) = **80**. Interpretation: 25% of values are ≤ 73, half are ≤ 79, 75% are ≤ 80.\n### (b) IQR\n**80 − 73 = 7**: the middle 50% of the data lies within a 7-unit band.\n### (c) Five-number summary\n**45, 73, 79, 80, 82.**\n### (d) Outliers\nLower fence = 73 − 10.5 = 62.5; upper fence = 80 + 10.5 = 90.5. **45 and 48 are potential outliers** (both are even below Q₁ − 3 IQR = 52, so major outliers).\n### (e) Box plot\nThe median sits close to Q₃ and the lower whisker (down to 64) is much longer, with two outliers on the left. The data is **negatively (left) skewed** (mean 74.3 < median 79; Sk = −1.34).",
+      solution: "*Exercise solution prepared for the website.*\n### Sort\n45, 48, 64, 70, 73, 73, 74, 78, 78, 79, 79, 80, 80, 80, 80, 80, 80, 81, 82, 82.\n### (a) Quartiles\n$Q_1$ position 5.25 → 73 + 0.25(0) = **73**. Median = (79 + 79)/2 = **79**. $Q_3$ position 15.75 → 80 + 0.75(0) = **80**. Interpretation: 25% of values are ≤ 73, half are ≤ 79, 75% are ≤ 80.\n### (b) IQR\n**80 − 73 = 7**: the middle 50% of the data lies within a 7-unit band.\n### (c) Five-number summary\n**45, 73, 79, 80, 82.**\n### (d) Outliers\nLower fence = $73 - 10.5 = 62.5$; upper fence = $80 + 10.5 = 90.5$. **45 and 48 are potential outliers** (both are even below $Q_1 - 3$ IQR = 52, so major outliers).\n### (e) Box plot\nThe median sits close to $Q_3$ and the lower whisker (down to 64) is much longer, with two outliers on the left. The data is **negatively (left) skewed** (mean 74.3 < median 79; Sk = −1.34).",
     },
     {
       title: "Practice Q5: waiting times at two bank branches (slide 69)",
       level: "From slides",
-      hint: "n = 15 for each, so Q₁ is the 4th value and Q₃ the 12th (positions 4 and 12 are whole numbers).",
+      hint: "$n = 15$ for each, so $Q_1$ is the 4th value and $Q_3$ the 12th (positions 4 and 12 are whole numbers).",
       question: "Commercial branch (15 customers): 4.21, 5.55, 3.02, 5.13, 4.77, 2.34, 3.54, 3.20, 4.50, 6.10, 0.38, 5.12, 6.46, 6.19, 3.79. Residential branch: 9.66, 5.90, 8.02, 5.79, 8.73, 3.82, 8.01, 8.35, 10.49, 6.68, 5.64, 4.08, 6.17, 9.91, 5.47. (a) Five-number summaries. (b) Box plots and shape. (c) Similarities and differences.",
-      solution: "*Exercise solution prepared for the website.*\n### Sort\nCommercial: 0.38, 2.34, 3.02, **3.20**, 3.54, 3.79, 4.21, **4.50**, 4.77, 5.12, 5.13, **5.55**, 6.10, 6.19, 6.46.\nResidential: 3.82, 4.08, 5.47, **5.64**, 5.79, 5.90, 6.17, **6.68**, 8.01, 8.02, 8.35, **8.73**, 9.66, 9.91, 10.49.\n### (a) Five-number summaries (Q₁ position 16/4 = 4, median 8, Q₃ 12)\n| Branch | Min | Q₁ | Median | Q₃ | Max |\n|---|---|---|---|---|---|\n| Commercial | 0.38 | 3.20 | 4.50 | 5.55 | 6.46 |\n| Residential | 3.82 | 5.64 | 6.68 | 8.73 | 10.49 |\n### (b) Shape\nCommercial: median − Q₁ = 1.30 > Q₃ − median = 1.05, and the left whisker (2.82) is far longer than the right (0.91) → **left (negatively) skewed** (mean 4.29 < median 4.50). Fences −0.325 and 9.075 → no outliers.\nResidential: Q₃ − median = 2.05 > median − Q₁ = 1.04 → **right (positively) skewed** (mean 7.11 > median 6.68). Fences 1.005 and 13.365 → no outliers.\n### (c) Comparison\nSimilar: both have 15 observations and no outliers. Different: the commercial branch's customers wait **less** (median 4.50 vs 6.68 min) and the **middle 50% is tighter** (IQR 2.35 vs 3.09); the two branches are skewed in opposite directions.",
+      solution: "*Exercise solution prepared for the website.*\n### Sort\nCommercial: 0.38, 2.34, 3.02, **3.20**, 3.54, 3.79, 4.21, **4.50**, 4.77, 5.12, 5.13, **5.55**, 6.10, 6.19, 6.46.\nResidential: 3.82, 4.08, 5.47, **5.64**, 5.79, 5.90, 6.17, **6.68**, 8.01, 8.02, 8.35, **8.73**, 9.66, 9.91, 10.49.\n### (a) Five-number summaries ($Q_1$ position 16/4 = 4, median 8, $Q_3$ 12)\n| Branch | Min | $Q_1$ | Median | $Q_3$ | Max |\n|---|---|---|---|---|---|\n| Commercial | 0.38 | 3.20 | 4.50 | 5.55 | 6.46 |\n| Residential | 3.82 | 5.64 | 6.68 | 8.73 | 10.49 |\n### (b) Shape\nCommercial: median − $Q_1 = 1.30 > Q_3$ − median = 1.05, and the left whisker (2.82) is far longer than the right (0.91) → **left (negatively) skewed** (mean 4.29 < median 4.50). Fences −0.325 and 9.075 → no outliers.\nResidential: $Q_3$ − median = 2.05 > median − $Q_1 = 1.04$ → **right (positively) skewed** (mean 7.11 > median 6.68). Fences 1.005 and 13.365 → no outliers.\n### (c) Comparison\nSimilar: both have 15 observations and no outliers. Different: the commercial branch's customers wait **less** (median 4.50 vs 6.68 min) and the **middle 50% is tighter** (IQR 2.35 vs 3.09); the two branches are skewed in opposite directions.",
     },
     {
       title: "Level 1: mean, median and mode",
       level: "Level 1",
-      hint: "Sort first for the median; n = 7 is odd.",
+      hint: "Sort first for the median; $n = 7$ is odd.",
       question: "Daily cups of tea sold by a stall over a week: 4, 8, 6, 5, 3, 8, 9 (in tens). Find the mean, median and mode.",
-      solution: "### Working\nSum = 43, n = 7 → **mean = 43/7 = 6.14**. Sorted: 3, 4, 5, **6**, 8, 8, 9 → median at position 4 = **6**. 8 appears twice → **mode = 8**.\n### Takeaway\nThe three measures differ (6.14, 6, 8). With only 7 values, don't read too much into the shape.",
+      solution: "### Working\nSum = 43, $n = 7$ → **mean = 43/7 = 6.14**. Sorted: 3, 4, 5, **6**, 8, 8, 9 → median at position 4 = **6**. 8 appears twice → **mode = 8**.\n### Takeaway\nThe three measures differ (6.14, 6, 8). With only 7 values, don't read too much into the shape.",
     },
     {
       title: "Level 1: level of measurement",
@@ -775,14 +1065,14 @@ export default {
       title: "Level 1: range and sample SD",
       level: "Level 1",
       question: "A sample has values 4, 7, 10. Find the range, the sample variance and the sample SD.",
-      solution: "Range = 10 − 4 = **6**. Mean = 7; deviations −3, 0, 3; SS = 18. $s^2 = 18/(3-1) =$ **9**, $s =$ **3**.",
+      solution: "Range = $10 - 4$ = **6**. Mean = 7; deviations −3, 0, 3; SS = 18. $s^2 = 18/(3-1) =$ **9**, $s =$ **3**.",
     },
     {
       title: "Level 2: sample standard deviation",
       level: "Level 2",
-      hint: "Find the mean, then SS, then divide by n − 1 = 5.",
+      hint: "Find the mean, then SS, then divide by $n - 1 = 5$.",
       question: "UPI payments received by a small shop on six random days: 12, 15, 9, 20, 14, 14. Find the mean and sample SD.",
-      solution: "### Working\nMean = 84/6 = **14**. Deviations: −2, 1, −5, 6, 0, 0 → squares 4, 1, 25, 36, 0, 0 → SS = 66.\n$s^2 = 66/5 = 13.2$, **s = 3.63** payments.\n### Takeaway\nIt's a sample of days, so n − 1.",
+      solution: "### Working\nMean = 84/6 = **14**. Deviations: −2, 1, −5, 6, 0, 0 → squares 4, 1, 25, 36, 0, 0 → SS = 66.\n$s^2 = 66/5 = 13.2$, **s = 3.63** payments.\n### Takeaway\nIt's a sample of days, so $n - 1$.",
     },
     {
       title: "Level 2: grouped mean",
@@ -794,14 +1084,14 @@ export default {
       title: "Level 2: empirical relation",
       level: "Level 2",
       question: "A moderately skewed distribution has mean 40 and median 42. Estimate the mode and state the direction of skew.",
-      solution: "$3\\,\\text{Median} = \\text{Mode} + 2\\,\\text{Mean}$ → Mode = 3(42) − 2(40) = **46**. Mean < median < mode → **negatively (left) skewed**.",
+      solution: "$3\\,\\text{Median} = \\text{Mode} + 2\\,\\text{Mean}$ → Mode = $3 (42) - 2 (40)$ = **46**. Mean < median < mode → **negatively (left) skewed**.",
     },
     {
       title: "Level 2: five-number summary and outliers",
       level: "Level 2",
-      hint: "n = 9: Q₁ at position 2.5, Q₃ at 7.5.",
+      hint: "$n = 9$: $Q_1$ at position 2.5, $Q_3$ at 7.5.",
       question: "Delivery times (minutes) for nine food orders: 22, 25, 27, 28, 30, 31, 33, 35, 60. Give the five-number summary and test for outliers.",
-      solution: "### Working\nQ₁ position 2.5 → (25 + 27)/2 = **26**. Median (position 5) = **30**. Q₃ position 7.5 → (33 + 35)/2 = **34**. IQR = 8.\nFences: 26 − 12 = 14 and 34 + 12 = 46. **60 > 46 → outlier**; it is even beyond Q₃ + 3 IQR = 58, so a **major** outlier.\n### Answer\nFive-number summary: **22, 26, 30, 34, 60**; one (major) outlier, 60.",
+      solution: "### Working\n$Q_1$ position 2.5 → (25 + 27)/2 = **26**. Median (position 5) = **30**. $Q_3$ position 7.5 → (33 + 35)/2 = **34**. IQR = 8.\nFences: $26 - 12 = 14$ and $34 + 12 = 46$. **60 > 46 → outlier**; it is even beyond $Q_3 + 3$ IQR = 58, so a **major** outlier.\n### Answer\nFive-number summary: **22, 26, 30, 34, 60**; one (major) outlier, 60.",
     },
     {
       title: "Level 3: which machine is more consistent?",
@@ -813,15 +1103,15 @@ export default {
     {
       title: "Level 3: adding a value equal to the mean",
       level: "Level 3",
-      hint: "SS doesn't change (the new deviation is 0), but n − 1 does.",
+      hint: "SS doesn't change (the new deviation is 0), but $n - 1$ does.",
       question: "A sample of 5 values has mean 10 and SD 2. A sixth value, 10, is added. Find the new mean and new SD.",
-      solution: "### Working\nOld SS = $s^2(n-1) = 4 × 4 = 16$. The new value equals the mean, so the mean stays **10** and its deviation is 0: SS stays 16.\nNew $s^2 = 16/(6-1) = 3.2$, **new s = 1.79**.\n### Takeaway\nAdding a value at the centre **reduces** the SD: same total squared deviation, shared among more degrees of freedom.",
+      solution: "### Working\nOld SS = $s^2(n-1) = 4 × 4 = 16$. The new value equals the mean, so the mean stays **10** and its deviation is 0: SS stays 16.\nNew $s^2 = 16/(6-1) = 3.2$, **new $s = 1.79$**.\n### Takeaway\nAdding a value at the centre **reduces** the SD: same total squared deviation, shared among more degrees of freedom.",
     },
     {
       title: "Level 3: coefficient of skewness both ways",
       level: "Level 3",
       question: "A distribution has mean 52, median 50 and SD 12. (a) Find the coefficient of skewness using the median. (b) Estimate the mode with the empirical relation and recompute the coefficient using the mode. Comment.",
-      solution: "(a) $Sk = 3(52 - 50)/12 = 6/12 =$ **0.5** (positive skew).\n(b) Mode = 3(50) − 2(52) = **46**; $Sk = (52 - 46)/12 =$ **0.5**.\n**Comment:** the two formulas agree exactly here, because the mode was estimated with the empirical relation, which is what links them. The positive value means a longer right tail.",
+      solution: "(a) $Sk = 3(52 - 50)/12 = 6/12 =$ **0.5** (positive skew).\n(b) Mode = $3 (50) - 2 (52)$ = **46**; $Sk = (52 - 46)/12 =$ **0.5**.\n**Comment:** the two formulas agree exactly here, because the mode was estimated with the empirical relation, which is what links them. The positive value means a longer right tail.",
     },
   ],
 
@@ -830,7 +1120,7 @@ export default {
       title: "Why is the mean not enough?",
       level: "Level 1",
       question: "Using the slides' two groups, explain why a measure of central tendency alone cannot describe a data set.",
-      solution: "### What the examiner wants\nThe idea of variability, with the slide example.\n### Model answer\nGroups X₁ (2, 8, 5, 3, 7, 8, 5, 2, 5) and X₂ (1, 15, 5, 5, 6, 3, 5, 2, 3) both have **mean = median = mode = 5**, yet X₂ is far more scattered (S = 4.093 vs 2.345). A centre tells you *where* the data is, not *how spread* it is. So we also need measures of variability: range, variance and standard deviation.\n### Takeaway\nAlways report centre **and** spread.",
+      solution: "### What the examiner wants\nThe idea of variability, with the slide example.\n### Model answer\nGroups $X_1$ (2, 8, 5, 3, 7, 8, 5, 2, 5) and $X_2$ (1, 15, 5, 5, 6, 3, 5, 2, 3) both have **mean = median = mode = 5**, yet $X_2$ is far more scattered ($S = 4.093$ vs 2.345). A centre tells you *where* the data is, not *how spread* it is. So we also need measures of variability: range, variance and standard deviation.\n### Takeaway\nAlways report centre **and** spread.",
     },
     {
       title: "Which measure of centre?",
@@ -841,8 +1131,8 @@ export default {
     {
       title: "Why divide by n − 1?",
       level: "Level 2",
-      question: "Explain why the sample variance uses n − 1 rather than n, and define degrees of freedom.",
-      solution: "### Model answer\nSamples systematically have **less variability** than the population (extreme scores are less likely to be included), so dividing SS by n gives a **biased, too-small** estimate of the population variance. Dividing by **n − 1** corrects this (slides 50–51).\n**Degrees of freedom** = the number of scores that are independent and free to vary. Once $\\bar X$ is computed from the sample, the deviations must sum to zero, so only n − 1 of them are free: **df = n − 1** (slide 52).",
+      question: "Explain why the sample variance uses $n - 1$ rather than n, and define degrees of freedom.",
+      solution: "### Model answer\nSamples systematically have **less variability** than the population (extreme scores are less likely to be included), so dividing SS by n gives a **biased, too-small** estimate of the population variance. Dividing by **n − 1** corrects this (slides 50–51).\n**Degrees of freedom** = the number of scores that are independent and free to vary. Once $\\bar X$ is computed from the sample, the deviations must sum to zero, so only $n - 1$ of them are free: **df = $n - 1$** (slide 52).",
     },
     {
       title: "Range vs IQR vs SD",
@@ -854,7 +1144,7 @@ export default {
       title: "Reading a box plot",
       level: "Level 2",
       question: "What can you read from a box-and-whisker plot? How do you tell the direction of skew from it?",
-      solution: "It shows the **five-number summary** (min, Q₁, median, Q₃, max), the **IQR** (box length), and **outliers** (points beyond Q₁ − 1.5 IQR or Q₃ + 1.5 IQR). **Skew:** median near the centre of the box with equal whiskers → symmetric; median nearer Q₃ with a longer **left** whisker → **negative** skew; median nearer Q₁ with a longer **right** whisker → **positive** skew (slide 63).",
+      solution: "It shows the **five-number summary** (min, $Q_1$, median, $Q_3$, max), the **IQR** (box length), and **outliers** (points beyond $Q_1 - 1.5$ IQR or $Q_3 + 1.5$ IQR). **Skew:** median near the centre of the box with equal whiskers → symmetric; median nearer $Q_3$ with a longer **left** whisker → **negative** skew; median nearer $Q_1$ with a longer **right** whisker → **positive** skew (slide 63).",
     },
   ],
 
@@ -886,10 +1176,10 @@ export default {
     {
       topic: "Centre",
       type: "num",
-      q: "Grouped data: score 1 (f = 104), 2 (f = 130), 3 (f = 98). Mean to 2 decimals?",
+      q: "Grouped data: score 1 $(f = 104)$, 2 $(f = 130)$, 3 $(f = 98)$. Mean to 2 decimals?",
       answer: 1.98,
       tol: 0.01,
-      why: "ΣfY = 104 + 260 + 294 = 658; N = 332; 658/332 = 1.98.",
+      why: "ΣfY = $104 + 260 + 294 = 658$; $N = 332$; 658/332 = 1.98.",
     },
     {
       topic: "Centre",
@@ -897,7 +1187,7 @@ export default {
       q: "Median of 29, 31, 35, 39, 39, 40, 43, 44, 44, 52?",
       answer: 39.5,
       tol: 0.01,
-      why: "n = 10 (even): average of 5th and 6th values, (39 + 40)/2.",
+      why: "$n = 10$ (even): average of 5th and 6th values, (39 + 40)/2.",
     },
     {
       topic: "Centre",
@@ -921,7 +1211,7 @@ export default {
       q: "Moderately skewed data: mean 40, median 42. Estimate the mode using 3 Median = Mode + 2 Mean.",
       answer: 46,
       tol: 0.01,
-      why: "Mode = 3(42) − 2(40) = 46.",
+      why: "Mode = $3 (42) - 2 (40) = 46$.",
     },
     {
       topic: "Spread",
@@ -929,7 +1219,7 @@ export default {
       q: "A sample of four scores has SS = 24. What is the variance?",
       answer: 8,
       tol: 0.01,
-      why: "Sample: s² = SS/(n − 1) = 24/3 = 8.",
+      why: "Sample: $s^2$ = SS/$(n - 1) = 24/3 = 8$.",
     },
     {
       topic: "Spread",
@@ -937,7 +1227,7 @@ export default {
       options: ["1", "0", "Equal to the mean", "Undefined"],
       answer: 1,
       why: "Every deviation from the mean is 0, so SS = 0 and SD = 0.",
-      wrong: ["There's no spread at all, so it can't be 1.", null, "SD measures spread, not location.", "√0 = 0 is perfectly defined."],
+      wrong: ["There's no spread at all, so it can't be 1.", null, "SD measures spread, not location.", "$\\sqrt{0} = 0$ is perfectly defined."],
     },
     {
       topic: "Spread",
@@ -945,7 +1235,7 @@ export default {
       q: "Group 1: 2, 8, 5, 3, 7, 8, 5, 2, 5 (SS = 44). Sample SD to 3 decimals?",
       answer: 2.345,
       tol: 0.002,
-      why: "s = √(44/8) = √5.5 = 2.345.",
+      why: "$s = \\sqrt{44/8} = \\sqrt{5.5} = 2.345$.",
     },
     {
       topic: "Spread",
@@ -961,19 +1251,19 @@ export default {
       q: "Ordered data 11, 12, 13, 16, 16, 17, 17, 18, 21. IQR?",
       answer: 5,
       tol: 0.01,
-      why: "Q₁ at position 2.5 = 12.5; Q₃ at 7.5 = 17.5; IQR = 5.",
+      why: "$Q_1$ at position 2.5 = 12.5; $Q_3$ at 7.5 = 17.5; IQR = 5.",
     },
     {
       topic: "Five-number summary",
       type: "num",
-      q: "Q₁ = 73, Q₃ = 80. What is the lower outlier limit Q₁ − 1.5 IQR?",
+      q: "$Q_1 = 73$, $Q_3 = 80$. What is the lower outlier limit $Q_1 - 1.5$ IQR?",
       answer: 62.5,
       tol: 0.01,
-      why: "IQR = 7; 73 − 10.5 = 62.5.",
+      why: "IQR = 7; $73 - 10.5 = 62.5$.",
     },
     {
       topic: "Five-number summary",
-      q: "In a box plot the median is close to Q₁ and the right whisker is much longer. The data is…",
+      q: "In a box plot the median is close to $Q_1$ and the right whisker is much longer. The data is…",
       options: ["Negatively skewed", "Symmetric", "Positively skewed", "Has no outliers"],
       answer: 2,
       why: "The long right side (tail) means positive skew.",
@@ -985,7 +1275,7 @@ export default {
       options: ["Range", "Variance", "Standard deviation", "Interquartile range"],
       answer: 3,
       why: "The IQR uses only the middle 50%.",
-      wrong: ["Range is literally max − min.", "Squaring makes extremes count even more.", "SD is √variance, so it's affected too.", null],
+      wrong: ["Range is literally $\\max - \\min$.", "Squaring makes extremes count even more.", "SD is √variance, so it's affected too.", null],
     },
   ],
 };

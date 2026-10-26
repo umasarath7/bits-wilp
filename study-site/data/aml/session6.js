@@ -34,7 +34,7 @@ export default {
         },
         {
           type: "p",
-          text: "**Linear vs non-linear classifiers (slide 5).** A **linear classifier** separates the classes with a flat surface: a straight line in 2-D. It computes a weighted sum of the features, and if $\\sum_i w_i x_i \\ge 0$ it predicts one class (y = 1), otherwise the other (y = 0 or −1). The weights $w_i$ are learnt during training and applied during inference. A **non-linear** classifier separates the classes with a curved surface.",
+          text: "**Linear vs non-linear classifiers (slide 5).** A **linear classifier** separates the classes with a flat surface: a straight line in 2-D. It computes a weighted sum of the features, and if $\\sum_i w_i x_i \\ge 0$ it predicts one class $(y = 1)$, otherwise the other ($y = 0$ or −1). The weights $w_i$ are learnt during training and applied during inference. A **non-linear** classifier separates the classes with a curved surface.",
         },
         {
           type: "p",
@@ -78,7 +78,7 @@ export default {
         { type: "diagram", name: "s6-tree" },
         {
           type: "p",
-          text: "**Word problems (revision deck Q4).** When a question gives you some probabilities and asks for the reverse, write down what's known first: P(A), P(B), P(A | B). Then flip with $P(B \\mid A) = P(A \\mid B)P(B)/P(A)$. Example: Vijay has a 60% chance of a Google offer (G) and 50% of a Microsoft offer (M), and $P(G \\mid M) = 0.8$. Then $P(M \\mid G) = 0.8 \\times 0.5 / 0.6 = 0.667$.",
+          text: "**Word problems (revision deck Q4).** When a question gives you some probabilities and asks for the reverse, write down what's known first: $P(A)$, $P(B)$, $P(A \\mid B)$. Then flip with $P(B \\mid A) = P(A \\mid B)P(B)/P(A)$. Example: Vijay has a 60% chance of a Google offer (G) and 50% of a Microsoft offer (M), and $P(G \\mid M) = 0.8$. Then $P(M \\mid G) = 0.8 \\times 0.5 / 0.6 = 0.667$.",
         },
       ],
     },
@@ -189,21 +189,21 @@ export default {
           ordered: true,
           items: [
             "**Discretise:** split the range into bins (low / medium / high), turning the attribute into an ordinal one, then count as usual.",
-            "**Assume a normal (Gaussian) distribution for each class:** compute the class's mean μ and variance σ² from the training data, then use the bell-curve formula to get a likelihood for the test value.",
+            "**Assume a normal (Gaussian) distribution for each class:** compute the class's mean $\\mu$ and variance $\\sigma^2$ from the training data, then use the bell-curve formula to get a likelihood for the test value.",
           ],
         },
         {
           type: "callout",
           kind: "formula",
           title: "Gaussian likelihood",
-          text: "$$P(X_i = x \\mid y) = \\frac{1}{\\sqrt{2\\pi\\sigma_y^2}} \\exp\\!\\left( -\\frac{(x - \\mu_y)^2}{2\\sigma_y^2} \\right)$$\n\n$\\mu_y$ and $\\sigma_y^2$ are the mean and variance of attribute $X_i$ within class y. **Watch out** whether a question gives the standard deviation σ or the variance σ².\n\nIt's a *density*, not a probability, so it can exceed 1 for very narrow distributions. That's fine: we only compare classes.",
+          text: "$$P(X_i = x \\mid y) = \\frac{1}{\\sqrt{2\\pi\\sigma_y^2}} \\exp\\!\\left( -\\frac{(x - \\mu_y)^2}{2\\sigma_y^2} \\right)$$\n\n$\\mu_y$ and $\\sigma_y^2$ are the mean and variance of attribute $X_i$ within class y. **Watch out** whether a question gives the standard deviation $\\sigma$ or the variance $\\sigma^2$.\n\nIt's a *density*, not a probability, so it can exceed 1 for very narrow distributions. That's fine: we only compare classes.",
         },
         { type: "diagram", name: "s6-gauss" },
         {
           type: "callout",
           kind: "example",
           title: "The slide-24 tax-evasion example",
-          text: "Test record: Refund = No, Married status = Divorced, Income = 120K. Class statistics for income: **No**: μ = 110, σ² = 2975; **Yes**: μ = 90, σ² = 25.\n\n- $P(\\text{Income} = 120 \\mid \\text{No}) = \\frac{1}{\\sqrt{2\\pi \\cdot 2975}} e^{-(120-110)^2/(2 \\cdot 2975)} = 0.0072$\n- $P(\\text{Income} = 120 \\mid \\text{Yes}) = \\frac{1}{\\sqrt{2\\pi \\cdot 25}} e^{-(120-90)^2/50} = 1.2 \\times 10^{-9}$ (120 is 6 standard deviations from 90)\n\nThen:\n- $P(X \\mid \\text{No}) = \\frac47 \\times \\frac17 \\times 0.0072 = 0.0006$\n- $P(X \\mid \\text{Yes}) = 1 \\times \\frac13 \\times 1.2 \\times 10^{-9} = 4 \\times 10^{-10}$\n\nSince $P(X \\mid \\text{No})P(\\text{No}) \\gg P(X \\mid \\text{Yes})P(\\text{Yes})$, the class is **No**.",
+          text: "Test record: Refund = No, Married status = Divorced, Income = 120K. Class statistics for income: **No**: $\\mu = 110$, $\\sigma^2 = 2975$; **Yes**: $\\mu = 90$, $\\sigma^2 = 25$.\n\n- $P(\\text{Income} = 120 \\mid \\text{No}) = \\frac{1}{\\sqrt{2\\pi \\cdot 2975}} e^{-(120-110)^2/(2 \\cdot 2975)} = 0.0072$\n- $P(\\text{Income} = 120 \\mid \\text{Yes}) = \\frac{1}{\\sqrt{2\\pi \\cdot 25}} e^{-(120-90)^2/50} = 1.2 \\times 10^{-9}$ (120 is 6 standard deviations from 90)\n\nThen:\n- $P(X \\mid \\text{No}) = \\frac47 \\times \\frac17 \\times 0.0072 = 0.0006$\n- $P(X \\mid \\text{Yes}) = 1 \\times \\frac13 \\times 1.2 \\times 10^{-9} = 4 \\times 10^{-10}$\n\nSince $P(X \\mid \\text{No})P(\\text{No}) \\gg P(X \\mid \\text{Yes})P(\\text{Yes})$, the class is **No**.",
         },
         {
           type: "callout",
@@ -271,11 +271,11 @@ export default {
           type: "callout",
           kind: "formula",
           title: "Laplace smoothing for words",
-          text: "$$P(w \\mid c) = \\frac{\\text{count}(w, c) + 1}{\\text{total words in class } c + |V|}$$\n\n$|V|$ = vocabulary size (number of distinct words across all training text). Here Sports has 11 words, Not sports has 9, and $|V| = 14$: {a, great, very, over, it, but, game, election, clean, close, the, was, forgettable, match}.\n\n| Word | P(word \\| Sports) | P(word \\| Not sports) |\n|---|---|---|\n| a | (2+1)/(11+14) = 3/25 | (1+1)/(9+14) = 2/23 |\n| very | (1+1)/25 = 2/25 | (0+1)/23 = 1/23 |\n| close | (0+1)/25 = 1/25 | (1+1)/23 = 2/23 |\n| game | (2+1)/25 = 3/25 | (0+1)/23 = 1/23 |",
+          text: "$$P(w \\mid c) = \\frac{\\text{count}(w, c) + 1}{\\text{total words in class } c + |V|}$$\n\n$|V|$ = vocabulary size (number of distinct words across all training text). Here Sports has 11 words, Not sports has 9, and $|V| = 14$: {a, great, very, over, it, but, game, election, clean, close, the, was, forgettable, match}.\n\n| Word | P(word \\| Sports) | P(word \\| Not sports) |\n|---|---|---|\n| a | $(2 + 1)/(11 + 14) = 3/25$ | $(1 + 1)/(9 + 14) = 2/23$ |\n| very | $(1 + 1)/25 = 2/25$ | $(0 + 1)/23 = 1/23$ |\n| close | $(0 + 1)/25 = 1/25$ | $(1 + 1)/23 = 2/23$ |\n| game | $(2 + 1)/25 = 3/25$ | $(0 + 1)/23 = 1/23$ |",
         },
         {
           type: "p",
-          text: "Multiplying out (Numerical Q3): Sports ≈ 2.76 × 10⁻⁵, Not sports ≈ 5.72 × 10⁻⁶, so **Sports**, with a posterior of about 0.83.",
+          text: "Multiplying out (Numerical Q3): Sports ≈ $2.76 \\times 10^{-5}$, Not sports ≈ $5.72 \\times 10^{-6}$, so **Sports**, with a posterior of about 0.83.",
         },
         {
           type: "p",
@@ -285,7 +285,7 @@ export default {
           type: "callout",
           kind: "remember",
           title: "The whole session in six lines",
-          text: "1. Generative models learn P(x | y) and P(y) (Naïve Bayes); discriminative models learn P(y | x) or the boundary (logistic regression, SVM).\n2. Bayes: posterior = likelihood × prior / evidence. A high likelihood can still give a low posterior if the prior is small (false-positive paradox).\n3. MAP: pick the class maximising P(X | y)P(y); P(X) can be ignored. Full Bayes needs joint counts, which fragment to zero.\n4. Naïve assumption: attributes conditionally independent given the class, so $P(X \\mid y) = \\prod P(X_i \\mid y)$.\n5. Estimate by counting ($n_c/n$); continuous attributes by binning or a per-class Gaussian. Recipe: priors → query likelihoods → products → normalise → state the class.\n6. A zero count kills the product: Laplace $(n_c + 1)/(n + v)$. Text: bag of words, $(\\text{count} + 1)/(\\text{words in class} + |V|)$.",
+          text: "1. Generative models learn $P(x \\mid y)$ and $P(y)$ (Naïve Bayes); discriminative models learn $P(y \\mid x)$ or the boundary (logistic regression, SVM).\n2. Bayes: posterior = likelihood × prior / evidence. A high likelihood can still give a low posterior if the prior is small (false-positive paradox).\n3. MAP: pick the class maximising $P(X \\mid y) P(y)$; $P(X)$ can be ignored. Full Bayes needs joint counts, which fragment to zero.\n4. Naïve assumption: attributes conditionally independent given the class, so $P(X \\mid y) = \\prod P(X_i \\mid y)$.\n5. Estimate by counting ($n_c/n$); continuous attributes by binning or a per-class Gaussian. Recipe: priors → query likelihoods → products → normalise → state the class.\n6. A zero count kills the product: Laplace $(n_c + 1)/(n + v)$. Text: bag of words, $(\\text{count} + 1)/(\\text{words in class} + |V|)$.",
         },
       ],
     },
@@ -295,14 +295,14 @@ export default {
     ["x, y", "Attribute set, class label", "The record's features, and the category to predict"],
     ["Induction / deduction", "Training / inference", "Learning the model; applying it to new records"],
     ["Linear classifier", "—", "Separates classes with a flat boundary: predict 1 if $\\sum w_i x_i \\ge 0$"],
-    ["Generative model", "—", "Learns P(x | y) and P(y), classifies with Bayes (Naïve Bayes)"],
-    ["Discriminative model", "—", "Learns P(y | x) or the boundary directly (logistic regression, SVM)"],
-    ["P(A | B)", "Conditional probability", "Probability of A given that B happened: P(A, B)/P(B)"],
-    ["P(A, B)", "Joint probability", "Probability that A and B both happen"],
-    ["Prior P(y)", "—", "How common the class is before seeing the evidence"],
-    ["Likelihood P(x | y)", "—", "How probable the evidence is if the class is y"],
-    ["Evidence P(x)", "—", "How probable the evidence is overall (same for every class)"],
-    ["Posterior P(y | x)", "—", "How probable the class is after seeing the evidence"],
+    ["Generative model", "—", "Learns $P(x \\mid y)$ and $P(y)$, classifies with Bayes (Naïve Bayes)"],
+    ["Discriminative model", "—", "Learns $P(y \\mid x)$ or the boundary directly (logistic regression, SVM)"],
+    ["$P(A \\mid B)$", "Conditional probability", "Probability of A given that B happened: $P(A, B)/P(B)$"],
+    ["$P(A, B)$", "Joint probability", "Probability that A and B both happen"],
+    ["Prior $P(y)$", "—", "How common the class is before seeing the evidence"],
+    ["Likelihood $P(x \\mid y)$", "—", "How probable the evidence is if the class is y"],
+    ["Evidence $P(x)$", "—", "How probable the evidence is overall (same for every class)"],
+    ["Posterior $P(y \\mid x)$", "—", "How probable the class is after seeing the evidence"],
     ["MAP", "Maximum A Posteriori", "Pick the class with the highest posterior"],
     ["arg max", "Argument of the maximum", "The value that makes an expression largest"],
     ["Chain rule", "—", "$P(a, b, c \\mid m) = P(a \\mid m)P(b \\mid a, m)P(c \\mid a, b, m)$"],
@@ -311,7 +311,7 @@ export default {
     ["Π", "Capital pi", "“Multiply all of these together”"],
     ["$n$, $n_c$", "—", "Records in the class; those with the attribute value c"],
     ["$v$", "—", "Number of distinct values an attribute can take"],
-    ["μ, σ²", "Mean, variance", "Parameters of the per-class Gaussian for a continuous attribute"],
+    ["$\\mu$, $\\sigma^2$", "Mean, variance", "Parameters of the per-class Gaussian for a continuous attribute"],
     ["Gaussian NB", "—", "Naïve Bayes using a normal density for continuous attributes"],
     ["Laplace smoothing", "Add-one smoothing", "$(n_c + 1)/(n + v)$: avoids zero probabilities"],
     ["m-estimate", "—", "$(n_c + mp)/(n + m)$: general smoothing with prior guess p"],
@@ -323,9 +323,9 @@ export default {
   examTips: [
     "**NB appears in almost every paper** (PYQ Q3 loan approval, 5 marks; revision Q1). Layout: (1) priors, (2) a table of the likelihoods needed for the query only, (3) products per class, (4) normalised posteriors, (5) the predicted class.",
     "Always **say explicitly** if a zero probability appears, and mention that Laplace smoothing would fix it. Examiners reward this.",
-    "For Bayes-theorem word problems (revision Q4, Vijay's job offers), write P(A), P(B), P(A | B) first, then apply $P(B \\mid A) = P(A \\mid B)P(B)/P(A)$.",
-    "Gaussian NB: compute the class mean and **variance**, then plug into the normal pdf. Watch whether the question gives σ or σ².",
-    "Keep fractions until the last step (e.g. 2/9 × 4/9…). It's faster and avoids rounding errors.",
+    "For Bayes-theorem word problems (revision Q4, Vijay's job offers), write $P(A)$, $P(B)$, $P(A \\mid B)$ first, then apply $P(B \\mid A) = P(A \\mid B)P(B)/P(A)$.",
+    "Gaussian NB: compute the class mean and **variance**, then plug into the normal pdf. Watch whether the question gives $\\sigma$ or $\\sigma^2$.",
+    "Keep fractions until the last step (e.g. $2/9 \\times 4/9$…). It's faster and avoids rounding errors.",
   ],
 
   problems: [
@@ -421,7 +421,7 @@ $$P(X_i = c \\mid y) = \\frac{n_c}{n} \\quad \\text{(plain)}, \\qquad \\frac{n_c
 ### Working
 **Priors:** $P(C1) = 5/8 = 0.625$, $P(C2) = 3/8 = 0.375$
 
-| | C1 (n = 5) | C2 (n = 3) |
+| | C1 $(n = 5)$ | C2 $(n = 3)$ |
 |---|---|---|
 | P(short \\| ·) | 2/5 = 0.4 | 1/3 = 0.333 |
 | P(dark \\| ·) | 3/5 = 0.6 | 0/3 = **0** |
@@ -436,7 +436,7 @@ Plain NB: **X → C1**. C2 scores 0 because dark hair and brown eyes never occur
 - $P(C1 \\mid X) = 0.0765/(0.0765 + 0.0050) = 0.94$
 
 ### Answer
-**C1** both ways. With smoothing, P(C1 | X) = **0.94** and C2 gets a small non-zero probability.
+**C1** both ways. With smoothing, $P(C_1 \\mid X)$ = **0.94** and C2 gets a small non-zero probability.
 
 ### Takeaway
 Always point out the zeros in the exam and mention Laplace. Here it didn't change the winner, but it replaced a false “certainty” with a sensible probability.`,
@@ -445,7 +445,7 @@ Always point out the zeros in the exam and mention Laplace. Here it didn't chang
       title: "Text classification with Laplace smoothing",
       level: "Medium",
       marks: 5,
-      hint: "Use the smoothed table from Lesson 7. Multiply the four word probabilities and the prior for each class. Keep it as fractions: 3·2·1·3 over 25⁴ is quicker than decimals.",
+      hint: "Use the smoothed table from Lesson 7. Multiply the four word probabilities and the prior for each class. Keep it as fractions: $3 \\cdot 2 \\cdot 1 \\cdot 3$ over $25^4$ is quicker than decimals.",
       question:
         "Using the 5 training sentences in Lesson 7 (3 Sports, 2 Not sports), classify **“A very close game”** with multinomial Naïve Bayes and Laplace smoothing. (Sports has 11 words, Not sports has 9, and the vocabulary is 14 words.)",
       solution: `
@@ -483,9 +483,9 @@ Without smoothing, one unseen word (“close”) would have wiped out Sports ent
       pyq: "Revision deck Q4",
       level: "Easy",
       marks: 3,
-      hint: "Write down P(G), P(M) and P(G | M) first. (a) is just the complement of P(G | M). (b) flips it with Bayes.",
+      hint: "Write down $P(G)$, $P(M)$ and $P(G \\mid M)$ first. (a) is just the complement of $P(G \\mid M)$. (b) flips it with Bayes.",
       question:
-        "Vijay estimates a 60% chance of an offer from Google (G) and 50% from Microsoft (M). If he gets an offer from M, he believes there's an 80% chance of one from G. (a) If he gets an M offer, what is the probability he does NOT get a G offer? (b) What is P(M | G)?",
+        "Vijay estimates a 60% chance of an offer from Google (G) and 50% from Microsoft (M). If he gets an offer from M, he believes there's an 80% chance of one from G. (a) If he gets an M offer, what is the probability he does NOT get a G offer? (b) What is $P(M \\mid G)$?",
       solution: `
 ### What is being asked
 A direct application of conditional probability and Bayes' theorem (Lesson 2).
@@ -504,13 +504,13 @@ Given: $P(G) = 0.6$, $P(M) = 0.5$, $P(G \\mid M) = 0.8$
 (a) **0.2** (b) **0.667**
 
 ### Takeaway
-P(G | M) = 0.8 but P(M | G) = 0.667. Conditional probabilities are not symmetric; Bayes' theorem converts one into the other using the priors.`,
+$P(G \\mid M) = 0.8$ but $P(M \\mid G) = 0.667$. Conditional probabilities are not symmetric; Bayes' theorem converts one into the other using the priors.`,
     },
     {
       title: "The false-positive paradox",
       level: "Medium",
       marks: 4,
-      hint: "First find P(+) by adding the positives from the ill and the healthy groups. Then P(D | +) = P(+ | D)P(D) / P(+). Picturing 10,000 people helps.",
+      hint: "First find P(+) by adding the positives from the ill and the healthy groups. Then P(D | +) = P(+ | D)$P(D)$ / P(+). Picturing 10,000 people helps.",
       question:
         "A disease affects 1% of people. A test has sensitivity P(+|D) = 0.95 and false-positive rate P(+|¬D) = 0.05. (a) A person tests positive. What is P(D|+)? (b) Explain the result in terms of prior and likelihood.",
       solution: `
@@ -539,9 +539,9 @@ This is why a positive screening test is usually followed by a second, more spec
       title: "Gaussian Naïve Bayes (continuous attributes)",
       level: "Hard",
       marks: 6,
-      hint: "Compute four densities: height and weight, for each class. For each, work out (x − μ)²/(2σ²) first, then e to the minus that, then divide by √(2π)·σ.",
+      hint: "Compute four densities: height and weight, for each class. For each, work out $(x - \\mu)^2/(2 \\sigma^2)$ first, then e to the minus that, then divide by $\\sqrt{2 \\pi} \\cdot \\sigma$.",
       question:
-        "Classify a person with height 172 cm and weight 70 kg as Male or Female (equal priors). Class statistics: Male: height μ = 175, σ = 6; weight μ = 75, σ = 8. Female: height μ = 162, σ = 5; weight μ = 58, σ = 6. Use $f(x) = \\frac{1}{\\sqrt{2\\pi}\\sigma}e^{-(x-\\mu)^2/2\\sigma^2}$.",
+        "Classify a person with height 172 cm and weight 70 kg as Male or Female (equal priors). Class statistics: Male: height $\\mu = 175$, $\\sigma = 6$; weight $\\mu = 75$, $\\sigma = 8$. Female: height $\\mu = 162$, $\\sigma = 5$; weight $\\mu = 58$, $\\sigma = 6$. Use $f(x) = \\frac{1}{\\sqrt{2\\pi}\\sigma}e^{-(x-\\mu)^2/2\\sigma^2}$.",
       solution: `
 ### What is being asked
 Naïve Bayes with continuous attributes using per-class normal densities (Lesson 5).
@@ -577,7 +577,7 @@ $$f(x) = \\frac{1}{\\sqrt{2\\pi}\\,\\sigma} \\exp\\!\\left(-\\frac{(x - \\mu)^2}
       level: "Hard",
       marks: 5,
       hint: "Meningitis patients are 5, 8 and 10. For each symptom in the query, count within those 3, and within the other 7.",
-      question: `Using the 10-patient table (slides 11–13), classify the query **h = T, f = F, v = T** with **Naïve Bayes**, and compare with the full-Bayes answer P(m|…) = 0.33.
+      question: `Using the 10-patient table (slides 11–13), classify the query **h = T, $f = F$, $v = T$** with **Naïve Bayes**, and compare with the full-Bayes answer P(m|…) = 0.33.
 
 | ID | H | F | V | M |
 |---|---|---|---|---|
@@ -603,15 +603,15 @@ NB needs only single-symptom counts within each class, instead of the chain rule
 
 | | m (5, 8, 10) | ¬m (1, 2, 3, 4, 6, 7, 9) |
 |---|---|---|
-| P(h = T \\| ·) | 2/3 | 5/7 |
-| P(f = F \\| ·) | 2/3 | 4/7 |
-| P(v = T \\| ·) | 2/3 | 4/7 |
+| P($h = T$ \\| ·) | 2/3 | 5/7 |
+| P($f = F$ \\| ·) | 2/3 | 4/7 |
+| P($v = T$ \\| ·) | 2/3 | 4/7 |
 | Score = product × prior | $(2/3)^3 \\times 0.3 = 0.0889$ | $\\frac{5 \\cdot 4 \\cdot 4}{343} \\times 0.7 = 0.1633$ |
 
 $P(m \\mid q) = 0.0889/(0.0889 + 0.1633) = 0.35$
 
 ### Answer
-**No meningitis** predicted; NB gives P(m | q) = **0.35**, very close to full Bayes (0.33).
+**No meningitis** predicted; NB gives $P(m \\mid q)$ = **0.35**, very close to full Bayes (0.33).
 
 ### Takeaway
 NB got almost the same answer using only single-attribute counts. Full Bayes needs joint counts that fragment to 0: for the query (h, f, ¬v) it gave exactly 0.`,
@@ -713,11 +713,11 @@ Independence given the class is a simplification, not a fact, and a very useful 
 
   quiz: [
     { q: "Naïve Bayes assumes the features are:", options: ["Independent", "Conditionally independent given the class", "Normally distributed", "Equally important"], answer: 1, why: "$P(X_1..X_d|y) = \\prod P(X_i|y)$." },
-    { q: "In MAP classification we can ignore P(X) because:", options: ["It is always 1", "It is the same for all classes", "It is zero", "It is unknown"], answer: 1, why: "The evidence is a common denominator." },
+    { q: "In MAP classification we can ignore $P(X)$ because:", options: ["It is always 1", "It is the same for all classes", "It is zero", "It is unknown"], answer: 1, why: "The evidence is a common denominator." },
     { q: "Laplace-smoothed estimate for a word never seen in a class of 11 words with vocabulary 14:", options: ["0", "1/11", "1/25", "1/14"], answer: 2, why: "(0+1)/(11+14)." },
-    { q: "Naïve Bayes is a:", options: ["Discriminative model", "Generative model", "Instance-based model", "Unsupervised model"], answer: 1, why: "It models P(x|y) and P(y)." },
+    { q: "Naïve Bayes is a:", options: ["Discriminative model", "Generative model", "Instance-based model", "Unsupervised model"], answer: 1, why: "It models $P(x \\mid y)$ and $P(y)$." },
     { q: "For a continuous attribute, NB commonly assumes:", options: ["A uniform distribution", "A Gaussian per class", "A Poisson distribution", "No distribution"], answer: 1, why: "Estimate the class mean/variance, then use the normal pdf." },
-    { q: "P(G|M) = 0.8, P(M) = 0.5, P(G) = 0.6. P(M|G) is:", options: ["0.4", "0.667", "0.8", "0.48"], answer: 1, why: "0.8 × 0.5 / 0.6." },
+    { q: "$P(G \\mid M) = 0.8$, $P(M) = 0.5$, $P(G) = 0.6$. $P(M \\mid G)$ is:", options: ["0.4", "0.667", "0.8", "0.48"], answer: 1, why: "$0.8 \\times 0.5/0.6$." },
     { q: "“Data fragmentation” in full Bayes refers to:", options: ["Missing values", "Joint conditions leaving too few matching records", "Too many classes", "Overlapping classes"], answer: 1, why: "The chain rule narrows the subset until counts become 0." },
     { q: "Which is TRUE of Naïve Bayes?", options: ["Needs a lot of training data", "Is slow to train", "Works well for text classification", "Always gives calibrated probabilities"], answer: 2, why: "The bag-of-words NB is a classic, strong baseline." },
     { q: "A disease has prior 1% and a test with 95% sensitivity and 5% false positives. P(disease | positive) is about:", options: ["95%", "50%", "16%", "5%"], answer: 2, why: "95 true positives vs 495 false positives out of 10,000 people." },

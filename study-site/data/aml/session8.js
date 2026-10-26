@@ -61,7 +61,7 @@ export default {
         },
         {
           type: "p",
-          text: "**Bayes' theorem word problem (Q4).** *What it tests:* translating English into probability notation. *Approach:* write down every given as P(·): P(G) = 0.6, P(M) = 0.5, P(G | M) = 0.8. “Does not get G, given M” is the complement, $1 - P(G \\mid M)$. “M given G” needs Bayes: $P(M \\mid G) = P(G \\mid M)P(M)/P(G)$.",
+          text: "**Bayes' theorem word problem (Q4).** *What it tests:* translating English into probability notation. *Approach:* write down every given as P(·): $P(G) = 0.6$, $P(M) = 0.5$, $P(G \\mid M) = 0.8$. “Does not get G, given M” is the complement, $1 - P(G \\mid M)$. “M given G” needs Bayes: $P(M \\mid G) = P(G \\mid M)P(M)/P(G)$.",
         },
         {
           type: "p",
@@ -107,7 +107,7 @@ export default {
           type: "callout",
           kind: "warn",
           title: "Why SGD blows up on this data",
-          text: "With α = 0.02, batch GD moves the weights sensibly after one iteration. SGD with the same α on these **unscaled** features (BMI ≈ 30, blood pressure ≈ 100) **diverges within three updates**: the weights jump into the thousands. Each single-sample step changes the weights by about α × error × feature, and with features around 100 that overshoots badly. Batch GD survived only because the errors of opposite sign partly cancelled when averaged. The fix is to **scale the features** or use a much smaller α. Session 4, Numerical Q5 works through all three SGD updates.",
+          text: "With $\\alpha = 0.02$, batch GD moves the weights sensibly after one iteration. SGD with the same $\\alpha$ on these **unscaled** features (BMI ≈ 30, blood pressure ≈ 100) **diverges within three updates**: the weights jump into the thousands. Each single-sample step changes the weights by about $\\alpha$ × error × feature, and with features around 100 that overshoots badly. Batch GD survived only because the errors of opposite sign partly cancelled when averaged. The fix is to **scale the features** or use a much smaller $\\alpha$. Session 4, Numerical Q5 works through all three SGD updates.",
         },
       ],
     },
@@ -125,11 +125,11 @@ export default {
             ["Recall $= \\frac{TP}{TP+FN}$", "Missing a positive is costly (fraud, disease, churn)"],
             ["$F_1 = \\frac{2PR}{P+R} = \\frac{2TP}{2TP+FP+FN}$", "You need one number balancing precision and recall"],
             ["FPR $= \\frac{FP}{FP+TN}$; Specificity $= \\frac{TN}{TN+FP}$", "ROC curves (x-axis = FPR); how well negatives are recognised"],
-            ["Minkowski $(\\sum|x_k-y_k|^r)^{1/r}$: r = 1 Manhattan, r = 2 Euclidean, r = ∞ max", "Distances between numeric records (standardise first if scales differ)"],
+            ["Minkowski $(\\sum|x_k-y_k|^r)^{1/r}$: $r = 1$ Manhattan, $r = 2$ Euclidean, $r = \\infty$ max", "Distances between numeric records (standardise first if scales differ)"],
             ["Cosine $\\frac{x\\cdot y}{\\|x\\|\\|y\\|}$", "Documents and sparse data; length shouldn't matter"],
             ["Correlation $\\frac{\\sum(x-\\bar x)(y-\\bar y)}{\\sqrt{\\sum(x-\\bar x)^2\\sum(y-\\bar y)^2}}$", "Strength of a straight-line relationship (blind to curves)"],
             ["z-score $\\frac{x-\\bar x}{s}$; min-max $\\frac{x-\\min}{\\max-\\min}$", "Putting attributes on comparable scales"],
-            ["MAE $\\frac1m\\sum|e|$; MSE $\\frac1m\\sum e^2$; RMSE $\\sqrt{MSE}$; $R^2 = 1-\\frac{SSE}{SST}$", "Regression error; MAE if there are many outliers; R² for “fraction explained”"],
+            ["MAE $\\frac1m\\sum|e|$; MSE $\\frac1m\\sum e^2$; RMSE $\\sqrt{MSE}$; $R^2 = 1-\\frac{SSE}{SST}$", "Regression error; MAE if there are many outliers; $R^2$ for “fraction explained”"],
             ["OvA = $K$; OvO = $K(K-1)/2$", "Counting classifiers for K classes (10 classes → 45 OvO)"],
             ["k-fold: k models, each trained on $(k-1)/k$ of the data", "Cross-validation arithmetic"],
             ["Bootstrap unique fraction $1-(1-1/n)^n \\to 0.632$", "Bootstrap sample questions"],
@@ -150,7 +150,7 @@ export default {
             ["Normal equation $\\theta = (X^TX)^{-1}X^Ty$", "Closed-form multivariate regression"],
             ["Cost $J = \\frac1{2m}\\sum(h_\\theta(x)-y)^2 \\;[+\\frac{\\lambda}{2m}\\sum_{j\\ge1}\\theta_j^2]$", "Evaluating linear regression (with optional regularisation)"],
             ["GD update $\\theta_j := \\theta_j - \\alpha\\frac1m\\sum_i(h_\\theta(x^{(i)})-y^{(i)})x_j^{(i)}$", "One iteration of GD, linear **or** logistic (only h differs)"],
-            ["Sigmoid $\\sigma(z) = \\frac1{1+e^{-z}}$: σ(0) = 0.5, σ(1) = 0.731, σ(2) = 0.881, σ(3) = 0.953", "Logistic regression predictions"],
+            ["Sigmoid $\\sigma(z) = \\frac1{1+e^{-z}}$: $\\sigma(0) = 0.5$, $\\sigma(1) = 0.731$, $\\sigma(2) = 0.881$, $\\sigma(3) = 0.953$", "Logistic regression predictions"],
             ["Log-loss $-\\frac1m\\sum[y\\log h+(1-y)\\log(1-h)]$", "Logistic regression cost"],
             ["Bayes $P(y \\mid x) = \\frac{P(x \\mid y)P(y)}{P(x)}$", "Reversing a conditional probability"],
             ["Naïve Bayes $\\hat y = \\arg\\max_y P(y)\\prod_iP(x_i \\mid y)$", "Classifying from a categorical table"],
@@ -177,7 +177,7 @@ export default {
             ["Q1a", "Euclidean + Manhattan distance", "S2", "2"],
             ["Q1b", "Confusion matrix → accuracy, precision, recall, F1", "S3", "2"],
             ["Q1c", "Which analyst (recall vs precision) is satisfied", "S3", "2"],
-            ["Q1d", "Polynomial kernel φ and K", "S7", "2"],
+            ["Q1d", "Polynomial kernel $\\phi$ and K", "S7", "2"],
             ["Q2a", "Three challenges of ML", "S1", "2"],
             ["Q2b", "Bias–variance trade-off", "S4", "2"],
             ["Q2c", "Frame the churn problem (type, model, metric)", "S1/S3/S5", "2"],
@@ -245,12 +245,12 @@ C2 scored 0 only because dark hair and brown eyes never appear in its 3 rows: th
       pyq: "Revision Q2",
       level: "Medium",
       marks: 4,
-      hint: "Means first: x̄ = 457/6, ȳ = 467/6. Then the deviation table. Slope = Σproduct ÷ Σsquare.",
+      hint: "Means first: $\\bar{x} = 457/6$, ȳ = 467/6. Then the deviation table. Slope = Σproduct ÷ Σsquare.",
       question: `| Area | 72 | 50 | 81 | 74 | 94 | 86 |
 |---|---|---|---|---|---|---|
 | Price | 84 | 63 | 77 | 78 | 90 | 75 |
 
-(a) Least-squares equation for Price vs Area. (b) Predict the price for 80 m².`,
+(a) Least-squares equation for Price vs Area. (b) Predict the price for 80 $m^2$.`,
       solution: `
 ### What is being asked
 A least-squares line and one prediction (Session 4).
@@ -274,8 +274,8 @@ Interpretation: each extra square metre adds about ₹0.48 lakh on average.`,
       pyq: "Revision Q4",
       level: "Easy",
       marks: 3,
-      hint: "Write P(G), P(M) and P(G | M) first. (a) is a complement; (b) needs Bayes' theorem.",
-      question: "P(Google offer) = 0.6, P(Microsoft offer) = 0.5, P(G | M) = 0.8. (a) P(not G | M)? (b) P(M | G)?",
+      hint: "Write $P(G)$, $P(M)$ and $P(G \\mid M)$ first. (a) is a complement; (b) needs Bayes' theorem.",
+      question: "P(Google offer) = 0.6, P(Microsoft offer) = 0.5, $P(G \\mid M) = 0.8$. (a) P(not G | M)? $(b) P(M \\mid G)$?",
       solution: `
 ### What is being asked
 Translate the story into probabilities and reverse a conditional (Session 6, Lesson 2).
@@ -324,20 +324,20 @@ Choosing the wrong support vectors gives lines with a smaller margin. Always che
       pyq: "Revision Q6(b)",
       level: "Medium",
       marks: 4,
-      hint: "The pattern is − − + + + − −. Map with Z = (x − 3)², which is small in the middle and large on the outside.",
+      hint: "The pattern is − − + + + − −. Map with $Z = (x - 3)^2$, which is small in the middle and large on the outside.",
       question: "Positive: (2,0), (3,0), (4,0). Negative: (0,0), (1,0), (5,0), (6,0). Use the kernel trick to find the non-linear SVM boundary.",
       solution: `
 ### What is being asked
 Separate data that no single cut can separate, by lifting it into 2-D (Session 7, Lesson 5).
 
 ### Working
-- Map $Z = (x - 3)^2$. Positives: Z = 1, 0, 1. Negatives: Z = 9, 4, 4, 9.
+- Map $Z = (x - 3)^2$. Positives: $Z = 1$, 0, 1. Negatives: $Z = 9$, 4, 4, 9.
 - **Support vectors in (X, Z):** (2, 1), (4, 1) and (1, 4), (5, 4)
 - **Boundary** midway: $Z = (1 + 4)/2 = 2.5$
 - Map back: $(x - 3)^2 = 2.5 \\iff x^2 - 6x + 6.5 = 0 \\iff x = 3 \\pm 1.58$
 
 ### Answer
-$Z = 2.5$, i.e. **x ≈ 1.42 and x ≈ 4.58**. Predict + between them.
+$Z = 2.5$, i.e. **x ≈ 1.42 and $x \\approx 4.58$**. Predict + between them.
 
 ### Takeaway
 A straight line in the lifted space becomes two cut points on the original line.`,
@@ -347,8 +347,8 @@ A straight line in the lifted space becomes two cut points on the original line.
       pyq: "Revision: gradient descent, α = 0.02",
       level: "Hard",
       marks: 6,
-      hint: "Prediction h = 5 − 0.03·BMI − 0.03·Diastolic for each patient. Then errors h − y, then error × BMI and error × Diastolic. Average (÷3), × 0.02, subtract.",
-      question: `RR-CHD $= w_0 + w_1\\,\\text{BMI} + w_2\\,\\text{Diastolic}$, starting at $w_0 = 5$, $w_1 = w_2 = -0.03$, α = 0.02. Show the first iteration of batch gradient descent.
+      hint: "Prediction $h = 5 - 0.03$·BMI − 0.03·Diastolic for each patient. Then errors $h - y$, then error × BMI and error × Diastolic. Average (÷3), × 0.02, subtract.",
+      question: `RR-CHD $= w_0 + w_1\\,\\text{BMI} + w_2\\,\\text{Diastolic}$, starting at $w_0 = 5$, $w_1 = w_2 = -0.03$, $\\alpha = 0.02$. Show the first iteration of batch gradient descent.
 
 | BMI | Diastolic | RR-CHD |
 |---|---|---|
@@ -363,7 +363,7 @@ One batch GD update with two features (Session 4, Lessons 7–8).
 $$w_j' = w_j - \\frac13 \\cdot 0.02 \\cdot \\sum (w_0 + w_1x_1 + w_2x_2 - y)\\,x_j \\quad (x_0 = 1)$$
 
 ### Working
-| Patient | h | y | e = h − y | e × BMI | e × Diastolic |
+| Patient | h | y | $e = h - y$ | e × BMI | e × Diastolic |
 |---|---|---|---|---|---|
 | 1 | 1.55 | 1.81 | −0.26 | −9.1 | −20.8 |
 | 2 | 1.85 | 1.22 | 0.63 | 15.75 | 50.4 |
@@ -413,7 +413,7 @@ The slide-21 definitions, a pro and con of each, and a justified choice.
 ### Model answer
 - **Batch GD:** the derivative is computed from **all** training data before each update. Accurate and stable, but slow and memory-heavy for big data.
 - **Mini-batch GD:** the derivative is computed from **small groups** (e.g. 64–512) before each update. A good trade-off that makes use of vectorised hardware.
-- **Stochastic GD:** the derivative is computed from **each instance**, with the update applied immediately. Fastest progress per sample, but noisy; needs a small or decaying α and scaled features.
+- **Stochastic GD:** the derivative is computed from **each instance**, with the update applied immediately. Fastest progress per sample, but noisy; needs a small or decaying $\\alpha$ and scaled features.
 - **10 million rows:** **mini-batch** (or SGD). Batch GD would need a full pass over 10 million rows for every single step.
 
 ### Takeaway
@@ -444,10 +444,10 @@ Numeric gaps → mean/median; categorical gaps → mode; impossible values → t
 
   quiz: [
     { q: "About what share of the previous mid-sem was numerical?", options: ["25%", "50%", "80%", "100%"], answer: 2, why: "Only Q2 (6 of 30 marks) was pure theory." },
-    { q: "Which group of topics carried the most marks in the PYQ?", options: ["MLOps + data types", "NB + SVM + regression", "ROC + hyperparameters", "PCA + clustering"], answer: 1, why: "5 + 6 + 5 = 16 of 30 marks." },
+    { q: "Which group of topics carried the most marks in the PYQ?", options: ["MLOps + data types", "NB + SVM + regression", "ROC + hyperparameters", "PCA + clustering"], answer: 1, why: "$5 + 6 + 5 = 16$ of 30 marks." },
     { q: "Updating the weights after every single training sample is:", options: ["Batch GD", "Mini-batch GD", "Stochastic GD", "Normal equation"], answer: 2, why: "SGD updates per instance." },
-    { q: "In the revision SVM problem, the decision boundary is:", options: ["y = −4x + 11", "y = −4x + 4", "y = −4x + 7.5", "y = 4x − 7.5"], answer: 2, why: "Midway between the two margin lines." },
-    { q: "With Z = (x−3)², the 1-D kernel example's boundary is:", options: ["Z = 1", "Z = 2.5", "Z = 4", "Z = 0"], answer: 1, why: "Midway between Z = 1 (positive SVs) and Z = 4 (negative SVs)." },
+    { q: "In the revision SVM problem, the decision boundary is:", options: ["y = −4x + 11", "y = −4x + 4", "y = −4x + 7.5", "$y = 4 x - 7.5$"], answer: 2, why: "Midway between the two margin lines." },
+    { q: "With $Z = (x - 3)^2$, the 1-D kernel example's boundary is:", options: ["$Z = 1$", "$Z = 2.5$", "$Z = 4$", "$Z = 0$"], answer: 1, why: "Midway between $Z = 1$ (positive SVs) and $Z = 4$ (negative SVs)." },
     { q: "In the Short/Dark/Brown question, C2's score is 0 because:", options: ["C2 has fewer rows", "Dark hair and brown eyes never occur in C2", "The prior of C2 is 0", "Short never occurs in C2"], answer: 1, why: "Two zero likelihoods make the product zero; Laplace smoothing would fix it." },
   ],
 };

@@ -66,7 +66,7 @@ export default {
         },
         {
           type: "p",
-          text: "**Where does 2/‖w‖ come from?** The distance of a point from a line is $|w^Tx + b|/\\|w\\|$. A support vector on the positive edge has $w^Tx + b = 1$, so it's $1/\\|w\\|$ from the centre line. The negative edge is the same distance on the other side. Total road width: $2/\\|w\\|$.",
+          text: "**Where does $2/\\|w\\|$ come from?** The distance of a point from a line is $|w^Tx + b|/\\|w\\|$. A support vector on the positive edge has $w^Tx + b = 1$, so it's $1/\\|w\\|$ from the centre line. The negative edge is the same distance on the other side. Total road width: $2/\\|w\\|$.",
         },
         {
           type: "callout",
@@ -109,7 +109,7 @@ export default {
           type: "list",
           items: [
             "**w is a weighted sum of training points.** Each point contributes $\\alpha_i y_i x_i$. It turns out that $\\alpha_i > 0$ **only for support vectors**; every other point has $\\alpha_i = 0$ and contributes nothing. That's the maths behind “only the edge houses matter”.",
-            "**The weights balance between classes:** the total α on the positive side equals the total α on the negative side.",
+            "**The weights balance between classes:** the total $\\alpha$ on the positive side equals the total $\\alpha$ on the negative side.",
             "**Classifying a new point** becomes $f(x) = \\text{sign}\\big(\\sum_i \\alpha_i y_i \\, x_i^T x + b\\big)$. Notice the data appears **only as dot products** $x_i^T x$. Hold on to that; it's what makes kernels possible in Lesson 5.",
           ],
         },
@@ -162,7 +162,7 @@ export default {
         },
         {
           type: "p",
-          text: "So **C is a hyperparameter that controls overfitting** (slide 21), playing the same role as λ in regularised regression, but in the opposite direction: large C = weak regularisation, small C = strong regularisation. Choose it by cross-validation.",
+          text: "So **C is a hyperparameter that controls overfitting** (slide 21), playing the same role as $\\lambda$ in regularised regression, but in the opposite direction: large C = weak regularisation, small C = strong regularisation. Choose it by cross-validation.",
         },
       ],
     },
@@ -186,11 +186,11 @@ export default {
         },
         {
           type: "p",
-          text: "**The catch.** The feature space can be enormous. With 100 input features, all degree-2 terms already give 5,151 dimensions; degree 3 gives over 176,000. Computing φ for every point and taking dot products in that space would be very slow.",
+          text: "**The catch.** The feature space can be enormous. With 100 input features, all degree-2 terms already give 5,151 dimensions; degree 3 gives over 176,000. Computing $\\phi$ for every point and taking dot products in that space would be very slow.",
         },
         {
           type: "p",
-          text: "**The kernel trick (slide 25).** Remember Lesson 3: the SVM only ever uses the data through **dot products** $x_i^T x_j$. After mapping, those become $\\phi(x_i)^T \\phi(x_j)$. A **kernel function** is a shortcut that computes that feature-space dot product **directly from the original vectors**, without ever building φ:",
+          text: "**The kernel trick (slide 25).** Remember Lesson 3: the SVM only ever uses the data through **dot products** $x_i^T x_j$. After mapping, those become $\\phi(x_i)^T \\phi(x_j)$. A **kernel function** is a shortcut that computes that feature-space dot product **directly from the original vectors**, without ever building $\\phi$:",
         },
         {
           type: "callout",
@@ -205,7 +205,7 @@ export default {
           rows: [
             ["**Linear**", "$x_i^T x_j$", "No mapping: the ordinary linear SVM"],
             ["**Polynomial** of power p", "$(1 + x_i^T x_j)^p$", "All feature products up to degree p"],
-            ["**Gaussian (RBF)**", "$\\exp\\!\\left(-\\dfrac{\\|x_i - x_j\\|^2}{2\\sigma^2}\\right)$", "A similarity: 1 for identical points, → 0 far apart. Infinite-dimensional φ"],
+            ["**Gaussian (RBF)**", "$\\exp\\!\\left(-\\dfrac{\\|x_i - x_j\\|^2}{2\\sigma^2}\\right)$", "A similarity: 1 for identical points, → 0 far apart. Infinite-dimensional $\\phi$"],
             ["**Sigmoid**", "$\\tanh(\\beta_0 \\, x_i^T x_j + \\beta_1)$", "Behaves like a neural-network unit"],
           ],
         },
@@ -213,11 +213,11 @@ export default {
           type: "callout",
           kind: "example",
           title: "Seeing the trick work: degree-2 polynomial kernel (PYQ Q1d)",
-          text: "For 2-D points, expand $K(x, z) = (1 + x_1z_1 + x_2z_2)^2$:\n$$1 + 2x_1z_1 + 2x_2z_2 + x_1^2z_1^2 + x_2^2z_2^2 + 2x_1x_2z_1z_2$$\nThat's exactly the dot product of\n$$\\phi(x) = \\big(1,\\ \\sqrt2 x_1,\\ \\sqrt2 x_2,\\ x_1^2,\\ x_2^2,\\ \\sqrt2 x_1x_2\\big)$$\nwith the same φ(z). The $\\sqrt2$ is there so that each cross term comes out with a factor of 2.\n\n**Check with numbers:** $x = (1, 2)$, $z = (3, -1)$.\n- **Kernel way:** $x^Tz = 3 - 2 = 1$, so $K = (1 + 1)^2 = $ **4**. Three multiplications.\n- **Feature way:** $\\phi(x) = (1, \\sqrt2, 2\\sqrt2, 1, 4, 2\\sqrt2)$, $\\phi(z) = (1, 3\\sqrt2, -\\sqrt2, 9, 1, -3\\sqrt2)$. Dot product $= 1 + 6 - 4 + 9 + 4 - 12 = $ **4** ✓",
+          text: "For 2-D points, expand $K(x, z) = (1 + x_1z_1 + x_2z_2)^2$:\n$$1 + 2x_1z_1 + 2x_2z_2 + x_1^2z_1^2 + x_2^2z_2^2 + 2x_1x_2z_1z_2$$\nThat's exactly the dot product of\n$$\\phi(x) = \\big(1,\\ \\sqrt2 x_1,\\ \\sqrt2 x_2,\\ x_1^2,\\ x_2^2,\\ \\sqrt2 x_1x_2\\big)$$\nwith the same $\\phi(z)$. The $\\sqrt2$ is there so that each cross term comes out with a factor of 2.\n\n**Check with numbers:** $x = (1, 2)$, $z = (3, -1)$.\n- **Kernel way:** $x^Tz = 3 - 2 = 1$, so $K = (1 + 1)^2 = $ **4**. Three multiplications.\n- **Feature way:** $\\phi(x) = (1, \\sqrt2, 2\\sqrt2, 1, 4, 2\\sqrt2)$, $\\phi(z) = (1, 3\\sqrt2, -\\sqrt2, 9, 1, -3\\sqrt2)$. Dot product $= 1 + 6 - 4 + 9 + 4 - 12 = $ **4** ✓",
         },
         {
           type: "p",
-          text: "**About the RBF kernel.** Its σ controls how local the similarity is. A small σ means only very close points count as similar, giving wiggly, very flexible boundaries (overfitting risk). A large σ gives smooth boundaries.",
+          text: "**About the RBF kernel.** Its $\\sigma$ controls how local the similarity is. A small $\\sigma$ means only very close points count as similar, giving wiggly, very flexible boundaries (overfitting risk). A large $\\sigma$ gives smooth boundaries.",
         },
       ],
     },
@@ -232,7 +232,7 @@ export default {
         },
         {
           type: "p",
-          text: "**Extras on slides 35–36:** the regression metrics MAE, MSE, RMSE and R² (Sessions 2 and 4), and the gradient-descent variants (batch, stochastic, mini-batch; Session 4).",
+          text: "**Extras on slides 35–36:** the regression metrics MAE, MSE, RMSE and $R^2$ (Sessions 2 and 4), and the gradient-descent variants (batch, stochastic, mini-batch; Session 4).",
         },
         {
           type: "callout",
@@ -244,7 +244,7 @@ export default {
           type: "callout",
           kind: "exam",
           title: "Recipe 2: non-separable data (XOR, PYQ Q5)",
-          text: "1. **Choose φ** so the classes separate. For XOR, use $z = x_1x_2$: same signs → +1, different signs → −1.\n2. **Transform** every point and tabulate.\n3. **Support vectors** = the transformed points closest to the other class (for XOR, all four, since z = ±1).\n4. **Hyperplane in the new space:** solve $w z + b = +1$ and $-1$ at the support vectors (XOR: w = 1, b = 0, so z = 0; margin 2).\n5. **Map back:** substitute φ. XOR: $x_1x_2 = 0$, i.e. the two axes. Rule: class = sign($x_1x_2$).",
+          text: "1. **Choose $\\phi$** so the classes separate. For XOR, use $z = x_1x_2$: same signs → +1, different signs → −1.\n2. **Transform** every point and tabulate.\n3. **Support vectors** = the transformed points closest to the other class (for XOR, all four, since z = ±1).\n4. **Hyperplane in the new space:** solve $w z + b = +1$ and $-1$ at the support vectors (XOR: $w = 1$, $b = 0$, so $z = 0$; margin 2).\n5. **Map back:** substitute $\\phi$. XOR: $x_1x_2 = 0$, i.e. the two axes. Rule: class = sign($x_1x_2$).",
         },
         { type: "diagram", name: "s7-xor" },
         {
@@ -257,7 +257,7 @@ export default {
           type: "callout",
           kind: "remember",
           title: "The whole session in six lines",
-          text: "1. Among all separating lines, pick the one with the **widest margin**; it's the most robust.\n2. Canonical form: $y_i(w^Tx_i + b) \\ge 1$; margin lines $w^Tx + b = \\pm1$; margin $= 2/\\|w\\|$.\n3. Primal: minimise $\\frac12\\|w\\|^2$. Dual: $w = \\sum\\alpha_iy_ix_i$, $\\sum\\alpha_iy_i = 0$; only **support vectors** have $\\alpha_i > 0$.\n4. Soft margin: add $C\\sum\\xi_i$, slack $\\xi = \\max(0, 1 - yf(x))$. Large C → narrow margin, overfit risk; small C → wide margin.\n5. Non-separable data: map to a higher dimension with φ. The dual uses only dot products, so replace them with a **kernel** $K = \\phi(x)^T\\phi(z)$.\n6. Kernels: linear, polynomial $(1 + x^Tz)^p$, RBF $e^{-\\|x - z\\|^2/2\\sigma^2}$, sigmoid. Multiclass via OvR/OvO.",
+          text: "1. Among all separating lines, pick the one with the **widest margin**; it's the most robust.\n2. Canonical form: $y_i(w^Tx_i + b) \\ge 1$; margin lines $w^Tx + b = \\pm1$; margin $= 2/\\|w\\|$.\n3. Primal: minimise $\\frac12\\|w\\|^2$. Dual: $w = \\sum\\alpha_iy_ix_i$, $\\sum\\alpha_iy_i = 0$; only **support vectors** have $\\alpha_i > 0$.\n4. Soft margin: add $C\\sum\\xi_i$, slack $\\xi = \\max(0, 1 - yf(x))$. Large C → narrow margin, overfit risk; small C → wide margin.\n5. Non-separable data: map to a higher dimension with $\\phi$. The dual uses only dot products, so replace them with a **kernel** $K = \\phi(x)^T\\phi(z)$.\n6. Kernels: linear, polynomial $(1 + x^Tz)^p$, RBF $e^{-\\|x - z\\|^2/2\\sigma^2}$, sigmoid. Multiclass via OvR/OvO.",
         },
       ],
     },
@@ -271,32 +271,32 @@ export default {
     ["b", "Bias", "Shifts the boundary"],
     ["sign(·)", "—", "+1 if positive, −1 if negative"],
     ["Margin", "—", "Width of the gap between the classes: $2/\\|w\\|$"],
-    ["‖w‖", "Norm of w", "Length of w: $\\sqrt{w_1^2 + w_2^2 + \\dots}$"],
+    ["$\\|w\\|$", "Norm of w", "Length of w: $\\sqrt{w_1^2 + w_2^2 + \\dots}$"],
     ["Support vectors", "—", "Training points on the margin lines; they alone determine the boundary"],
     ["Canonical form", "—", "Scaling w, b so that $w^Tx + b = \\pm 1$ at the support vectors"],
     ["Primal problem", "—", "Minimise $\\frac12\\|w\\|^2$ subject to $y_i(w^Tx_i + b) \\ge 1$"],
     ["QP", "Quadratic Programming", "Optimising a quadratic objective with linear constraints"],
     ["Lagrange multiplier $\\alpha_i$", "—", "One per constraint; > 0 only for support vectors"],
-    ["Dual problem", "—", "The reformulation in terms of α; depends only on dot products"],
+    ["Dual problem", "—", "The reformulation in terms of $\\alpha$; depends only on dot products"],
     ["Hard margin", "—", "No training errors allowed"],
     ["Soft margin", "—", "Allows violations via slack, penalised by C"],
     ["Slack $\\xi_i$", "Xi", "How much a point violates the margin; > 1 means misclassified"],
     ["Hinge loss", "—", "$\\max(0, 1 - yf(x))$, equal to the slack"],
     ["C", "—", "Penalty on slack: large C = narrow margin, small C = wide margin"],
-    ["φ(x)", "Feature map", "Transforms the input into a (higher-dimensional) feature space"],
-    ["Kernel K(x, z)", "—", "$\\phi(x)^T\\phi(z)$ computed directly, without φ"],
+    ["$\\phi(x)$", "Feature map", "Transforms the input into a (higher-dimensional) feature space"],
+    ["Kernel $K(x, z)$", "—", "$\\phi(x)^T\\phi(z)$ computed directly, without $\\phi$"],
     ["Kernel trick", "—", "Replacing dot products with a kernel to get non-linear boundaries cheaply"],
     ["RBF", "Radial Basis Function (Gaussian) kernel", "$\\exp(-\\|x - z\\|^2 / 2\\sigma^2)$"],
-    ["σ (in RBF)", "Sigma", "Width of the Gaussian: small = very local, wiggly boundary"],
+    ["$\\sigma$ (in RBF)", "Sigma", "Width of the Gaussian: small = very local, wiggly boundary"],
     ["tanh", "Hyperbolic tangent", "Used in the sigmoid kernel"],
     ["OvR / OvO", "One-vs-Rest / One-vs-One", "Strategies to use a binary SVM for many classes"],
   ],
 
   examTips: [
-    "**SVM appears in every paper:** PYQ Q1(d) polynomial kernel (2 marks) and Q5 XOR feature map (6 marks). Revision Q6 covers the linear SVM hyperplane and the 1-D kernel trick.",
+    "**SVM appears in every paper:** PYQ $Q_1(d)$ polynomial kernel (2 marks) and Q5 XOR feature map (6 marks). Revision Q6 covers the linear SVM hyperplane and the 1-D kernel trick.",
     "Kernel questions: write $\\phi(x)$ explicitly, compute $\\phi(x_1)$ and $\\phi(x_2)$, take their dot product, and **verify** with $(1 + x_1^Tx_2)^2$.",
     "Hyperplane questions: identify the support vectors, write the margin lines $w^Tx + b = \\pm1$, then the boundary $w^Tx + b = 0$. Give the margin $2/\\|w\\|$ (not $1/\\|w\\|$).",
-    "“Express the boundary back in the original space”: substitute φ back, e.g. $z = x_1x_2 = 0$ gives the two axes.",
+    "“Express the boundary back in the original space”: substitute $\\phi$ back, e.g. $z = x_1x_2 = 0$ gives the two axes.",
     "C questions: large C → narrow margin, fewer violations, overfitting risk; small C → wider margin, more violations, often generalises better.",
   ],
 
@@ -306,7 +306,7 @@ export default {
       pyq: "Midsem Q1(d): K(x, x′) = (1 + x·x′)², x₁ = (1,3), x₂ = (2,1)",
       level: "Medium",
       marks: 2,
-      hint: "Expand (1 + x₁z₁ + x₂z₂)² and group the terms: each term should be (something in x) × (the same thing in z). The cross terms have a 2, which is why √2 appears in φ.",
+      hint: "Expand $(1 + x_1 z_1 + x_2 z_2)^2$ and group the terms: each term should be (something in x) × (the same thing in z). The cross terms have a 2, which is why $\\sqrt{2}$ appears in $\\phi$.",
       question:
         "For $K(x,z) = (1 + x^Tz)^2$ with $x, z \\in \\mathbb R^2$: (a) derive the feature map $\\phi(x)$. (b) For $x_a = (1, 2)$ and $x_b = (3, -1)$, compute $\\phi(x_a)$, $\\phi(x_b)$ and $K(x_a, x_b)$ both ways.",
       solution: `
@@ -314,7 +314,7 @@ export default {
 Show that the kernel equals a dot product in a 6-D feature space (Lesson 5).
 
 ### Why this approach
-If we can write $K(x, z)$ as a sum of terms each of the form (something of x) × (the same thing of z), those “somethings” are the components of φ.
+If we can write $K(x, z)$ as a sum of terms each of the form (something of x) × (the same thing of z), those “somethings” are the components of $\\phi$.
 
 ### Working
 **(a)**
@@ -332,7 +332,7 @@ $$\\phi(x) = (1,\\ \\sqrt2x_1,\\ \\sqrt2x_2,\\ x_1^2,\\ x_2^2,\\ \\sqrt2x_1x_2)$
 $\\phi(x) = (1, \\sqrt2x_1, \\sqrt2x_2, x_1^2, x_2^2, \\sqrt2x_1x_2)$; **K = 4** both ways ✓
 
 ### Takeaway
-The 2-D kernel calculation gives the same answer as the 6-D dot product with far less work. That's the kernel trick. (For the PYQ's points (1, 3) and (2, 1): $x^Tz = 5$, so K = 36.)`,
+The 2-D kernel calculation gives the same answer as the 6-D dot product with far less work. That's the kernel trick. (For the PYQ's points (1, 3) and (2, 1): $x^Tz = 5$, so $K = 36$.)`,
     },
     {
       title: "Maximum-margin hyperplane by hand",
@@ -382,10 +382,10 @@ Always check that no other point sits inside the road; if one does, you picked t
       pyq: "Midsem Q5 (6 marks)",
       level: "Hard",
       marks: 6,
-      hint: "Try multiplying the two coordinates. What sign does x₁x₂ have for each class?",
+      hint: "Try multiplying the two coordinates. What sign does $x_1 x_2$ have for each class?",
       question: `XOR data (not linearly separable):
 
-| x₁ | x₂ | Class |
+| $x_1$ | $x_2$ | Class |
 |---|---|---|
 | 1 | 1 | +1 |
 | −1 | −1 | +1 |
@@ -410,7 +410,7 @@ Same-sign coordinates give class +1 and opposite signs give −1. The product $x
 | (1, −1) | −1 | −1 |
 | (−1, 1) | −1 | −1 |
 
-Now +1 ↔ z = 1 and −1 ↔ z = −1: **linearly separable**.
+Now +1 ↔ $z = 1$ and −1 ↔ z = −1: **linearly separable**.
 
 **(b)** Every point lies exactly at z = ±1, the closest the two classes get, so **all four points are support vectors**.
 
@@ -423,7 +423,7 @@ Adding gives $2b = 0$, so $b = 0$ and $w = 1$. Hyperplane: **z = 0**. In 3-D: $0
 **(d)** Substitute $z = x_1x_2$: boundary **$x_1x_2 = 0$**, i.e. the two coordinate axes. Rule: class = sign$(x_1x_2)$: +1 in quadrants I and III, −1 in II and IV.
 
 ### Answer
-(a) $z = x_1x_2$ (b) all four points (c) $z = 0$, with w = 1, b = 0, margin 2 (d) $x_1x_2 = 0$ (the axes)
+(a) $z = x_1x_2$ (b) all four points (c) $z = 0$, with $w = 1$, $b = 0$, margin 2 (d) $x_1x_2 = 0$ (the axes)
 
 ### Takeaway
 A single well-chosen feature turned an impossible problem into a trivial one. The degree-2 polynomial kernel contains the $\\sqrt2x_1x_2$ term, so it solves XOR implicitly.`,
@@ -433,9 +433,9 @@ A single well-chosen feature turned an impossible problem into a trivial one. Th
       pyq: "Revision deck Q6",
       level: "Medium",
       marks: 4,
-      hint: "Positives are in the middle (around 3), negatives on the outside. Try z = (x − 3)², which is small near 3 and large far away.",
+      hint: "Positives are in the middle (around 3), negatives on the outside. Try $z = (x - 3)^2$, which is small near 3 and large far away.",
       question:
-        "Positive points: x = 2, 3, 4. Negative points: x = 0, 1, 5, 6 (all on a line). Use a transformation to make them linearly separable, find the SVM boundary, and map it back.",
+        "Positive points: $x = 2$, 3, 4. Negative points: $x = 0$, 1, 5, 6 (all on a line). Use a transformation to make them linearly separable, find the SVM boundary, and map it back.",
       solution: `
 ### What is being asked
 Lift 1-D data into 2-D so a straight line separates it (Lesson 5's opening example).
@@ -451,7 +451,7 @@ Use $z = (x - 3)^2$:
 | class | − | − | + | + | + | − | − |
 | z | 9 | 4 | 1 | 0 | 1 | 4 | 9 |
 
-Positives have z ≤ 1; negatives have z ≥ 4.
+Positives have $z \\le 1$; negatives have $z \\ge 4$.
 
 **Support vectors:** (2, 1), (4, 1) on the positive side; (1, 4), (5, 4) on the negative side.
 
@@ -460,18 +460,18 @@ Positives have z ≤ 1; negatives have z ≥ 4.
 **Map back:** $(x - 3)^2 = 2.5 \\Rightarrow x = 3 \\pm \\sqrt{2.5} = 3 \\pm 1.58$.
 
 ### Answer
-Boundary **z = 2.5** in the new space → **x = 1.42 and x = 4.58** in the original space. Predict + between them.
+Boundary **z = 2.5** in the new space → **x = 1.42 and $x = 4.58$** in the original space. Predict + between them.
 
 ### Takeaway
-A horizontal line in the lifted space becomes **two** cut points on the original line. Non-linear in x, linear in φ(x).`,
+A horizontal line in the lifted space becomes **two** cut points on the original line. Non-linear in x, linear in $\\phi(x)$.`,
     },
     {
       title: "Margins, slack and the soft-margin objective",
       level: "Medium",
       marks: 5,
-      hint: "For each point: f = x₁ + x₂ − 3, then y·f, then ξ = max(0, 1 − y·f). ξ = 0 and y·f = 1 means a support vector; 0 < ξ ≤ 1 means inside the margin; ξ > 1 means misclassified.",
+      hint: "For each point: $f = x_1 + x_2 - 3$, then $y \\cdot f$, then $\\xi = \\max(0, 1 - y \\cdot f)$. $\\xi = 0$ and $y \\cdot f = 1$ means a support vector; $0 < \\xi \\le 1$ means inside the margin; $\\xi > 1$ means misclassified.",
       question:
-        "An SVM has $w = (1, 1)$, $b = -3$. For each point compute $f(x) = w^Tx + b$, $y f(x)$ and the slack $\\xi = \\max(0, 1 - yf(x))$, and say whether it is a support vector, a margin violation or misclassified: (1,1)−, (2,2)+, (3,3)+, (2,0.5)−, (1.8,1.5)+, (1,1.5)+. Then compute the margin and the soft-margin objective for C = 1 and C = 10.",
+        "An SVM has $w = (1, 1)$, $b = -3$. For each point compute $f(x) = w^Tx + b$, $y f(x)$ and the slack $\\xi = \\max(0, 1 - yf(x))$, and say whether it is a support vector, a margin violation or misclassified: (1,1)−, (2,2)+, (3,3)+, (2,0.5)−, (1.8,1.5)+, (1,1.5)+. Then compute the margin and the soft-margin objective for $C = 1$ and $C = 10$.",
       solution: `
 ### What is being asked
 Read slack values (Lesson 4) and evaluate the soft-margin cost.
@@ -480,35 +480,35 @@ Read slack values (Lesson 4) and evaluate the soft-margin cost.
 $$\\xi_i = \\max(0,\\ 1 - y_if(x_i)), \\qquad \\text{objective} = \\tfrac12\\|w\\|^2 + C\\sum\\xi_i, \\qquad \\text{margin} = \\frac{2}{\\|w\\|}$$
 
 ### Working
-| x | y | f(x) | y·f | ξ | status |
+| x | y | $f(x)$ | $y \\cdot f$ | $\\xi$ | status |
 |---|---|---|---|---|---|
 | (1, 1) | − | −1 | 1 | 0 | **support vector** (on the margin) |
 | (2, 2) | + | 1 | 1 | 0 | **support vector** |
 | (3, 3) | + | 3 | 3 | 0 | safe |
 | (2, 0.5) | − | −0.5 | 0.5 | 0.5 | inside the margin, correct |
 | (1.8, 1.5) | + | 0.3 | 0.3 | 0.7 | inside the margin, correct |
-| (1, 1.5) | + | −0.5 | −0.5 | 1.5 | **misclassified** (ξ > 1) |
+| (1, 1.5) | + | −0.5 | −0.5 | 1.5 | **misclassified** $(\\xi > 1)$ |
 
 $\\sum\\xi = 0.5 + 0.7 + 1.5 = 2.7$
 
 - Margin $= 2/\\sqrt2 = 1.414$
 - $\\frac12\\|w\\|^2 = \\frac12(1 + 1) = 1$
-- C = 1: $1 + 1(2.7) = 3.7$
-- C = 10: $1 + 10(2.7) = 28$
+- $C = 1$: $1 + 1(2.7) = 3.7$
+- $C = 10$: $1 + 10(2.7) = 28$
 
 ### Answer
-Margin **1.414**; objective **3.7** (C = 1) and **28** (C = 10).
+Margin **1.414**; objective **3.7** $(C = 1)$ and **28** $(C = 10)$.
 
 ### Takeaway
-With C = 10 the violations dominate the cost, so the optimiser would prefer a narrower margin with fewer violations. That's large C pushing toward a hard margin.`,
+With $C = 10$ the violations dominate the cost, so the optimiser would prefer a narrower margin with fewer violations. That's large C pushing toward a hard margin.`,
     },
     {
       title: "Recovering w and b from the dual",
       level: "Hard",
       marks: 4,
-      hint: "Write w = α(2,2) − α(0,0). Then use the margin condition at each support vector: w·x + b = +1 for the positive one and −1 for the negative one.",
+      hint: "Write $w = \\alpha(2, 2) - \\alpha(0, 0)$. Then use the margin condition at each support vector: $w \\cdot x + b$ = +1 for the positive one and −1 for the negative one.",
       question:
-        "A hard-margin SVM on two points gives support vectors $x_1 = (2,2)$, $y_1 = +1$ and $x_2 = (0,0)$, $y_2 = -1$, with $\\alpha_1 = \\alpha_2 = \\alpha$. Use $w = \\sum \\alpha_iy_ix_i$, $\\sum\\alpha_iy_i = 0$ and the margin conditions to find α, w, b and the margin.",
+        "A hard-margin SVM on two points gives support vectors $x_1 = (2,2)$, $y_1 = +1$ and $x_2 = (0,0)$, $y_2 = -1$, with $\\alpha_1 = \\alpha_2 = \\alpha$. Use $w = \\sum \\alpha_iy_ix_i$, $\\sum\\alpha_iy_i = 0$ and the margin conditions to find $\\alpha$, w, b and the margin.",
       solution: `
 ### What is being asked
 Use the dual results from Lesson 3 to rebuild the boundary.
@@ -525,7 +525,7 @@ $$w = \\sum_i \\alpha_i y_i x_i, \\qquad \\sum_i \\alpha_i y_i = 0, \\qquad w^Tx
 - $\\|w\\| = \\sqrt{0.25 + 0.25} = 0.7071$, so the margin $= 2/0.7071 = 2.83$
 
 ### Answer
-α = **0.25**, w = **(0.5, 0.5)**, b = **−1**, margin **2.83**.
+$\\alpha$ = **0.25**, w = **(0.5, 0.5)**, b = **−1**, margin **2.83**.
 
 ### Takeaway
 With only two points, the margin equals the distance between them ($\\sqrt{8} = 2.83$), and the boundary is their perpendicular bisector, as you'd expect.`,
@@ -534,7 +534,7 @@ With only two points, the margin equals the distance between them ($\\sqrt{8} = 
       title: "RBF and linear kernel values",
       level: "Easy",
       marks: 3,
-      hint: "Linear = dot product. Polynomial = (1 + dot product)³. RBF: compute the squared distance ‖x − z‖² first, then e^(−γ × distance²).",
+      hint: "Linear = dot product. Polynomial = (1 + dot product)³. RBF: compute the squared distance $\\|x - z\\|^2$ first, then e^(−$\\gamma$ × distance²).",
       question:
         "For $x = (1, 2)$ and $z = (2, 0)$ compute (a) the linear kernel, (b) the polynomial kernel $(1 + x^Tz)^3$, (c) the RBF kernel with $\\gamma = 1/(2\\sigma^2) = 0.5$. (d) What happens to the RBF value as the points move apart?",
       solution: `
@@ -554,7 +554,7 @@ Evaluate the common kernels from slide 29 (Lesson 5).
 **(d)** It decays toward **0**. RBF is a *similarity*: 1 for identical points, about 0 for distant ones.
 
 ### Takeaway
-A small σ (large γ) makes similarity very local, which gives wiggly boundaries and a risk of overfitting.`,
+A small $\\sigma$ (large $\\gamma$) makes similarity very local, which gives wiggly boundaries and a risk of overfitting.`,
     },
     {
       title: "Why kernels save computation",
@@ -562,7 +562,7 @@ A small σ (large γ) makes similarity very local, which gives wiggly boundaries
       marks: 3,
       hint: "$\\binom{102}{2} = 102 \\times 101 / 2$. Compare building and multiplying two vectors of that length with one 100-term dot product.",
       question:
-        "With n = 100 input features, a full degree-2 polynomial feature map (with bias and linear terms) has $\\binom{n+2}{2}$ dimensions. (a) How many? (b) Compare the cost of an explicit dot product with the kernel. (c) Which kernel corresponds to an infinite-dimensional φ?",
+        "With $n = 100$ input features, a full degree-2 polynomial feature map (with bias and linear terms) has $\\binom{n+2}{2}$ dimensions. (a) How many? (b) Compare the cost of an explicit dot product with the kernel. (c) Which kernel corresponds to an infinite-dimensional $\\phi$?",
       solution: `
 ### What is being asked
 Quantify why the kernel trick matters (Lesson 5).
@@ -616,9 +616,9 @@ Both formulations written out, the meaning of the slack ranges, and the effect o
 **Soft margin:** minimise $\\frac12 w^Tw + C\\sum\\xi_i$ s.t. $y_i(w^Tx_i + b) \\ge 1 - \\xi_i$, $\\xi_i \\ge 0$.
 
 **Slack $\\xi_i$** gives leniency:
-- ξ = 0: correct and outside the margin
-- 0 < ξ ≤ 1: inside the margin
-- ξ > 1: misclassified
+- $\\xi = 0$: correct and outside the margin
+- $0 < \\xi \\le 1$: inside the margin
+- $\\xi > 1$: misclassified
 
 **C** weights the slack penalty:
 - **Large C:** violations are costly → narrower margin, fewer violations; close to a hard margin, with a risk of overfitting.
@@ -633,10 +633,10 @@ C is the regularisation knob that controls overfitting.`,
       question: "Explain the kernel trick. Why is it needed, and why does it work for SVMs? List common kernels.",
       solution: `
 ### What the examiner wants
-The need (non-separable data, expensive φ), **why** it works (the dual uses only dot products), the result, and the four kernels.
+The need (non-separable data, expensive $\\phi$), **why** it works (the dual uses only dot products), the result, and the four kernels.
 
 ### Model answer
-- **Need:** some data isn't linearly separable in the input space (XOR, concentric circles). Mapping to a higher-dimensional space φ(x) can make it separable, but computing φ explicitly may be very expensive or even infinite-dimensional.
+- **Need:** some data isn't linearly separable in the input space (XOR, concentric circles). Mapping to a higher-dimensional space $\\phi(x)$ can make it separable, but computing $\\phi$ explicitly may be very expensive or even infinite-dimensional.
 - **Why it works:** the SVM dual and its decision function use the data **only through dot products** $x_i^Tx_j$. Replace every dot product with a kernel $K(x_i, x_j) = \\phi(x_i)^T\\phi(x_j)$, computed directly from the original vectors.
 - **Result:** a linear separator in feature space, which is a non-linear boundary in input space, at roughly the cost of the original dot product.
 - **Common kernels:**
@@ -663,7 +663,7 @@ The primal, the Lagrangian, the two conditions, and their interpretation.
 
 **Conditions:**
 - $\\partial L/\\partial w = 0 \\Rightarrow w = \\sum_i\\alpha_iy_ix_i$: w is a combination of training points, and only support vectors ($\\alpha_i > 0$) contribute.
-- $\\partial L/\\partial b = 0 \\Rightarrow \\sum_i\\alpha_iy_i = 0$: the α weights balance between the classes.
+- $\\partial L/\\partial b = 0 \\Rightarrow \\sum_i\\alpha_iy_i = 0$: the $\\alpha$ weights balance between the classes.
 
 Substituting back gives the **dual**, which depends only on $x_i^Tx_j$. That enables kernels.
 
@@ -695,15 +695,15 @@ Both are discriminative linear classifiers. SVM optimises the gap; logistic regr
   ],
 
   quiz: [
-    { q: "The margin of an SVM with weight vector w is:", options: ["‖w‖", "1/‖w‖", "2/‖w‖", "‖w‖²"], answer: 2, why: "The distance between $w^Tx+b = +1$ and $-1$." },
-    { q: "Support vectors are:", options: ["All training points", "Misclassified points only", "Points on the margin that define the hyperplane", "Points farthest from the hyperplane"], answer: 2, why: "Only they have α > 0." },
+    { q: "The margin of an SVM with weight vector w is:", options: ["$\\|w\\|$", "$1/\\|w\\|$", "$2/\\|w\\|$", "$\\|w\\|^2$"], answer: 2, why: "The distance between $w^Tx+b = +1$ and $-1$." },
+    { q: "Support vectors are:", options: ["All training points", "Misclassified points only", "Points on the margin that define the hyperplane", "Points farthest from the hyperplane"], answer: 2, why: "Only they have $\\alpha > 0$." },
     { q: "Increasing C in a soft-margin SVM generally:", options: ["Widens the margin", "Narrows the margin with fewer violations", "Has no effect", "Removes the support vectors"], answer: 1, why: "Violations become expensive." },
-    { q: "A slack value ξ = 1.5 means the point is:", options: ["Correct, outside the margin", "Inside the margin, correct", "On the boundary", "Misclassified"], answer: 3, why: "ξ > 1 means it is on the wrong side of the hyperplane." },
+    { q: "A slack value $\\xi = 1.5$ means the point is:", options: ["Correct, outside the margin", "Inside the margin, correct", "On the boundary", "Misclassified"], answer: 3, why: "$\\xi > 1$ means it is on the wrong side of the hyperplane." },
     { q: "The kernel trick works because the SVM dual depends only on:", options: ["The labels", "Dot products of inputs", "The number of features", "The learning rate"], answer: 1, why: "Replace $x_i^Tx_j$ with $K(x_i,x_j)$." },
-    { q: "Polynomial kernel $(1+x^Tz)^2$ with $x^Tz = 5$ gives:", options: ["25", "26", "36", "11"], answer: 2, why: "(1+5)² = 36." },
-    { q: "Which φ makes XOR linearly separable?", options: ["x₁ + x₂", "x₁x₂", "x₁ − x₂", "|x₁|"], answer: 1, why: "The product is +1 for same signs and −1 for different signs." },
-    { q: "In the dual solution, w equals:", options: ["Σαᵢxᵢ", "Σαᵢyᵢxᵢ", "Σyᵢxᵢ", "Σαᵢyᵢ"], answer: 1, why: "From ∂L/∂w = 0." },
+    { q: "Polynomial kernel $(1+x^Tz)^2$ with $x^Tz = 5$ gives:", options: ["25", "26", "36", "11"], answer: 2, why: "$(1 + 5)^2 = 36$." },
+    { q: "Which $\\phi$ makes XOR linearly separable?", options: ["$x_1 + x_2$", "$x_1 x_2$", "$x_1 - x_2$", "|$x_1$|"], answer: 1, why: "The product is +1 for same signs and −1 for different signs." },
+    { q: "In the dual solution, w equals:", options: ["$\\sum \\alpha_i x_i$", "$\\sum \\alpha_i y_i x_i$", "$\\sum y_i x_i$", "$\\sum \\alpha_i y_i$"], answer: 1, why: "From $\\partial L/\\partial w = 0$." },
     { q: "The Gaussian RBF kernel corresponds to a feature space that is:", options: ["2-dimensional", "Same as the input", "Infinite-dimensional", "Undefined"], answer: 2, why: "That is why it can only be used via the kernel." },
-    { q: "Removing a training point that is NOT a support vector will:", options: ["Shift the boundary", "Leave the boundary unchanged", "Shrink the margin", "Make the problem non-separable"], answer: 1, why: "Only support vectors (α > 0) determine the hyperplane." },
+    { q: "Removing a training point that is NOT a support vector will:", options: ["Shift the boundary", "Leave the boundary unchanged", "Shrink the margin", "Make the problem non-separable"], answer: 1, why: "Only support vectors $(\\alpha > 0)$ determine the hyperplane." },
   ],
 };

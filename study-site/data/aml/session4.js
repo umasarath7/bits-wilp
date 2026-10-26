@@ -55,11 +55,11 @@ export default {
           type: "callout",
           kind: "formula",
           title: "The hypothesis",
-          text: "$$h_\\theta(x) = \\theta_0 + \\theta_1 x$$\n\n- $\\theta_0$ (“theta-zero”) is the **intercept**: where the line crosses the y-axis, i.e. the prediction when x = 0. It's the “b” (or “c”) from school.\n- $\\theta_1$ (“theta-one”) is the **slope**: how much the prediction rises when x increases by 1. It's the “m” from school.\n- $h_\\theta(x)$ is the **predicted** value. Sometimes written $\\hat y$ (“y-hat”): the hat means *our guess*, not the real value.",
+          text: "$$h_\\theta(x) = \\theta_0 + \\theta_1 x$$\n\n- $\\theta_0$ (“theta-zero”) is the **intercept**: where the line crosses the y-axis, i.e. the prediction when $x = 0$. It's the “b” (or “c”) from school.\n- $\\theta_1$ (“theta-one”) is the **slope**: how much the prediction rises when x increases by 1. It's the “m” from school.\n- $h_\\theta(x)$ is the **predicted** value. Sometimes written $\\hat y$ (“y-hat”): the hat means *our guess*, not the real value.",
         },
         {
           type: "p",
-          text: "**A subtle but important idea (slide 19).** For a *fixed* choice of $\\theta_0, \\theta_1$, the hypothesis $h_\\theta(x)$ is a function of **x**: it's one particular line. But different choices of θ give different lines, and some fit the data better than others. So “learning” means **searching over θ** for the line that fits best. To do that, we need a way to score how well each line fits.",
+          text: "**A subtle but important idea (slide 19).** For a *fixed* choice of $\\theta_0, \\theta_1$, the hypothesis $h_\\theta(x)$ is a function of **x**: it's one particular line. But different choices of $\\theta$ give different lines, and some fit the data better than others. So “learning” means **searching over $\\theta$** for the line that fits best. To do that, we need a way to score how well each line fits.",
         },
       ],
     },
@@ -149,19 +149,19 @@ export default {
         },
         {
           type: "p",
-          text: "**The error-based scores.** Using our line, the predictions are 2.8, 3.4, 4.0, 4.6, 5.2 and the residuals are −0.8, 0.6, 1.0, −0.6, −0.2. Squared and added: **SSE = 0.64 + 0.36 + 1 + 0.36 + 0.04 = 2.4**.",
+          text: "**The error-based scores.** Using our line, the predictions are 2.8, 3.4, 4.0, 4.6, 5.2 and the residuals are −0.8, 0.6, 1.0, −0.6, −0.2. Squared and added: **SSE = $0.64 + 0.36 + 1 + 0.36 + 0.04 = 2.4$**.",
         },
         {
           type: "list",
           items: [
-            "**MSE (Mean Squared Error)** = SSE / n = 2.4 / 5 = **0.48**. Average squared miss; in squared units.",
-            "**RMSE (Root Mean Square Error)** = √MSE = **0.69**. Back in the original units: *typically off by about 0.7 marks*.",
+            "**MSE (Mean Squared Error)** = $\\text{SSE}/n = 2.4/5$ = **0.48**. Average squared miss; in squared units.",
+            "**RMSE (Root Mean Square Error)** = $\\sqrt{\\text{MSE}}$ = **0.69**. Back in the original units: *typically off by about 0.7 marks*.",
             "**MAE (Mean Absolute Error)** = average of |residual| = (0.8 + 0.6 + 1 + 0.6 + 0.2)/5 = **0.64**. Less sensitive to outliers (Session 2).",
           ],
         },
         {
           type: "p",
-          text: "**R², a score from 0 to 1.** MSE's size depends on the units, so it's hard to say whether 0.48 is good. R² fixes that by comparing our line with the dumbest possible model. Suppose you knew nothing about hours: your best guess for every student would be the average score, $\\bar y = 4$. The total amount you'd be wrong by is the **Total Sum of Squares**, $SST = \\sum (y - \\bar y)^2 = 4 + 0 + 1 + 0 + 1 = 6$. Using the line, you're wrong by only SSE = 2.4. The line has **explained** part of the variation.",
+          text: "**R², a score from 0 to 1.** MSE's size depends on the units, so it's hard to say whether 0.48 is good. $R^2$ fixes that by comparing our line with the dumbest possible model. Suppose you knew nothing about hours: your best guess for every student would be the average score, $\\bar y = 4$. The total amount you'd be wrong by is the **Total Sum of Squares**, $SST = \\sum (y - \\bar y)^2 = 4 + 0 + 1 + 0 + 1 = 6$. Using the line, you're wrong by only SSE = 2.4. The line has **explained** part of the variation.",
         },
         {
           type: "callout",
@@ -208,7 +208,7 @@ export default {
         },
         {
           type: "p",
-          text: "**The idea.** Imagine standing somewhere on the bowl in thick fog. You can't see the bottom, but you can feel which way the ground slopes under your feet. So you take a small step **downhill**, feel the slope again, take another step, and repeat until the ground is flat. That's gradient descent. The **gradient** is the slope, i.e. the derivative of J with respect to each θ. Stepping **against** the gradient takes you downhill.",
+          text: "**The idea.** Imagine standing somewhere on the bowl in thick fog. You can't see the bottom, but you can feel which way the ground slopes under your feet. So you take a small step **downhill**, feel the slope again, take another step, and repeat until the ground is flat. That's gradient descent. The **gradient** is the slope, i.e. the derivative of J with respect to each $\\theta$. Stepping **against** the gradient takes you downhill.",
         },
         {
           type: "callout",
@@ -218,17 +218,17 @@ export default {
         },
         {
           type: "p",
-          text: "**Reading the update in plain words.** If the predictions are too high on average (errors positive), the gradient is positive, and subtracting it **lowers** θ₀. If big-x points are predicted too high, the $x^{(i)}$-weighted sum is positive and θ₁ **decreases**, flattening the line. Each step nudges the line toward the dots.",
+          text: "**Reading the update in plain words.** If the predictions are too high on average (errors positive), the gradient is positive, and subtracting it **lowers** $\\theta_0$. If big-x points are predicted too high, the $x^{(i)}$-weighted sum is positive and $\\theta_1$ **decreases**, flattening the line. Each step nudges the line toward the dots.",
         },
         {
           type: "p",
-          text: "**Simultaneous update.** Compute *all* the new θ values from the *old* ones, then replace them together. If you update θ₀ first and then use the new θ₀ to compute θ₁'s gradient, you're doing something slightly different (and wrong).",
+          text: "**Simultaneous update.** Compute *all* the new $\\theta$ values from the *old* ones, then replace them together. If you update $\\theta_0$ first and then use the new $\\theta_0$ to compute $\\theta_1$'s gradient, you're doing something slightly different (and wrong).",
         },
         {
           type: "callout",
           kind: "example",
           title: "One step on our hours data",
-          text: "Start at $\\theta_0 = \\theta_1 = 0$ (the flat line $\\hat y = 0$), with α = 0.1.\n\n- Errors $h - y$: −2, −4, −5, −4, −5\n- Gradient for θ₀ = average error = −20/5 = **−4**\n- Gradient for θ₁ = average of error × x = (−2 − 8 − 15 − 16 − 25)/5 = −66/5 = **−13.2**\n- New θ₀ = 0 − 0.1(−4) = **0.4**; new θ₁ = 0 − 0.1(−13.2) = **1.32**\n\nThe cost J drops from **8.6** to **0.82** after this one step. Keep going, and θ creeps toward the OLS answer (2.2, 0.6).",
+          text: "Start at $\\theta_0 = \\theta_1 = 0$ (the flat line $\\hat y = 0$), with $\\alpha = 0.1$.\n\n- Errors $h - y$: −2, −4, −5, −4, −5\n- Gradient for $\\theta_0$ = average error = −20/5 = **−4**\n- Gradient for $\\theta_1$ = average of error × x = (−$2 - 8 - 15 - 16 - 25$)/5 = −66/5 = **−13.2**\n- New $\\theta_0 = 0 - 0.1$(−4) = **0.4**; new $\\theta_1 = 0 - 0.1$(−13.2) = **1.32**\n\nThe cost J drops from **8.6** to **0.82** after this one step. Keep going, and $\\theta$ creeps toward the OLS answer (2.2, 0.6).",
         },
         {
           type: "p",
@@ -240,8 +240,8 @@ export default {
           rows: [
             ["**α too small**", "Converges, but very slowly", "Tiny steps: you need thousands of them"],
             ["**α too large**", "Overshoots the minimum; may **oscillate** or **diverge** (cost grows)", "You leap across the valley and land higher on the other side"],
-            ["**Already at a minimum**", "θ doesn't change", "The slope is zero, so the step is zero"],
-            ["**Getting close to the minimum**", "Steps shrink automatically, even with a fixed α", "The slope gets gentler near the bottom"],
+            ["**Already at a minimum**", "$\\theta$ doesn't change", "The slope is zero, so the step is zero"],
+            ["**Getting close to the minimum**", "Steps shrink automatically, even with a fixed $\\alpha$", "The slope gets gentler near the bottom"],
           ],
         },
         { type: "diagram", name: "s4-lr" },
@@ -253,13 +253,13 @@ export default {
           type: "list",
           items: [
             "**Batch GD:** each step uses **all m examples** to compute the gradient. Smooth and accurate, but each step is slow on large datasets.",
-            "**Stochastic GD (SGD):** each step uses **one example**, updating immediately; the next example uses the already-updated θ. Fast and makes progress at once, but the path is noisy and it can be unstable if α is too big or features aren't scaled.",
+            "**Stochastic GD (SGD):** each step uses **one example**, updating immediately; the next example uses the already-updated $\\theta$. Fast and makes progress at once, but the path is noisy and it can be unstable if $\\alpha$ is too big or features aren't scaled.",
             "**Mini-batch GD:** each step uses a **small group** (e.g. 32 examples). The practical middle ground, and it runs efficiently on modern hardware.",
           ],
         },
         {
           type: "p",
-          text: "Because the linear-regression cost is a bowl (convex), gradient descent with a sensible α always reaches the **global** minimum.",
+          text: "Because the linear-regression cost is a bowl (convex), gradient descent with a sensible $\\alpha$ always reaches the **global** minimum.",
         },
       ],
     },
@@ -276,7 +276,7 @@ export default {
           type: "callout",
           kind: "formula",
           title: "Hypothesis with n features",
-          text: "$$h_\\theta(x) = \\theta_0 + \\theta_1 x_1 + \\theta_2 x_2 + \\dots + \\theta_n x_n = \\theta^T x$$\n\n- $n$ = number of features; $x_j^{(i)}$ = value of feature $j$ in example $i$\n- We add a dummy feature $x_0 = 1$ so that $\\theta_0$ fits the same pattern, and then the whole sum is the **dot product** $\\theta^T x$ (θ-transpose-x).\n- Each $\\theta_j$ means: *the change in prediction when $x_j$ goes up by 1, keeping the other features fixed*.\n\nGradient descent is the same as before, for every j from 0 to n:\n$$\\theta_j := \\theta_j - \\alpha \\frac1m \\sum_i \\big(h_\\theta(x^{(i)}) - y^{(i)}\\big) x_j^{(i)}$$",
+          text: "$$h_\\theta(x) = \\theta_0 + \\theta_1 x_1 + \\theta_2 x_2 + \\dots + \\theta_n x_n = \\theta^T x$$\n\n- $n$ = number of features; $x_j^{(i)}$ = value of feature $j$ in example $i$\n- We add a dummy feature $x_0 = 1$ so that $\\theta_0$ fits the same pattern, and then the whole sum is the **dot product** $\\theta^T x$ ($\\theta$-transpose-x).\n- Each $\\theta_j$ means: *the change in prediction when $x_j$ goes up by 1, keeping the other features fixed*.\n\nGradient descent is the same as before, for every j from 0 to n:\n$$\\theta_j := \\theta_j - \\alpha \\frac1m \\sum_i \\big(h_\\theta(x^{(i)}) - y^{(i)}\\big) x_j^{(i)}$$",
         },
         {
           type: "p",
@@ -327,13 +327,13 @@ export default {
           rows: [
             ["0 or 1", "A flat line or straight line: misses the wave entirely", "**Underfitting**"],
             ["3", "Follows the underlying sine shape nicely", "**Good fit**"],
-            ["9 (with 10 points)", "Passes through **every** point exactly (E = 0) but swings wildly between them; coefficients become huge", "**Overfitting**"],
+            ["9 (with 10 points)", "Passes through **every** point exactly $(E = 0)$ but swings wildly between them; coefficients become huge", "**Overfitting**"],
           ],
         },
         { type: "diagram", name: "s4-poly" },
         {
           type: "p",
-          text: "With M = 9 there are 10 coefficients for 10 points, enough to hit every point, including its noise. That's Student A from Session 1 again: perfect on the training data, useless on new data.",
+          text: "With $M = 9$ there are 10 coefficients for 10 points, enough to hit every point, including its noise. That's Student A from Session 1 again: perfect on the training data, useless on new data.",
         },
       ],
     },
@@ -355,7 +355,7 @@ export default {
           type: "list",
           items: [
             "**High bias (underfitting):** the model makes **wrong or over-simple assumptions**, so its class of shapes can't represent the truth. A straight line fitted to a sine wave misses in the same way no matter which sample you use. Tightly grouped arrows, all off-target.",
-            "**High variance (overfitting):** the model is so flexible that it **learns the noise**. Change a few training points and the M = 9 polynomial changes shape completely. Arrows scattered all over.",
+            "**High variance (overfitting):** the model is so flexible that it **learns the noise**. Change a few training points and the $M = 9$ polynomial changes shape completely. Arrows scattered all over.",
           ],
         },
         {
@@ -387,31 +387,31 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "We saw that the overfitted M = 9 polynomial has **huge coefficients**: that's how it bends sharply to hit every point. So here's an idea: keep the flexible model, but **charge a penalty for large coefficients**. The model can still bend if the data truly demands it, but not just to chase noise. That's **regularisation** (slide 11).",
+          text: "We saw that the overfitted $M = 9$ polynomial has **huge coefficients**: that's how it bends sharply to hit every point. So here's an idea: keep the flexible model, but **charge a penalty for large coefficients**. The model can still bend if the data truly demands it, but not just to chase noise. That's **regularisation** (slide 11).",
         },
         {
           type: "callout",
           kind: "formula",
           title: "Regularised error",
-          text: "$$\\tilde E(\\mathbf w) = \\frac12 \\sum_{n=1}^{N} \\big( y(x_n, \\mathbf w) - t_n \\big)^2 + \\frac{\\lambda}{2} \\|\\mathbf w\\|^2, \\qquad \\|\\mathbf w\\|^2 = w_0^2 + w_1^2 + \\dots + w_M^2$$\n\nIn words: **augmented error = error on data + λ × model complexity.**\n\n$\\lambda$ (“lambda”) controls how much the penalty matters compared with fitting the data. In the linear-regression notation:\n$$J(\\theta) = \\frac{1}{2m}\\Big[ \\sum_i \\big(h_\\theta(x^{(i)}) - y^{(i)}\\big)^2 + \\lambda \\sum_{j=1}^{n} \\theta_j^2 \\Big]$$\nBy convention the intercept $\\theta_0$ is **not** penalised (the sum starts at j = 1).",
+          text: "$$\\tilde E(\\mathbf w) = \\frac12 \\sum_{n=1}^{N} \\big( y(x_n, \\mathbf w) - t_n \\big)^2 + \\frac{\\lambda}{2} \\|\\mathbf w\\|^2, \\qquad \\|\\mathbf w\\|^2 = w_0^2 + w_1^2 + \\dots + w_M^2$$\n\nIn words: **augmented error = error on data + $\\lambda$ × model complexity.**\n\n$\\lambda$ (“lambda”) controls how much the penalty matters compared with fitting the data. In the linear-regression notation:\n$$J(\\theta) = \\frac{1}{2m}\\Big[ \\sum_i \\big(h_\\theta(x^{(i)}) - y^{(i)}\\big)^2 + \\lambda \\sum_{j=1}^{n} \\theta_j^2 \\Big]$$\nBy convention the intercept $\\theta_0$ is **not** penalised (the sum starts at $j = 1$).",
         },
         {
           type: "p",
-          text: "**How a large λ makes the hypothesis simpler (slide 62 asks exactly this).** To keep the total cost low, the optimiser now has to balance two things: fitting the data *and* keeping the weights small. With a large λ, big weights are very expensive, so the higher-order weights ($w_5, w_6, \\dots$) get pushed close to 0. Those terms then contribute almost nothing, and the curve behaves like a **lower-order, smoother** polynomial.",
+          text: "**How a large $\\lambda$ makes the hypothesis simpler (slide 62 asks exactly this).** To keep the total cost low, the optimiser now has to balance two things: fitting the data *and* keeping the weights small. With a large $\\lambda$, big weights are very expensive, so the higher-order weights ($w_5, w_6, \\dots$) get pushed close to 0. Those terms then contribute almost nothing, and the curve behaves like a **lower-order, smoother** polynomial.",
         },
         {
           type: "table",
-          caption: "Choosing λ (slides 12–14, 60)",
-          head: ["λ", "Effect on the M = 9 (or M = 5) fit"],
+          caption: "Choosing $\\lambda$ (slides 12–14, 60)",
+          head: ["$\\lambda$", "Effect on the $M = 9$ (or $M = 5$) fit"],
           rows: [
             ["**λ = 0**", "No penalty: plain least squares, overfits"],
-            ["**Moderate λ** (e.g. ln λ = −18)", "Smooth curve that follows the true shape: good fit"],
-            ["**Very large λ**", "All weights squashed toward 0: a nearly flat line, **underfits** (high bias)"],
+            ["**Moderate $\\lambda$** (e.g. $\\ln \\lambda$ = −18)", "Smooth curve that follows the true shape: good fit"],
+            ["**Very large $\\lambda$**", "All weights squashed toward 0: a nearly flat line, **underfits** (high bias)"],
           ],
         },
         {
           type: "p",
-          text: "So λ is a **hyperparameter** that moves you along the bias–variance trade-off: small λ → more variance, large λ → more bias. Choose it with validation or cross-validation (Session 3).",
+          text: "So $\\lambda$ is a **hyperparameter** that moves you along the bias–variance trade-off: small $\\lambda$ → more variance, large $\\lambda$ → more bias. Choose it with validation or cross-validation (Session 3).",
         },
         {
           type: "p",
@@ -421,7 +421,7 @@ export default {
           type: "callout",
           kind: "remember",
           title: "The whole session in seven lines",
-          text: "1. Regression predicts a number: $h_\\theta(x) = \\theta_0 + \\theta_1 x$.\n2. Residual = actual − predicted. Least squares minimises the sum of squared residuals, $J = \\frac1{2m}\\sum(h - y)^2$, a convex bowl.\n3. OLS: $\\theta_1 = S_{xy}/S_{xx}$, $\\theta_0 = \\bar y - \\theta_1 \\bar x$ (the line passes through the mean point).\n4. Fit: MSE, RMSE, MAE; $R^2 = 1 - SSE/SST$ = fraction of variation explained.\n5. Gradient descent: $\\theta_j := \\theta_j - \\alpha\\frac1m\\sum(h - y)x_j$, simultaneous update; α too small = slow, too big = diverges; batch / stochastic / mini-batch; scale your features.\n6. Many features: $h = \\theta^Tx$; normal equation $\\theta = (X^TX)^{-1}X^Ty$. Polynomials and basis functions are still *linear in the parameters*.\n7. Complexity ↑ → bias ↓, variance ↑. Regularisation adds $\\lambda\\|w\\|^2$: large λ shrinks weights → simpler, smoother model.",
+          text: "1. Regression predicts a number: $h_\\theta(x) = \\theta_0 + \\theta_1 x$.\n2. Residual = actual − predicted. Least squares minimises the sum of squared residuals, $J = \\frac1{2m}\\sum(h - y)^2$, a convex bowl.\n3. OLS: $\\theta_1 = S_{xy}/S_{xx}$, $\\theta_0 = \\bar y - \\theta_1 \\bar x$ (the line passes through the mean point).\n4. Fit: MSE, RMSE, MAE; $R^2 = 1 - SSE/SST$ = fraction of variation explained.\n5. Gradient descent: $\\theta_j := \\theta_j - \\alpha\\frac1m\\sum(h - y)x_j$, simultaneous update; $\\alpha$ too small = slow, too big = diverges; batch / stochastic / mini-batch; scale your features.\n6. Many features: $h = \\theta^Tx$; normal equation $\\theta = (X^TX)^{-1}X^Ty$. Polynomials and basis functions are still *linear in the parameters*.\n7. Complexity ↑ → bias ↓, variance ↑. Regularisation adds $\\lambda\\|w\\|^2$: large $\\lambda$ shrinks weights → simpler, smoother model.",
         },
       ],
     },
@@ -441,16 +441,16 @@ export default {
     ["OLS", "Ordinary Least Squares", "Choose the line that minimises SSE"],
     ["$S_{xy}$", "Sum of cross-products", "$\\sum (x - \\bar x)(y - \\bar y)$: how x and y move together"],
     ["$S_{xx}$", "Sum of squares of x", "$\\sum (x - \\bar x)^2$: spread of x"],
-    ["J(θ)", "Cost function", "$\\frac1{2m}\\sum(h - y)^2$: how bad a choice of θ is"],
-    ["MSE", "Mean Squared Error", "SSE ÷ n"],
-    ["RMSE", "Root Mean Square Error", "√MSE, in the original units"],
+    ["$J(\\theta)$", "Cost function", "$\\frac1{2m}\\sum(h - y)^2$: how bad a choice of $\\theta$ is"],
+    ["MSE", "Mean Squared Error", "$\\text{SSE} \\div n$"],
+    ["RMSE", "Root Mean Square Error", "$\\sqrt{\\text{MSE}}$, in the original units"],
     ["MAE", "Mean Absolute Error", "Average of |residual|"],
     ["SST", "Total Sum of Squares", "$\\sum (y - \\bar y)^2$: total variation in y"],
-    ["R²", "Coefficient of determination", "Fraction of variation explained, 0 to 1"],
+    ["$R^2$", "Coefficient of determination", "Fraction of variation explained, 0 to 1"],
     ["Convex", "—", "Bowl-shaped: a single global minimum"],
     ["Contour plot", "—", "Top view of the cost bowl; each ellipse = equal cost"],
     ["GD", "Gradient Descent", "Repeatedly step against the slope of J"],
-    ["α", "Alpha, learning rate", "Size of each gradient-descent step"],
+    ["$\\alpha$", "Alpha, learning rate", "Size of each gradient-descent step"],
     ["SGD", "Stochastic Gradient Descent", "Update after each single example"],
     ["Mini-batch GD", "—", "Update after each small group of examples"],
     ["Feature scaling", "Mean normalisation", "$(x - \\mu)/s$: bring features to similar ranges"],
@@ -460,17 +460,17 @@ export default {
     ["Basis function $\\phi_j$", "—", "A fixed transformation of x used as a feature"],
     ["Bias", "—", "Systematic error from over-simple assumptions → underfitting"],
     ["Variance", "—", "Sensitivity to the particular training sample → overfitting"],
-    ["λ", "Lambda", "Regularisation strength"],
+    ["$\\lambda$", "Lambda", "Regularisation strength"],
     ["Weight decay", "—", "The shrinking factor $(1 - \\alpha\\lambda/m)$ in regularised GD"],
-    ["MCLE / MAP", "Maximum Conditional Likelihood / Maximum A Posteriori", "Bayesian ways to estimate θ"],
+    ["MCLE / MAP", "Maximum Conditional Likelihood / Maximum A Posteriori", "Bayesian ways to estimate $\\theta$"],
   ],
 
   examTips: [
     "**PYQ Q4 and revision Q2** are both *simple linear regression by least squares → predict → MSE*. Build the table with columns $x, y, x - \\bar x, y - \\bar y$, product, square. It's fast and earns method marks.",
     "Gradient-descent questions (revision deck): write the hypothesis, compute each **error** $h(x) - y$, then each gradient $\\frac1m\\sum e\\,x_j$, then $\\theta_j - \\alpha \\cdot$ gradient. Show the table.",
-    "In SGD, the second example uses the **already-updated** θ. In batch GD, every example uses the same old θ.",
+    "In SGD, the second example uses the **already-updated** $\\theta$. In batch GD, every example uses the same old $\\theta$.",
     "The bias–variance answer must mention **underfitting/overfitting, model complexity, and that the optimum is a trade-off**.",
-    "“How does a large λ give a simpler hypothesis?” → the penalty forces the $\\theta_j$ toward 0, so the high-order terms vanish and the curve is smoother.",
+    "“How does a large $\\lambda$ give a simpler hypothesis?” → the penalty forces the $\\theta_j$ toward 0, so the high-order terms vanish and the curve is smoother.",
   ],
 
   problems: [
@@ -479,14 +479,14 @@ export default {
       pyq: "Midsem Q4: slope/intercept, predict at 3.5, MSE",
       level: "Easy",
       marks: 5,
-      hint: "Follow Lesson 4's four steps: means → table of deviations → slope = Σproduct ÷ Σsquares → intercept = ȳ − m x̄. For MSE, add columns for ŷ and the squared residual.",
+      hint: "Follow Lesson 4's four steps: means → table of deviations → slope = Σproduct ÷ Σsquares → intercept = ȳ − $m \\bar{x}$. For MSE, add columns for ŷ and the squared residual.",
       question: `A shop records its sales (units) against advertising spend (₹ thousand):
 
 | Spend x | 1 | 2 | 3 | 4 | 5 |
 |---|---|---|---|---|---|
 | Sales y | 6 | 8 | 11 | 13 | 16 |
 
-(a) Find the slope m and intercept b of $y = mx + b$. (b) Predict sales for x = 3.5. (c) Compute the MSE on the data, plus RMSE, MAE and R².`,
+(a) Find the slope m and intercept b of $y = mx + b$. (b) Predict sales for $x = 3.5$. (c) Compute the MSE on the data, plus RMSE, MAE and $R^2$.`,
       solution: `
 ### What is being asked
 Fit the best straight line by least squares (Lesson 4), use it to predict, and measure how well it fits (Lesson 5).
@@ -520,10 +520,10 @@ Means: $\\bar x = 15/5 = 3$, $\\bar y = 54/5 = 10.8$
 - SST $= 4.8^2 + 2.8^2 + 0.2^2 + 2.2^2 + 5.2^2 = 62.8$, so $R^2 = 1 - 0.30/62.8 = 0.995$
 
 ### Answer
-**(a)** $\\hat y = 2.5x + 3.3$ **(b)** **12.05 units** **(c)** MSE **0.06**, RMSE **0.245**, MAE **0.24**, R² **0.995**
+**(a)** $\\hat y = 2.5x + 3.3$ **(b)** **12.05 units** **(c)** MSE **0.06**, RMSE **0.245**, MAE **0.24**, $R^2$ **0.995**
 
 ### Takeaway
-Each extra ₹1,000 of advertising is linked with about 2.5 more units sold. R² = 0.995 means spend explains 99.5% of the variation in sales: an almost perfect straight-line fit.`,
+Each extra ₹1,000 of advertising is linked with about 2.5 more units sold. $R^2 = 0.995$ means spend explains 99.5% of the variation in sales: an almost perfect straight-line fit.`,
     },
     {
       title: "House area vs price (revision deck Q2)",
@@ -531,11 +531,11 @@ Each extra ₹1,000 of advertising is linked with about 2.5 more units sold. R²
       level: "Medium",
       marks: 4,
       hint: "Same table as Lesson 4, just messier numbers. Keep 2–3 decimals in the deviations. Slope = Σproduct ÷ Σsquares.",
-      question: `| Area (m²) | 72 | 50 | 81 | 74 | 94 | 86 |
+      question: `| Area $(m^2)$ | 72 | 50 | 81 | 74 | 94 | 86 |
 |---|---|---|---|---|---|---|
 | Price (lakh ₹) | 84 | 63 | 77 | 78 | 90 | 75 |
 
-(a) Use least squares to fit Price = $w_0 + w_1\\cdot$Area. (b) Predict the price of an 80 m² house.`,
+(a) Use least squares to fit Price = $w_0 + w_1\\cdot$Area. (b) Predict the price of an 80 $m^2$ house.`,
       solution: `
 ### What is being asked
 A least-squares line on real-looking data, then one prediction.
@@ -570,23 +570,23 @@ Each extra square metre adds about ₹0.48 lakh (₹48,000) on average. Notice s
       title: "One iteration of batch gradient descent (1 feature)",
       level: "Medium",
       marks: 4,
-      hint: "With θ = (0, 0) every prediction is 0, so each error h − y is just −y. Gradient for θ₀ = average error; for θ₁ = average of error × x.",
+      hint: "With $\\theta = (0, 0)$ every prediction is 0, so each error $h - y$ is just −y. Gradient for $\\theta_0$ = average error; for $\\theta_1$ = average of error × x.",
       question:
-        "Data: (1, 2), (2, 4), (3, 5). Start at $\\theta_0 = \\theta_1 = 0$ with α = 0.1 and cost $J = \\frac{1}{2m}\\sum(h-y)^2$. (a) Do one batch GD update. (b) Compute J before and after. (c) What are the OLS optimum and its cost?",
+        "Data: (1, 2), (2, 4), (3, 5). Start at $\\theta_0 = \\theta_1 = 0$ with $\\alpha = 0.1$ and cost $J = \\frac{1}{2m}\\sum(h-y)^2$. (a) Do one batch GD update. (b) Compute J before and after. (c) What are the OLS optimum and its cost?",
       solution: `
 ### What is being asked
 Take one step down the cost bowl by hand (Lesson 7), check that the cost fell, and compare with the exact OLS answer.
 
 ### Why this approach
-Batch GD uses all three points to compute each gradient, then updates both θs together from the old values.
+Batch GD uses all three points to compute each gradient, then updates both $\\theta s$ together from the old values.
 
 ### Formulas
 $$\\theta_0 := \\theta_0 - \\alpha \\frac1m \\sum (h - y), \\qquad \\theta_1 := \\theta_1 - \\alpha \\frac1m \\sum (h - y)\\,x, \\qquad J = \\frac{1}{2m}\\sum (h - y)^2$$
 
 ### Working
-**(a)** With θ = (0, 0), every $h = 0$, so the errors $h - y$ are **−2, −4, −5**.
-- Gradient for θ₀: $\\frac13(-2 - 4 - 5) = -3.667$
-- Gradient for θ₁: $\\frac13(-2 \\cdot 1 - 4 \\cdot 2 - 5 \\cdot 3) = -25/3 = -8.333$
+**(a)** With $\\theta = (0, 0)$, every $h = 0$, so the errors $h - y$ are **−2, −4, −5**.
+- Gradient for $\\theta_0$: $\\frac13(-2 - 4 - 5) = -3.667$
+- Gradient for $\\theta_1$: $\\frac13(-2 \\cdot 1 - 4 \\cdot 2 - 5 \\cdot 3) = -25/3 = -8.333$
 - $\\theta_0 = 0 - 0.1(-3.667) = 0.367$
 - $\\theta_1 = 0 - 0.1(-8.333) = 0.833$
 
@@ -611,8 +611,8 @@ One step already cut the cost by 80%, but we're not at the minimum yet. More ite
       pyq: "Revision deck: first GD iteration, α = 0.02",
       level: "Hard",
       marks: 6,
-      hint: "Build one table: prediction h, error e = h − y, e × x₁, e × x₂. Sum the last three columns, divide by m = 3, multiply by α, and subtract from each old weight.",
-      question: `RR-CHD (relative risk of coronary heart disease) is linear in BMI ($x_1$) and diastolic pressure ($x_2$): $y = w_0 + w_1x_1 + w_2x_2$. Start with $w_0 = 5$, $w_1 = w_2 = -0.03$, α = 0.02. Show the first iteration of batch gradient descent.
+      hint: "Build one table: prediction h, error $e = h - y$, $e \\times x_1$, $e \\times x_2$. Sum the last three columns, divide by $m = 3$, multiply by $\\alpha$, and subtract from each old weight.",
+      question: `RR-CHD (relative risk of coronary heart disease) is linear in BMI ($x_1$) and diastolic pressure ($x_2$): $y = w_0 + w_1x_1 + w_2x_2$. Start with $w_0 = 5$, $w_1 = w_2 = -0.03$, $\\alpha = 0.02$. Show the first iteration of batch gradient descent.
 
 | Patient | BMI | Diastolic | RR-CHD |
 |---|---|---|---|
@@ -632,14 +632,14 @@ $$w_j := w_j - \\alpha \\cdot \\frac1m \\sum_i e_i \\, x_j^{(i)}, \\qquad e_i = 
 ### Working
 Predictions and errors:
 
-| P | $h = 5 - 0.03x_1 - 0.03x_2$ | y | e = h − y | $e \\cdot x_1$ | $e \\cdot x_2$ |
+| P | $h = 5 - 0.03x_1 - 0.03x_2$ | y | $e = h - y$ | $e \\cdot x_1$ | $e \\cdot x_2$ |
 |---|---|---|---|---|---|
-| 1 | 5 − 1.05 − 2.4 = 1.55 | 1.81 | −0.26 | −9.1 | −20.8 |
-| 2 | 5 − 0.75 − 2.4 = 1.85 | 1.22 | 0.63 | 15.75 | 50.4 |
-| 3 | 5 − 0.9 − 3.0 = 1.10 | 1.71 | −0.61 | −18.3 | −61.0 |
+| 1 | $5 - 1.05 - 2.4 = 1.55$ | 1.81 | −0.26 | −9.1 | −20.8 |
+| 2 | $5 - 0.75 - 2.4 = 1.85$ | 1.22 | 0.63 | 15.75 | 50.4 |
+| 3 | $5 - 0.9 - 3.0 = 1.10$ | 1.71 | −0.61 | −18.3 | −61.0 |
 | **Σ** | | | **−0.24** | **−11.65** | **−31.4** |
 
-Gradients (divide by m = 3): $g_0 = -0.08$, $g_1 = -3.8833$, $g_2 = -10.4667$
+Gradients (divide by $m = 3$): $g_0 = -0.08$, $g_1 = -3.8833$, $g_2 = -10.4667$
 
 Updates:
 - $w_0 = 5 - 0.02(-0.08) = 5.0016$
@@ -658,7 +658,7 @@ $w_2$ moved the most because pressure values (80–100) are large, so they multi
       marks: 5,
       hint: "SGD: after each patient, update immediately with $w_j \\leftarrow w_j - \\alpha\\,e\\,x_j$ (no averaging). Use the new weights for the next patient's prediction.",
       question:
-        "Repeat the RR-CHD problem with **stochastic** GD (update after each patient, in order 1, 2, 3; same α = 0.02 and initial weights). Show all three updates, then comment on the result.",
+        "Repeat the RR-CHD problem with **stochastic** GD (update after each patient, in order 1, 2, 3; same $\\alpha = 0.02$ and initial weights). Show all three updates, then comment on the result.",
       solution: `
 ### What is being asked
 The same step as the previous problem, but with SGD (Lesson 7), and an explanation of what goes wrong.
@@ -688,7 +688,7 @@ The weights **explode: SGD diverges**.
 
 **Why:** the features are unscaled (BMI ≈ 30, pressure ≈ 100), so each update changes the weights by roughly $\\alpha \\, x_j^2 \\gg 1$ times the error, and every step overshoots more than the last. Batch GD survived its one step only because it averaged errors of opposite sign.
 
-**Fixes:** standardise the features, $x_j \\leftarrow (x_j - \\mu_j)/\\sigma_j$, and/or use a much smaller α.
+**Fixes:** standardise the features, $x_j \\leftarrow (x_j - \\mu_j)/\\sigma_j$, and/or use a much smaller $\\alpha$.
 
 ### Takeaway
 Always scale features before gradient descent, and suspect the learning rate or scaling whenever the cost goes **up**.`,
@@ -697,9 +697,9 @@ Always scale features before gradient descent, and suspect the learning rate or 
       title: "Effect of the learning rate",
       level: "Medium",
       marks: 4,
-      hint: "The derivative of θ² is 2θ, so each step multiplies θ by (1 − 2α). Look at whether that factor is between 0 and 1, exactly 0, negative, or below −1.",
+      hint: "The derivative of $\\theta^2$ is $2 \\theta$, so each step multiplies $\\theta$ by $(1 - 2 \\alpha)$. Look at whether that factor is between 0 and 1, exactly 0, negative, or below −1.",
       question:
-        "Minimise $J(\\theta) = \\theta^2$ from $\\theta = 1$. Write the GD update, then do 3 iterations for α = 0.1, 0.5, 1.0 and 1.1. Describe each behaviour.",
+        "Minimise $J(\\theta) = \\theta^2$ from $\\theta = 1$. Write the GD update, then do 3 iterations for $\\alpha = 0.1$, 0.5, 1.0 and 1.1. Describe each behaviour.",
       solution: `
 ### What is being asked
 See Lesson 7's learning-rate intuitions happen on the simplest possible bowl.
@@ -708,37 +708,37 @@ See Lesson 7's learning-rate intuitions happen on the simplest possible bowl.
 $J'(\\theta) = 2\\theta$, so $\\theta \\leftarrow \\theta - \\alpha \\cdot 2\\theta = (1 - 2\\alpha)\\,\\theta$
 
 ### Working
-| α | factor $1 - 2\\alpha$ | θ₁, θ₂, θ₃ | Behaviour |
+| $\\alpha$ | factor $1 - 2\\alpha$ | $\\theta_1$, $\\theta_2$, $\\theta_3$ | Behaviour |
 |---|---|---|---|
 | 0.1 | 0.8 | 0.8, 0.64, 0.512 | Slow, steady convergence |
-| 0.5 | 0 | 0, 0, 0 | Reaches the minimum in one step (the ideal α for this bowl) |
+| 0.5 | 0 | 0, 0, 0 | Reaches the minimum in one step (the ideal $\\alpha$ for this bowl) |
 | 1.0 | −1 | −1, 1, −1 | **Oscillates** forever between ±1 |
 | 1.1 | −1.2 | −1.2, 1.44, −1.728 | **Diverges**: overshoots more each time |
 
 ### Takeaway
-|factor| < 1 → converges; = 1 → bounces forever; > 1 → blows up. In practice, plot J against iterations: if J goes up, reduce α.`,
+|factor| < 1 → converges; = 1 → bounces forever; > 1 → blows up. In practice, plot J against iterations: if J goes up, reduce $\\alpha$.`,
     },
     {
       title: "Regularised cost and ridge shrinkage",
       level: "Medium",
       marks: 5,
-      hint: "(a) Don't penalise θ₀; penalty = λ/(2m) × (θ₁² + θ₂²). (b) Compute Σxy and Σx² once, then just change the denominator.",
+      hint: "(a) Don't penalise $\\theta_0$; penalty = $\\lambda/(2 m) \\times(\\theta_1^2 + \\theta_2^2)$. (b) Compute Σxy and $\\sum x^2$ once, then just change the denominator.",
       question:
-        "(a) A model has $\\theta = (0.5, 2, -3)$ and a data cost (sum of squared errors / 2m) of 1.2 with m = 10. With λ = 4, compute $J = \\frac{1}{2m}[\\text{SSE} + \\lambda\\sum_{j\\ge1}\\theta_j^2]$. (b) For a no-intercept model $y = wx$ on data x = (1, 2, 3, 4), y = (2.2, 3.9, 6.1, 8.0), the ridge solution is $w = \\frac{\\sum xy}{\\sum x^2 + \\lambda}$. Compute w for λ = 0, 10, 30 and comment.",
+        "(a) A model has $\\theta = (0.5, 2, -3)$ and a data cost (sum of squared errors / 2m) of 1.2 with $m = 10$. With $\\lambda = 4$, compute $J = \\frac{1}{2m}[\\text{SSE} + \\lambda\\sum_{j\\ge1}\\theta_j^2]$. (b) For a no-intercept model $y = wx$ on data $x = (1, 2, 3, 4)$, $y = (2.2, 3.9, 6.1, 8.0)$, the ridge solution is $w = \\frac{\\sum xy}{\\sum x^2 + \\lambda}$. Compute w for $\\lambda = 0$, 10, 30 and comment.",
       solution: `
 ### What is being asked
-Compute a regularised cost, and watch λ shrink a weight (Lesson 11).
+Compute a regularised cost, and watch $\\lambda$ shrink a weight (Lesson 11).
 
 ### Why this approach
-The penalty adds $\\frac{\\lambda}{2m}\\sum_{j \\ge 1}\\theta_j^2$ on top of the data cost. In the ridge formula, λ sits in the denominator, so bigger λ means smaller w.
+The penalty adds $\\frac{\\lambda}{2m}\\sum_{j \\ge 1}\\theta_j^2$ on top of the data cost. In the ridge formula, $\\lambda$ sits in the denominator, so bigger $\\lambda$ means smaller w.
 
 ### Working
-**(a)** Data part = 1.2 (already divided by 2m). Penalty $= \\frac{4}{2 \\times 10}(2^2 + (-3)^2) = 0.2 \\times 13 = 2.6$ (θ₀ = 0.5 is not penalised).
+**(a)** Data part = 1.2 (already divided by 2m). Penalty $= \\frac{4}{2 \\times 10}(2^2 + (-3)^2) = 0.2 \\times 13 = 2.6$ ($\\theta_0 = 0.5$ is not penalised).
 $J = 1.2 + 2.6 = 3.8$
 
 **(b)** $\\sum xy = 2.2 + 7.8 + 18.3 + 32 = 60.3$; $\\sum x^2 = 1 + 4 + 9 + 16 = 30$
 
-| λ | $w = 60.3 / (30 + \\lambda)$ |
+| $\\lambda$ | $w = 60.3 / (30 + \\lambda)$ |
 |---|---|
 | 0 | 60.3/30 = **2.01** (plain least squares) |
 | 10 | 60.3/40 = **1.51** |
@@ -748,15 +748,15 @@ $J = 1.2 + 2.6 = 3.8$
 (a) **J = 3.8** (b) w = **2.01, 1.51, 1.005**
 
 ### Takeaway
-As λ grows, the weight **shrinks toward 0**. A moderate λ reduces variance (less overfitting); too large a λ flattens the model and **underfits** (high bias). Here the data clearly follow y ≈ 2x, so λ = 30 has damaged a good fit.`,
+As $\\lambda$ grows, the weight **shrinks toward 0**. A moderate $\\lambda$ reduces variance (less overfitting); too large $a \\lambda$ flattens the model and **underfits** (high bias). Here the data clearly follow $y \\approx 2 x$, so $\\lambda = 30$ has damaged a good fit.`,
     },
     {
       title: "Normal equation (vectorised closed form)",
       level: "Hard",
       marks: 5,
-      hint: "For one feature, $X^TX = \\begin{pmatrix} n & \\sum x \\\\ \\sum x & \\sum x^2 \\end{pmatrix}$ and $X^Ty = (\\sum y, \\sum xy)$. Invert the 2×2 matrix: swap the diagonal, negate the off-diagonal, divide by the determinant.",
+      hint: "For one feature, $X^TX = \\begin{pmatrix} n & \\sum x \\\\ \\sum x & \\sum x^2 \\end{pmatrix}$ and $X^Ty = (\\sum y, \\sum xy)$. Invert the $2 \\times 2$ matrix: swap the diagonal, negate the off-diagonal, divide by the determinant.",
       question:
-        "Solve the sales data (x = 1..5, y = 6, 8, 11, 13, 16) with $\\theta = (X^TX)^{-1}X^Ty$, where X has a column of ones. Confirm it matches OLS.",
+        "Solve the sales data ($x = 1$..5, $y = 6$, 8, 11, 13, 16) with $\\theta = (X^TX)^{-1}X^Ty$, where X has a column of ones. Confirm it matches OLS.",
       solution: `
 ### What is being asked
 Use the matrix form of least squares (Lesson 8) and check it gives the same line as the table method.
@@ -783,7 +783,7 @@ No learning rate and no iterations, but it needs a matrix inverse, which costs a
       marks: 3,
       hint: "A polynomial of order M has M + 1 coefficients. Compare that number with the number of data points.",
       question:
-        "You fit polynomials of order M = 0, 1, 3, 9 to N = 10 noisy points from a sine curve. (a) How many coefficients does each model have? (b) Which gives zero training error, and why is that bad? (c) Name two ways to use M = 9 safely.",
+        "You fit polynomials of order $M = 0$, 1, 3, 9 to $N = 10$ noisy points from a sine curve. (a) How many coefficients does each model have? (b) Which gives zero training error, and why is that bad? (c) Name two ways to use $M = 9$ safely.",
       solution: `
 ### What is being asked
 Connect model order to overfitting (Lessons 9–11).
@@ -791,12 +791,12 @@ Connect model order to overfitting (Lessons 9–11).
 ### Working
 **(a)** $M + 1$ coefficients: **1, 2, 4, 10**.
 
-**(b)** **M = 9.** Ten coefficients for ten points means the curve can pass exactly through every point, so E = 0. But it's fitting the **noise**: it oscillates wildly between points and has huge coefficients, so it predicts new points badly (**overfitting, high variance**).
+**(b)** **M = 9.** Ten coefficients for ten points means the curve can pass exactly through every point, so $E = 0$. But it's fitting the **noise**: it oscillates wildly between points and has huge coefficients, so it predicts new points badly (**overfitting, high variance**).
 
 **(c)** Any two:
-1. **Regularisation:** add $\\frac\\lambda2\\|w\\|^2$ with a suitable λ.
-2. **More data:** with N = 100 points, M = 9 follows the true curve well.
-3. Choose M (or λ) by **validation / cross-validation**.
+1. **Regularisation:** add $\\frac\\lambda2\\|w\\|^2$ with a suitable $\\lambda$.
+2. **More data:** with $N = 100$ points, $M = 9$ follows the true curve well.
+3. Choose M (or $\\lambda$) by **validation / cross-validation**.
 
 ### Takeaway
 When the number of parameters approaches the number of data points, a model can memorise instead of learn.`,
@@ -817,7 +817,7 @@ Both definitions, the link to under/overfitting, and **what happens as complexit
 - **Bias:** error from wrong or over-simple assumptions; the model class can't represent the true relationship (e.g. a line for a curve). High bias → **underfitting**: high training *and* test error.
 - **Variance:** error from sensitivity to the particular training sample; a flexible model changes a lot with small data changes and learns the noise. High variance → **overfitting**: low training error, high test error.
 - **Trade-off:** as model complexity (e.g. polynomial order) **increases**, bias ↓ and variance ↑; as it **decreases**, bias ↑ and variance ↓. Expected error ≈ bias² + variance + irreducible noise, so the best model is at the complexity that **minimises the total**, found with validation/CV.
-- **Controls:** regularisation (λ), model order, more training data (reduces variance).
+- **Controls:** regularisation $(\\lambda)$, model order, more training data (reduces variance).
 
 ### Takeaway
 Archery picture: bias = arrows consistently off-target; variance = arrows scattered.`,
@@ -842,23 +842,23 @@ Each boundary matched to fit/robustness **and** to bias/variance.
     {
       title: "What is regularisation and how does λ work?",
       marks: 3,
-      question: "What is regularisation? Write the regularised error function. How does a large value of λ result in a simpler hypothesis? What happens if λ is too large?",
+      question: "What is regularisation? Write the regularised error function. How does a large value of $\\lambda$ result in a simpler hypothesis? What happens if $\\lambda$ is too large?",
       solution: `
 ### What the examiner wants
-The definition, the formula, the **mechanism** (why large λ → simpler), and the danger of too much.
+The definition, the formula, the **mechanism** (why large $\\lambda$ → simpler), and the danger of too much.
 
 ### Model answer
 **Regularisation** controls overfitting by adding a penalty on large coefficients to the error function:
 $$\\tilde E(w) = \\frac12\\sum_n\\big(y(x_n,w)-t_n\\big)^2 + \\frac{\\lambda}{2}\\|w\\|^2$$
-i.e. *error on data + λ × model complexity*.
+i.e. *error on data + $\\lambda$ × model complexity*.
 
-- **Large λ:** to minimise $\\tilde E$, the optimiser must keep $\\|w\\|$ small. The high-order coefficients are pushed near 0, so those terms contribute little and the curve becomes smoother and effectively lower-order: a simpler hypothesis with lower variance.
+- **Large $\\lambda$:** to minimise $\\tilde E$, the optimiser must keep $\\|w\\|$ small. The high-order coefficients are pushed near 0, so those terms contribute little and the curve becomes smoother and effectively lower-order: a simpler hypothesis with lower variance.
 - **λ too large:** all weights → 0 and the model becomes nearly constant, which underfits (high bias).
 - **λ = 0:** plain least squares, which may overfit.
-- Choose λ by cross-validation. The intercept is usually not penalised.
+- Choose $\\lambda$ by cross-validation. The intercept is usually not penalised.
 
 ### Takeaway
-λ is a dial between overfitting (small λ) and underfitting (large λ).`,
+$\\lambda$ is a dial between overfitting (small $\\lambda$) and underfitting (large $\\lambda$).`,
     },
     {
       title: "OLS vs gradient descent",
@@ -872,11 +872,11 @@ A side-by-side comparison on method, tuning, cost and when to use each. A table 
 | | OLS / Normal equation | Gradient descent |
 |---|---|---|
 | Method | $\\theta = (X^TX)^{-1}X^Ty$, one shot | Iterative updates $\\theta_j -= \\alpha\\,\\partial J/\\partial\\theta_j$ |
-| Learning rate | Not needed | Must choose α |
+| Learning rate | Not needed | Must choose $\\alpha$ |
 | Iterations | None | Many, until convergence |
 | Cost | $O(n^3)$ matrix inverse, slow for many features | $O(mn)$ per iteration; scales to large n and m |
-| Issues | $X^TX$ may be singular (redundant features) | Needs feature scaling; may diverge if α is too big |
-| Use when | Few features (up to about 10⁴) | Many features or huge datasets; also works for models with no closed form (logistic regression) |
+| Issues | $X^TX$ may be singular (redundant features) | Needs feature scaling; may diverge if $\\alpha$ is too big |
+| Use when | Few features (up to about $10^4$) | Many features or huge datasets; also works for models with no closed form (logistic regression) |
 
 ### Takeaway
 Same answer for linear regression; different routes. Gradient descent is the one that generalises to other models.`,
@@ -884,20 +884,20 @@ Same answer for linear regression; different routes. Gradient descent is the one
     {
       title: "Gradient descent: learning rate and variants",
       marks: 4,
-      question: "Explain gradient descent for linear regression. What happens if α is too small or too large, or θ is already at a minimum? Differentiate batch, stochastic and mini-batch GD.",
+      question: "Explain gradient descent for linear regression. What happens if $\\alpha$ is too small or too large, or $\\theta$ is already at a minimum? Differentiate batch, stochastic and mini-batch GD.",
       solution: `
 ### What the examiner wants
 The idea with the update rule, the three slide-33 intuitions, and the three variants.
 
 ### Model answer
-- **Idea:** J(θ) is a convex bowl for linear regression. Start with any θ and repeatedly step opposite the gradient, $\\theta_j := \\theta_j - \\alpha\\frac1m\\sum_i(h_\\theta(x^{(i)})-y^{(i)})x_j^{(i)}$, updating all $\\theta_j$ **simultaneously**, until the change is tiny.
-- **α too small:** tiny steps, very slow. **α too large:** overshoots; J oscillates or increases (diverges). **At a minimum:** the gradient is 0, so θ doesn't change. Steps also shrink naturally near the minimum.
+- **Idea:** $J(\\theta)$ is a convex bowl for linear regression. Start with any $\\theta$ and repeatedly step opposite the gradient, $\\theta_j := \\theta_j - \\alpha\\frac1m\\sum_i(h_\\theta(x^{(i)})-y^{(i)})x_j^{(i)}$, updating all $\\theta_j$ **simultaneously**, until the change is tiny.
+- **α too small:** tiny steps, very slow. **α too large:** overshoots; J oscillates or increases (diverges). **At a minimum:** the gradient is 0, so $\\theta$ doesn't change. Steps also shrink naturally near the minimum.
 - **Batch GD:** the gradient uses all m samples per update. Accurate and smooth, but slow on big data.
 - **Stochastic GD:** updates after each single sample. Fast, but noisy, and can hover around the minimum.
 - **Mini-batch GD:** uses small groups (e.g. 32–256). Balances stability and speed, and runs efficiently on vector hardware.
 
 ### Takeaway
-Walking downhill in fog: α is your stride length, and the batch size is how many points you check before each step.`,
+Walking downhill in fog: $\\alpha$ is your stride length, and the batch size is how many points you check before each step.`,
     },
     {
       title: "Why is it called a “linear” model?",
@@ -920,13 +920,13 @@ The key phrase **“linear in the parameters”**, and a definition of basis fun
   quiz: [
     { q: "In $y = mx + b$ fitted by least squares, the intercept b equals:", options: ["$\\bar y - m\\bar x$", "$\\bar x - m\\bar y$", "$m\\bar x$", "$\\sum y / \\sum x$"], answer: 0, why: "The OLS line always passes through $(\\bar x, \\bar y)$." },
     { q: "If the learning rate is too large, gradient descent will:", options: ["Converge slowly", "Overshoot and possibly diverge", "Stop immediately", "Find a local minimum faster"], answer: 1, why: "Big steps jump over the minimum." },
-    { q: "A polynomial of order M = 9 fitted to 10 points will typically:", options: ["Underfit", "Overfit", "Have high bias", "Have zero variance"], answer: 1, why: "It interpolates the noise: zero training error, poor generalisation." },
-    { q: "Increasing λ in ridge regression tends to:", options: ["Increase variance", "Increase bias", "Increase the weights", "Remove the intercept"], answer: 1, why: "Weights shrink, so the model is simpler: bias ↑, variance ↓." },
-    { q: "The linear-regression squared-error cost J(θ) is:", options: ["Non-convex with many minima", "Convex (bowl-shaped)", "Always zero", "Linear in θ"], answer: 1, why: "A quadratic in θ, so there is one global minimum." },
+    { q: "A polynomial of order $M = 9$ fitted to 10 points will typically:", options: ["Underfit", "Overfit", "Have high bias", "Have zero variance"], answer: 1, why: "It interpolates the noise: zero training error, poor generalisation." },
+    { q: "Increasing $\\lambda$ in ridge regression tends to:", options: ["Increase variance", "Increase bias", "Increase the weights", "Remove the intercept"], answer: 1, why: "Weights shrink, so the model is simpler: bias ↑, variance ↓." },
+    { q: "The linear-regression squared-error cost $J(\\theta)$ is:", options: ["Non-convex with many minima", "Convex (bowl-shaped)", "Always zero", "Linear in $\\theta$"], answer: 1, why: "A quadratic in $\\theta$, so there is one global minimum." },
     { q: "Stochastic GD computes each update from:", options: ["All samples", "One sample", "A mini-batch", "The normal equation"], answer: 1, why: "SGD uses a single example per step." },
     { q: "The normal equation's main disadvantage is:", options: ["It needs a learning rate", "It needs many iterations", "The $O(n^3)$ matrix inverse for many features", "It can't find the global minimum"], answer: 2, why: "Inverting $X^TX$ is expensive when n is large." },
     { q: "A model with high training error and high test error is:", options: ["Overfitting", "Underfitting", "Well-fitted", "Regularised perfectly"], answer: 1, why: "A too-simple model (high bias)." },
     { q: "Why scale features before gradient descent?", options: ["To reduce bias", "So contours are round and GD converges faster", "It is required by OLS", "To remove outliers"], answer: 1, why: "Unequal scales create elongated contours and zig-zagging or divergence." },
-    { q: "Which parameter is usually NOT regularised?", options: ["θ₀", "θ₁", "θ₂", "All are regularised"], answer: 0, why: "The bias/intercept term is conventionally excluded from the penalty." },
+    { q: "Which parameter is usually NOT regularised?", options: ["$\\theta_0$", "$\\theta_1$", "$\\theta_2$", "All are regularised"], answer: 0, why: "The bias/intercept term is conventionally excluded from the penalty." },
   ],
 };

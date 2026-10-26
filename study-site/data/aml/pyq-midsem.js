@@ -18,11 +18,11 @@ export default {
           type: "table",
           head: ["Q", "Content", "Marks", "Session"],
           rows: [
-            ["1", "(a) Euclidean & Manhattan distance · (b) accuracy/precision/recall/F1 · (c) recall vs precision for a business case · (d) polynomial kernel feature map & value", "2×4 = 8", "S2, S3, S7"],
-            ["2", "(a) three ML challenges · (b) bias–variance · (c) frame churn prediction", "2×3 = 6", "S1, S4, S3/S5"],
+            ["1", "(a) Euclidean & Manhattan distance · (b) accuracy/precision/recall/$F_1 \\cdot(c)$ recall vs precision for a business case · (d) polynomial kernel feature map & value", "$2 \\times 4 = 8$", "S2, S3, S7"],
+            ["2", "(a) three ML challenges · (b) bias–variance · (c) frame churn prediction", "$2 \\times 3 = 6$", "S1, S4, S3/S5"],
             ["3", "Naïve Bayes: loan approval (priors, likelihoods, posteriors)", "5", "S6"],
-            ["4", "Linear regression: slope, intercept, prediction, MSE", "2+2+1 = 5", "S4"],
-            ["5", "XOR: feature map, support vectors, max-margin hyperplane, boundary in original space", "1+2+2+1 = 6", "S7"],
+            ["4", "Linear regression: slope, intercept, prediction, MSE", "$2 + 2 + 1 = 5$", "S4"],
+            ["5", "XOR: feature map, support vectors, max-margin hyperplane, boundary in original space", "$1 + 2 + 2 + 1 = 6$", "S7"],
           ],
         },
         {
@@ -42,7 +42,7 @@ export default {
       level: "Easy",
       marks: 2,
       hint: "Write the absolute difference in each of the three attributes first. Euclidean squares and adds them, then takes the square root; Manhattan just adds them.",
-      question: "Two data points have feature values P = [3, 7, 2] and Q = [6, 2, 5]. Compute the Euclidean and Manhattan distance between P and Q.",
+      question: "Two data points have feature values $P = [3, 7, 2]$ and $Q = [6, 2, 5]$. Compute the Euclidean and Manhattan distance between P and Q.",
       solution: `
 ### What is being asked
 Two members of the Minkowski family of distances (Session 2, Lesson 10).
@@ -125,7 +125,7 @@ A still misses 15 frauds. If A truly needs “no misses”, lower the threshold 
       pyq: true,
       level: "Medium",
       marks: 2,
-      hint: "φ(x) = (1, √2x₁, √2x₂, x₁², x₂², √2x₁x₂). Compute it for both points, take the dot product, and check against (1 + x·z)².",
+      hint: "$\\phi(x) = (1, \\sqrt{2} x_1, \\sqrt{2} x_2, x_1^2, x_2^2, \\sqrt{2} x_1 x_2)$. Compute it for both points, take the dot product, and check against $(1 + x \\cdot z)^2$.",
       question:
         "Each 2-D point $x_i = (x_{i1}, x_{i2})$ is transformed using a polynomial kernel of degree 2: $K(x, x') = (1 + x_1x_1' + x_2x_2')^2$. Given $x_1 = (1, 3)$ and $x_2 = (2, 1)$, compute the transformed feature-space representation of both points and the kernel value $K(x_1, x_2)$.",
       solution: `
@@ -145,7 +145,7 @@ $$\\phi(x) = (1,\\ \\sqrt2x_1,\\ \\sqrt2x_2,\\ x_1^2,\\ x_2^2,\\ \\sqrt2x_1x_2)$
 - Direct: $x_1 \\cdot x_2 = 2 + 3 = 5$, so $(1 + 5)^2 = 36$ ✓
 
 ### Answer
-The two φ vectors above; **K(x₁, x₂) = 36**.
+The two $\\phi$ vectors above; **K($x_1$, $x_2$) = 36**.
 
 ### Takeaway
 The kernel gives the 6-D dot product from a 2-D calculation: that's why SVMs can use huge feature spaces cheaply.`,
@@ -213,7 +213,7 @@ Point out the **zero-frequency problem**: “Loan = Medium” never occurs with 
       pyq: true,
       level: "Easy",
       marks: 5,
-      hint: "Means: x̄ = 3, ȳ = 10.8. Build the table with x − x̄, y − ȳ, their product and (x − x̄)². Slope = Σproduct ÷ Σsquares; intercept = ȳ − slope × x̄.",
+      hint: "Means: $\\bar{x} = 3$, ȳ = 10.8. Build the table with $x - \\bar{x}$, y − ȳ, their product and $(x - \\bar{x})^2$. Slope = Σproduct ÷ Σsquares; intercept = ȳ − slope × $\\bar{x}$.",
       question: `A data analyst wants to predict Sales (units) from Advertising Spend (in thousands).
 
 | Advertising Spend | 1 | 2 | 3 | 4 | 5 |
@@ -250,7 +250,7 @@ $m = 25/10 = 2.5$; $b = 10.8 - 2.5 \\times 3 = 3.3$
 **(b)** $y(3.5) = 2.5 \\times 3.5 + 3.3 = 8.75 + 3.3 = 12.05$
 
 **(c)**
-| x | y | ŷ | e = y − ŷ | e² |
+| x | y | ŷ | $e = y$ − ŷ | $e^2$ |
 |---|---|---|---|---|
 | 1 | 6 | 5.8 | 0.2 | 0.04 |
 | 2 | 8 | 8.3 | −0.3 | 0.09 |
@@ -271,7 +271,7 @@ Interpretation earns marks: *each extra ₹1,000 of advertising adds about 2.5 u
       pyq: true,
       level: "Hard",
       marks: 6,
-      hint: "Multiply the two coordinates: x₁x₂ is +1 when the signs agree and −1 when they differ. Then solve w·z + b = ±1 at z = ±1.",
+      hint: "Multiply the two coordinates: $x_1 x_2$ is +1 when the signs agree and −1 when they differ. Then solve $w \\cdot z + b$ = ±1 at z = ±1.",
       question: `Consider the following 2-D dataset (a classic XOR pattern), which is not linearly separable in the original space:
 
 | x1 | x2 | Class |
@@ -281,7 +281,7 @@ Interpretation earns marks: *each extra ₹1,000 of advertising adds about 2.5 u
 | 1 | −1 | −1 |
 | −1 | 1 | −1 |
 
-(a) Suggest a suitable feature transformation φ(x1, x2) that makes the data linearly separable. [1]
+(a) Suggest a suitable feature transformation $\\phi(x_1, x_2)$ that makes the data linearly separable. [1]
 (b) Identify the support vectors in the transformed space. [2]
 (c) Write the equation of the maximum-margin hyperplane in the transformed space. [2]
 (d) Express the resulting decision boundary back in the original (x1, x2) space. [1]`,
@@ -295,7 +295,7 @@ The classes differ by whether the coordinates' signs agree. The product $x_1x_2$
 ### Working
 **(a)** $\\phi(x_1, x_2) = (x_1, x_2, x_1x_2)$. The new feature $z = x_1x_2$ is what matters.
 
-| x₁ | x₂ | $z = x_1x_2$ | class |
+| $x_1$ | $x_2$ | $z = x_1x_2$ | class |
 |---|---|---|---|
 | 1 | 1 | 1 | +1 |
 | −1 | −1 | 1 | +1 |
@@ -315,10 +315,10 @@ Adding: $2b = 0 \\Rightarrow b = 0$, so $w_3 = 1$. Hyperplane: $0 \\cdot x_1 + 0
 **(d)** Substitute $z = x_1x_2$: boundary **$x_1x_2 = 0$**, i.e. the two coordinate axes. Decision rule $f(x) = \\text{sign}(x_1x_2)$: +1 in quadrants I and III, −1 in II and IV.
 
 ### Answer
-(a) $\\phi = (x_1, x_2, x_1x_2)$ (b) all four points (c) $z = 0$ (w₃ = 1, b = 0, margin 2) (d) $x_1x_2 = 0$
+(a) $\\phi = (x_1, x_2, x_1x_2)$ (b) all four points (c) $z = 0$ ($w_3 = 1$, $b = 0$, margin 2) (d) $x_1x_2 = 0$
 
 ### Takeaway
-Equivalently, the polynomial kernel $(1 + x^Tx')^2$ contains the $\\sqrt2x_1x_2$ feature and solves XOR implicitly. Mentioning this links (d) back to Q1(d).`,
+Equivalently, the polynomial kernel $(1 + x^Tx')^2$ contains the $\\sqrt2x_1x_2$ feature and solves XOR implicitly. Mentioning this links (d) back to $Q_1(d)$.`,
     },
   ],
 

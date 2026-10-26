@@ -281,7 +281,7 @@ export default {
         {
           type: "list",
           items: [
-            "**Feature engineering:** discretise continuous features; decompose categorical and date features (a date → day of week, month, is-holiday); transforms such as log, square root or x²; aggregations; scaling.",
+            "**Feature engineering:** discretise continuous features; decompose categorical and date features (a date → day of week, month, is-holiday); transforms such as log, square root or $x^2$; aggregations; scaling.",
             "**Model engineering:** code review and versioning of model specifications; train **many model families** with default parameters; compare them with N-fold cross-validation (mean ± standard deviation); do **error analysis**; shortlist 3–5 models that make **different kinds** of errors; tune hyperparameters with CV (the slides prefer **random search over grid search**); and consider **ensembles** (voting, bagging, boosting, stacking), which combine models whose errors differ.",
           ],
         },

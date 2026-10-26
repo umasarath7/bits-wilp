@@ -158,7 +158,7 @@ export default {
           caption: "By level of supervision (slide 30)",
           head: ["Type", "Feedback", "Goal", "Examples (slides)"],
           rows: [
-            ["**Supervised**", "Every example has the correct answer (label)", "Learn f(x) to predict y for unseen x", "Employability (31), used-car price (32), tumour (34)"],
+            ["**Supervised**", "Every example has the correct answer (label)", "Learn $f(x)$ to predict y for unseen x", "Employability (31), used-car price (32), tumour (34)"],
             ["**Unsupervised**", "No labels", "Find hidden structure (groups)", "Market segmentation (33)"],
             ["**Reinforcement**", "Delayed reward/penalty", "Learn a sequence of actions that maximises long-term reward", "Robot dog learning to move (45)"],
             ["**Semi-supervised**", "A few labels, many unlabelled", "Combine both", "Google Photos: name one face, it labels the rest (51)"],
@@ -241,7 +241,7 @@ export default {
           head: ["", "Instance-based", "Model-based"],
           rows: [
             ["Idea", "Compare new points to **stored** known points", "Detect patterns and **build a predictive model** (parameters)"],
-            ["Training", "Just store the data (lazy)", "Learn parameters θ (eager)"],
+            ["Training", "Just store the data (lazy)", "Learn parameters $\\theta$ (eager)"],
             ["Example in this course", "k-nearest neighbours (M6)", "Linear/logistic regression (M3, M4), trees (M5), SVM (M7)"],
           ],
         },
@@ -249,7 +249,7 @@ export default {
           type: "callout",
           kind: "example",
           title: "Example",
-          text: "To predict a house price, a **model-based** learner fits price = θ₀ + θ₁·size once and then just evaluates the formula. An **instance-based** learner keeps every past sale and, for a new house, averages the prices of the most similar houses.",
+          text: "To predict a house price, a **model-based** learner fits price = $\\theta_0 + \\theta_1$·size once and then just evaluates the formula. An **instance-based** learner keeps every past sale and, for a new house, averages the prices of the most similar houses.",
         },
         {
           type: "callout",
@@ -424,7 +424,7 @@ export default {
       title: "Define machine learning",
       level: "Level 1",
       question: "Give Tom Mitchell's definition of machine learning and explain each part with an example.",
-      solution: "A computer program is said to learn from **experience E** with respect to some **task T** and **performance measure P** if its performance at T, as measured by P, improves with E (slide 18). Example (slide 19): T = classify emails as spam/legitimate; P = % of emails correctly classified; E = a database of labelled emails. The more labelled emails it sees, the higher the percentage it gets right.",
+      solution: "A computer program is said to learn from **experience E** with respect to some **task T** and **performance measure P** if its performance at T, as measured by P, improves with E (slide 18). Example (slide 19): T = classify emails as spam/legitimate; P = % of emails correctly classified; $E = a$ database of labelled emails. The more labelled emails it sees, the higher the percentage it gets right.",
     },
     {
       title: "Supervised vs unsupervised vs reinforcement",
@@ -442,7 +442,7 @@ export default {
       title: "Instance-based vs model-based learning",
       level: "Level 2",
       question: "Explain instance-based and model-based learning with an example of each.",
-      solution: "**Instance-based** learning stores the training examples and predicts for a new point by comparing it to them (e.g. k-nearest neighbours): almost no training cost, slower prediction. **Model-based** learning detects patterns and summarises them in a model with parameters (e.g. linear regression price = θ₀ + θ₁·size): more training work, then fast prediction (slide 53).",
+      solution: "**Instance-based** learning stores the training examples and predicts for a new point by comparing it to them (e.g. k-nearest neighbours): almost no training cost, slower prediction. **Model-based** learning detects patterns and summarises them in a model with parameters (e.g. linear regression price = $\\theta_0 + \\theta_1$·size): more training work, then fast prediction (slide 53).",
     },
   ],
 

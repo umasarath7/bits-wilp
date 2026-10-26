@@ -38,7 +38,7 @@ export default {
         },
         {
           type: "p",
-          text: "**Quick recap (slide 5).** In vector form the linear score is $\\theta^T x = \\theta_0 + \\theta_1 x_1 + \\theta_2 x_2 + \\dots$, where $x_0 = 1$, $x$ is the feature vector and θ is the weight vector.",
+          text: "**Quick recap (slide 5).** In vector form the linear score is $\\theta^T x = \\theta_0 + \\theta_1 x_1 + \\theta_2 x_2 + \\dots$, where $x_0 = 1$, $x$ is the feature vector and $\\theta$ is the weight vector.",
         },
       ],
     },
@@ -51,7 +51,7 @@ export default {
           type: "callout",
           kind: "formula",
           title: "The logistic regression hypothesis",
-          text: "$$h_\\theta(x) = \\sigma(\\theta^T x) = \\frac{1}{1 + e^{-\\theta^T x}}$$\n\n- $\\sigma$ (“sigma”) is the **sigmoid** or **logistic function**: $\\sigma(z) = \\dfrac{1}{1 + e^{-z}}$\n- $z = \\theta^T x$ is the ordinary linear score, which can be any number\n- $h_\\theta(x)$ is read as **the probability that y = 1** given x: $P(y = 1 \\mid x; \\theta)$",
+          text: "$$h_\\theta(x) = \\sigma(\\theta^T x) = \\frac{1}{1 + e^{-\\theta^T x}}$$\n\n- $\\sigma$ (“sigma”) is the **sigmoid** or **logistic function**: $\\sigma(z) = \\dfrac{1}{1 + e^{-z}}$\n- $z = \\theta^T x$ is the ordinary linear score, which can be any number\n- $h_\\theta(x)$ is read as **the probability that $y = 1$** given x: $P(y = 1 \\mid x; \\theta)$",
         },
         {
           type: "p",
@@ -67,23 +67,23 @@ export default {
         },
         {
           type: "p",
-          text: "The result is an S-shaped curve that rises smoothly from 0 to 1, crossing 0.5 exactly at z = 0. It never quite reaches 0 or 1, so it's always a valid probability. Memorising a few values saves a lot of time in exams:",
+          text: "The result is an S-shaped curve that rises smoothly from 0 to 1, crossing 0.5 exactly at $z = 0$. It never quite reaches 0 or 1, so it's always a valid probability. Memorising a few values saves a lot of time in exams:",
         },
         {
           type: "table",
           caption: "Sigmoid values to remember",
           head: ["z", "−3", "−2", "−1", "0", "1", "2", "3"],
-          rows: [["σ(z)", "0.047", "0.119", "0.269", "**0.5**", "0.731", "0.881", "0.953"]],
+          rows: [["$\\sigma(z)$", "0.047", "0.119", "0.269", "**0.5**", "0.731", "0.881", "0.953"]],
         },
         {
           type: "p",
-          text: "Notice the symmetry: $\\sigma(-z) = 1 - \\sigma(z)$. So σ(−1) = 1 − 0.731 = 0.269. Learn the positive values and get the negatives for free.",
+          text: "Notice the symmetry: $\\sigma(-z) = 1 - \\sigma(z)$. So σ(−1) = $1 - 0.731 = 0.269$. Learn the positive values and get the negatives for free.",
         },
         {
           type: "callout",
           kind: "example",
           title: "Running example: will the student pass?",
-          text: "Suppose training gave $\\theta_0 = -4$ and $\\theta_1 = 1.5$ (x = hours studied). Then $z = -4 + 1.5x$:\n\n| Hours | 1 | 2 | 3 | 4 | 5 |\n|---|---|---|---|---|---|\n| z | −2.5 | −1.0 | 0.5 | 2.0 | 3.5 |\n| P(pass) = σ(z) | 0.076 | 0.269 | 0.622 | 0.881 | 0.971 |\n\nIn plain English: at 1 hour, about an 8% chance of passing; at 4 hours, 88%. The probability rises smoothly with study time, and it can never go below 0 or above 1.",
+          text: "Suppose training gave $\\theta_0 = -4$ and $\\theta_1 = 1.5$ (x = hours studied). Then $z = -4 + 1.5x$:\n\n| Hours | 1 | 2 | 3 | 4 | 5 |\n|---|---|---|---|---|---|\n| z | −2.5 | −1.0 | 0.5 | 2.0 | 3.5 |\n| P(pass) = $\\sigma(z)$ | 0.076 | 0.269 | 0.622 | 0.881 | 0.971 |\n\nIn plain English: at 1 hour, about an 8% chance of passing; at 4 hours, 88%. The probability rises smoothly with study time, and it can never go below 0 or above 1.",
         },
         { type: "diagram", name: "s5-sigmoid" },
       ],
@@ -101,7 +101,7 @@ export default {
           type: "callout",
           kind: "formula",
           title: "The prediction rule",
-          text: "Predict **y = 1** if $h_\\theta(x) \\ge 0.5$ $\\iff$ $\\theta^T x \\ge 0$\n\nPredict **y = 0** if $h_\\theta(x) < 0.5$ $\\iff$ $\\theta^T x < 0$\n\nBecause σ(z) ≥ 0.5 exactly when z ≥ 0, **you don't need to compute the sigmoid at all to classify**. Just check the sign of $\\theta^T x$.",
+          text: "Predict **y = 1** if $h_\\theta(x) \\ge 0.5$ $\\iff$ $\\theta^T x \\ge 0$\n\nPredict **y = 0** if $h_\\theta(x) < 0.5$ $\\iff$ $\\theta^T x < 0$\n\nBecause $\\sigma(z) \\ge 0.5$ exactly when $z \\ge 0$, **you don't need to compute the sigmoid at all to classify**. Just check the sign of $\\theta^T x$.",
         },
         {
           type: "p",
@@ -113,18 +113,18 @@ export default {
         },
         {
           type: "p",
-          text: "**Curved boundaries (slide 9).** What if the classes sit in a ring, e.g. positives outside a circle and negatives inside? Add **polynomial features** like $x_1^2$ and $x_2^2$. With features $(1, x_1, x_2, x_1^2, x_2^2)$ and $\\theta = (-1, 0, 0, 1, 1)$: predict 1 when $-1 + x_1^2 + x_2^2 \\ge 0$, i.e. **outside the unit circle** $x_1^2 + x_2^2 = 1$. The model is still linear in θ, exactly the Session 4 trick, but the boundary is curved in the original space.",
+          text: "**Curved boundaries (slide 9).** What if the classes sit in a ring, e.g. positives outside a circle and negatives inside? Add **polynomial features** like $x_1^2$ and $x_2^2$. With features $(1, x_1, x_2, x_1^2, x_2^2)$ and $\\theta = (-1, 0, 0, 1, 1)$: predict 1 when $-1 + x_1^2 + x_2^2 \\ge 0$, i.e. **outside the unit circle** $x_1^2 + x_2^2 = 1$. The model is still linear in $\\theta$, exactly the Session 4 trick, but the boundary is curved in the original space.",
         },
         { type: "diagram", name: "s5-boundary" },
         {
           type: "callout",
           kind: "idea",
           title: "Keep in mind",
-          text: "The decision boundary is a property of **θ**, not of the training data. The data is used to *learn* θ; once θ is fixed, the boundary is fixed.",
+          text: "The decision boundary is a property of **θ**, not of the training data. The data is used to *learn* $\\theta$; once $\\theta$ is fixed, the boundary is fixed.",
         },
         {
           type: "p",
-          text: "**Reading the coefficients as odds.** Rearranging the sigmoid gives $\\log\\frac{p}{1 - p} = \\theta^T x$. The quantity $\\frac{p}{1-p}$ is the **odds** (e.g. p = 0.8 means odds of 4 to 1), and its logarithm is the **log-odds**. So logistic regression says *log-odds are linear in the features*. Practical meaning: **increasing $x_j$ by 1 multiplies the odds by $e^{\\theta_j}$**. In our example, $e^{1.5} \\approx 4.5$: each extra hour of study multiplies the odds of passing by about 4.5.",
+          text: "**Reading the coefficients as odds.** Rearranging the sigmoid gives $\\log\\frac{p}{1 - p} = \\theta^T x$. The quantity $\\frac{p}{1-p}$ is the **odds** (e.g. $p = 0.8$ means odds of 4 to 1), and its logarithm is the **log-odds**. So logistic regression says *log-odds are linear in the features*. Practical meaning: **increasing $x_j$ by 1 multiplies the odds by $e^{\\theta_j}$**. In our example, $e^{1.5} \\approx 4.5$: each extra hour of study multiplies the odds of passing by about 4.5.",
         },
       ],
     },
@@ -135,7 +135,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "To learn θ (slide 10) we have a training set of m examples with n features and labels $y \\in \\{0, 1\\}$. As in Session 4, we need a cost function to minimise. The obvious choice is the Mean Squared Error we already know. Why not use it?",
+          text: "To learn $\\theta$ (slide 10) we have a training set of m examples with n features and labels $y \\in \\{0, 1\\}$. As in Session 4, we need a cost function to minimise. The obvious choice is the Mean Squared Error we already know. Why not use it?",
         },
         {
           type: "p",
@@ -143,7 +143,7 @@ export default {
         },
         {
           type: "p",
-          text: "**The fix: cross-entropy, also called log-loss (slide 12).** Think about what a good cost should do. If the true answer is y = 1 and the model says h = 0.99, the cost should be about 0. If the model says h = 0.01, confidently wrong, the cost should be **huge**. The logarithm does exactly that:",
+          text: "**The fix: cross-entropy, also called log-loss (slide 12).** Think about what a good cost should do. If the true answer is $y = 1$ and the model says $h = 0.99$, the cost should be about 0. If the model says $h = 0.01$, confidently wrong, the cost should be **huge**. The logarithm does exactly that:",
         },
         {
           type: "callout",
@@ -154,8 +154,8 @@ export default {
         {
           type: "list",
           items: [
-            "**If y = 1:** the cost is $-\\log h$. When h = 1, $-\\log 1 = 0$: no cost. As h → 0, $-\\log h \\to \\infty$: a confident wrong answer is punished without limit.",
-            "**If y = 0:** the cost is $-\\log(1 - h)$. Mirror image: zero when h = 0, infinite as h → 1.",
+            "**If $y = 1$:** the cost is $-\\log h$. When $h = 1$, $-\\log 1 = 0$: no cost. As h → 0, $-\\log h \\to \\infty$: a confident wrong answer is punished without limit.",
+            "**If $y = 0$:** the cost is $-\\log(1 - h)$. Mirror image: zero when $h = 0$, infinite as h → 1.",
           ],
         },
         {
@@ -167,13 +167,13 @@ export default {
         { type: "diagram", name: "s5-logloss" },
         {
           type: "p",
-          text: "**Combining the two cases into one formula (slide 13).** Since y is either 0 or 1, we can write both cases at once. When y = 1 the second term vanishes; when y = 0 the first term vanishes:",
+          text: "**Combining the two cases into one formula (slide 13).** Since y is either 0 or 1, we can write both cases at once. When $y = 1$ the second term vanishes; when $y = 0$ the first term vanishes:",
         },
         {
           type: "callout",
           kind: "formula",
           title: "Log-loss cost function",
-          text: "$$J(\\theta) = -\\frac{1}{m} \\sum_{i=1}^{m} \\Big[ y^{(i)} \\log h_\\theta(x^{(i)}) + \\big(1 - y^{(i)}\\big) \\log\\big(1 - h_\\theta(x^{(i)})\\big) \\Big]$$\n\nThis J(θ) is **convex**, a single bowl again, so gradient descent finds the global minimum.",
+          text: "$$J(\\theta) = -\\frac{1}{m} \\sum_{i=1}^{m} \\Big[ y^{(i)} \\log h_\\theta(x^{(i)}) + \\big(1 - y^{(i)}\\big) \\log\\big(1 - h_\\theta(x^{(i)})\\big) \\Big]$$\n\nThis $J(\\theta)$ is **convex**, a single bowl again, so gradient descent finds the global minimum.",
         },
       ],
     },
@@ -184,7 +184,7 @@ export default {
       blocks: [
         {
           type: "p",
-          text: "Now we minimise J(θ) with gradient descent, exactly as in Session 4: start somewhere, step downhill, repeat (slide 14). When you work out the derivative of log-loss, something lovely happens: the messy sigmoid terms cancel, and the update has **exactly the same form as linear regression**.",
+          text: "Now we minimise $J(\\theta)$ with gradient descent, exactly as in Session 4: start somewhere, step downhill, repeat (slide 14). When you work out the derivative of log-loss, something lovely happens: the messy sigmoid terms cancel, and the update has **exactly the same form as linear regression**.",
         },
         {
           type: "callout",
@@ -202,16 +202,16 @@ export default {
           items: [
             "Columns: $x_1$, $x_2$, $y$, $z = \\theta^T x$, $\\hat y = \\sigma(z)$, error $\\hat y - y$, error × $x_1$, error × $x_2$.",
             "Fill in one row per example. Use the sigmoid table to save time.",
-            "Average each of the last three columns (the error column itself gives θ₀'s gradient, since $x_0 = 1$).",
-            "Multiply each average by α.",
-            "Subtract from the old θ values.",
+            "Average each of the last three columns (the error column itself gives $\\theta_0$'s gradient, since $x_0 = 1$).",
+            "Multiply each average by $\\alpha$.",
+            "Subtract from the old $\\theta$ values.",
           ],
         },
         {
           type: "callout",
           kind: "example",
           title: "Slide 20–23 worked example",
-          text: "**Question (slide 20):** six points with labels, learning rate 0.5, initial weights $(W_0, W_1, W_2) = (1, 1, 1)$. The slide writes the output as $1/(1 + \\exp(-W_0 + W_1 X_1^2 - W_2 X_2))$, i.e. a slightly unusual exponent.\n\n**Slide 22: forward pass.** The exponent and prediction for each row:\n\n| X₁ | X₂ | Y | exponent | ŷ |\n|---|---|---|---|---|\n| 2 | 0 | 0 | 3 | 0.0474 |\n| 0 | 2 | 0 | −3 | 0.9526 |\n| 0 | −2 | 0 | 1 | 0.2689 |\n| −2 | 0 | 0 | 3 | 0.0474 |\n| 0 | 1 | 1 | −2 | 0.8808 |\n| 0 | −1 | 1 | 0 | 0.5000 |\n\n**Slide 23: gradients.** Errors ŷ − Y: 0.05, 0.95, 0.27, 0.05, −0.12, −0.5. Multiply by X₁ and X₂ and average: **0.12** (bias), **0** (X₁), **0.29** (X₂). Times the learning rate 0.5: 0.06, 0, 0.15.\n\n**New weights: W₀ = 0.94, W₁ = 1, W₂ = 0.85.**\n\nThe Numerical tab redoes the same data with the standard hypothesis $\\sigma(w_0 + w_1x_1 + w_2x_2)$ and checks that the log-loss drops. Either way the **method** is identical: forward pass → error → error × feature → average → × α → subtract.",
+          text: "**Question (slide 20):** six points with labels, learning rate 0.5, initial weights $(W_0, W_1, W_2) = (1, 1, 1)$. The slide writes the output as $1/(1 + \\exp(-W_0 + W_1 X_1^2 - W_2 X_2))$, i.e. a slightly unusual exponent.\n\n**Slide 22: forward pass.** The exponent and prediction for each row:\n\n| $X_1$ | $X_2$ | Y | exponent | ŷ |\n|---|---|---|---|---|\n| 2 | 0 | 0 | 3 | 0.0474 |\n| 0 | 2 | 0 | −3 | 0.9526 |\n| 0 | −2 | 0 | 1 | 0.2689 |\n| −2 | 0 | 0 | 3 | 0.0474 |\n| 0 | 1 | 1 | −2 | 0.8808 |\n| 0 | −1 | 1 | 0 | 0.5000 |\n\n**Slide 23: gradients.** Errors ŷ − Y: 0.05, 0.95, 0.27, 0.05, −0.12, −0.5. Multiply by $X_1$ and $X_2$ and average: **0.12** (bias), **0** $(X_1)$, **0.29** $(X_2)$. Times the learning rate 0.5: 0.06, 0, 0.15.\n\n**New weights: $W_0 = 0.94$, $W_1 = 1$, $W_2 = 0.85$.**\n\nThe Numerical tab redoes the same data with the standard hypothesis $\\sigma(w_0 + w_1x_1 + w_2x_2)$ and checks that the log-loss drops. Either way the **method** is identical: forward pass → error → error × feature → average → × $\\alpha$ → subtract.",
         },
       ],
     },
@@ -260,7 +260,7 @@ export default {
           type: "callout",
           kind: "remember",
           title: "The whole session in six lines",
-          text: "1. Yes/no targets need outputs in (0, 1); a straight line gives values outside that range and is dragged by far points.\n2. $h_\\theta(x) = \\sigma(\\theta^Tx) = 1/(1 + e^{-\\theta^Tx}) = P(y = 1 \\mid x)$. σ(0) = 0.5, σ(1) = 0.731, σ(2) = 0.881, σ(3) = 0.953.\n3. Predict 1 when $\\theta^Tx \\ge 0$. The decision boundary is $\\theta^Tx = 0$: linear with raw features, curved with polynomial features.\n4. MSE + sigmoid is non-convex, so use **log-loss** $-\\frac1m\\sum[y\\log h + (1-y)\\log(1-h)]$, which is convex and punishes confident mistakes.\n5. GD update: $\\theta_j := \\theta_j - \\alpha\\frac1m\\sum(h - y)x_j$, the same as linear regression but with h = σ(θᵀx). One table does it.\n6. Multiclass: OvA (K classifiers, highest probability) or OvO (K(K−1)/2, majority vote).",
+          text: "1. Yes/no targets need outputs in (0, 1); a straight line gives values outside that range and is dragged by far points.\n2. $h_\\theta(x) = \\sigma(\\theta^Tx) = 1/(1 + e^{-\\theta^Tx}) = P(y = 1 \\mid x)$. $\\sigma(0) = 0.5$, $\\sigma(1) = 0.731$, $\\sigma(2) = 0.881$, $\\sigma(3) = 0.953$.\n3. Predict 1 when $\\theta^Tx \\ge 0$. The decision boundary is $\\theta^Tx = 0$: linear with raw features, curved with polynomial features.\n4. MSE + sigmoid is non-convex, so use **log-loss** $-\\frac1m\\sum[y\\log h + (1-y)\\log(1-h)]$, which is convex and punishes confident mistakes.\n5. GD update: $\\theta_j := \\theta_j - \\alpha\\frac1m\\sum(h - y)x_j$, the same as linear regression but with $h = \\sigma(\\theta^T x)$. One table does it.\n6. Multiclass: OvA (K classifiers, highest probability) or OvO ($K(K - 1)/2$, majority vote).",
         },
       ],
     },
@@ -268,29 +268,29 @@ export default {
 
   glossary: [
     ["Logistic regression", "—", "A classifier that outputs the probability of class 1 using the sigmoid"],
-    ["σ(z)", "Sigmoid / logistic function", "$1/(1 + e^{-z})$: squashes any number into (0, 1)"],
-    ["z = θᵀx", "Linear score", "$\\theta_0 + \\theta_1x_1 + \\dots$, before the sigmoid"],
+    ["$\\sigma(z)$", "Sigmoid / logistic function", "$1/(1 + e^{-z})$: squashes any number into (0, 1)"],
+    ["$z = \\theta^T x$", "Linear score", "$\\theta_0 + \\theta_1x_1 + \\dots$, before the sigmoid"],
     ["$h_\\theta(x)$", "Hypothesis", "Estimated $P(y = 1 \\mid x)$"],
     ["e", "Euler's number", "≈ 2.718, the base of natural logarithms"],
-    ["Decision boundary", "—", "Where $\\theta^Tx = 0$ (h = 0.5); separates predicted 0 from predicted 1"],
+    ["Decision boundary", "—", "Where $\\theta^Tx = 0$ $(h = 0.5)$; separates predicted 0 from predicted 1"],
     ["Threshold", "—", "The cut-off on h (usually 0.5) for predicting 1"],
-    ["Odds", "—", "p/(1 − p): e.g. p = 0.8 → odds 4"],
-    ["Log-odds (logit)", "—", "log(p/(1 − p)) = θᵀx in logistic regression"],
+    ["Odds", "—", "$p/(1 - p)$: e.g. $p = 0.8$ → odds 4"],
+    ["Log-odds (logit)", "—", "$\\log(p/(1 - p)) = \\theta^T x$ in logistic regression"],
     ["Convex / non-convex", "—", "One global minimum (bowl) / several local minima (bumpy)"],
     ["Log-loss", "Cross-entropy loss", "$-[y\\log h + (1-y)\\log(1-h)]$: punishes confident mistakes heavily"],
-    ["J(θ)", "Cost function", "Average log-loss over the training set"],
-    ["α", "Learning rate", "Step size in gradient descent"],
+    ["$J(\\theta)$", "Cost function", "Average log-loss over the training set"],
+    ["$\\alpha$", "Learning rate", "Step size in gradient descent"],
     ["GD", "Gradient Descent", "Iteratively step against the slope of J"],
     ["OvA / OvR", "One-vs-All / One-vs-Rest", "K classifiers, pick the highest probability"],
-    ["OvO", "One-vs-One", "K(K−1)/2 pairwise classifiers, majority vote"],
-    ["Discriminative model", "—", "Models P(y | x) directly (logistic regression, SVM)"],
-    ["Generative model", "—", "Models P(x | y) and P(y), then uses Bayes (Naïve Bayes)"],
+    ["OvO", "One-vs-One", "$K(K - 1)/2$ pairwise classifiers, majority vote"],
+    ["Discriminative model", "—", "Models $P(y \\mid x)$ directly (logistic regression, SVM)"],
+    ["Generative model", "—", "Models $P(x \\mid y)$ and $P(y)$, then uses Bayes (Naïve Bayes)"],
   ],
 
   examTips: [
-    "The slide-20 example is a **one-iteration GD** table. Practise it until it takes under 10 minutes: z → σ(z) → error → error × feature → average → × α → subtract.",
-    "Remember **σ(0) = 0.5**, σ(1) = 0.731, σ(2) = 0.881, σ(3) = 0.953, and σ(−z) = 1 − σ(z). This saves minutes.",
-    "To classify, you only need the **sign** of θᵀx; no sigmoid needed.",
+    "The slide-20 example is a **one-iteration GD** table. Practise it until it takes under 10 minutes: z → $\\sigma(z)$ → error → error × feature → average → × $\\alpha$ → subtract.",
+    "Remember **σ(0) = 0.5**, $\\sigma(1) = 0.731$, $\\sigma(2) = 0.881$, $\\sigma(3) = 0.953$, and σ(−z) = $1 - \\sigma(z)$. This saves minutes.",
+    "To classify, you only need the **sign** of $\\theta^T x$; no sigmoid needed.",
     "“Why not MSE for logistic regression?” → the sigmoid makes it **non-convex**, so GD can get stuck. Log-loss is convex.",
     "For framing questions (churn, default, fraud), logistic regression is the natural baseline: interpretable, outputs probabilities, convex training.",
   ],
@@ -300,7 +300,7 @@ export default {
       title: "Sigmoid outputs and the decision boundary",
       level: "Easy",
       marks: 3,
-      hint: "Compute z = θᵀx for each point first. Then use the sigmoid table. Class 1 whenever z ≥ 0.",
+      hint: "Compute $z = \\theta^T x$ for each point first. Then use the sigmoid table. Class 1 whenever $z \\ge 0$.",
       question:
         "A tumour classifier uses $\\theta = (\\theta_0, \\theta_1, \\theta_2) = (-3, 1, 1)$ on features (size, age score). (a) Compute $h_\\theta(x)$ and the predicted class for (1, 1), (2, 2), (3, 0), (0, 4). (b) Write the decision boundary.",
       solution: `
@@ -316,7 +316,7 @@ $$z = \\theta_0 + \\theta_1 x_1 + \\theta_2 x_2, \\qquad h = \\sigma(z) = \\frac
 ### Working
 $z = -3 + x_1 + x_2$
 
-| x | z | σ(z) | class |
+| x | z | $\\sigma(z)$ | class |
 |---|---|---|---|
 | (1, 1) | −1 | 0.269 | 0 |
 | (2, 2) | 1 | 0.731 | 1 |
@@ -335,10 +335,10 @@ Probabilities **0.269, 0.731, 0.5, 0.731** → classes **0, 1, 1, 1**. Boundary:
       title: "One iteration of gradient descent (slide-style)",
       level: "Hard",
       marks: 6,
-      hint: "Use the one-table recipe from Lesson 5: z = 1 + x₁ + x₂ for every row, then σ(z) from the table, then the error and error × feature columns. Average, × 0.5, subtract.",
+      hint: "Use the one-table recipe from Lesson 5: $z = 1 + x_1 + x_2$ for every row, then $\\sigma(z)$ from the table, then the error and error × feature columns. Average, × 0.5, subtract.",
       question: `Fit logistic regression $h(x) = \\sigma(w_0 + w_1x_1 + w_2x_2)$ to the data below (the slide-20 data). Start at $(w_0, w_1, w_2) = (1, 1, 1)$ with learning rate 0.5. Find the weights after one batch gradient-descent iteration, and show that the log-loss decreased.
 
-| x₁ | x₂ | y |
+| $x_1$ | $x_2$ | y |
 |---|---|---|
 | 2 | 0 | 0 |
 | 0 | 2 | 0 |
@@ -357,7 +357,7 @@ The update has the same form as linear regression; only $h = \\sigma(z)$ changes
 $$w_j := w_j - \\alpha \\cdot \\frac1m \\sum_i (\\hat y_i - y_i)\\,x_{ij}, \\qquad J = -\\frac1m\\sum\\big[y\\ln\\hat y + (1-y)\\ln(1-\\hat y)\\big]$$
 
 ### Working
-| x₁ | x₂ | y | z = 1 + x₁ + x₂ | ŷ = σ(z) | e = ŷ − y | e·x₁ | e·x₂ |
+| $x_1$ | $x_2$ | y | $z = 1 + x_1 + x_2$ | ŷ = $\\sigma(z)$ | e = ŷ − y | $e \\cdot x_1$ | $e \\cdot x_2$ |
 |---|---|---|---|---|---|---|---|
 | 2 | 0 | 0 | 3 | 0.9526 | 0.9526 | 1.9051 | 0 |
 | 0 | 2 | 0 | 3 | 0.9526 | 0.9526 | 0 | 1.9051 |
@@ -368,7 +368,7 @@ $$w_j := w_j - \\alpha \\cdot \\frac1m \\sum_i (\\hat y_i - y_i)\\,x_{ij}, \\qqu
 | | | | | **Σ** | **1.8239** | **1.3673** | **1.7480** |
 | | | | | **avg (÷6)** | **0.3040** | **0.2279** | **0.2913** |
 
-Update with α = 0.5:
+Update with $\\alpha = 0.5$:
 - $w_0 = 1 - 0.5(0.3040) = 0.848$
 - $w_1 = 1 - 0.5(0.2279) = 0.886$
 - $w_2 = 1 - 0.5(0.2913) = 0.854$
@@ -379,15 +379,15 @@ Log-loss: **1.257** before, **1.145** after.
 $(w_0, w_1, w_2) = $ **(0.848, 0.886, 0.854)**; the log-loss fell from 1.257 to 1.145 ✓
 
 ### Takeaway
-The slides write the exponent differently ($-W_0 + W_1X_1^2 - W_2X_2$) and so get (0.94, 1, 0.85), but the **method** is identical. Also notice this data isn't linearly separable: the y = 1 points sit *between* y = 0 points on the $x_2$ axis. A straight boundary will never fit it perfectly; you'd need a feature such as $x_2^2$.`,
+The slides write the exponent differently ($-W_0 + W_1X_1^2 - W_2X_2$) and so get (0.94, 1, 0.85), but the **method** is identical. Also notice this data isn't linearly separable: the $y = 1$ points sit *between* $y = 0$ points on the $x_2$ axis. A straight boundary will never fit it perfectly; you'd need a feature such as $x_2^2$.`,
     },
     {
       title: "Computing log-loss",
       level: "Easy",
       marks: 3,
-      hint: "For y = 1 the loss is −ln h. For y = 0 it's −ln(1 − h). Average over the examples for J.",
+      hint: "For $y = 1$ the loss is −ln h. For $y = 0$ it's −$\\ln(1 - h)$. Average over the examples for J.",
       question:
-        "(a) For a single example with y = 1, compute the log-loss when the model predicts h = 0.9, 0.6, 0.2 and 0.05. (b) For 5 examples with y = (1, 0, 1, 1, 0) and h = (0.8, 0.3, 0.6, 0.95, 0.1), compute J.",
+        "(a) For a single example with $y = 1$, compute the log-loss when the model predicts $h = 0.9$, 0.6, 0.2 and 0.05. (b) For 5 examples with $y = (1, 0, 1, 1, 0)$ and $h = (0.8, 0.3, 0.6, 0.95, 0.1)$, compute J.",
       solution: `
 ### What is being asked
 Evaluate the log-loss (Lesson 4) and see how it treats confident mistakes.
@@ -396,18 +396,18 @@ Evaluate the log-loss (Lesson 4) and see how it treats confident mistakes.
 $$\\text{Cost} = \\begin{cases} -\\ln h & y = 1 \\\\ -\\ln(1 - h) & y = 0 \\end{cases}, \\qquad J = \\text{average cost}$$
 
 ### Working
-**(a)** y = 1, so the loss is $-\\ln h$:
+**(a)** $y = 1$, so the loss is $-\\ln h$:
 
 | h | 0.9 | 0.6 | 0.2 | 0.05 |
 |---|---|---|---|---|
 | loss | 0.105 | 0.511 | 1.609 | 2.996 |
 
 **(b)**
-- y = 1, h = 0.8: $-\\ln 0.8 = 0.223$
-- y = 0, h = 0.3: $-\\ln 0.7 = 0.357$
-- y = 1, h = 0.6: $-\\ln 0.6 = 0.511$
-- y = 1, h = 0.95: $-\\ln 0.95 = 0.051$
-- y = 0, h = 0.1: $-\\ln 0.9 = 0.105$
+- $y = 1$, $h = 0.8$: $-\\ln 0.8 = 0.223$
+- $y = 0$, $h = 0.3$: $-\\ln 0.7 = 0.357$
+- $y = 1$, $h = 0.6$: $-\\ln 0.6 = 0.511$
+- $y = 1$, $h = 0.95$: $-\\ln 0.95 = 0.051$
+- $y = 0$, $h = 0.1$: $-\\ln 0.9 = 0.105$
 
 $J = (0.223 + 0.357 + 0.511 + 0.051 + 0.105)/5 = 1.247/5 = 0.249$
 
@@ -415,13 +415,13 @@ $J = (0.223 + 0.357 + 0.511 + 0.051 + 0.105)/5 = 1.247/5 = 0.249$
 (a) **0.105, 0.511, 1.609, 2.996** (b) **J = 0.249**
 
 ### Takeaway
-Going from h = 0.2 to h = 0.05 (more confidently wrong) nearly doubles the loss. Log-loss punishes confident mistakes far more than hesitant ones.`,
+Going from $h = 0.2$ to $h = 0.05$ (more confidently wrong) nearly doubles the loss. Log-loss punishes confident mistakes far more than hesitant ones.`,
     },
     {
       title: "Non-linear decision boundary",
       level: "Medium",
       marks: 4,
-      hint: "Set θᵀx = 0 to find the boundary. For each point, compute x₁² + x₂² − 4 and look at its sign.",
+      hint: "Set $\\theta^T x = 0$ to find the boundary. For each point, compute $x_1^2 + x_2^2 - 4$ and look at its sign.",
       question:
         "Features are $(1, x_1, x_2, x_1^2, x_2^2)$ with $\\theta = (-4, 0, 0, 1, 1)$. (a) Describe the decision boundary. (b) Classify (1, 1), (2, 1), (0, −2), (1.5, 1.5). (c) What does this show about logistic regression?",
       solution: `
@@ -434,10 +434,10 @@ Use polynomial features to get a curved boundary (Lesson 3).
 **(b)**
 | Point | $x_1^2 + x_2^2 - 4$ | class |
 |---|---|---|
-| (1, 1) | 1 + 1 − 4 = −2 | 0 |
-| (2, 1) | 4 + 1 − 4 = 1 | 1 |
-| (0, −2) | 0 + 4 − 4 = 0 | 1 (on the boundary) |
-| (1.5, 1.5) | 2.25 + 2.25 − 4 = 0.5 | 1 |
+| (1, 1) | $1 + 1 - 4$ = −2 | 0 |
+| (2, 1) | $4 + 1 - 4 = 1$ | 1 |
+| (0, −2) | $0 + 4 - 4 = 0$ | 1 (on the boundary) |
+| (1.5, 1.5) | $2.25 + 2.25 - 4 = 0.5$ | 1 |
 
 ### Answer
 Boundary: circle $x_1^2 + x_2^2 = 4$. Classes: **0, 1, 1, 1**.
@@ -482,11 +482,11 @@ Positive coefficient → the feature pushes toward class 1; negative → away. T
 Apply both multiclass strategies (Lesson 6).
 
 ### Working
-**(a)** OvA picks the highest probability: B = 0.71. (The three don't sum to 1; each classifier is independent.)
+**(a)** OvA picks the highest probability: $B = 0.71$. (The three don't sum to 1; each classifier is independent.)
 
-**(b)** Votes: A = 1, B = 2, C = 0.
+**(b)** Votes: $A = 1$, $B = 2$, $C = 0$.
 
-**(c)** OvA = K = 6. OvO $= 6 \\times 5 / 2 = 15$.
+**(c)** OvA = $K = 6$. OvO $= 6 \\times 5 / 2 = 15$.
 
 ### Answer
 (a) **B** (b) **B** (c) **6** and **15**
@@ -524,11 +524,11 @@ Same linear score, different output layer and different cost.`,
 The **non-convexity** argument, the formula, and how it behaves at the extremes.
 
 ### Model answer
-- With $h = \\sigma(\\theta^Tx)$, the MSE cost $\\frac{1}{2m}\\sum(h - y)^2$ is **non-convex** in θ. It has local minima and plateaus, so gradient descent may not reach the global optimum.
-- **Cross-entropy / log-loss:** $\\text{Cost} = -\\log h$ if y = 1 and $-\\log(1 - h)$ if y = 0. Combined:
+- With $h = \\sigma(\\theta^Tx)$, the MSE cost $\\frac{1}{2m}\\sum(h - y)^2$ is **non-convex** in $\\theta$. It has local minima and plateaus, so gradient descent may not reach the global optimum.
+- **Cross-entropy / log-loss:** $\\text{Cost} = -\\log h$ if $y = 1$ and $-\\log(1 - h)$ if $y = 0$. Combined:
 $$J(\\theta) = -\\frac1m\\sum\\big[y\\log h + (1-y)\\log(1-h)\\big]$$
-- **Behaviour:** zero cost for a perfect confident prediction; the cost grows to ∞ as a confident prediction becomes wrong, which strongly penalises confident mistakes.
-- It is **convex** in θ, so GD finds the global minimum, and its gradient has the simple form $\\frac1m\\sum(h - y)x_j$.
+- **Behaviour:** zero cost for a perfect confident prediction; the cost grows to $\\infty$ as a confident prediction becomes wrong, which strongly penalises confident mistakes.
+- It is **convex** in $\\theta$, so GD finds the global minimum, and its gradient has the simple form $\\frac1m\\sum(h - y)x_j$.
 
 ### Takeaway
 Convex cost → reliable training. That's the whole reason for the switch.`,
@@ -539,16 +539,16 @@ Convex cost → reliable training. That's the whole reason for the switch.`,
       question: "What is the decision boundary of logistic regression? Is it always linear?",
       solution: `
 ### What the examiner wants
-The definition (h = 0.5 ⇔ θᵀx = 0), an example, and the polynomial-features point.
+The definition ($h = 0.5$ ⇔ $\\theta^T x = 0$), an example, and the polynomial-features point.
 
 ### Model answer
 - It is where the model is exactly undecided: $h_\\theta(x) = 0.5 \\iff \\theta^Tx = 0$. On one side predict 1, on the other side 0.
 - With raw features the boundary is **linear** (a line in 2-D, a hyperplane in general), e.g. $-3 + x_1 + x_2 = 0$.
 - With **polynomial features** ($x_1^2, x_2^2, x_1x_2, \\dots$) it can be **non-linear** in the original space, e.g. the circle $x_1^2 + x_2^2 = 1$, while still being linear in the parameters.
-- The boundary is fixed by θ, which is learnt from the data.
+- The boundary is fixed by $\\theta$, which is learnt from the data.
 
 ### Takeaway
-Linear in θ, not necessarily linear in x.`,
+Linear in $\\theta$, not necessarily linear in x.`,
     },
     {
       title: "Frame a problem for logistic regression",
@@ -581,7 +581,7 @@ How each works, how it predicts, the classifier counts, and the trade-off.
 ### Model answer
 - **One-vs-All (OvR):** for K classes, train K classifiers. Classifier k treats class k as positive and all others as negative, giving $h^{(k)}(x) = P(y = k \\mid x)$. Predict $\\arg\\max_k h^{(k)}(x)$.
 - **One-vs-One:** train a classifier for every pair of classes, $K(K-1)/2$ in total. Each votes for one class of its pair; the class with the most votes wins.
-- **Comparison:** OvA uses fewer classifiers, but each sees all the data and is imbalanced (1 class vs K − 1). OvO uses many more (45 for K = 10), but each is small and balanced, which suits algorithms that scale poorly with data size (e.g. SVMs).
+- **Comparison:** OvA uses fewer classifiers, but each sees all the data and is imbalanced (1 class vs $K - 1$). OvO uses many more (45 for $K = 10$), but each is small and balanced, which suits algorithms that scale poorly with data size (e.g. SVMs).
 
 ### Takeaway
 OvA = K specialists, highest confidence wins. OvO = a round-robin tournament, most wins.`,
@@ -589,15 +589,15 @@ OvA = K specialists, highest confidence wins. OvO = a round-robin tournament, mo
   ],
 
   quiz: [
-    { q: "σ(0) equals:", options: ["0", "0.5", "1", "e"], answer: 1, why: "1/(1+e⁰) = 1/2." },
-    { q: "Logistic regression predicts y = 1 when:", options: ["θᵀx ≥ 0", "θᵀx ≥ 1", "θᵀx ≤ 0", "h(x) ≥ 1"], answer: 0, why: "h ≥ 0.5 ⇔ θᵀx ≥ 0." },
+    { q: "$\\sigma(0)$ equals:", options: ["0", "0.5", "1", "e"], answer: 1, why: "$1/(1 + e^0) = 1/2$." },
+    { q: "Logistic regression predicts $y = 1$ when:", options: ["$\\theta^T x \\ge 0$", "$\\theta^T x \\ge 1$", "$\\theta^T x \\le 0$", "$h(x) \\ge 1$"], answer: 0, why: "$h \\ge 0.5$ ⇔ $\\theta^T x \\ge 0$." },
     { q: "Why is MSE not used for logistic regression?", options: ["It is too slow", "It is non-convex with the sigmoid", "It can't be differentiated", "It gives negative values"], answer: 1, why: "Non-convexity means GD may get stuck in local minima." },
-    { q: "If y = 1 and h(x) → 0, the log-loss:", options: ["→ 0", "→ 1", "→ ∞", "= 0.5"], answer: 2, why: "−log(h) → ∞: a confident wrong prediction is heavily penalised." },
-    { q: "The logistic-regression GD update has the same form as linear regression's, except:", options: ["The learning rate", "The definition of h(x)", "No 1/m factor", "No simultaneous update"], answer: 1, why: "h(x) = σ(θᵀx) instead of θᵀx." },
-    { q: "Logistic regression is a:", options: ["Regression model", "Generative classifier", "Discriminative classifier", "Clustering algorithm"], answer: 2, why: "It models P(y|x) directly." },
-    { q: "With features x₁², x₂², the logistic decision boundary can be:", options: ["Only a line", "A circle/ellipse", "Only a parabola", "No boundary"], answer: 1, why: "E.g. x₁² + x₂² = r²." },
-    { q: "A coefficient θ_j = 0.7 means a unit increase in x_j multiplies the odds by:", options: ["0.7", "1.7", "e^0.7 ≈ 2.01", "0.5"], answer: 2, why: "Log-odds are linear, so the odds multiply by e^θ_j." },
-    { q: "σ(−2) is approximately:", options: ["0.881", "0.119", "−0.881", "0.5"], answer: 1, why: "σ(−z) = 1 − σ(z) = 1 − 0.881." },
-    { q: "In One-vs-All with 4 classes, how many logistic classifiers are trained?", options: ["4", "6", "12", "16"], answer: 0, why: "One per class: K = 4." },
+    { q: "If $y = 1$ and $h(x)$ → 0, the log-loss:", options: ["→ 0", "→ 1", "→ $\\infty$", "= 0.5"], answer: 2, why: "−$\\log(h)$ → $\\infty$: a confident wrong prediction is heavily penalised." },
+    { q: "The logistic-regression GD update has the same form as linear regression's, except:", options: ["The learning rate", "The definition of $h(x)$", "No 1/m factor", "No simultaneous update"], answer: 1, why: "$h(x) = \\sigma(\\theta^T x)$ instead of $\\theta^T x$." },
+    { q: "Logistic regression is a:", options: ["Regression model", "Generative classifier", "Discriminative classifier", "Clustering algorithm"], answer: 2, why: "It models $P(y \\mid x)$ directly." },
+    { q: "With features $x_1^2$, $x_2^2$, the logistic decision boundary can be:", options: ["Only a line", "A circle/ellipse", "Only a parabola", "No boundary"], answer: 1, why: "E.g. $x_1^2 + x_2^2 = r^2$." },
+    { q: "A coefficient $\\theta$_j = 0.7 means a unit increase in $x_j$ multiplies the odds by:", options: ["0.7", "1.7", "$e^{0.7} \\approx 2.01$", "0.5"], answer: 2, why: "Log-odds are linear, so the odds multiply by $e^{\\theta}$_j." },
+    { q: "σ(−2) is approximately:", options: ["0.881", "0.119", "−0.881", "0.5"], answer: 1, why: "σ(−z) = $1 - \\sigma(z) = 1 - 0.881$." },
+    { q: "In One-vs-All with 4 classes, how many logistic classifiers are trained?", options: ["4", "6", "12", "16"], answer: 0, why: "One per class: $K = 4$." },
   ],
 };
