@@ -83,6 +83,8 @@ export const subjects = [
       { n: 7, title: "Sampling, CLT & Confidence Intervals", file: "./ism/lec7.js" },
       { n: 9, title: "Hypothesis Testing: z, t, χ² Tests", file: "./ism/lec9.js" },
       { n: 10, title: "MLE, F-test & ANOVA", file: "./ism/lec10.js" },
+      { n: 11, title: "Regression & Correlation", file: "./ism/lec11.js" },
+      { n: 12, title: "Time Series & Forecasting (Lec 12–13)", file: "./ism/lec12.js" },
       { n: "summary", icon: "📋", short: "Summary", group: "Exam practice", title: "Exam Summary (read before the exam)", file: "./ism/exam-summary.js" },
       { n: "formulas", icon: "🔎", short: "Formulas", group: "Exam practice", title: "Formula & Concept Index (searchable)", file: "./ism/formulas.js" },
       { n: "guide", icon: "✍️", short: "Guide", group: "Exam practice", title: "Open-Book Exam Guide", file: "./ism/guide.js" },

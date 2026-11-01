@@ -1953,6 +1953,148 @@ def i10_anova():
     g.add(text(230, 202, "between groups: SSTR = 40 · within groups: SSE = 60", "ts2"))
     reg("i10-anova", g, "The idea of one-way ANOVA (Lec10 slides 37–46). If the group means (coloured lines) are far apart compared with the scatter inside each group, the means probably differ. F = MSTR/MSE = 20/5 = 4 > 3.89, so reject H₀.")
 
+# ================================================================= ISM Lec 11 (regression & correlation)
+
+RX = [132, 129, 120, 113.2, 105, 92, 84, 83.2, 88.4, 59, 80, 81.5, 71, 69.2]
+RY = [46, 48, 51, 52.1, 54, 52, 59, 58.7, 61.6, 64, 61.4, 54.6, 58.8, 58]
+RB0, RB1 = 75.212432, -0.20938742
+
+def i11_line():
+    g = Fig("i11ln", 250)
+    p = Plot(g, 56, 14, 226, 190, (50, 140), (44, 66))
+    p.axes(xt=[50, 70, 90, 110, 130], yt=[45, 50, 55, 60, 65], xl="x", yl="y")
+    for x, y in zip(RX, RY):
+        g.add(line(p.X(x), p.Y(y), p.X(x), p.Y(RB0 + RB1 * x), "res"))
+    p.curve(lambda x: RB0 + RB1 * x, 55, 136, "l1")
+    for x, y in zip(RX, RY):
+        g.add(circle(*p.P(x, y), 4.5, "d2", f"({x:g}, {y:g}), residual {y - (RB0 + RB1 * x):+.2f}"))
+    xm, ym = sum(RX) / 14, sum(RY) / 14
+    g.add(circle(*p.P(xm, ym), 5, "dk"), text(p.X(52), p.Y(45.6), "white dot = (x̄, ȳ) = (93.4, 55.7)", "ts", "start"))
+    g.add(text(296, 50, "ŷ = 75.21 − 0.209x", "tb", "start"),
+          text(296, 80, "dotted gaps =", "ts", "start"), text(296, 96, "residuals y − ŷ", "ts", "start"),
+          text(296, 128, "least squares makes", "ts", "start"), text(296, 144, "Σ(y − ŷ)² smallest:", "ts", "start"),
+          text(296, 160, "SSE = 78.92", "ts", "start"))
+    reg("i11-line", g, "The lecturer's 14-point example (Lec11 slides 10–12). The least-squares line ŷ = 75.21 − 0.2094x has the smallest possible sum of squared residuals and always passes through the mean point (x̄, ȳ). Downward slope: y falls by about 0.21 for every 1-unit rise in x.")
+
+def i11_sst():
+    g = Fig("i11ss", 170)
+    sst, ssr, sse = 377.17, 298.25, 78.92
+    x0, wd, y0, hb = 30, 380, 50, 34
+    wr = wd * ssr / sst
+    g.add(text(x0, 30, "SST = 377.17 (total variation of y around ȳ)", "tb", "start"))
+    g.add(rect(x0, y0, wr, hb, "cell1", 3), rect(x0 + wr, y0, wd - wr, hb, "cell3", 3))
+    g.add(text(x0 + wr / 2, y0 + 22, "SSR = 298.25 explained by x", "ts"), text(x0 + wr + (wd - wr) / 2, y0 + 22, "SSE 78.92", "ts"))
+    g.add(text(x0, 112, "r² = SSR / SST = 1 − SSE / SST = 298.25 / 377.17 = 0.791", "tb", "start"))
+    g.add(text(x0, 136, "→ 79% of the ups and downs in y are explained by the straight line in x;", "ts", "start"),
+          text(x0, 154, "   the other 21% is scatter around the line (SSE).", "ts", "start"))
+    reg("i11-sst", g, "SST = SSR + SSE for the slide-10 data (Lec11 slides 11, 16–19). The coefficient of determination r² is the explained share of the bar. (Website calculation from the slide's sums.)")
+
+def i11_corr():
+    import random as _r
+    g = Fig("i11co", 170)
+    rnd = _r.Random(7)
+    panels = [("r ≈ +0.9 (positive)", lambda x: x), ("r ≈ −0.9 (negative)", lambda x: -x), ("r ≈ 0 (no pattern)", None), ("r ≈ 0 but curved!", lambda x: 3 * x * x - 1.5)]
+    for k, (lab, fn) in enumerate(panels):
+        px = 10 + k * 107
+        p = Plot(g, px + 4, 14, 92, 110, (-1.15, 1.15), (-1.9, 1.9))
+        g.add(rect(px, 8, 104, 122, "panel", 6))
+        for i in range(26):
+            x = -1 + 2 * i / 25
+            if fn is None:
+                xv, yv = rnd.uniform(-1, 1), rnd.uniform(-1.5, 1.5)
+            else:
+                xv, yv = x, fn(x) + rnd.gauss(0, 0.35 if k < 2 else 0.18)
+            g.add(circle(*p.P(xv, max(-1.8, min(1.8, yv))), 2.6, "d1" if k < 2 else ("dn" if k == 2 else "d2")))
+        g.add(text(px + 52, 148, lab, "ts"))
+    g.add(text(220, 166, "r measures LINEAR association only: the curved panel is strongly related, yet r ≈ 0.", "ts2"))
+    reg("i11-corr", g, "Reading the correlation coefficient (Lec11 slides 33, 37). The sign gives the direction, the size gives how tightly the points hug a straight line. A value near 0 means no LINEAR relation: a strong curved relation can still give r ≈ 0.")
+
+def i11_power():
+    g = Fig("i11pw", 220)
+    X = [600] * 4 + [500] * 4 + [400] * 4
+    Y = [2.35, 2.65, 3.0, 3.6, 6.4, 7.8, 9.8, 16.5, 21.5, 24.5, 26, 33]
+    b1, b0 = -5.39974349, 35.66931485
+    p = Plot(g, 46, 16, 160, 150, (380, 620), (0, 36))
+    p.axes(xt=[400, 500, 600], yt=[0, 10, 20, 30], xl="x", yl="y")
+    p.curve(lambda x: math.exp(b0) * x ** b1, 385, 615, "l1")
+    for x, y in zip(X, Y):
+        g.add(circle(*p.P(x, y), 3.5, "d2", f"({x}, {y})"))
+    g.add(text(126, 14, "curved: y = αx^β", "tb"))
+    q = Plot(g, 268, 16, 160, 150, (5.95, 6.45), (0.6, 3.7))
+    q.axes(xt=[6.0, 6.2, 6.4], yt=[1, 2, 3], xl="x′ = ln x", yl="y′ = ln y", fmt=lambda v: f"{v:g}")
+    q.curve(lambda u: b0 + b1 * u, 5.96, 6.44, "l1")
+    for x, y in zip(X, Y):
+        g.add(circle(*q.P(math.log(x), math.log(y)), 3.5, "d1", f"(ln {x}, ln {y})"))
+    g.add(text(348, 14, "straight: y′ = 35.67 − 5.40x′", "tb"))
+    g.add(text(220, 214, "take logs of both → fit an ordinary least-squares line → transform back", "ts2"))
+    reg("i11-power", g, "An intrinsically linear (power) model, Lec11 slide 27. On the original scale the data curve; after x′ = ln x and y′ = ln y they lie close to a straight line with slope β̂ = −5.40 and intercept ln α̂ = 35.67.")
+
+# ================================================================= ISM Lec 12–13 (time series)
+
+def i12_comp():
+    import random as _r
+    rnd = _r.Random(3)
+    g = Fig("i12cp", 230)
+    specs = [("Trend (T): long-run direction", lambda t: 0.08 * t), ("Seasonal (S): repeats every year", lambda t: math.sin(2 * math.pi * t / 4)),
+             ("Cyclical (C): long, irregular waves", lambda t: math.sin(2 * math.pi * t / 17) * 1.1 + 0.25 * math.sin(2 * math.pi * t / 7)), ("Irregular (I): random shocks", None)]
+    for k, (lab, fn) in enumerate(specs):
+        px, py = 10 + (k % 2) * 215, 8 + (k // 2) * 110
+        g.add(rect(px, py, 205, 100, "panel", 6), text(px + 102, py + 16, lab, "ts"))
+        p = Plot(g, px + 12, py + 24, 182, 66, (0, 24), (-1.6, 2.2) if k else (-0.2, 2.1))
+        g.add(line(px + 12, py + 90, px + 194, py + 90, "ax"))
+        vals = [fn(t) if fn else rnd.gauss(0, 0.6) for t in range(25)]
+        g.add(path([p.P(t, v) for t, v in enumerate(vals)], "l1" if k != 3 else "l2"))
+    reg("i12-comp", g, "The four components of a time series (Lec12–13 slides 7–11). Additive model: Y = T + C + S + I; multiplicative model: Y = T × C × S × I (slide 12).")
+
+def i12_ma():
+    g = Fig("i12ma", 220)
+    yrs = list(range(1995, 2005))
+    P = [21, 22, 23, 25, 24, 22, 25, 26, 27, 26]
+    p = Plot(g, 48, 16, 360, 150, (1994.5, 2005.5), (20, 28))
+    p.axes(xt=[1995, 1997, 1999, 2001, 2003, 2005], yt=[20, 22, 24, 26, 28], xl="year", yl="production ('000 t)", fmt=lambda v: f"{v:g}")
+    g.add(path([p.P(y, v) for y, v in zip(yrs, P)], "l2"))
+    for y, v in zip(yrs, P):
+        g.add(circle(*p.P(y, v), 3.5, "d2", f"{y}: {v}"))
+    ma = [(P[i - 1] + P[i] + P[i + 1]) / 3 for i in range(1, 9)]
+    g.add(path([p.P(yrs[i + 1], v) for i, v in enumerate(ma)], "l1"))
+    for i, v in enumerate(ma):
+        g.add(circle(*p.P(yrs[i + 1], v), 3.5, "d1", f"3-yr MA centred at {yrs[i + 1]}: {v:.2f}"))
+    g.add(circle(*p.P(2005, 26.33), 5, "dk"), text(p.X(2005.3), p.Y(20.8), "white dot = forecast for 2005 (26.33)", "ts", "end"))
+    g.add(text(60, 210, "orange = actual (zig-zag)   ·   blue = 3-year moving average (smooth)", "ts2", "start"))
+    reg("i12-ma", g, "3-year moving average of production (Lec12–13 slides 20–21). Each average sits at the middle year of its window, so the smooth line starts at 1996 and ends at 2003. The last average, (26 + 27 + 26)/3 = 26.33, is used as the forecast for 2005.")
+
+def i12_exp():
+    g = Fig("i12ex", 220)
+    U = [82.5, 81.3, 81.3, 79, 76.6, 78, 78.4, 78, 78.8, 78.7, 78.4, 80, 80.7, 80.7, 80.8]
+    p = Plot(g, 48, 16, 360, 150, (0.5, 16.5), (76, 83.5))
+    p.axes(xt=[1, 4, 8, 12, 16], yt=[76, 78, 80, 82], xl="quarter (Q1/2017 = 1)", yl="utilization %", fmt=lambda v: f"{v:g}")
+    g.add(path([p.P(t + 1, v) for t, v in enumerate(U)], "l2"))
+    for a, cls in [(0.2, "l3"), (0.7, "l1")]:
+        F = [U[0]]
+        for t in range(1, 16):
+            F.append(a * U[t - 1] + (1 - a) * F[-1])
+        g.add(path([p.P(t + 1, v) for t, v in enumerate(F)], cls))
+    g.add(text(400, 34, "α = 0.2: slow, smooth (MSE 3.85)", "ts", "end"), text(400, 50, "α = 0.7: quick to react (MSE 1.58)", "ts", "end"))
+    g.add(text(60, 210, "orange = actual · blue = α 0.7 · third line = α 0.2", "ts2", "start"))
+    reg("i12-exp", g, "Simple exponential smoothing of capacity utilization (Lec12–13 slides 26–34). A small α trusts the old forecast (smooth but slow to react); a large α trusts the newest value. Here α = 0.7 has the smallest MSE.")
+
+def i12_holt():
+    g = Fig("i12ho", 220)
+    G = [1451, 1499, 1686, 1764, 1879, 1948, 2013, 2090, 2173, 2286, 2404, 2465, 2501, 2597, 2689, 2688, 2576, 2530, 2513, 2503, 2396]
+    a, b = 0.8, 0.4
+    L, T, F = [G[0]], [0.0], [None]
+    for y in G[1:]:
+        F.append(L[-1] + T[-1])
+        l = a * y + (1 - a) * (L[-1] + T[-1]); t = b * (l - L[-1]) + (1 - b) * T[-1]
+        L.append(l); T.append(t)
+    p = Plot(g, 52, 16, 356, 150, (1999.5, 2021.5), (1400, 2800))
+    p.axes(xt=[2000, 2005, 2010, 2015, 2020], yt=[1400, 1800, 2200, 2600], xl="year", yl="GDP", fmt=lambda v: f"{v:g}")
+    g.add(path([p.P(2000 + i, v) for i, v in enumerate(G)], "l2"))
+    g.add(path([p.P(2000 + i, v) for i, v in enumerate(F) if v is not None] + [p.P(2021, L[-1] + T[-1])], "l1"))
+    g.add(circle(*p.P(2021, L[-1] + T[-1]), 5, "dk"), text(p.X(2021) - 4, p.Y(L[-1] + T[-1]) + 18, "2021: 2363", "ts", "end"))
+    g.add(text(60, 210, "orange = actual GDP · blue = Holt forecast F(t+1) = L(t) + T(t), α = 0.8, β = 0.4", "ts2", "start"))
+    reg("i12-holt", g, "Holt's double exponential smoothing on the GDP series (Lec12–13 slides 53–57). The trend term lets the forecast keep up while GDP climbs, and turns negative after 2015 when GDP falls, giving a 2021 forecast of 2363.")
+
 # ---------------------------------------------------------------- ML (Machine Learning, DSEZG565) figures
 
 def m2_iqr():
@@ -2262,6 +2404,7 @@ for fn in [s1_fits, s1_ucurve, s1_kfold, s1_threshold, s1_types, s1_rl,
            i7_means, i7_clt, i7_ci,
            i9_tails, i9_chi,
            i10_lik, i10_anova,
+           i11_line, i11_sst, i11_corr, i11_power, i12_comp, i12_ma, i12_exp, i12_holt,
            m2_iqr, m3_tips, m3_cost, m4_sigmoid, m4_roc, m5_tree, m5_impurity, m5_incsplit,
            m6_knn, m6_lwr, m7_svm, m7_nonlin,
            a9_jobtree, a11_kmeans, a11_dendro, a12_gates]:

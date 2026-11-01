@@ -76,11 +76,29 @@ const ROWS = [
   ["F-test for variances", "$F = s_1^2/s_2^2$ (larger on top), df $(n_1 - 1, n_2 - 1)$", "Two independent normal populations", "“more variable”, “less variability”", "Impurities 2.04; impellers 1.18 (L10 · 23–29)"],
   ["One-way ANOVA", "$\\text{CF} = G^2/n$; $\\text{SST} = \\sum x^2 - \\text{CF}$; $\\text{SSTR} = \\sum C_i^2/n_i - \\text{CF}$; $F = [\\text{SSTR}/(k - 1)]/[\\text{SSE}/(n - k)]$", "Normal, equal variances, independent", "“three or more groups”", "$F = 4.0$; iron 4.54 (L10 · 32–49)"],
   ["Two-way ANOVA", "$\\text{SSBL} = \\sum R_j^2/k - \\text{CF}$; $\\text{SSE} = \\text{SST} - \\text{SSTR} - \\text{SSBL}$; error df $(k - 1) (m - 1)$", "One observation per cell; blocks", "“treatments and blocks”, “plots and fertilizers”", "Fertilizer 3.6, 2.4 (L10 · 51–64)"],
+  // ---- Lecture 11
+  ["Least-squares line", "$S_{xx} = \\sum x^2 - \\frac{(\\sum x)^2}{n}$, $S_{xy} = \\sum xy - \\frac{\\sum x\\sum y}{n}$; $\\hat\\beta_1 = S_{xy}/S_{xx}$, $\\hat\\beta_0 = \\bar y - \\hat\\beta_1\\bar x$", "Linear pattern in a scatter plot; predict inside the x range", "“fit a regression line”, “predict y”", "$\\hat y = 75.21 - 0.2094x$ (L11 · 7–12)"],
+  ["SST, SSR, SSE, r²", "$SST = S_{yy} = SSR + SSE$; $r^2 = 1 - SSE/SST$; $s^2 = SSE/(n - 2)$", "After fitting a line", "“how good is the fit”, “% of variation explained”", "$r^2 = 0.791$, $s = 2.56$ (L11 · 11–19)"],
+  ["Correlation r", "$r = \\frac{S_{xy}}{\\sqrt{S_{xx}S_{yy}}}$, $-1 \\le r \\le 1$; $r^2$ = explained share", "Linear association only", "“how strongly related”, “correlation coefficient”", "$r = 0.7155$ (L11 · 34–38)"],
+  ["Intrinsically linear models", "exponential: $\\ln y = \\ln\\alpha + \\beta x$; power: $\\ln y = \\ln\\alpha + \\beta\\ln x$; reciprocal: $x' = 1/x$", "Curve always rising or falling", "“fit $y = \\alpha x^{\\beta}$”, “exponential growth”", "Power model $\\hat\\beta = -5.40$ (L11 · 24–27)"],
+  ["Polynomial regression", "$y = \\beta_0 + \\beta_1x + \\dots + \\beta_kx^k$; k + 1 normal equations", "Data with peaks/valleys; rarely k > 3", "“quadratic / cubic regression”", "(L11 · 29–31)"],
+  ["Multiple regression (2 predictors)", "$b_1 = \\frac{(\\Sigma y_2^2)(\\Sigma y_1x) - (\\Sigma y_1y_2)(\\Sigma y_2x)}{(\\Sigma y_1^2)(\\Sigma y_2^2) - (\\Sigma y_1y_2)^2}$, similarly $b_2$; $b_0 = \\bar x - b_1\\bar y_1 - b_2\\bar y_2$", "Corrected sums first", "“two independent variables”", "$\\hat x = 5.867 - 0.3696y_1 + 0.0301y_2$ (L11 · 43–46)"],
+  ["Logistic regression", "$p = \\frac{e^{\\beta_0 + \\beta_1x}}{1 + e^{\\beta_0 + \\beta_1x}}$; odds $\\frac{p}{1 - p} = e^{\\beta_0 + \\beta_1x}$; odds ratio $e^{\\beta_1}$", "Binary outcome", "“probability of success”, “yes/no”", "(L11 · 47–49)"],
+  // ---- Lectures 12–13
+  ["Time-series components", "$y = T + C + S + I$ (additive) or $T \\times C \\times S \\times I$ (multiplicative)", "Additive if swings constant; multiplicative if they grow with level", "“trend, seasonal, cyclical, irregular”", "(L12 · 7–12)"],
+  ["Linear trend (coded time)", "$b = \\sum xY/\\sum x^2$, $a = \\sum Y/n$; odd n: $x = t - $ middle; even n: $x = 2(t - $ mid-point$)$", "Clear trend", "“fit a linear trend”, “forecast for year …”", "Crops 68.3; sales 29.47 (L12 · 15–17)"],
+  ["Quadratic trend", "$\\sum Y = na + b\\sum x + c\\sum x^2$; $\\sum xY = a\\sum x + b\\sum x^2 + c\\sum x^3$; $\\sum x^2Y = a\\sum x^2 + b\\sum x^3 + c\\sum x^4$", "Curved trend", "“second-degree trend”", "(L12 · 18)"],
+  ["Moving average", "$MA_k$ = mean of k consecutive values; odd k → middle period; even k → centred (average adjacent MAs); last MA = next forecast", "Series without strong trend", "“3-year / 4-quarter moving average”", "3-yr 26.33; 4-yr centred 23.13 (L12 · 19–23)"],
+  ["Exponential smoothing", "$F_{t+1} = \\alpha Y_t + (1 - \\alpha)F_t$, $F_2 = Y_1$; α = 1 naïve", "Series without strong trend", "“smoothing constant α”", "α = 0.3: 2005 → 25.338 (L12 · 24–29)"],
+  ["Forecast error measures", "$\\Delta = Y - F$; MSE $\\sum\\Delta^2/n$; MAD $\\sum|\\Delta|/n$; MAPE $\\frac{100}{n}\\sum|\\Delta|/Y$; LAD $\\max|\\Delta|$", "Compare methods / α", "“performance measure”, “which α is better”", "MSE 3.848 / 2.395 / 1.579 (L12 · 27, 30–35)"],
+  ["Holt double exponential", "$L_t = \\alpha Y_t + (1 - \\alpha)(L_{t-1} + T_{t-1})$; $T_t = \\beta(L_t - L_{t-1}) + (1 - \\beta)T_{t-1}$; $F_{t+k} = L_t + kT_t$", "Trend, no seasons", "“level and trend smoothing”", "GDP 2021 → 2363 (L12 · 42–57)"],
+  ["Holt-Winters triple exponential", "$S_i = Y_i/\\bar Y_{\\text{yr1}}$; $L_t = \\alpha\\frac{Y_t}{S_{t-M}} + (1 - \\alpha)(L_{t-1} + T_{t-1})$; $S_t = \\gamma\\frac{Y_t}{L_t} + (1 - \\gamma)S_{t-M}$; $F_{t+k} = (L_t + kT_t)S_{t+k-M}$", "Trend + seasons; M periods/year", "“seasonal factors”, “quarterly / monthly”", "Demand $F_6 = 427.54$ (L12 · 58–68)"],
+  ["Stationary process", "Properties unchanged by a shift of time origin; $E(Y_t) = \\mu_t$, $V(Y_t) = \\sigma_t^2$", "Smoothing methods assume it", "“stationarity”", "(L12 · 69–70)"],
 ];
 
 export default {
   title: "Formula & Concept Index",
-  source: `${ROWS.length} formulas across Lectures 1–7, 9, 10 · searchable`,
+  source: `${ROWS.length} formulas across Lectures 1–7, 9–12 · searchable`,
   overview:
     "Your open-book companion. Type a keyword: a topic (“Bayes”), a symbol (“$\\lambda$”), a phrase from the question (“at least”, “before and after”, “association”) or a lecture (“L9”). Each row gives the formula, **when it applies**, the **typical wording** that signals it, and a **worked example** with its slides. Then open that lecture for the full method.",
   summary: [

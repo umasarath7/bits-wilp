@@ -2,7 +2,7 @@
 
 export default {
   title: "Coverage Checklist & Slide Checks",
-  source: "Built from CourseFiles/ISM (Lec1–7, 9, 10) · quality-assurance record",
+  source: "Built from CourseFiles/ISM (Lec1–7, 9, 10, 11, 12–13) · quality-assurance record",
   overview:
     "This page records **what the site covers against the slide decks**, so you can trust that nothing in the PDFs was skipped and nothing outside them was added. It also lists **every slide error or ambiguity** we found while re-solving the examples (all numbers re-computed in Python). Where a slide answer is wrong, the lecture page shows the slide's value **and** the corrected one.",
 
@@ -26,6 +26,8 @@ export default {
             ["**Lec8.pdf**", "–", "–", "⚠️ **not in CourseFiles/ISM**"],
             ["Lec9.pdf", "94", "Lecture 9", "✅ covered"],
             ["Lec10.pdf", "73", "Lecture 10", "✅ covered"],
+            ["Lec11.pdf", "49", "Lecture 11", "✅ covered"],
+            ["Lec12-13.pdf", "70", "Lecture 12 (sessions 12–13)", "✅ covered"],
             ["Course handout", "–", "Lecture 1, Lesson 0 (from Lec1 slides 3–6)", "⚠️ not provided; module list taken from Lec1"],
           ],
         },
@@ -55,6 +57,8 @@ export default {
             ["7", "Population/sample/parameter/statistic; sampling methods; sampling variation; sampling distribution of $\\bar{x}$; CLT; FPC; $\\hat{p}$; point & interval estimation; CIs for $\\mu$, P, differences", "All examples + homework (mufflers, bearings, $n = 100$, nanopillars) + exercises", "3 / 3 / 3", "3"],
             ["9", "$H_0/H_1$, tails; errors, $\\alpha$, power; p-value; z-tests (mean, two means, proportion, two proportions); t-tests (one, pooled, paired); $\\chi^2$ independence & GOF", "All examples + Exercises 1–11", "2 / 3 / 3", "2"],
             ["10", "MLE (helmets; binomial, Poisson, normal, exponential); F-test; one-way ANOVA; two-way ANOVA", "All examples + Practice 1–7", "2 / 2 / 2", "2"],
+            ["11", "Simple linear regression & least squares; SSE/SST/SSR, $r^2$, $s^2$; overfitting; intrinsically linear & polynomial regression; correlation & covariance; multiple regression; logistic regression", "Slide examples 10–12, 27, 38, 40–41, 44–46 + logistic illustration", "3 / 2 / 0", "4"],
+            ["12", "Time-series components; additive/multiplicative; forecasting map; linear & quadratic trend; moving averages (centred); exponential smoothing; MSE/MAD/MAPE/LAD; Holt; Holt-Winters; stationarity", "Slide examples 16–17, 20–26, 30–34, 53–57, 61–66 + practice slides 36–41", "1 / 4 / 2", "4"],
           ],
         },
         {
@@ -113,6 +117,15 @@ export default {
             ["L10 · 48–49", "$G = 981$; $F = 4.455$; $F(3, 36) = 4.38$", "$G = 891$; $F = 4.54$; $F(3, 36) = 2.87$; still reject."],
             ["L10 · 66", "“1/3 chance to observe this sample”", "$\\hat{p} = 1/3$ maximises L; $L(1/3) = 0.033$."],
             ["L10 · 69", "“four groups” but ten columns", "Treated as 10 groups × 3 trimesters."],
+            ["L11 · 46", "Multiple regression result $\\hat Y = 0.45898 - 0.0018y_1 + 0.12013y_2$", "Slide's own sums and formulas (and a least-squares fit) give $\\hat x = 5.867 - 0.3696y_1 + 0.0301y_2$."],
+            ["L11 · 45", "$\\Sigma y_1y_2$ line left unfinished", "$3511 - 81 \\times 991/22 = -137.68$ (slide 44 shows −137.7)."],
+            ["L11 · 42", "“k > 2” predictors", "Multiple regression needs $k \\ge 2$."],
+            ["L12 · 17", "$\\hat a = 12111/6$", "12111 is the sum of years; $\\hat a = 166/6 = 27.6667$ (value used on the slide)."],
+            ["L12 · 20", "3-year MA 22.00 written against 1995", "A centred average belongs to the middle year (1996); shift the column down one row."],
+            ["L12 · 22", "4-year centred MA 26.75 at 2004", "Needs the 2003–2006 average (no 2006 data); only 1997–2003 can be centred."],
+            ["L12 · 54", "2002 trend written $0.4(1505 - 1489)$; 2017 forecast “1872 − 28”", "Should be $0.4(1650 - 1489) = 73$ and $2546 - 28 = 2518$; slide answers correct."],
+            ["L12 · 60", "$F_{t+1} = L_t + T_tS_{t-M+1}$", "Brackets missing: $(L_t + T_t)S_{t+1-M}$, as the slide-62 spreadsheet computes."],
+            ["L12 · 62", "Forecasts for periods 25–28: 871.37, 692.95, 760.50, 826.36", "They use $S_{19}$–$S_{22}$ (wrong quarters). Correct: 731.97, 795.93, 907.82, 718.56."],
           ],
         },
       ],

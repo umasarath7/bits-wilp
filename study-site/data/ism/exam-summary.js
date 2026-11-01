@@ -8,8 +8,10 @@ import l6 from "./lec6.js";
 import l7 from "./lec7.js";
 import l9 from "./lec9.js";
 import l10 from "./lec10.js";
+import l11 from "./lec11.js";
+import l12 from "./lec12.js";
 
-const LECTURES = [[1, l1], [2, l2], [3, l3], [4, l4], [5, l5], [6, l6], [7, l7], [9, l9], [10, l10]].map(([n, l]) => ({
+const LECTURES = [[1, l1], [2, l2], [3, l3], [4, l4], [5, l5], [6, l6], [7, l7], [9, l9], [10, l10], [11, l11], [12, l12]].map(([n, l]) => ({
   id: `l${n}`,
   heading: `L${n}. ${l.title}`,
   slides: "",
@@ -18,7 +20,7 @@ const LECTURES = [[1, l1], [2, l2], [3, l3], [4, l4], [5, l5], [6, l6], [7, l7],
 
 export default {
   title: "ISM Exam Summary",
-  source: "Lectures 1–7, 9, 10 · read in about 30 minutes",
+  source: "Lectures 1–7, 9–12 · read in about 35 minutes",
   overview:
     "Read this before the exam. The **mid-sem is closed book** (formulas must be in your head) and the **comprehensive is open book** (you can look formulas up, but must recognise **which method** a question needs, quickly). Section 1 is a decision map from question wording to method; sections L1–L10 are each lecture's ⚡ Recap; section 2 lists the traps that cost marks, including the slide errors we found. For lookups during an open-book exam, use the 🔎 **Formula Index** page.",
 
@@ -51,6 +53,12 @@ export default {
             ["“find the estimator / most likely parameter”", "MLE: maximise log L", "L10"],
             ["compares two variances", "F = larger $s^2$ / smaller $s^2$", "L10"],
             ["compares 3+ means", "ANOVA (one-way; two-way if blocks)", "L10"],
+            ["gives (x, y) pairs and asks for a line / prediction", "least squares: $b_1 = S_{xy}/S_{xx}$, $b_0 = \\bar y - b_1\\bar x$", "L11"],
+            ["asks how strong the relationship is / % explained", "$r = S_{xy}/\\sqrt{S_{xx}S_{yy}}$, $r^2 = 1 - SSE/SST$", "L11"],
+            ["curved data, or two predictors, or a yes/no outcome", "transform (log, 1/x) / polynomial; multiple regression; logistic", "L11"],
+            ["values over years, asks for a trend or forecast", "coded-x trend: $b = \\sum xY/\\sum x^2$, $a = \\bar Y$", "L12"],
+            ["asks to smooth or forecast a flat series", "moving average or $F_{t+1} = \\alpha Y_t + (1 - \\alpha)F_t$; compare MSE/MAD", "L12"],
+            ["series with trend (and seasons)", "Holt $L + kT$; Holt-Winters $(L + kT)S$", "L12"],
           ],
         },
         {
