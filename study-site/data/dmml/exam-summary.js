@@ -10,8 +10,16 @@ import l5 from "./l5.js";
 import l6 from "./l6.js";
 import l7 from "./l7.js";
 import l8 from "./l8.js";
+import l9 from "./l9.js";
+import l10 from "./l10.js";
+import l11 from "./l11.js";
+import l12 from "./l12.js";
+import l13 from "./l13.js";
+import l14 from "./l14.js";
+import l15 from "./l15.js";
+import l16 from "./l16.js";
 
-const LECTURES = [l1, l2, l3, l4, l5, l6, l7, l8].map((l, i) => ({
+const LECTURES = [l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14, l15, l16].map((l, i) => ({
   id: `l${i + 1}`,
   heading: `L${i + 1}. ${l.title}`,
   slides: "",
@@ -20,7 +28,7 @@ const LECTURES = [l1, l2, l3, l4, l5, l6, l7, l8].map((l, i) => ({
 
 export default {
   title: "DMML Exam Summary",
-  source: "Lectures 1–8 + previous comprehensive paper · read in about 25 minutes",
+  source: "Lectures 1–16 + previous comprehensive paper · read in about 45 minutes",
   overview:
     "Read this the night before and on the morning of the exam. The DMML comprehensive is **pure theory**: six 5-mark questions, roughly **one per lecture**, and every one asks you to **apply** a concept to a scenario. This page gives you, for each lecture, the **definitions, lists and diagram** you must be able to reproduce, plus the **example** that makes an answer concrete. Section 1 tells you how to write; sections L1–L8 are the eight lecture recaps (the same as each lecture's ⚡ Recap tab) and tell you what to write; sections 2–3 are the traps to avoid and a final checklist.",
 

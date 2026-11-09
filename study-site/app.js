@@ -583,7 +583,14 @@ function SubjectView({ subject, sessionN, tab, done, toggleDone }) {
             <div className="eyebrow">${subject.code}</div>
             <h1>${subject.name}</h1>
             <p className="muted">${subject.blurb}</p>
-            <p>${subject.sessions.length ? "Pick a session from the menu to start." : "No sessions added yet."}</p>
+            ${subject.sessions.length === 0 && html`<p>No sessions added yet.</p>`}
+            ${subject.sessions.map((x, i) => html`
+              ${(i === 0 || x.group !== subject.sessions[i - 1].group) && html`<h2 key=${"h" + i} className="home-group">${x.group || (subject.unit ? subject.unit + "s" : "Sessions")}</h2>`}
+              <a key=${x.n} href=${`#/${subject.id}/${x.n}`} className=${"home-item" + (x.file ? "" : " pending")}>
+                <span className="sn">${done[`${subject.id}:${x.n}`] ? "✓" : x.icon || x.n}</span>
+                <span className="st">${x.title}${!x.file && html`<span className="muted small"> · not added yet</span>`}</span>
+                <span className="go">›</span>
+              </a>`)}
           </div>`}
     </main>
   </div>`;

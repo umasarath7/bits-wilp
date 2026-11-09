@@ -439,3 +439,14 @@ input.search { width: 100%; margin-bottom: 6px; }
 .check-opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
 .check-q .why .btn { margin-left: 8px; }
 .badge.theory { background: var(--exam-soft); color: var(--exam); border-color: transparent; }
+
+/* subject home: tappable list of sessions (so phones don't need the ☰ menu) */
+.home-group { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 1.4rem 0 0.5rem; }
+.home-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; margin-bottom: 8px; border: 1px solid var(--border);
+  border-radius: 10px; background: var(--surface); color: inherit; }
+.home-item:hover { border-color: var(--accent); }
+.home-item .sn { flex: 0 0 auto; min-width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: 0.85rem; }
+.home-item .st { flex: 1; font-weight: 500; }
+.home-item .go { color: var(--muted); font-size: 1.3rem; }
+.home-item.pending { opacity: 0.6; }
