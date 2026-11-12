@@ -6,16 +6,20 @@ import m4 from "./m4.js";
 import m5 from "./m5.js";
 import m6 from "./m6.js";
 import m7 from "./m7.js";
+import m8 from "./m8.js";
+import m9 from "./m9.js";
+import m10 from "./m10.js";
+import m11 from "./m11.js";
 
-const quiz = [[1, m1], [2, m2], [3, m3], [4, m4], [5, m5], [6, m6], [7, m7]].flatMap(([n, m]) =>
+const quiz = [[1, m1], [2, m2], [3, m3], [4, m4], [5, m5], [6, m6], [7, m7], [8, m8], [9, m9], [10, m10], [11, m11]].flatMap(([n, m]) =>
   m.quiz.map((q) => ({ ...q, topic: `M${n}`, q: `*(M${n} · ${q.topic})* ${q.q}` })));
 
 export default {
   title: "Mixed Quiz: All Modules",
-  source: `${quiz.length} questions from Modules 1–7`,
+  source: `${quiz.length} questions from Modules 1–11`,
   quizMode: "step",
   overview:
-    "Every module's quiz in one place. Open the **❓ Quiz** tab. Use **🔀 Mixed** for exam-style revision, or pick a module (M1…M7) for a topic quiz. Answer one at a time, **Submit**, read why the other options are wrong, **retry** the ones you miss, and check your per-module score at the end. Numeric answers accept decimals or fractions.",
+    "Every module's quiz in one place. Open the **❓ Quiz** tab. Use **🔀 Mixed** for exam-style revision, or pick a module (M1…M11) for a topic quiz. Answer one at a time, **Submit**, read why the other options are wrong, **retry** the ones you miss, and check your per-module score at the end. Numeric answers accept decimals or fractions.",
   summary: [
     {
       id: "how",

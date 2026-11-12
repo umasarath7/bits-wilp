@@ -75,11 +75,35 @@ const ROWS = [
   ["Soft margin", "$\\frac{1}{2}\\|w\\|^2 + C\\sum\\xi_i$, $y_i(w^Tx_i + b) \\ge 1 - \\xi_i$", "Noisy / overlapping data", "“slack”, “C”", "(M7 · 40–46)"],
   ["Kernel trick", "$K(x_i, x_j) = \\varphi(x_i)^T\\varphi(x_j)$", "Non-linear SVM", "“kernel”", "($x^2$, √2xy, $y^2$) ⇒ $(a^T b)^2$ (M7 · 50, 59)"],
   ["Kernel functions", "Linear $x^T y$ · polynomial $(1 + x^T y)^p$ · RBF exp(−$\\|x - y\\|^2/2 \\sigma^2$) · sigmoid $\\tanh(\\beta_0 x^T y + \\beta_1)$", "Choosing a kernel", "“polynomial kernel”", "(1,2),(2,3) → 8, 64, 81 (M7 · 60–61)"],
+  // ---- M8
+  ["MLE", "$\\theta_{MLE} = \\arg\\max\\sum_i\\log f(X_i \\mid \\theta)$: log, differentiate, solve", "i.i.d. data", "“maximum likelihood estimate”", "Discrete PMF θ = 0.5 (PDF 511–513)"],
+  ["MLE ↔ losses", "Gaussian noise → least squares; Laplacian → absolute error; Bernoulli → k/n; logistic → log-loss", "Explaining cost functions", "“why least squares”", "(PDF 494–500, 514–515)"],
+  ["MAP", "$\\theta_{MAP} = \\arg\\max f(X \\mid \\theta)f(\\theta)$; = MLE under a uniform prior", "Prior knowledge, little data", "“most probable hypothesis”", "Coins: MLE h₃, MAP h₂ (PDF 518–519)"],
+  ["Bayes optimal / Gibbs", "$\\arg\\max_v\\sum_h P(v \\mid h)P(h \\mid D)$; Gibbs error ≤ 2× Bayes optimal", "Several hypotheses", "“Bayes optimal classification”", "0.4 + vs 0.6 − (PDF 505–508)"],
+  ["Naive Bayes", "$\\arg\\max_y P(y)\\prod_i P(x_i \\mid y)$", "Features independent given class", "“classify using Naive Bayes”", "EnjoySport 0.0635 vs 0.0067 (PDF 528–530)"],
+  ["Laplace smoothing / m-estimate", "$\\frac{N_{ic} + 1}{N_c + d}$; $\\frac{N_{ic} + mp}{N_c + m}$", "A zero count", "“zero frequency”", "Churn 0.0343 vs 0.0181 (PDF 538–539)"],
+  ["Gaussian NB", "$N(x; \\mu, s^2) = \\frac{1}{\\sqrt{2\\pi s^2}}e^{-(x-\\mu)^2/2s^2}$ per class", "Continuous features", "“continuous attribute”", "Study hours → Fail; oven → Bad (PDF 546–549)"],
+  ["Multinomial / Bernoulli NB", "$\\frac{\\text{count} + 1}{\\text{tokens} + |V|}$ / $\\frac{\\text{docs} + 1}{\\text{docs} + 2}$ (absent words: 1 − p)", "Text", "“spam / sports text”", "Problem 6 (PDF 563–564)"],
+  // ---- M9
+  ["Bagging / random forest", "Bootstrap (with replacement) → parallel models → average / vote; RF adds random features per split", "High-variance learners", "“reduce variance”", "Ratings 5,4,5,4,4 → 4.4 (PDF 603)"],
+  ["AdaBoost", "$\\alpha = \\frac12\\ln\\frac{1-\\epsilon}{\\epsilon}$; $w \\leftarrow w\\,e^{-\\alpha yh}$; normalise; $H = \\text{sign}\\sum\\alpha h$", "Stumps, sequential", "“boosting rounds”", "Churn α₁ 0.8047, α₂ 0.6931 (PDF 625–629)"],
+  ["Gradient boosting / XGBoost", "$\\hat y \\leftarrow \\hat y + \\eta\\,T(x)$ with T fitted to residuals", "Sequential, reduces bias", "“residuals”, “learning rate”", "25 → 22/28 → 19.9/30.1 (PDF 636–638)"],
+  ["Stacking", "Base models → predictions on held-out fold → meta-model", "Heterogeneous models", "“meta-learner”", "DT, k-NN, SVM + NN (PDF 644–648)"],
+  // ---- M10
+  ["K-means", "$J = \\sum r_{nk}\\|x_n - \\mu_k\\|^2$; assign to nearest, recompute means", "Numeric data, k known", "“cluster into k groups”", "Glucose: {1,4,5,6,7,8}, {2,3} (PDF 661–662)"],
+  ["SSE / elbow", "$SSE = \\sum_i\\sum_{x \\in C_i}\\text{dist}^2(m_i, x)$; pick k at the elbow", "Choosing k", "“optimal number of clusters”", "(PDF 663, 707)"],
+  ["K-medoids", "Medoid = point with the smallest total distance", "Outliers, any distance", "“medoid”, “PAM”", "Medoids B, E (PDF 713–715)"],
+  ["GMM / EM", "$p(x) = \\sum\\pi_k\\mathcal N(\\mu_k, \\Sigma_k)$; E: $\\gamma = \\frac{\\pi_k\\mathcal N_k}{\\sum\\pi_j\\mathcal N_j}$; M: $N_k$, μ, Σ, $\\pi_k = N_k/N$", "Soft clustering", "“expectation maximisation”", "LL −12.16 (PDF 694–698)"],
+  ["Silhouette", "$s = 1 - a/b$ (a < b)", "Internal validity", "“silhouette coefficient”", "(PDF 722)"],
+  // ---- M11
+  ["Model evaluation", "Train / validation / test (e.g. 70/15/15); holdout, k-fold, LOOCV, bootstrap", "Any model", "“evaluate the model”", "(PDF 732–733)"],
+  ["Comparing models", "Confidence interval of accuracy → significance test", "Two models", "“is A better than B”", "(PDF 734)"],
+  ["FAccT", "Fairness, accountability, transparency, privacy, security", "Responsible ML", "“bias”, “unawareness”", "COMPAS, Amazon hiring (PDF 735–742)"],
 ];
 
 export default {
   title: "Formula & Concept Index",
-  source: `${ROWS.length} formulas across Modules 1–7 · searchable`,
+  source: `${ROWS.length} formulas across Modules 1–11 · searchable`,
   overview:
     "Your quick-lookup companion. Type a keyword: a topic (“Gini”), a symbol (“$\\lambda$”), a phrase from the question (“prune set”, “first iteration”) or a module (“M5”). Each row gives the formula, **when it applies**, the **typical wording** that signals it, and a **worked example** with its slides. Then open that module for the full method.",
   summary: [

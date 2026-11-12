@@ -15,6 +15,7 @@ export default {
       heading: "Lesson 1: What a decision tree is",
       slides: "5–13, 21",
       blocks: [
+        {"type": "callout", "kind": "formula", "title": "Representation and expressiveness (consolidated PDF p. 296)", "text": "A decision tree represents a **disjunction (OR) of conjunctions (ANDs)** of attribute tests, one conjunction per root-to-leaf path. PlayTennis: **Yes** = (Outlook = Sunny ∧ Humidity = Normal) ∨ (Outlook = Overcast) ∨ (Outlook = Rain ∧ Wind = Weak); **No** = (Sunny ∧ Humidity = High) ∨ (Rain ∧ Wind = Strong). So ⟨Sunny, High, Strong⟩ → **No**."},
         {"type": "callout", "kind": "idea", "title": "In plain words", "text": "A decision tree is the game **“20 Questions”**. To guess an animal you ask “Does it fly?”, then “Is it bigger than a cat?”, narrowing down until you're sure. A tree does the same with data: each question splits the examples into smaller groups until each group is (nearly) one class.\n\nIt's also exactly how a doctor or bank officer might reason: “Is the outlook sunny? Then is humidity high? Then don't play tennis.” That's why trees are the **easiest model to explain** to anyone."},
         {
           type: "callout",

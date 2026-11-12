@@ -6,8 +6,12 @@ import m4 from "./m4.js";
 import m5 from "./m5.js";
 import m6 from "./m6.js";
 import m7 from "./m7.js";
+import m8 from "./m8.js";
+import m9 from "./m9.js";
+import m10 from "./m10.js";
+import m11 from "./m11.js";
 
-const MODULES = [[1, m1], [2, m2], [3, m3], [4, m4], [5, m5], [6, m6], [7, m7]].map(([n, m]) => ({
+const MODULES = [[1, m1], [2, m2], [3, m3], [4, m4], [5, m5], [6, m6], [7, m7], [8, m8], [9, m9], [10, m10], [11, m11]].map(([n, m]) => ({
   id: `m${n}`,
   heading: `M${n}. ${m.title}`,
   slides: "",
@@ -16,7 +20,7 @@ const MODULES = [[1, m1], [2, m2], [3, m3], [4, m4], [5, m5], [6, m6], [7, m7]].
 
 export default {
   title: "ML Exam Summary",
-  source: "Modules 1–7 · read in about 30 minutes",
+  source: "Modules 1–11 · read in about 45 minutes",
   overview:
     "Read this before the exam. Section 1 maps question wording to the method and module; sections M1–M7 are each module's ⚡ Recap; section 2 lists the traps that cost marks, including the slide errors we found. Every number in the module pages was re-computed in Python. For lookups, use the 🔎 **Formula Index**; for drilling, the 🔀 **Mixed Quiz**.",
 
@@ -53,6 +57,16 @@ export default {
             ["asks how to tune hyperparameters", "validation set / (stratified) k-fold CV, never the test set", "M6"],
             ["gives support vectors", "augment → dot-product equations = labels → $\\alpha$ → $\\tilde{w}$ → b → hyperplane, margin $2/\\|w\\|$", "M7"],
             ["asks for a kernel value", "$x^T y$ first, then $(c + x^T y)^q$ or exp(−$\\|x - y\\|^2/2 \\sigma^2$)", "M7"],
+            ["asks for an MLE / MAP / Bayes optimal answer", "L → log → derivative = 0; MAP = likelihood × prior; Bayes optimal = posterior-weighted vote", "M8"],
+            ["gives a categorical table and a new case", "Naive Bayes: priors × per-feature fractions; Laplace (+1, +d) if a zero appears", "M8"],
+            ["has continuous features in Naive Bayes", "per-class μ, s² → Gaussian density → multiply", "M8"],
+            ["classifies a document", "multinomial (counts, tokens + |V|) or Bernoulli (presence, docs + 2)", "M8"],
+            ["asks for AdaBoost rounds", "ε → α = ½ln((1−ε)/ε) → ×e^{±α} → normalise → sign(Σαh)", "M9"],
+            ["asks for gradient boosting / XGBoost steps", "mean → residuals → leaf values → + η·leaf → new loss", "M9"],
+            ["asks for a random-forest prediction", "majority vote (classification) or average (regression)", "M9"],
+            ["asks to cluster points into k groups", "k-means: distance table → assign → new means → repeat (k-medoids for outliers)", "M10"],
+            ["gives a GMM and asks for EM steps", "γ = πN/Σ πN → N_k, weighted μ, Σ, π = N_k/N → log-likelihood", "M10"],
+            ["asks about fairness or interpretability", "FAccT terms, proxy problem, interpretable models, trade-off", "M11"],
           ],
         },
         {

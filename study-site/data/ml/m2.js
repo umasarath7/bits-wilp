@@ -274,6 +274,7 @@ export default {
       heading: "Lesson 7: Instance selection and partitioning: sampling",
       slides: "36, 48–54",
       blocks: [
+        {"type": "callout", "kind": "warn", "title": "Issue with random subsampling (consolidated PDF p. 100)", "text": "Randomly assigning 2/3 of the 150 Iris flowers (50 per class) to training and 1/3 to test can give **38 Setosa, 28 Versicolor, 34 Virginica** in training but **12, 22, 16** in test: the class proportions no longer match (an *independence violation*: what lands in one set changes what is left for the other). **Stratified** sampling keeps 1/3 of each class in each set."},
         {
           type: "callout",
           kind: "idea",

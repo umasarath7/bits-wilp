@@ -2,7 +2,7 @@
 
 export default {
   title: "Coverage Checklist & Slide Checks",
-  source: "Built from CourseFiles/ML (CS 1 – CS 10) · quality-assurance record",
+  source: "Built from CourseFiles/ML (CS 1 – CS 10 decks + consolidated Nov 2026 PDF) · quality-assurance record",
   overview:
     "This page records **what the site covers against the slide decks**, so you can trust that nothing in the PDFs was skipped and nothing outside them was added. It also lists **every slide error or ambiguity** found while re-solving the examples (all numbers re-computed in Python). Where a slide answer is wrong, the module page shows the slide's value **and** the corrected one.",
 
@@ -24,14 +24,14 @@ export default {
             ["ML_ CS 7&8_12th Sep&3,10thoct2026.pdf", "123", "Module 5: Decision trees", "✅ covered"],
             ["ML CS 9_10&17thOct26.pdf", "85", "Module 6: Instance-based learning (+ classifier evaluation, CV)", "✅ covered"],
             ["ML_ CS 10_24th October 2026.pdf", "68", "Module 7: SVM", "✅ covered"],
-            ["Modules M8–M11", "–", "Bayesian, ensemble, unsupervised learning, model comparison", "⏳ no slides in CourseFiles yet"],
+            ["Machine Learning_Watermarked_ppts_Nov2026.pdf (consolidated, open-book copy)", "750", "M1–M7 checked page by page; M8 (pp. 486–576), M9 (578–648), M10 (652–726), M11 (729–749) built from it; 📄 PDF index", "✅ covered"],
           ],
         },
         {
           type: "callout",
           kind: "warn",
           title: "Gaps you should know about",
-          text: "- **M8 Bayesian learning, M9 ensembles, M10 unsupervised learning and M11 model evaluation/comparison** have no slides in CourseFiles/ML yet. Add the PDFs and these pages will be built in the same format.\n- No previous ML question papers were provided, so the practice questions follow the slides' own “Problem type” lists.",
+          text: "- The consolidated PDF (Nov 2026) was compared slide-title by slide-title with M1–M7. Three small additions were made: decision trees as a disjunction of conjunctions (M5, PDF p. 296), the Iris subsampling issue (M2, p. 100) and choosing L1/L2/elastic net (M3, p. 222).\n- M8–M11 cite **consolidated-PDF page numbers**; M1–M7 cite the original session decks, so use **📄 Find It in the PDF** to locate their topics in the exam copy.\n- No previous ML question papers were provided.",
         },
       ],
     },
@@ -51,6 +51,10 @@ export default {
             ["M5", "Tree structure; Hunt; manual loan tree; entropy & gain; ID3 PlayTennis; problem types 1–10; Gini; continuous splits; classification error; gain ratio; overfitting; pre/post-pruning; MDL", "Every problem type 1–10, shapes practice, loan practice (discretisation, binary split, ID3, post-prune)", "1 / 1 / 0", "3"],
             ["M6", "Lazy vs eager; k-NN; dissimilarity; nominal, binary (Jaccard), Minkowski, ordinal, Gower; curse of dimensionality; choosing k; weighted k-NN; LWR; challenges; validation & CV", "Jaccard, basket, Minkowski matrices, Gower (both), Problem types 1–3, additional exercise", "2 / 2 / 1", "4"],
             ["M7", "Linear classifiers; max margin; support vectors; $2/\\|w\\|$; primal; Lagrangian/dual; numerical examples; soft margin & C; non-linear mapping; kernel trick; kernels; multi-class; pros/cons", "Both $\\alpha$-solving examples, non-linear $\\Phi_1$ example, kernels 8/64/81, $\\phi(2, 3)$, OvA/OvO votes", "1 / 2 / 1", "4"],
+            ["M8", "Parameters & likelihood; Bayes theorem; MLE (recipe, linear/logistic, discrete, Laplacian noise); MAP; Bayes optimal; Gibbs; generative vs discriminative; Naive Bayes; Laplace & m-estimate; Gaussian NB; multinomial & Bernoulli text NB; LR vs GNB; practical issues", "Problems 0–6, EnjoySport (3 variants), MAP example, discrete MLE, sports text, China example", "1 / 1 / 0", "0"],
+            ["M9", "Weak learners, bias/variance; homogeneous/heterogeneous; bootstrapping; bagging (hard/soft voting); random forest; boosting; AdaBoost; gradient boosting; XGBoost; stacking", "Problem types 1–2, RF average, AdaBoost heart & churn, XGBoost regression", "1 / 1 / 0", "0"],
+            ["M10", "K-means (E/M steps, SSE, elbow, limitations, outlier score); k-medoids/PAM; GMM; EM with numeric example; cluster validity (external/internal/relative, correlation, silhouette)", "Glucose k-means, six-point k-means, k-medoids A–F, GMM documents", "1 / 1 / 0", "0"],
+            ["M11", "Evaluation (split, methods, metrics); comparing models; FAccT; algorithmic bias cases; fairness through unawareness; interpretability & trade-off", "Slide content (no numericals in the deck)", "2 / 0 / 1", "0"],
           ],
         },
         {
@@ -92,6 +96,11 @@ export default {
             ["M6 · 74", "Manhattan distance for a query with only a size", "Rating of the query not given → distance on size only (flagged)."],
             ["M7 · 21", "w = (1, −1), $b = 0$ with + points (2,2), (4,4)", "Those points give $w^T x + b = 0$: they lie on the boundary; use the slide only for the margin formula."],
             ["M7 · 31 vs 36", "$\\alpha_1$ = −3.5 vs $\\alpha_1$ = +3.5", "Different conventions (label absorbed vs explicit $y_i$); both give the correct w."],
+            ["M8 · PDF 549", "Population variances “5 and 8.75”", "Bad class: (16 + 0 + 16)/3 = **10.67**; the slide's scores (0.0007 vs 0.0108) use 10.67."],
+            ["M9 · PDF 621–623", "α = ½ ln 2.5 = 0.45; weights 0.21/0.08 → 0.26/0.10", "Exact with ε = 2/7: α = 0.458, normalised 0.25/0.10 (rounding only)."],
+            ["M10 · PDF 715", "F–B = 9.49, C–E = 5.83", "Correct: 9.22 and 5.39; clusters unchanged."],
+            ["M10 · PDF 698", "“Std.Dev = (6.23, 0.03)”", "These are variances; SDs ≈ (2.50, 0.16)."],
+            ["M10 · PDF 662", "Candidate 8 written as (183, 84)", "Order swapped: (weight 84, glucose 183); assignment unchanged."],
           ],
         },
       ],
