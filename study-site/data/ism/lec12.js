@@ -5,7 +5,7 @@
 
 export default {
   title: "Time Series Analysis & Forecasting",
-  source: "Lec12-13.pdf (Sessions 12 & 13) · 70 pages",
+  source: "Lec12-13.pdf (Sessions 12 & 13) · 70 pages · consolidated exam PDF pp. 667–735",
   quizMode: "step",
   overview:
     "A **time series** is a list of values recorded one after another in time: monthly sales, yearly crop output, quarterly GDP. The order matters, and the past is used to **forecast** the future. This deck first breaks a series into its parts (**trend, seasonal, cyclical, irregular**, slides 3–12), then fits a straight or curved **trend line** (slides 13–18). For series without a clear trend it **smooths** the noise with **moving averages** (slides 19–23) and **exponential smoothing** (slides 24–29), and judges forecasts with **MSE, MAD, MAPE and LAD** (slides 27, 30–35). For series with a trend it adds a trend term (**Holt’s double exponential smoothing**, slides 42–57), and for trend plus seasons a seasonal term (**Holt-Winters triple exponential smoothing**, slides 58–68). It ends with **stationarity** (slides 69–70). Slides 36–41 are practice exercises; worked solutions are in ✍️ Solved Questions.",

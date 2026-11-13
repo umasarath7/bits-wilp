@@ -4,7 +4,7 @@
 
 export default {
   title: "Hypothesis Testing: z, t and χ² Tests",
-  source: "Lec9.pdf (CS-9) · 94 pages",
+  source: "Lec9.pdf (CS-9) · 94 pages · consolidated exam PDF pp. 452–545",
   quizMode: "step",
   overview:
     "A taxi company must choose between two tyre brands; a watchdog doubts a courier's “3-day delivery” claim; an RTO suspects early-morning accidents are deadlier. Each is a **claim to be checked against sample data**, and since samples vary (Lecture 7), we need a rule that separates real effects from chance. That rule is the **hypothesis test**: state $H_0$ (no difference) and $H_1$ (the claim to establish), choose $\\alpha$, compute a **test statistic**, and reject $H_0$ if the statistic falls in the **rejection region** (equivalently, if the **p-value ≤ $\\alpha$**). This lecture covers the **z-test** (large samples, $\\sigma$ known) for one mean, two means, one proportion and two proportions; **Student's t-test** (small samples, $\\sigma$ unknown) for one mean, two independent means and paired data; and the **χ² test** for independence in contingency tables and for goodness of fit.",

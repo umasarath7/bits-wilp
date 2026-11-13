@@ -3,7 +3,7 @@
 
 export default {
   title: "Sampling, the Central Limit Theorem & Confidence Intervals",
-  source: "Lec7.pdf (CS-7) · 84 pages",
+  source: "Lec7.pdf (CS-7) · 84 pages · consolidated exam PDF pp. 374–451",
   quizMode: "step",
   overview:
     "We almost never see a whole population: we see a **sample** and want to say something about the population. This lecture builds that bridge. First the vocabulary (population vs sample, **parameter** vs **statistic**) and the ways of drawing a sample (random, systematic, stratified, multistage; and non-probability methods). Then the key insight: a statistic such as $\\bar x$ changes from sample to sample, so it has its own **sampling distribution**. The **Central Limit Theorem** says that for large samples $(n \\ge 30)$ $\\bar x$ is approximately normal with mean $\\mu$ and standard error $\\sigma/\\sqrt{n}$, whatever the population's shape. That lets us compute probabilities about sample means and proportions (with a **finite population correction** when sampling a big slice of a small population), and turn things around into **confidence intervals**: estimate ± z × standard error.",

@@ -3,7 +3,7 @@
 
 export default {
   title: "Binomial, Poisson & Normal Distributions",
-  source: "Lec6.pdf (CS-6) · 80 slides",
+  source: "Lec6.pdf (CS-6) · 80 slides · consolidated exam PDF pp. 295–373",
   quizMode: "step",
   overview:
     "Lecture 5 built distributions from scratch. In practice, a few **named distributions** cover most situations, and recognising which one applies is half the exam. **Bernoulli**: one yes/no trial. **Binomial**: the number of successes in n independent yes/no trials (customers asking for water, correct guesses on an MCQ test). **Poisson**: the number of rare events in a fixed time or space (calls per minute, defects per sheet), also used to approximate the binomial when n is large and p small. **Normal**: the bell curve for measured quantities (scores, valve flow), handled through the **standard normal Z** and its table, and also used to approximate the binomial when np and nq are both at least 15. The lecture ends with a self-study introduction to the **t, $\\chi^2$ and F** distributions, which return in hypothesis testing.",

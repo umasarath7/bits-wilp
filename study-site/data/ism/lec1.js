@@ -5,7 +5,7 @@
 
 export default {
   title: "Basics of Statistics: Centre, Spread, Shape & Outliers",
-  source: "Lec1.pdf (CS-1) · 70 slides",
+  source: "Lec1.pdf (CS-1) · 70 slides · consolidated exam PDF pp. 1–69",
   quizMode: "step",
   overview:
     "The lecture opens with a puzzle (slides 7–8): two IPL batsmen's runs in five matches. **Who is better on average? Who is more consistent? Are there any unusual scores?** Answering properly takes the whole toolkit of descriptive statistics, built up in this order: first decide **what kind of data** you have (its level of measurement), then summarise its **centre** (mean, median, mode), its **shape** (symmetric or skewed), its **spread** (range, variance, standard deviation) and finally its **five-number summary**, box plot and **outliers**. By the end you can answer all three IPL questions with numbers.",

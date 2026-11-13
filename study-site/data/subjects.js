@@ -85,7 +85,7 @@ export const subjects = [
     code: "ISM",
     name: "Introduction to Statistical Methods",
     unit: "Lecture",
-    blurb: "Descriptive statistics, probability, Bayes, distributions, sampling, estimation, hypothesis tests, ANOVA.",
+    blurb: "Descriptive statistics, probability, Bayes, distributions, sampling, estimation, hypothesis tests, ANOVA, regression, time series, ARIMA, Gaussian mixtures.",
     sessions: [
       { n: 1, title: "Basics of Statistics: Centre, Spread, Outliers", file: "./ism/lec1.js" },
       { n: 2, title: "Basic Probability: Events, Axioms, Independence", file: "./ism/lec2.js" },
@@ -98,6 +98,9 @@ export const subjects = [
       { n: 10, title: "MLE, F-test & ANOVA", file: "./ism/lec10.js" },
       { n: 11, title: "Regression & Correlation", file: "./ism/lec11.js" },
       { n: 12, title: "Time Series & Forecasting (Lec 12–13)", file: "./ism/lec12.js" },
+      { n: 14, title: "Stationarity, ACF & ARIMA Models", file: "./ism/lec14.js" },
+      { n: 15, title: "Gaussian Mixture Models & EM", file: "./ism/lec15.js" },
+      { n: "pdf", icon: "📄", short: "PDF index", group: "Exam practice", title: "Find It in the PDF (open-book page index)", file: "./ism/pdf-index.js" },
       { n: "summary", icon: "📋", short: "Summary", group: "Exam practice", title: "Exam Summary (read before the exam)", file: "./ism/exam-summary.js" },
       { n: "formulas", icon: "🔎", short: "Formulas", group: "Exam practice", title: "Formula & Concept Index (searchable)", file: "./ism/formulas.js" },
       { n: "guide", icon: "✍️", short: "Guide", group: "Exam practice", title: "Open-Book Exam Guide", file: "./ism/guide.js" },

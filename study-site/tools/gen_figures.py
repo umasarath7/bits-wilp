@@ -2095,6 +2095,93 @@ def i12_holt():
     g.add(text(60, 210, "orange = actual GDP · blue = Holt forecast F(t+1) = L(t) + T(t), α = 0.8, β = 0.4", "ts2", "start"))
     reg("i12-holt", g, "Holt's double exponential smoothing on the GDP series (Lec12–13 slides 53–57). The trend term lets the forecast keep up while GDP climbs, and turns negative after 2015 when GDP falls, giving a 2021 forecast of 2363.")
 
+# ================================================================= ISM Session 14 (stationarity, ACF, ARIMA)
+
+def _acfbars(g, p, vals, x0=1):
+    for i, v in enumerate(vals):
+        x = p.X(x0 + i)
+        top, bot = (p.Y(v), p.Y(0)) if v >= 0 else (p.Y(0), p.Y(v))
+        g.add(rect(x - 7, top, 14, max(1, bot - top), "bar1" if v >= 0 else "bar2", 1))
+
+def i14_stat():
+    rnd = random.Random(7)
+    g = Fig("i14st", 200)
+    noise = [rnd.gauss(0, 1) for _ in range(60)]
+    panels = [("Stationary: flat level, steady wobble", [5 + 0.9 * e for e in noise], "l1"),
+              ("Non-stationary: trend (level drifts)", [2 + 0.13 * t + 0.9 * e for t, e in enumerate(noise)], "l2")]
+    for k, (lab, ys, cls) in enumerate(panels):
+        px = 10 + k * 215
+        g.add(rect(px, 8, 205, 150, "panel", 6), text(px + 102, 26, lab, "ts"))
+        p = Plot(g, px + 12, 36, 182, 110, (0, 59), (0, 12))
+        g.add(line(px + 12, 146, px + 194, 146, "ax"))
+        mean = sum(ys) / len(ys)
+        if k == 0:
+            g.add(line(p.X(0), p.Y(mean), p.X(59), p.Y(mean), "guide2"))
+        else:
+            g.add(line(p.X(0), p.Y(2), p.X(59), p.Y(2 + 0.13 * 59), "guide2"))
+        g.add(path([p.P(t, v) for t, v in enumerate(ys)], cls))
+    g.add(text(220, 185, "dashed = the level it wanders around (left constant, right rising)", "ts2"))
+    reg("i14-stat", g, "Stationary vs non-stationary (Session 14, pages 744–758). A stationary series keeps the same mean and spread over time; a trend makes the level depend on the date, so the series must be differenced before ARMA modelling.")
+
+def i14_acf():
+    g = Fig("i14ac", 220)
+    r = [0.8317, 0.6563, 0.4911, 0.2786, 0.0310, -0.1653, -0.3037, -0.4010, -0.4582, -0.4505]
+    p = Plot(g, 48, 16, 372, 150, (0.3, 10.7), (-0.7, 1.0))
+    p.axes(xt=list(range(1, 11)), yt=[-0.5, 0, 0.5, 1.0], xl="lag k", yl="r_k", fmt=lambda v: f"{v:g}")
+    b = 2 / math.sqrt(15)
+    for v in (b, -b):
+        g.add(line(p.X(0.3), p.Y(v), p.X(10.7), p.Y(v), "guide2"))
+    _acfbars(g, p, r)
+    g.add(text(p.X(10.6), p.Y(b) - 5, "+2/√15 = 0.516", "ts", "end"), text(p.X(10.6), p.Y(-b) + 14, "−0.516", "ts", "end"))
+    g.add(text(60, 212, "bars outside the dashed fence ⇒ not white noise; slow fade ⇒ trend", "ts2", "start"))
+    reg("i14-acf", g, "ACF of the 15-value series 22, 24, …, 51 (Session 14, pages 770–771, 785). r₁ = 1394/1676 = 0.832, r₂ = 0.656, r₃ = 0.491 lie outside the white-noise bounds ±2/√15 = ±0.516, and the slow fade is the signature of a trend.")
+
+def i14_pattern():
+    g = Fig("i14pt", 250)
+    phi, th = 0.7, 0.6
+    ar_acf = [phi ** k for k in range(1, 9)]
+    ar_pacf = [phi] + [0] * 7
+    ma_acf = [th / (1 + th * th)] + [0] * 7
+    ma_pacf = [-((-th) ** k) * (1 - th * th) / (1 - th ** (2 * (k + 1))) for k in range(1, 9)]
+    specs = [("AR(1): ACF fades", ar_acf), ("AR(1): PACF cuts off after lag 1", ar_pacf),
+             ("MA(1): ACF cuts off after lag 1", ma_acf), ("MA(1): PACF fades", ma_pacf)]
+    for k, (lab, vals) in enumerate(specs):
+        px, py = 10 + (k % 2) * 215, 6 + (k // 2) * 118
+        g.add(rect(px, py, 205, 110, "panel", 6), text(px + 102, py + 16, lab, "ts"))
+        p = Plot(g, px + 14, py + 22, 180, 80, (0.3, 8.7), (-0.5, 1.0))
+        g.add(line(p.X(0.3), p.Y(0), p.X(8.7), p.Y(0), "ax"))
+        _acfbars(g, p, vals)
+    reg("i14-pattern", g, "How to read the orders (Session 14, pages 803–804, 816). For AR(p) the PACF cuts off after lag p while the ACF fades; for MA(q) the ACF cuts off after lag q while the PACF fades. Hook: PACF → p, ACF → q. (Theoretical patterns for φ = 0.7 and θ = 0.6.)")
+
+# ================================================================= ISM Session 15 (Gaussian mixture models)
+
+def i15_mix():
+    g = Fig("i15mx", 220)
+    pa, pb = 1000 / 1800, 800 / 1800
+    p = Plot(g, 48, 16, 372, 150, (82, 108), (0, 0.12))
+    p.axes(xt=[85, 90, 95, 100, 105], yt=[0, 0.04, 0.08, 0.12], xl="share price (Rs)", yl="density", fmt=lambda v: f"{v:g}")
+    mix = lambda x: pa * npdf(x, 90, 2) + pb * npdf(x, 100, 2)
+    _shade(g, p, mix, 82, 108, "area1")
+    p.curve(lambda x: pa * npdf(x, 90, 2), 82, 108, "l3")
+    p.curve(lambda x: pb * npdf(x, 100, 2), 82, 108, "l3")
+    p.curve(mix, 82, 108, "l1")
+    g.add(text(p.X(90), p.Y(0.115), "A: π = 0.556, μ = 90", "ts"), text(p.X(100), p.Y(0.095), "B: π = 0.444, μ = 100", "ts"))
+    g.add(text(60, 212, "thin lines = π × each bell · thick line = their sum p(x)", "ts2", "start"))
+    reg("i15-mix", g, "The share-price mixture (Session 15, pages 825–826): 1000 prices from N(90, 2²) and 800 from N(100, 2²). The mixture density is the weighted sum of the two bells, with weights 1000/1800 and 800/1800.")
+
+def i15_resp():
+    g = Fig("i15rs", 220)
+    p = Plot(g, 48, 16, 372, 150, (78, 112), (0, 1))
+    p.axes(xt=[80, 85, 90, 95, 100, 105, 110], yt=[0, 0.25, 0.5, 0.75, 1], xl="x", yl="γ₁(x)", fmt=lambda v: f"{v:g}")
+    gam = lambda x: 0.6 * npdf(x, 90, 5) / (0.6 * npdf(x, 90, 5) + 0.4 * npdf(x, 100, 5))
+    p.curve(gam, 78, 112, "l1")
+    for x, lab in [(92, "0.83"), (95, "0.60"), (98, "0.31")]:
+        g.add(circle(*p.P(x, gam(x)), 5, "d2", f"x = {x}: γ₁ = {lab}"), text(p.X(x) + 8, p.Y(gam(x)) - 6, lab, "tb", "start"))
+    g.add(line(p.X(95), p.Y(0), p.X(95), p.Y(1), "guide2"), text(p.X(95), p.Y(0.97), "halfway: γ₁ = π₁", "ts"))
+    g.add(text(60, 212, "chance that component 1 (μ = 90) produced x; π = 0.6/0.4, σ = 5", "ts2", "start"))
+    reg("i15-resp", g, "Responsibility of component 1 (Session 15, pages 856–863). Far left, component 1 almost surely produced x; far right, component 2 did. The data points 92, 95, 98 get 0.83, 0.60, 0.31, the E-step values in the PDF.")
+
+
 # ---------------------------------------------------------------- ML (Machine Learning, DSEZG565) figures
 
 def m2_iqr():
@@ -2404,7 +2491,7 @@ for fn in [s1_fits, s1_ucurve, s1_kfold, s1_threshold, s1_types, s1_rl,
            i7_means, i7_clt, i7_ci,
            i9_tails, i9_chi,
            i10_lik, i10_anova,
-           i11_line, i11_sst, i11_corr, i11_power, i12_comp, i12_ma, i12_exp, i12_holt,
+           i11_line, i11_sst, i11_corr, i11_power, i12_comp, i12_ma, i12_exp, i12_holt, i14_stat, i14_acf, i14_pattern, i15_mix, i15_resp,
            m2_iqr, m3_tips, m3_cost, m4_sigmoid, m4_roc, m5_tree, m5_impurity, m5_incsplit,
            m6_knn, m6_lwr, m7_svm, m7_nonlin,
            a9_jobtree, a11_kmeans, a11_dendro, a12_gates]:

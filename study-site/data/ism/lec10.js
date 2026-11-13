@@ -3,7 +3,7 @@
 
 export default {
   title: "Maximum Likelihood, the F-test & ANOVA",
-  source: "Lec10.pdf (CS-10) · 73 pages",
+  source: "Lec10.pdf (CS-10) · 73 pages · consolidated exam PDF pp. 546–618",
   quizMode: "step",
   overview:
     "Two final tools. **Maximum likelihood estimation (MLE)** answers: which parameter value makes the data we actually saw *most likely*? For ten helmets with three flawed, the answer is $p = 0.3$. The same recipe (write the likelihood, take logs, differentiate, set to zero) gives the familiar estimators: $\\bar x$ for Poisson and normal means, k/n for a binomial proportion. Then we compare **more than two means at once**. The **F-test** compares two variances (is one process more variable?), and **ANOVA** splits total variation into *between-groups* and *within-groups* parts. If the between-group variation is large relative to the within-group noise ($F = \\text{MSTR}/\\text{MSE}$ beyond the F table value), the group means differ. One-way ANOVA handles one factor; two-way ANOVA adds a **block** factor to soak up extra variation.",

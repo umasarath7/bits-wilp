@@ -3,7 +3,7 @@
 
 export default {
   title: "Random Variables, Expectation & Joint Distributions",
-  source: "Lec5.pdf (CS-5) · 69 slides",
+  source: "Lec5.pdf (CS-5) · 69 slides · consolidated exam PDF pp. 232–294",
   quizMode: "step",
   overview:
     "So far each probability question has been a one-off. A **random variable** packages a whole experiment into a number: the number of heads, the TV sets sold today, a laptop's years of service. Its **probability distribution** lists (or draws, or gives by formula) how likely each value is: a **pmf** for counted (discrete) variables, a **pdf** for measured (continuous) ones, where probability becomes **area under a curve**. From the distribution we compute the **expected value** (long-run average) and **variance** (spread), with handy rules for scaling and shifting. Finally, two random variables at once: **joint distributions**, **marginals** (sum or integrate out the other variable), and **independence** $f(x, y) = g(x) h(y)$. This is the foundation for the named distributions in Lecture 6.",

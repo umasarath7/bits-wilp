@@ -10,8 +10,10 @@ import l9 from "./lec9.js";
 import l10 from "./lec10.js";
 import l11 from "./lec11.js";
 import l12 from "./lec12.js";
+import l14 from "./lec14.js";
+import l15 from "./lec15.js";
 
-const LECTURES = [[1, l1], [2, l2], [3, l3], [4, l4], [5, l5], [6, l6], [7, l7], [9, l9], [10, l10], [11, l11], [12, l12]].map(([n, l]) => ({
+const LECTURES = [[1, l1], [2, l2], [3, l3], [4, l4], [5, l5], [6, l6], [7, l7], [9, l9], [10, l10], [11, l11], [12, l12], [14, l14], [15, l15]].map(([n, l]) => ({
   id: `l${n}`,
   heading: `L${n}. ${l.title}`,
   slides: "",
@@ -20,9 +22,9 @@ const LECTURES = [[1, l1], [2, l2], [3, l3], [4, l4], [5, l5], [6, l6], [7, l7],
 
 export default {
   title: "ISM Exam Summary",
-  source: "Lectures 1–7, 9–12 · read in about 35 minutes",
+  source: "Lectures 1–7, 9–12, 14–15 · read in about 40 minutes",
   overview:
-    "Read this before the exam. The **mid-sem is closed book** (formulas must be in your head) and the **comprehensive is open book** (you can look formulas up, but must recognise **which method** a question needs, quickly). Section 1 is a decision map from question wording to method; sections L1–L10 are each lecture's ⚡ Recap; section 2 lists the traps that cost marks, including the slide errors we found. For lookups during an open-book exam, use the 🔎 **Formula Index** page.",
+    "Read this before the exam. The **mid-sem is closed book** (formulas must be in your head) and the **comprehensive is open book** (you can look formulas up, but must recognise **which method** a question needs, quickly). Section 1 is a decision map from question wording to method; sections L1–L15 are each lecture's ⚡ Recap; section 2 lists the traps that cost marks, including the slide errors we found. For lookups during an open-book exam, use the 🔎 **Formula Index** page, and the 📄 **Find It in the PDF** page to jump to the right page of the consolidated PDF.",
 
   summary: [
     {
@@ -59,6 +61,9 @@ export default {
             ["values over years, asks for a trend or forecast", "coded-x trend: $b = \\sum xY/\\sum x^2$, $a = \\bar Y$", "L12"],
             ["asks to smooth or forecast a flat series", "moving average or $F_{t+1} = \\alpha Y_t + (1 - \\alpha)F_t$; compare MSE/MAD", "L12"],
             ["series with trend (and seasons)", "Holt $L + kT$; Holt-Winters $(L + kT)S$", "L12"],
+            ["asks if a series is stationary / white noise / has autocorrelation", "ACF $r_k$, bounds $\\pm 2/\\sqrt{T}$, Ljung-Box, Dickey-Fuller ($H_0$: unit root)", "L14"],
+            ["asks for an AR / MA / ARMA / ARIMA model or its order", "PACF → p, ACF → q, differences → d; lowest AIC/BIC", "L14"],
+            ["data from two or more mixed groups; “responsibility”, “EM”", "GMM: $\\gamma = \\pi_k\\mathcal N_k/\\sum\\pi_j\\mathcal N_j$; M-step $N_k$, $\\pi_k = N_k/N$, $\\mu_k = \\sum\\gamma x/N_k$", "L15"],
           ],
         },
         {
@@ -95,7 +100,7 @@ export default {
           type: "callout",
           kind: "warn",
           title: "Slide errors to be aware of (details on each lecture page and the Coverage page)",
-          text: "L2 Ex1(d) sums to 15/16 · L3 vowels (1/5) and “irregular girl” (0.2045) · L4 firms V/W (7/16, 3/7) and species height table · L5 P(prime) = 2/3 · L6 cafeteria (0.112), clouds F(−1.40) = 0.0808, 99.7% · L7 drug SE uses 0.6 · L9 sports-car sign, courier 4.56, digits “>”, paired df · L10 iron $G = 891$, $F = 4.54$, $F(3, 36) = 2.87$.",
+          text: "L2 Ex1(d) sums to 15/16 · L3 vowels (1/5) and “irregular girl” (0.2045) · L4 firms V/W (7/16, 3/7) and species height table · L5 P(prime) = 2/3 · L6 cafeteria (0.112), clouds F(−1.40) = 0.0808, 99.7% · L7 drug SE uses 0.6 · L9 sports-car sign, courier 4.56, digits “>”, paired df · L10 iron $G = 891$, $F = 4.54$, $F(3, 36) = 2.87$ · L14 $2/\\sqrt{50} = 0.283$ (PDF says 2.8) · L15 μ₁ uses 92, 95, 98 (PDF writes 0.92…).",
         },
       ],
     },

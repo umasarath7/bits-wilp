@@ -3,7 +3,7 @@
 
 export default {
   title: "Basic Probability: Events, Axioms, Addition Rule & Independence",
-  source: "Lec2.pdf (CS-2) · 51 slides",
+  source: "Lec2.pdf (CS-2) · 51 slides · consolidated exam PDF pp. 70–115",
   quizMode: "step",
   overview:
     "Lecture 1 described data that has already happened. Lecture 2 asks the forward question: **how likely is something that hasn't happened yet?** We set up the language first: a **random experiment**, its **sample space** and **events**, and the operations on events (complement, union, intersection), drawn as Venn diagrams. Then come three ways to define probability (**classical, empirical, axiomatic**), the **addition rule** P(A ∪ B) = $P(A) + P(B)$ − P(A ∩ B), and the difference between **mutually exclusive** and **independent** events, the most commonly confused pair in the course. The slides' nine worked examples (dice, exam passes, investors, cables, computers, committees) teach the main problem-solving tricks: count equally likely outcomes, use the complement for “at least one”, and use the addition rule to find an overlap.",

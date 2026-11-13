@@ -94,11 +94,27 @@ const ROWS = [
   ["Holt double exponential", "$L_t = \\alpha Y_t + (1 - \\alpha)(L_{t-1} + T_{t-1})$; $T_t = \\beta(L_t - L_{t-1}) + (1 - \\beta)T_{t-1}$; $F_{t+k} = L_t + kT_t$", "Trend, no seasons", "“level and trend smoothing”", "GDP 2021 → 2363 (L12 · 42–57)"],
   ["Holt-Winters triple exponential", "$S_i = Y_i/\\bar Y_{\\text{yr1}}$; $L_t = \\alpha\\frac{Y_t}{S_{t-M}} + (1 - \\alpha)(L_{t-1} + T_{t-1})$; $S_t = \\gamma\\frac{Y_t}{L_t} + (1 - \\gamma)S_{t-M}$; $F_{t+k} = (L_t + kT_t)S_{t+k-M}$", "Trend + seasons; M periods/year", "“seasonal factors”, “quarterly / monthly”", "Demand $F_6 = 427.54$ (L12 · 58–68)"],
   ["Stationary process", "Properties unchanged by a shift of time origin; $E(Y_t) = \\mu_t$, $V(Y_t) = \\sigma_t^2$", "Smoothing methods assume it", "“stationarity”", "(L12 · 69–70)"],
+  // ---- Session 14 (consolidated PDF pages)
+  ["Strict / weak stationarity", "Strict: $F_{Y_{t_1}, \\dots, Y_{t_k}} = F_{Y_{t_1 + h}, \\dots, Y_{t_k + h}}$ for all h; weak (2nd order): constant mean and variance, covariance depends only on the lag", "Needed for reliable forecasting; remove trend and seasons first", "“stationary process”, “change of origin”", "(L14 · PDF 744–758)"],
+  ["Autocorrelation (ACF)", "$\\rho_h = \\gamma_h/\\gamma_0$; $r_k = \\frac{\\sum_{t=k+1}^{T}(y_t - \\bar y)(y_{t-k} - \\bar y)}{\\sum_{t=1}^{T}(y_t - \\bar y)^2}$; $\\rho_0 = 1$", "Overall mean and full denominator for every k", "“autocorrelation at lag k”, “correlogram”", "$r_1 = 1394/1676 = 0.8317$ (L14 · PDF 770–771)"],
+  ["White-noise bounds", "95% of ACF spikes within $\\pm 2/\\sqrt{T}$", "T = series length", "“is the series white noise?”", "T = 50 → ±0.283 (PDF's 2.8 is a slip) (L14 · PDF 779–782)"],
+  ["Ljung-Box test", "$H_0$: white noise (no autocorrelation); p < 0.05 → reject", "Tests a group of lags at once", "“test for randomness”, “serial correlation”", "(L14 · PDF 784)"],
+  ["PACF", "Correlation of $Y_t$ and $Y_{t-k}$ given $Y_{t-1}, \\dots, Y_{t-k+1}$; PACF(1) = ACF(1)", "Direct link only", "“partial autocorrelation”", "(L14 · PDF 786–787)"],
+  ["AR(p)", "$Y_t = c + \\phi_1Y_{t-1} + \\dots + \\phi_pY_{t-p} + \\varepsilon_t$", "$\\varepsilon_t$ white noise; order from the PACF", "“autoregressive”, “lagged values”", "$\\hat Y = 8.502 - 0.486Y_{t-1}$ → 5.683 (L14 · PDF 792–793)"],
+  ["Dickey-Fuller", "$\\Delta Y_t = \\mu + \\delta Y_{t-1} + \\varepsilon_t$, $\\delta = \\phi_1 - 1$; $H_0: \\delta = 0$ (unit root); $t = \\hat\\delta/SE(\\hat\\delta)$, reject if < DF critical value", "ADF adds lagged terms (their β's use t-tests)", "“unit root”, “test for stationarity”", "(L14 · PDF 794–798)"],
+  ["MA(q)", "$Y_t = w_t + \\theta_1w_{t-1} + \\dots + \\theta_qw_{t-q}$, $w_t$ Gaussian white noise", "Order from the ACF", "“moving-average model”, “past shocks”", "(L14 · PDF 799–800)"],
+  ["ARMA(p, q)", "ARMA(1,1): $Y_t = \\phi_0 + \\phi_1Y_{t-1} + \\theta_1\\varepsilon_{t-1} + \\varepsilon_t$; forecast drops $\\varepsilon_t$", "Stationary series; ACF → q, PACF → p", "“ARMA”, “order of the model”", "2 + 0.6(10) + 0.3(1.5) = 8.45 (L14 · PDF 801–805)"],
+  ["ARIMA(p, d, q) and family", "Difference d times ($Z_t = Y_{t+1} - Y_t$), then ARMA(p, q); SARIMA seasonal; SARIMAX + exogenous; VAR multivariate", "Choose by lowest AIC/BIC", "“integrated”, “differencing”, “seasonal ARIMA”", "(L14 · PDF 806–820)"],
+  // ---- Session 15 (consolidated PDF pages)
+  ["Gaussian mixture model", "$p(x) = \\sum_{k=1}^{K}\\pi_k\\mathcal N(x \\mid \\mu_k, \\Sigma_k)$, $\\sum\\pi_k = 1$, $0 \\le \\pi_k \\le 1$", "Data from several mixed groups; soft clustering", "“mixture of Gaussians”, “two peaks”", "Share prices π = 1000/1800 (L15 · PDF 825–828)"],
+  ["Responsibility", "$\\gamma(z_k) = \\frac{\\pi_k\\mathcal N(x \\mid \\mu_k, \\Sigma_k)}{\\sum_j\\pi_j\\mathcal N(x \\mid \\mu_j, \\Sigma_j)}$", "Bayes: prior × likelihood ÷ total; equal σ → constants cancel", "“posterior probability that x belongs to component k”", "x = 95 → 0.6 (L15 · PDF 845, 856–859)"],
+  ["EM for GMM", "E: γ(z_nk); M: $N_k = \\sum_n\\gamma_{nk}$, $\\pi_k = N_k/N$, $\\mu_k = \\sum_n\\gamma_{nk}x_n/N_k$, $\\Sigma_k = \\sum_n\\gamma_{nk}(x_n - \\mu_k)(x_n - \\mu_k)^T/N_k$; repeat until log-likelihood converges", "Log-likelihood never decreases", "“E-step”, “M-step”, “one iteration”", "γ = 0.83, 0.60, 0.31 → π₁ = 0.58, μ₁ = 94.1 (L15 · PDF 860–863)"],
+  ["GMM log-likelihood", "$\\ln p(X) = \\sum_n\\ln\\{\\sum_k\\pi_k\\mathcal N(x_n \\mid \\mu_k, \\Sigma_k)\\}$", "Sum inside the log → no closed form → EM", "“maximum likelihood for a mixture”", "(L15 · PDF 846)"],
 ];
 
 export default {
   title: "Formula & Concept Index",
-  source: `${ROWS.length} formulas across Lectures 1–7, 9–12 · searchable`,
+  source: `${ROWS.length} formulas across Lectures 1–7, 9–12, 14–15 · searchable`,
   overview:
     "Your open-book companion. Type a keyword: a topic (“Bayes”), a symbol (“$\\lambda$”), a phrase from the question (“at least”, “before and after”, “association”) or a lecture (“L9”). Each row gives the formula, **when it applies**, the **typical wording** that signals it, and a **worked example** with its slides. Then open that lecture for the full method.",
   summary: [

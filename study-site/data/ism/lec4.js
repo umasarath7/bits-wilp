@@ -3,7 +3,7 @@
 
 export default {
   title: "Bayes' Theorem & the Naive Bayes Classifier",
-  source: "Lec4.pdf (CS-4) · 67 slides",
+  source: "Lec4.pdf (CS-4) · 67 slides · consolidated exam PDF pp. 168–231",
   quizMode: "step",
   overview:
     "Lecture 3 ended with a “reverse” question: given that a 1 was received, what's the chance a 1 was sent? **Bayes' theorem** is the general answer: it turns P(evidence | cause), which is easy to know, into P(cause | evidence), which is what we actually want. A doctor knows how often measles causes a rash, but needs the chance that *this* child with a rash has measles. We prove the theorem, solve the slides' classic problems (bonus schemes, flu vs measles, spam filters, bolts from three machines, fire accidents), then scale it up into a machine-learning classifier. **Naive Bayes** predicts a class from many features by assuming they are conditionally independent given the class. We apply it to weather/tennis tables, animal species and text, and fix its zero-probability problem with **Laplace smoothing**.",

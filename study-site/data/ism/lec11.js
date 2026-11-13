@@ -4,7 +4,7 @@
 
 export default {
   title: "Regression & Correlation",
-  source: "Lec11.pdf · 49 pages",
+  source: "Lec11.pdf · 49 pages · consolidated exam PDF pp. 619–666",
   quizMode: "step",
   overview:
     "Two variables often move together: hours studied and marks, advertising and sales, engine size and fuel use. **Regression** finds the straight line (or curve) that best describes how y changes with x, so we can **predict** y from x. **Correlation** gives one number, r, that says how **strong** and in which **direction** the straight-line relationship is. The lecture builds the least-squares line by hand (slides 3–12), measures how good it is with SSE, SST and $r^2$ (slides 13–21), bends the line into curves with transformations and polynomials (slides 22–31), defines correlation (slides 32–41), adds more predictors (multiple regression, slides 42–46) and ends with logistic regression for yes/no outcomes (slides 47–49).",

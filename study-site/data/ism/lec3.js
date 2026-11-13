@@ -3,7 +3,7 @@
 
 export default {
   title: "Conditional Probability, Independence & Total Probability",
-  source: "Lec3.pdf (CS-3) · 57 slides",
+  source: "Lec3.pdf (CS-3) · 57 slides · consolidated exam PDF pp. 116–167",
   quizMode: "step",
   overview:
     "Probabilities are not fixed: they change when we **learn something**. A doctor's estimate that you have a disease changes when a blood test comes back negative (slide 7). This lecture makes that precise. **Conditional probability** $P(A \\mid B)$ is the probability of A once we know B happened, and it rearranges into the **multiplication rule** for “A and B”. If learning B changes nothing, A and B are **independent**, and probabilities simply multiply. Finally, the **law of total probability** finds the overall chance of an event by splitting the world into cases (which forest? which device? rain or no rain?), working out each case, and adding up. That sets up Bayes' theorem in Lecture 4.",
