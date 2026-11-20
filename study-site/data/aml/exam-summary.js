@@ -3,7 +3,7 @@
 
 export default {
   title: "AML Exam Summary",
-  source: "Sessions 1–7 + previous mid-sem paper · read in about 20 minutes",
+  source: "Sessions 1–7 + previous mid-sem paper (section 7: Sessions 9–15) · read in about 25 minutes",
   overview:
     "Read this the night before and again on the morning of the exam. It is **not** a replacement for the lessons; it's the set of things you must have at your fingertips. Section 2 and the recipes R1–R6 matter most: first learn to **recognise** each question type, then follow its **recipe**. About 80% of the previous paper was numerical, and Naïve Bayes, regression and SVM alone were 16 of 30 marks.",
 
@@ -320,6 +320,38 @@ export default {
           kind: "remember",
           title: "Can you, without looking…",
           text: "1. Write Euclidean, Manhattan and cosine formulas?\n2. Draw the confusion matrix and write precision, recall, F1?\n3. Build the regression table and get $b_1 = S_{xy}/S_{xx}$, $b_0 = \\bar y - b_1\\bar x$?\n4. Write the GD update and do one row of the table for logistic regression?\n5. Lay out an NB calculation: priors → query likelihoods → products → normalise?\n6. Write $\\phi$ for the degree-2 polynomial kernel, and solve XOR with $z = x_1x_2$?\n7. Explain bias–variance and overfitting in two lines each?\n\nIf yes to all seven, you're ready. Good luck!",
+        },
+      ],
+    },
+    {
+      id: "endsem",
+      heading: "7. After the mid-sem (Sessions 9–15): recognise the question",
+      slides: "",
+      blocks: [
+        {
+          type: "table",
+          caption: "Open-book end-sem: wording → method → where (PDF pages from the 📄 index)",
+          head: ["If the question…", "Do this", "Session · PDF pages", "ML overlap"],
+          rows: [
+            ["gives a table and asks for the best split / to build a tree", "Entropy, IG (or Gini) per attribute; split on the highest gain; repeat per branch", "S9 · 370–392", "🟰 ML M5"],
+            ["asks to combine classifiers / bagging / AdaBoost weights", "Bootstrap samples; AdaBoost: ε, α = ½ ln((1 − ε)/ε), reweight, normalise", "S10 · 409–450", "🔀 ML M9"],
+            ["gives points and k, asks to cluster", "Distance table → assign → new means → repeat until no change", "S11/S14 · 469–489, 623–626", "🔀 ML M10"],
+            ["asks for the best k", "Within-cluster variance for each k → elbow; or k ≈ √(n/2)", "S14 · 628–633", "🔀 ML M10"],
+            ["asks for single / complete / average linkage or a dendrogram", "Distance matrix → merge min → update with min / max / mean → draw heights", "S14 · 646–668", "🆕 AML only"],
+            ["gives ε and MinPts", "DBSCAN: neighbours (count itself), core / border / noise, grow clusters from cores", "S14 · 670–683", "🆕 AML only"],
+            ["asks whether data have cluster structure", "Hopkins H = Σy/(Σx + Σy); ≈ 0 clustered, ≈ 0.5 random", "S14 · 686–691", "🆕 AML only"],
+            ["gives a distance table and two clusters, asks for quality", "Silhouette: a (own), b (nearest other), s = (b − a)/max(a, b)", "S14 · 697–701", "🔀 ML M10"],
+            ["asks for perceptron weights / backprop update", "Perceptron rule $w \\leftarrow w + \\eta(t - o)x$; delta rule; chain rule", "S12 · 496–519", "🆕 AML only"],
+            ["gives an image patch and a filter / asks output size or parameters", "Multiply-add-slide; ⌊(n + 2p − f)/s⌋ + 1; (f·f·channels + 1) per filter; max / avg pooling", "S13 · 545–572", "🆕 AML only"],
+            ["names sentiment, captioning, translation", "Many-to-one, one-to-many, many-to-many (delayed)", "S13 · 584–592", "🆕 AML only"],
+            ["gives a table with a protected attribute and predictions", "Demographic parity P(Ŷ=1 | A); equal opportunity adds Y = 1; equalized odds adds Y = 0 too", "S15 · 722–743", "🆕 AML only (concepts 🔀 ML M11)"],
+          ],
+        },
+        {
+          type: "callout",
+          kind: "tip",
+          title: "Plan by overlap",
+          text: "See 🔀 **AML vs ML** for the full map. Short version: anything marked 🆕 above has no ML equivalent, so practise it from the AML pages first.",
         },
       ],
     },

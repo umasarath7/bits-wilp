@@ -4,7 +4,7 @@
 
 export default {
   title: "Linear Regression",
-  source: "ContactSession4-LinearRegression.pptx · 77 slides",
+  source: "ContactSession4-LinearRegression.pptx · 77 slides · consolidated exam PDF pp. 190–265",
   overview:
     "This is the most examined numerical topic after Naïve Bayes. We'll build it from the very beginning, the way I would in a classroom: **why** we need regression, **why** a straight line, **why** “least squares”, how to measure the fit, **why** machine-learning people use gradient descent instead of the formula, how to handle many features and curves, and finally **why** too flexible a model hurts (bias–variance) and how regularisation tames it. One small running example (hours studied → exam score) carries us through the first half. Every abbreviation is spelled out, and there's a glossary at the end.",
 
@@ -14,6 +14,7 @@ export default {
       heading: "Lesson 1: Why do we need regression?",
       slides: "15–16",
       blocks: [
+        { type: "callout", kind: "tip", title: "🔗 ML overlap: 🟰 same core as ML Module 3", text: "**Shared:** least squares, gradient descent, multivariate regression, normal equation, polynomial fitting, bias–variance, regularisation. **ML only:** ridge/lasso/elastic net in depth, basis functions. Learn once; do this page's numericals." },
         {
           type: "p",
           text: "Imagine you're a teacher and you notice that students who study more hours seem to score higher. You write down data for five students:",
@@ -277,6 +278,12 @@ export default {
           kind: "formula",
           title: "Hypothesis with n features",
           text: "$$h_\\theta(x) = \\theta_0 + \\theta_1 x_1 + \\theta_2 x_2 + \\dots + \\theta_n x_n = \\theta^T x$$\n\n- $n$ = number of features; $x_j^{(i)}$ = value of feature $j$ in example $i$\n- We add a dummy feature $x_0 = 1$ so that $\\theta_0$ fits the same pattern, and then the whole sum is the **dot product** $\\theta^T x$ ($\\theta$-transpose-x).\n- Each $\\theta_j$ means: *the change in prediction when $x_j$ goes up by 1, keeping the other features fixed*.\n\nGradient descent is the same as before, for every j from 0 to n:\n$$\\theta_j := \\theta_j - \\alpha \\frac1m \\sum_i \\big(h_\\theta(x^{(i)}) - y^{(i)}\\big) x_j^{(i)}$$",
+        },
+        {
+          type: "callout",
+          kind: "example",
+          title: "Reading the notation on the PDF's house data (pages 206, 234)",
+          text: "| Size (x₁) | Rooms (x₂) | Floors (x₃) | Age (x₄) | Price y |\n|---|---|---|---|---|\n| 2104 | 5 | 1 | 45 | 460 |\n| 1416 | 3 | 2 | 40 | 232 |\n| 1534 | 3 | 2 | 30 | 315 |\n| 852 | 2 | 1 | 36 | 178 |\n\nn = **4** features, m = 4 examples. The 2nd example is $x^{(2)} = (1416, 3, 2, 40)$ with $y^{(2)} = 232$; $x^{(2)}_3 = 2$ (floors of house 2); $x^{(4)}_1 = 852$. With $x_0 = 1$ each example becomes a 5-vector, e.g. $(1, 1416, 3, 2, 40)$, so $\\theta$ has 5 entries $\\theta_0 \\dots \\theta_4$.",
         },
         {
           type: "p",

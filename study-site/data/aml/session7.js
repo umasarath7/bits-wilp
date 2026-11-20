@@ -4,7 +4,7 @@
 
 export default {
   title: "Support Vector Machines",
-  source: "ContactSession7-SVM.pptx · 40 slides",
+  source: "ContactSession7-SVM.pptx · 40 slides · consolidated exam PDF pp. 325–364",
   overview:
     "SVM questions carried **8 of 30 marks** in the previous mid-sem (a kernel calculation and the XOR problem). We'll build the idea from one simple question: **if many lines separate two classes, which one is best?** From there: **how** to measure the gap (the margin), **why** only a few points (the support vectors) matter, **how** the optimisation is set up, **what** to do when data is noisy (soft margin and C), and **how** to separate data that no straight line can (feature maps and the kernel trick). The last lesson is a step-by-step guide to solving SVM questions by hand.",
 
@@ -14,6 +14,7 @@ export default {
       heading: "Lesson 1: If many lines separate the data, which one is best?",
       slides: "3–10",
       blocks: [
+        { type: "callout", kind: "tip", title: "🔗 ML overlap: 🟰 same core as ML Module 7", text: "**Shared:** maximum margin, optimisation problem, soft margin and C, kernel trick, multi-class. **AML only:** **XOR with an SVM** (asked in the previous mid-sem) and the polynomial-kernel homework." },
         {
           type: "p",
           text: "**The setting (slide 3).** A **linear classifier** draws a straight line (in general a flat **hyperplane**) and labels points by which side they fall on:",

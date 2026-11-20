@@ -7,7 +7,7 @@
 
 export default {
   title: "Introduction to Machine Learning",
-  source: "ContactSession1-Introduction.pptx · 51 slides",
+  source: "ContactSession1-Introduction.pptx · 51 slides · consolidated exam PDF pp. 1–46",
   overview:
     "We'll build this session up one question at a time, the way I would in a classroom. **Why** do we need machine learning at all? **How** do we describe a learning problem precisely? **What kinds** of learning are there? **Why** do ML systems fail, and **how** do we check whether a model is any good? For each idea I'll first tell you why we need it, then show you how it works on a real example. Every abbreviation is spelled out the first time it appears, and there's a glossary at the end you can keep coming back to.",
 
@@ -17,6 +17,7 @@ export default {
       heading: "Before we start: course logistics",
       slides: "2",
       blocks: [
+        { type: "callout", kind: "tip", title: "🔗 ML overlap: 🟰 same core as ML Module 1", text: "**Shared:** T-P-E definition, when to use ML, types of learning, batch vs online. **AML only:** application domains, ML challenges, validation and hyperparameters intro. Learn once; practise this page's examples." },
         {
           type: "table",
           head: ["Component", "Weight"],

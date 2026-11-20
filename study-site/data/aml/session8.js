@@ -14,6 +14,7 @@ export default {
       heading: "Lesson 1: What does the revision deck tell us about the exam?",
       slides: "1–29",
       blocks: [
+        { type: "callout", kind: "tip", title: "🔗 ML overlap: revision session (no ML equivalent)", text: "This page collects AML's mid-sem formula sheet and the previous paper. See 🔀 **AML vs ML** for the full overlap map." },
         {
           type: "p",
           text: "Teachers usually build revision sessions from the questions they intend to ask. So the first thing to do is list the questions and map each to the session that teaches it:",

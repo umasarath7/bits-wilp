@@ -4,7 +4,7 @@
 
 export default {
   title: "Classification & the Naïve Bayes Classifier",
-  source: "ContactSession6-NaiveBayes.pptx · 38 slides",
+  source: "ContactSession6-NaiveBayes.pptx · 38 slides · consolidated exam PDF pp. 288–324",
   overview:
     "Naïve Bayes appears in **almost every paper** (5 marks in the previous mid-sem, plus a revision-deck question), so this session deserves care. We'll build it from the ground up: **what** a classifier is and the two families (generative vs discriminative), **why** Bayes' theorem lets us “reverse” a probability, **why** the full Bayes classifier breaks down on real data, **how** the naïve independence assumption rescues it, **how** to estimate every probability from a table (including continuous attributes), **what** goes wrong when a count is zero and how Laplace smoothing fixes it, and finally **text classification**. The recipe at the end of Lesson 5 is exactly how to lay out an exam answer.",
 
@@ -14,6 +14,7 @@ export default {
       heading: "Lesson 1: What is classification, and what kinds of classifiers are there?",
       slides: "2–6",
       blocks: [
+        { type: "callout", kind: "tip", title: "🔗 ML overlap: 🔀 partial (ML Module 8)", text: "**Shared:** Bayes' theorem, Naïve Bayes from a table, Laplace smoothing, text classification. **AML only:** full-Bayes meningitis example and data fragmentation, generative vs discriminative, tax-evasion table. **ML only (skip for AML):** MLE, MAP, Bayes optimal, Gibbs, Gaussian and multinomial/Bernoulli NB." },
         {
           type: "p",
           text: "**Classification (slide 3).** We have a collection of records. Each record is a pair $(x, y)$: $x$ is the **attribute set** (also called features, predictors, independent variables or inputs) and $y$ is the **class label** (also called the response, dependent variable or output). The task: **learn a model that maps each attribute set x to one of a fixed set of class labels y.**",
@@ -120,7 +121,7 @@ export default {
         },
         {
           type: "p",
-          text: "**Why the full version breaks: data fragmentation (slide 13).** Try another patient: headache, fever, **no** vomiting. The chain rule needs $P(f \\mid h, m)$: among patients with headache *and* meningitis, how many had fever? That subset has 2 patients, and **neither** had fever, so the probability is 0, and the whole posterior becomes $P(m \\mid h, f, \\neg v) = 0$. The model claims it's *certain* the patient doesn't have meningitis, based on a sample of two!",
+          text: "**Why the full version breaks: data fragmentation (slide 13).** Try another patient: headache, fever, **no** vomiting. The chain rule needs $P(f \\mid h, m)$: among patients with headache *and* meningitis, how many had fever? That subset has 2 patients, and **neither** had fever, so the probability is 0, and the whole posterior becomes $P(m \\mid h, f, \\neg v) = 0$. The model claims it's *certain* the patient doesn't have meningitis, based on a sample of two! The consolidated PDF (page 300) completes the other side: $P(\\neg m \\mid h, f, \\neg v) = P(h \\mid \\neg m)\\,P(f \\mid h, \\neg m)\\,P(\\neg v \\mid f, h, \\neg m)\\,P(\\neg m)/P(h, f, \\neg v) = \\frac{5}{7} \\times \\frac{1}{5} \\times 1 \\times 0.7 / 0.1 = $ **1.0**: total certainty, built on a single matching patient (patient 1).",
         },
         {
           type: "p",

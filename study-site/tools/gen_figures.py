@@ -2465,6 +2465,138 @@ def a12_gates():
                 g.add(text(p.X(a) + 10, p.Y(b) - 8, str(out), "ts", "start"))
     reg("a12-gates", g, "A single perceptron draws one straight line (AML S12 slide 5). With w = (−30, 20, 20) only (1,1) is on the positive side: AND. Changing the bias to −10 moves the line so three corners are positive: OR. No single line separates XOR's corners, so XOR needs a hidden layer.")
 
+# ---------------------------------------------------------------- AML consolidated-PDF figures (S13–S15)
+
+def _grid(g, x, y, vals, cs=20, hl=None, hcls="cell1", label=None):
+    """Draw a matrix of numbers; hl = (r0, c0, r1, c1) inclusive block to highlight."""
+    for r, row in enumerate(vals):
+        for c, v in enumerate(row):
+            on = hl and hl[0] <= r <= hl[2] and hl[1] <= c <= hl[3]
+            g.add(rect(x + c * cs, y + r * cs, cs, cs, hcls if on else "panel", 0))
+            g.add(text(x + c * cs + cs / 2, y + r * cs + cs * 0.68, f"{v:g}" if isinstance(v, (int, float)) else str(v), "ts"))
+    if label:
+        g.add(text(x + len(vals[0]) * cs / 2, y - 6, label, "ts2"))
+
+def a13_conv():
+    g = Fig("a13cv", 200)
+    X = [[3, 0, 1, 2, 7, 4], [1, 5, 8, 9, 3, 1], [2, 7, 2, 5, 1, 3], [0, 1, 3, 1, 7, 8], [4, 2, 1, 6, 2, 8], [2, 4, 5, 2, 3, 9]]
+    K = [[1, 0, -1]] * 3
+    O = [[-5, -4, 0, 8], [-10, -2, 2, 3], [0, -2, -4, -7], [-3, -2, -3, -16]]
+    _grid(g, 10, 30, X, 22, (0, 0, 2, 2), "cell1", "input 6×6")
+    g.add(text(152, 100, "∗", "tb"))
+    _grid(g, 166, 63, K, 22, None, label="filter 3×3")
+    g.add(text(246, 100, "=", "tb"))
+    _grid(g, 262, 52, O, 26, (0, 0, 0, 0), "cell1", "output 4×4")
+    g.add(text(220, 182, "shaded: (3+1+2) − (1+8+2) = −5 (top-left output)", "ts2"))
+    reg("a13-conv", g, "Convolution by hand (AML PDF pages 546–549). Lay the 3×3 filter on a 3×3 window, multiply the overlapping numbers and add: here left column minus right column = −5. Output size = 6 − 3 + 1 = 4. Cell (2,3) is +2 (the PDF prints −2).")
+
+def a13_pool():
+    g = Fig("a13pl", 170)
+    X = [[2, 4, 7, 4], [6, 6, 9, 8], [3, 4, 8, 3], [7, 5, 3, 6]]
+    cls = ["cell1", "cell2", "cell3", "cellx"]
+    cs = 24
+    for r in range(4):
+        for c in range(4):
+            g.add(rect(14 + c * cs, 34 + r * cs, cs, cs, cls[(r // 2) * 2 + c // 2], 0), text(14 + c * cs + cs / 2, 34 + r * cs + 16, str(X[r][c]), "ts"))
+    g.add(text(62, 26, "input 4×4", "ts2"))
+    for k, (lab, vals, x0) in enumerate([("max pool (f = 2, s = 2)", [[6, 9], [7, 8]], 190), ("average pool", [[4.5, 7], [4.75, 5]], 320)]):
+        for r in range(2):
+            for c in range(2):
+                g.add(rect(x0 + c * 40, 58 + r * 30, 40, 30, cls[r * 2 + c], 0), text(x0 + c * 40 + 20, 58 + r * 30 + 20, f"{vals[r][c]:g}", "ts"))
+        g.add(text(x0 + 40, 48, lab, "ts2"))
+    g.arrow(118, 82, 182, 82)
+    g.add(text(220, 160, "each colour = one 2×2 block; keep its max (or mean); no weights to learn", "ts2"))
+    reg("a13-pool", g, "Max and average pooling (AML PDF pages 571–572). Each 2×2 block becomes one number: its maximum (6, 9, 7, 8) or its mean (4.5, 7, 4.75, 5). Pooling halves each side and has no learnable parameters.")
+
+def a14_elbow():
+    g = Fig("a14el", 236)
+    pdf = [(2, 732), (3, 57), (4, 32), (5, 28)]
+    km = [(2, 150), (3, 54), (4, 16.5), (5, 15), (6, 13.5)]
+    p = Plot(g, 52, 16, 356, 150, (1.6, 6.4), (0, 800))
+    p.axes(xt=[2, 3, 4, 5, 6], yt=[0, 200, 400, 600, 800], xl="number of clusters k", yl="within-cluster variance", fmt=lambda v: f"{v:g}")
+    g.add(path([p.P(k, v) for k, v in pdf], "l1"), path([p.P(k, v) for k, v in km], "l2"))
+    for k, v in pdf:
+        g.add(circle(*p.P(k, v), 4, "d1", f"PDF method k={k}: {v}"))
+    for k, v in km:
+        g.add(circle(*p.P(k, v), 4, "d2", f"true k-means k={k}: {v}"))
+    g.add(circle(*p.P(3, 57), 8, "ring1"), text(p.X(3) + 10, p.Y(57) - 14, "elbow: k = 3", "tb", "start"))
+    g.add(text(60, 228, "blue = PDF's method · orange = true k-means SSE", "ts2", "start"))
+    reg("a14-elbow", g, "Elbow method on D = {2, 10, 12, 4, 25, 3, 30, 20, 11} (AML PDF pages 629–633). Both the PDF's calculation and a real k-means run drop sharply up to k = 3 and flatten afterwards, so k = 3.")
+
+def a14_dendro():
+    g = Fig("a14dn", 220)
+    specs = [("single linkage", ["B", "D", "A", "C", "E"], [("C", "E", 1.41), ("A", "CE", 2.0), ("D", "ACE", 2.24), ("B", "DACE", 3.61)], 4, [0, 1, 2, 3, 4]),
+             ("complete linkage", ["B", "A", "D", "C", "E"], [("C", "E", 1.41), ("A", "D", 2.24), ("AD", "CE", 3.16), ("B", "ADCE", 6.71)], 7, [0, 2, 4, 6])]
+    for k, (lab, order, merges, top, ticks) in enumerate(specs):
+        px = 14 + k * 216
+        p = Plot(g, px + 26, 40, 150, 132, (-0.5, 4.5), (0, top))
+        g.add(rect(px, 6, 206, 196, "panel", 6), text(px + 103, 22, lab, "ts"))
+        g.add(line(p.x, p.Y(0), p.x, p.Y(top), "ax"))
+        for v in ticks:
+            g.add(text(p.x - 4, p.Y(v) + 4, str(v), "ts", "end"))
+        pos = {n: (order.index(n), 0.0) for n in order}
+        placed = []
+        for n in order:
+            g.add(text(p.X(order.index(n)), p.Y(0) + 14, n, "tb"))
+        for a, b, h in merges:
+            (xa, ya), (xb, yb) = pos[a], pos[b]
+            g.add(line(p.X(xa), p.Y(ya), p.X(xa), p.Y(h), "l1"), line(p.X(xb), p.Y(yb), p.X(xb), p.Y(h), "l1"), line(p.X(xa), p.Y(h), p.X(xb), p.Y(h), "l1"))
+            lx, ly, anc = p.X(max(xa, xb)) + 4, p.Y(h) + 4, "start"
+            if any(abs(ly - qy) < 13 and abs(lx - qx) < 34 for qx, qy in placed):
+                lx, anc = p.X(min(xa, xb)) - 4, "end"
+            placed.append((lx, ly))
+            g.add(text(lx, ly, f"{h:.2f}", "ts", anc))
+            pos[a + b] = ((xa + xb) / 2, h)
+    reg("a14-dendro", g, "Dendrograms for A(2,2), B(5,8), C(2,4), D(4,3), E(3,5) (AML PDF pages 652–668). Single linkage merges at 1.41, 2.0, 2.24, 3.61; complete linkage at 1.41, 2.24, 3.16, 6.71 (note the different height scales). The first merge is the same, but the trees differ.")
+
+def a14_dbscan():
+    g = Fig("a14db", 230)
+    pts = {"A": (2, 2), "B": (3, 1), "C": (3, 4), "D": (5, 3), "E": (10, 14)}
+    kind = {"A": "border", "B": "core", "C": "core", "D": "border", "E": "noise"}
+    p = Plot(g, 40, 14, 220, 190, (0, 11), (0, 15))
+    p.axes(xt=[0, 5, 10], yt=[0, 5, 10, 15], fmt=lambda v: f"{v:g}", grid=False)
+    sx = p.X(3) - p.X(0)
+    for n in ("B", "C"):
+        x, y = p.P(*pts[n])
+        g.add(f'<ellipse cx="{f(x)}" cy="{f(y)}" rx="{f(sx)}" ry="{f(p.Y(0) - p.Y(3))}" class="zone1"/>')
+    for n, (x, y) in pts.items():
+        cls = {"core": "d1", "border": "d2", "noise": "dn"}[kind[n]]
+        g.add(circle(*p.P(x, y), 5, cls, f"{n}: {kind[n]}"), text(p.X(x) + 8, p.Y(y) - 6, n, "tb", "start"))
+    g.add(text(282, 60, "ε = 3, MinPts = 4", "tb", "start"))
+    g.add(text(282, 84, "core B, C: 4 in circle", "ts", "start"), text(282, 102, "border A, D: 3, but in", "ts", "start"),
+          text(282, 118, "a core's circle", "ts", "start"), text(282, 140, "noise E: alone", "ts", "start"),
+          text(282, 164, "cluster {A, B, C, D}", "tb", "start"))
+    reg("a14-dbscan", g, "DBSCAN on A(2,2), B(3,1), C(3,4), D(5,3), E(10,14) with ε = 3 and MinPts = 4 (AML PDF pages 679–683). Shaded circles are the ε-neighbourhoods of the core points B and C; A and D are border points; E is noise.")
+
+def a14_sil():
+    g = Fig("a14sl", 190)
+    s = [("p1", 0.833), ("p2", 0.846), ("p3", 0.556), ("p4", 0.478)]
+    p = Plot(g, 52, 16, 356, 130, (0.4, 4.6), (0, 1))
+    p.axes(xt=[], yt=[0, 0.25, 0.5, 0.75, 1], yl="silhouette s", fmt=lambda v: f"{v:g}")
+    for i, (n, v) in enumerate(s, 1):
+        g.add(rect(p.X(i) - 22, p.Y(v), 44, p.Y(0) - p.Y(v), "bar1" if i <= 2 else "bar2", 2))
+        g.add(text(p.X(i), p.Y(v) - 5, f"{v:.3f}", "ts"), text(p.X(i), p.Y(0) + 14, n, "tb"))
+    g.add(line(p.X(0.4), p.Y(0.678), p.X(4.6), p.Y(0.678), "guide2"), text(p.X(4.55), p.Y(0.678) - 5, "overall 0.678", "ts", "end"))
+    g.add(text(60, 182, "C1 average 0.840 · C2 average 0.517 → C1 is tighter", "ts2", "start"))
+    reg("a14-sil", g, "Silhouette coefficients (AML PDF pages 699–701): s = (b − a)/max(a, b). Points in C1 score about 0.84, points in C2 about 0.52; the overall clustering scores 0.678.")
+
+def a15_criteria():
+    g = Fig("a15cr", 220)
+    groups = [("Ŷ1", [("all", 2 / 3, 2 / 3), ("Y=yes", 1, 0.5), ("Y=no", 0, 1)]),
+              ("Ŷ2", [("all", 2 / 3, 1 / 3), ("Y=yes", 0.5, 0.5), ("Y=no", 1, 0)])]
+    verdict = {"Ŷ1": ["parity ✓", "opp. ✗", "odds ✗"], "Ŷ2": ["parity ✗", "opp. ✓", "odds ✗"]}
+    for k, (name, rows) in enumerate(groups):
+        px = 14 + k * 216
+        g.add(rect(px, 6, 206, 196, "panel", 6), text(px + 103, 20, f"Predictor {name}: P(Ŷ = 1 | group)", "ts"))
+        p = Plot(g, px + 30, 30, 166, 120, (0.4, 3.6), (0, 1))
+        g.add(line(p.x, p.Y(0), p.x + 166, p.Y(0), "ax"))
+        for i, (lab, h, w) in enumerate(rows, 1):
+            g.add(rect(p.X(i) - 20, p.Y(h), 18, max(1, p.Y(0) - p.Y(h)), "bar1", 1), rect(p.X(i) + 2, p.Y(w), 18, max(1, p.Y(0) - p.Y(w)), "bar2", 1))
+            g.add(text(p.X(i), p.Y(0) + 13, lab, "ts"), text(p.X(i), p.Y(0) + 27, verdict[name][i - 1], "ts"))
+        g.add(rect(px + 40, 182, 10, 10, "bar1", 1), text(px + 54, 191, "Hispanic", "ts2", "start"), rect(px + 120, 182, 10, 10, "bar2", 1), text(px + 134, 191, "White", "ts2", "start"))
+    reg("a15-criteria", g, "The PDF's hiring practice question (AML pages 726–743). Equal bars in 'all' = demographic parity; equal bars in 'Y = yes' = equal opportunity; equal bars in both 'Y = yes' and 'Y = no' = equalized odds. Ŷ1 satisfies parity only; Ŷ2 satisfies equal opportunity only.")
+
+
 # ---------------------------------------------------------------- build
 
 for fn in [s1_fits, s1_ucurve, s1_kfold, s1_threshold, s1_types, s1_rl,
@@ -2494,7 +2626,8 @@ for fn in [s1_fits, s1_ucurve, s1_kfold, s1_threshold, s1_types, s1_rl,
            i11_line, i11_sst, i11_corr, i11_power, i12_comp, i12_ma, i12_exp, i12_holt, i14_stat, i14_acf, i14_pattern, i15_mix, i15_resp,
            m2_iqr, m3_tips, m3_cost, m4_sigmoid, m4_roc, m5_tree, m5_impurity, m5_incsplit,
            m6_knn, m6_lwr, m7_svm, m7_nonlin,
-           a9_jobtree, a11_kmeans, a11_dendro, a12_gates]:
+           a9_jobtree, a11_kmeans, a11_dendro, a12_gates,
+           a13_conv, a13_pool, a14_elbow, a14_dendro, a14_dbscan, a14_sil, a15_criteria]:
     fn()
 
 out = "// Generated by tools/gen_figures.py. Do not edit by hand; edit the generator and re-run it.\n"

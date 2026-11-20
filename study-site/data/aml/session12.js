@@ -3,7 +3,7 @@
 
 export default {
   title: "Artificial Neural Networks & Intro to Deep Learning",
-  source: "ContactSession12-ANN.pptx · 30 slides",
+  source: "ContactSession12-ANN.pptx · 30 slides · consolidated exam PDF pp. 496–525",
   quizMode: "step",
   overview:
     "A neural network is built from one simple part, the **perceptron**: weigh the inputs, add a bias, and threshold the result. One perceptron draws **one straight line**, so it can compute AND, OR and NOT but not XOR. We learn how to find its weights (the **perceptron training rule** and the gradient-based **delta rule**), then replace the hard threshold with smooth **activation functions** (sigmoid, tanh, ReLU, softplus) and stack neurons into **layers**. Hidden layers with non-linear activations let the network draw curved, complex boundaries. Training a layered network needs **backpropagation**: run the inputs forward, measure the output error, and pass the “blame” backwards through the weights. The session ends with what makes deep learning different and the hyperparameters you must tune.",
@@ -14,6 +14,7 @@ export default {
       heading: "Lesson 1: Linear classification and the perceptron",
       slides: "2–6",
       blocks: [
+        { type: "callout", kind: "tip", title: "🔗 ML overlap: none (AML only)", text: "Neural networks are not in the ML course. Give this session full study time." },
         {"type": "callout", "kind": "idea", "title": "In plain words", "text": "A **perceptron** is a tiny decision-maker that works like a **voting committee with a threshold**. Each input gets a weight (how much its vote counts); the perceptron adds up input × weight, adds a bias (its starting mood), and if the total is above zero it says **Yes**, otherwise **No**.\n\nGeometrically, that's just **one straight line**: one side Yes, the other side No. So a perceptron can do AND, OR and NOT (each needs only one line), but **not XOR**, where the Yes corners sit diagonally opposite each other and no single line can separate them."},
         {
           type: "callout",

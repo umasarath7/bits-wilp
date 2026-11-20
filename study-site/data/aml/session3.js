@@ -4,7 +4,7 @@
 
 export default {
   title: "Model Selection, Evaluation, Tuning & MLOps",
-  source: "ContactSession3-EndToEndML2.pptx · 46 slides",
+  source: "ContactSession3-EndToEndML2.pptx · 46 slides · consolidated exam PDF pp. 145–189",
   overview:
     "In Session 2 we prepared the data. Now we train models and ask the hard questions. **Which model should we pick?** **How do we measure whether it's good**, especially when the thing we're looking for is rare? **How do we get an honest estimate** of its performance? **How do we tune its settings** without wasting days of computing? And once it works, **how do we keep it working in production**? Our running example is the bank's fraud detector from Session 1: it's trained, and now we have to judge it and ship it.",
 
@@ -14,6 +14,7 @@ export default {
       heading: "Lesson 1: Why try several models? Model selection and training",
       slides: "1–6",
       blocks: [
+        { type: "callout", kind: "tip", title: "🔗 ML overlap: 🔀 partial (ML Modules 4 and 11)", text: "**Shared:** confusion matrix, precision/recall/F1, ROC/AUC, holdout and k-fold. **AML only:** grid and random search, learning curves, MNIST multiclass, **MLOps** (levels 0–2, CI/CD), data and model validation." },
         {
           type: "p",
           text: "No single algorithm is best for every problem. The only reliable way to choose is to **try a few sensible candidates and compare them on data they haven't seen**. But first, the kind of data you have narrows down which candidates make sense (slide 3):",

@@ -4,7 +4,7 @@
 
 export default {
   title: "Logistic Regression",
-  source: "ContactSession5-LogReg.pptx · 23 slides",
+  source: "ContactSession5-LogReg.pptx · 23 slides · consolidated exam PDF pp. 266–287",
   overview:
     "Linear regression predicts a number. But many real questions are **yes/no**: will this student pass, is this transaction fraud, will this customer default? This session builds logistic regression step by step: **why** we can't just use a straight line, **how** the sigmoid squashes any number into a probability, **where** the model draws its line between the classes, **why** it needs a different cost function (log-loss), and **how** to train it with gradient descent, including the slide-20 worked example that the exams love. We finish with more than two classes. Running example: predicting pass/fail from hours studied.",
 
@@ -14,6 +14,7 @@ export default {
       heading: "Lesson 1: Why not just use linear regression for yes/no questions?",
       slides: "3–5",
       blocks: [
+        { type: "callout", kind: "tip", title: "🔗 ML overlap: 🟰 same core as ML Module 4", text: "**Shared:** sigmoid, decision boundary, log-loss, gradient descent, one-vs-all/one-vs-one. **AML only:** the PDF's worked gradient-descent example. **ML only:** regularised logistic regression, class imbalance." },
         {
           type: "p",
           text: "Slide 4 draws the line clearly. **Linear regression** could predict a student's **test score** on a scale of 0–100: a continuous number. **Logistic regression** predicts whether the student **passed or failed**: a category. Its predictions are **discrete** (only certain values are allowed), but underneath it also gives a **probability score**, e.g. “72% chance of passing”.",

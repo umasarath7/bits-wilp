@@ -3,7 +3,7 @@
 
 export default {
   title: "Unsupervised Learning: Hierarchical Clustering, K-Means & EM",
-  source: "ContactSession11-UnsupLearning.pptx · 45 slides",
+  source: "ContactSession11-UnsupLearning.pptx · 45 slides · consolidated exam PDF pp. 451–495",
   quizMode: "step",
   overview:
     "Until now every example came with an answer. Here the data has **no labels**, X = {$x^{(1)}$, …, x⁽ᴺ⁾}, and the goal is to **find sub-groups using similarity** (slide 3). Three approaches: **agglomerative hierarchical clustering** starts with every point alone and keeps merging the two closest clusters, drawing a **dendrogram**; the answer depends on how “distance between clusters” is defined (single link, complete link, group average, Ward). **K-means** fixes K and alternates two steps that both reduce the squared-distance objective J: assign each point to its nearest centre (**E-step**), then move each centre to the mean of its points (**M-step**). **EM for Gaussian mixtures** is the soft version: each point belongs to every cluster with a probability, which handles multimodal data a single Gaussian can't fit. Expect hand-traced k-means iterations and dendrogram merges in the exam.",
@@ -14,6 +14,7 @@ export default {
       heading: "Lesson 1: Unsupervised learning and clustering",
       slides: "3, 19–20",
       blocks: [
+        { type: "callout", kind: "tip", title: "🔗 ML overlap: 🔀 partial (ML Module 10)", text: "**Shared:** k-means, Gaussian mixtures and EM. **AML only:** agglomerative hierarchical clustering and dendrograms (more in Session 14). **ML only:** k-medoids." },
         {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Until now every example came with an answer key (labels). Now there's **no answer key**: just a pile of customers, songs or photos, and the job is to **discover natural groups** in them. Like sorting a drawer of mixed socks without being told the categories: you group them by what looks similar."},
         {
           type: "p",

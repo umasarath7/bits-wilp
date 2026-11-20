@@ -3,7 +3,7 @@
 
 export default {
   title: "Decision Trees",
-  source: "ContactSession9-DecisionTrees.ppt · 44 slides",
+  source: "ContactSession9-DecisionTrees.ppt · 44 slides · consolidated exam PDF pp. 365–408",
   quizMode: "step",
   overview:
     "A decision tree answers a question the way a careful interviewer would: ask the **single most informative question** first, then the next most informative question within each answer group, until the answer is obvious. Everything in this session is about two choices: **which question to ask** (pick the split whose children are purest, measured by **Gini, entropy or classification error**) and **when to stop asking** (pure node, no attributes left, or a size/depth limit, plus **pruning** to undo overfitting). The exam favourite is the hand calculation: compute Gini or information gain for each attribute, pick the best, and grow the tree level by level. We do exactly that on the slides' job-offer data, then look at why trees overfit and how pruning fixes it.",
@@ -14,6 +14,7 @@ export default {
       heading: "Lesson 1: What a decision tree is and how Hunt's algorithm grows one",
       slides: "2–6, 15",
       blocks: [
+        { type: "callout", kind: "tip", title: "🔗 ML overlap: 🟰 same core as ML Module 5", text: "**Shared:** Hunt's algorithm, entropy and information gain, Gini, overfitting, pruning. **AML only:** the job-offer (CGPA/aptitude) multi-level example. **ML only:** gain ratio, classification error, continuous thresholds, MDL." },
         {"type": "callout", "kind": "idea", "title": "In plain words", "text": "A decision tree is the game **“20 Questions”**, or a doctor's checklist. To decide whether to give a loan, a bank officer might ask: “Do you own a home?” If yes → approve. If no → “Are you married?” … and so on, until the answer is clear.\n\nBuilding the tree from data is like **sorting a mixed bag of coins**: if a pile is all one kind, you're done with it; if not, you split it by some property and look at each smaller pile again. That repeated rule is **Hunt's algorithm**."},
         {
           type: "callout",

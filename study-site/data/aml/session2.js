@@ -5,7 +5,7 @@
 
 export default {
   title: "End-to-End ML: Framing, Data & Preprocessing",
-  source: "ContactSession2-EndToEndML.pptx · 99 slides",
+  source: "ContactSession2-EndToEndML.pptx · 99 slides · consolidated exam PDF pp. 47–144",
   overview:
     "Session 1 told us *what* ML is. This session walks through *what you actually do* on a real project, from the first meeting with the business to a clean dataset ready for a model. We follow the slides' running example the whole way: **predicting house prices from census data**. We'll ask, one step at a time: what problem are we really solving, and how will we measure success? What kind of data do we have, and what can we legally do with each column? How do we clean it and reshape it? How do we summarise it, compare records, and look at it? Every idea starts with *why* we need it. Abbreviations are spelled out the first time, and there's a glossary at the end.",
 
@@ -15,6 +15,7 @@ export default {
       heading: "Lesson 1: Why start with the big picture? Framing the problem",
       slides: "2–6",
       blocks: [
+        { type: "callout", kind: "tip", title: "🔗 ML overlap: 🔀 partial (ML Module 2, Module 6 for distances)", text: "**Shared:** attribute types, data quality, aggregation, sampling, discretisation, scaling, curse of dimensionality. **AML only:** RMSE/MAE, dataset types, **similarity measures** (Euclidean, Minkowski, cosine, correlation), visualisation (star plots, Chernoff faces), the housing notebook. **ML only:** IQR/3σ outlier exercises, decimal scaling." },
         {
           type: "p",
           text: "Imagine a real-estate investment firm calls you in. They say: *“Build a model of housing prices using the census data.”* (slide 4). The census gives, for every **district** (the smallest area the census reports on, about 600 to 3,000 people), numbers like population, median income, and the median house price. The model should predict the median house price of any district from all the other numbers. It is judged by **how close its predictions are to the actual prices for districts it hasn't seen**.",

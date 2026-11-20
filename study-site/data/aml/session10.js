@@ -3,7 +3,7 @@
 
 export default {
   title: "Ensembles: Bagging, Random Forests & AdaBoost",
-  source: "ContactSession10-Ensembles.pptx · 42 slides",
+  source: "ContactSession10-Ensembles.pptx · 42 slides · consolidated exam PDF pp. 409–450",
   quizMode: "step",
   overview:
     "No single algorithm is best on every problem (the **No Free Lunch theorem**). Each learner makes its own assumptions and fails in its own places. So instead of searching for one perfect expert, we form a **committee**: many base learners whose combined vote is better than any member. Two questions run through the session: **how do we make the members different** (different algorithms, hyperparameters, inputs, or training samples), and **how do we combine them** (sum/average, weighted sum, median, min, max, product). Then the two famous recipes: **bagging** (train on bootstrap samples in parallel and vote; random forests add random feature subsets) reduces **variance**, and **boosting** (AdaBoost: train learners one after another, each focusing on the examples the previous ones got wrong) builds a strong learner from weak ones.",
@@ -14,6 +14,7 @@ export default {
       heading: "Lesson 1: Why combine learners?",
       slides: "3–8",
       blocks: [
+        { type: "callout", kind: "tip", title: "🔗 ML overlap: 🔀 partial (ML Module 9)", text: "**Shared:** why combine learners, bagging, random forests, AdaBoost. **AML only:** fusion/voting rules, polynomial committee illustration. **ML only (skip for AML):** gradient boosting, XGBoost, stacking." },
         {"type": "callout", "kind": "idea", "title": "In plain words", "text": "Would you rather trust **one** doctor's opinion or a **panel** of doctors? Each doctor has blind spots, but different doctors have *different* blind spots, so a panel's combined verdict is usually better than any single member's. That's an **ensemble**.\n\nThe panel only helps if the doctors are **different** (five copies of the same doctor add nothing) and each is **reasonably competent**. So we make models different on purpose: different algorithms, different settings, different inputs, or different samples of the data."},
         {
           type: "callout",
